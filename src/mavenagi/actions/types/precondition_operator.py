@@ -2,4 +2,4 @@
 
 import typing
 
-PreconditionOperator = typing.Union[typing.AnyStr, typing.Literal["NOT"]]
+PreconditionOperator = typing.Union[typing.Literal["NOT"], typing.Any]

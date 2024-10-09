@@ -2,4 +2,4 @@
 
 import typing
 
-PreconditionGroupOperator = typing.Union[typing.AnyStr, typing.Literal["AND", "OR"]]
+PreconditionGroupOperator = typing.Union[typing.Literal["AND", "OR"], typing.Any]

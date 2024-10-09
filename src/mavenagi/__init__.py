@@ -22,6 +22,7 @@ from .actions import (
     Precondition_User,
     TagsPrecondition,
 )
+from .client import AsyncMavenAGI, MavenAGI
 from .commons import (
     AppUser,
     AppUserIdentifier,
@@ -52,6 +53,7 @@ from .conversation import (
     AskStreamMetadataEvent,
     AskStreamStartEvent,
     AskStreamTextEvent,
+    Attachment,
     BotActionFormResponse,
     BotConversationMessageType,
     BotMessage,
@@ -121,6 +123,8 @@ __all__ = [
     "AskStreamMetadataEvent",
     "AskStreamStartEvent",
     "AskStreamTextEvent",
+    "AsyncMavenAGI",
+    "Attachment",
     "BadRequestError",
     "BaseKnowledgeDocument",
     "BotActionFormResponse",
@@ -169,6 +173,7 @@ __all__ = [
     "KnowledgeDocumentContentType",
     "KnowledgeDocumentRequest",
     "KnowledgeDocumentResponse",
+    "MavenAGI",
     "MavenAGIEnvironment",
     "MetadataPrecondition",
     "NotFoundError",

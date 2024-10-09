@@ -3,5 +3,5 @@
 import typing
 
 BotConversationMessageType = typing.Union[
-    typing.AnyStr, typing.Literal["BOT_RESPONSE", "BOT_SUGGESTION", "ACTION_RESPONSE"]
+    typing.Literal["BOT_RESPONSE", "BOT_SUGGESTION", "ACTION_RESPONSE"], typing.Any
 ]

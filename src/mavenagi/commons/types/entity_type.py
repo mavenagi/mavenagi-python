@@ -3,7 +3,6 @@
 import typing
 
 EntityType = typing.Union[
-    typing.AnyStr,
     typing.Literal[
         "CONVERSATION",
         "CONVERSATION_MESSAGE",
@@ -16,4 +15,5 @@ EntityType = typing.Union[
         "USER_PROFILE",
         "FEEDBACK",
     ],
+    typing.Any,
 ]

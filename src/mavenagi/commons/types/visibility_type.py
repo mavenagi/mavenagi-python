@@ -2,4 +2,4 @@
 
 import typing
 
-VisibilityType = typing.Union[typing.AnyStr, typing.Literal["VISIBLE", "PARTIALLY_VISIBLE", "HIDDEN"]]
+VisibilityType = typing.Union[typing.Literal["VISIBLE", "PARTIALLY_VISIBLE", "HIDDEN"], typing.Any]

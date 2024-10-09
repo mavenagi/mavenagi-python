@@ -2,4 +2,4 @@
 
 import typing
 
-FeedbackType = typing.Union[typing.AnyStr, typing.Literal["THUMBS_UP", "THUMBS_DOWN", "INSERT", "HANDOFF"]]
+FeedbackType = typing.Union[typing.Literal["THUMBS_UP", "THUMBS_DOWN", "INSERT", "HANDOFF"], typing.Any]

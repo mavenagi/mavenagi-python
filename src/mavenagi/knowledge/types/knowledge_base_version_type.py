@@ -2,4 +2,4 @@
 
 import typing
 
-KnowledgeBaseVersionType = typing.Union[typing.AnyStr, typing.Literal["FULL", "PARTIAL"]]
+KnowledgeBaseVersionType = typing.Union[typing.Literal["FULL", "PARTIAL"], typing.Any]

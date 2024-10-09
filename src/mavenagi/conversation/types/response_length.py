@@ -2,4 +2,4 @@
 
 import typing
 
-ResponseLength = typing.Union[typing.AnyStr, typing.Literal["SHORT", "MEDIUM", "LONG"]]
+ResponseLength = typing.Union[typing.Literal["SHORT", "MEDIUM", "LONG"], typing.Any]

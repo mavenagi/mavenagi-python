@@ -7,6 +7,7 @@ from .ask_stream_end_event import AskStreamEndEvent
 from .ask_stream_metadata_event import AskStreamMetadataEvent
 from .ask_stream_start_event import AskStreamStartEvent
 from .ask_stream_text_event import AskStreamTextEvent
+from .attachment import Attachment
 from .bot_action_form_response import BotActionFormResponse
 from .bot_conversation_message_type import BotConversationMessageType
 from .bot_message import BotMessage
@@ -53,6 +54,7 @@ __all__ = [
     "AskStreamMetadataEvent",
     "AskStreamStartEvent",
     "AskStreamTextEvent",
+    "Attachment",
     "BotActionFormResponse",
     "BotConversationMessageType",
     "BotMessage",

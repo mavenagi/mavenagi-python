@@ -2,4 +2,4 @@
 
 import typing
 
-UserConversationMessageType = typing.Union[typing.AnyStr, typing.Literal["USER", "HUMAN_AGENT", "EXTERNAL_SYSTEM"]]
+UserConversationMessageType = typing.Union[typing.Literal["USER", "HUMAN_AGENT", "EXTERNAL_SYSTEM"], typing.Any]

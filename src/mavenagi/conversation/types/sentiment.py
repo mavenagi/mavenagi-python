@@ -2,4 +2,4 @@
 
 import typing
 
-Sentiment = typing.Union[typing.AnyStr, typing.Literal["POSITIVE", "NEGATIVE", "NEUTRAL", "MIXED", "UNKNOWN"]]
+Sentiment = typing.Union[typing.Literal["POSITIVE", "NEGATIVE", "NEUTRAL", "MIXED", "UNKNOWN"], typing.Any]

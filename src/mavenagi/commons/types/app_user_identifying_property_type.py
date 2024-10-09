@@ -2,4 +2,4 @@
 
 import typing
 
-AppUserIdentifyingPropertyType = typing.Union[typing.AnyStr, typing.Literal["EMAIL", "PHONE_NUMBER"]]
+AppUserIdentifyingPropertyType = typing.Union[typing.Literal["EMAIL", "PHONE_NUMBER"], typing.Any]
