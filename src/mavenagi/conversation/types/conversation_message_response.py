@@ -19,6 +19,7 @@ from .bot_response_metadata import BotResponseMetadata
 class ConversationMessageResponse_User(UniversalBaseModel):
     type: typing.Literal["user"] = "user"
     conversation_message_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="conversationMessageId")]
+    language: typing.Optional[str] = None
     user_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="userId")]
     text: str
     user_message_type: typing_extensions.Annotated[UserConversationMessageType, FieldMetadata(alias="userMessageType")]

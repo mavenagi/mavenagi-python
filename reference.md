@@ -2120,6 +2120,89 @@ client.knowledge.delete_knowledge_document(
 </dl>
 </details>
 
+## Translations
+<details><summary><code>client.translations.<a href="src/mavenagi/translations/client.py">translate</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Translate text from one language to another
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.translations.translate(
+    text="Hello world",
+    target_language="es",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**text:** `str` — The text to translate
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**target_language:** `str` — The target language to translate to, in ISO 639-1 code format.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Triggers
 <details><summary><code>client.triggers.<a href="src/mavenagi/triggers/client.py">create_or_update</a>(...)</code></summary>
 <dl>

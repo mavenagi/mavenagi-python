@@ -48,6 +48,7 @@ class StreamResponse_Metadata(UniversalBaseModel):
     event_type: typing_extensions.Annotated[typing.Literal["metadata"], FieldMetadata(alias="eventType")] = "metadata"
     followup_questions: typing_extensions.Annotated[typing.List[str], FieldMetadata(alias="followupQuestions")]
     sources: typing.List[Source]
+    language: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
