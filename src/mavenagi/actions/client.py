@@ -50,7 +50,7 @@ class ActionsClient:
             The name of the action. This is displayed to the end user as part of forms when user interaction is required. It is also used to help Maven decide if the action is relevant to a conversation.
 
         description : str
-            The description of the action. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user.
+            The description of the action. Must be less than 1024 characters. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user. Descriptions are used by the LLM.
 
         user_interaction_required : bool
             Whether the action requires user interaction to execute. If false, and all of the required action parameters are known, the LLM may call the action automatically. If true, an conversations ask call will return a BotActionFormResponse which must be submitted by an API caller. API callers must display a button with the buttonName label to confirm the user's intent.
@@ -352,7 +352,7 @@ class AsyncActionsClient:
             The name of the action. This is displayed to the end user as part of forms when user interaction is required. It is also used to help Maven decide if the action is relevant to a conversation.
 
         description : str
-            The description of the action. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user.
+            The description of the action. Must be less than 1024 characters. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user. Descriptions are used by the LLM.
 
         user_interaction_required : bool
             Whether the action requires user interaction to execute. If false, and all of the required action parameters are known, the LLM may call the action automatically. If true, an conversations ask call will return a BotActionFormResponse which must be submitted by an API caller. API callers must display a button with the buttonName label to confirm the user's intent.

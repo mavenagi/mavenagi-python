@@ -12,6 +12,69 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class ConversationResponse(ConversationBase):
+    """
+    Examples
+    --------
+    from mavenagi.commons import EntityId, EntityIdBase
+    from mavenagi.conversation import (
+        BotResponse_Text,
+        BotResponseMetadata,
+        ConversationAnalysis,
+        ConversationMessageResponse_Bot,
+        ConversationMessageResponse_User,
+        ConversationResponse,
+    )
+
+    ConversationResponse(
+        conversation_id=EntityId(
+            reference_id="conversation-0",
+            app_id="myapp",
+            organization_id="acme",
+            agent_id="support",
+            type="CONVERSATION",
+        ),
+        analysis=ConversationAnalysis(
+            resolution_status="Resolved",
+            sentiment="POSITIVE",
+        ),
+        messages=[
+            ConversationMessageResponse_User(
+                user_message_type="USER",
+                conversation_message_id=EntityId(
+                    reference_id="message-0",
+                    app_id="myapp",
+                    organization_id="acme",
+                    agent_id="support",
+                    type="CONVERSATION_MESSAGE",
+                ),
+                user_id=EntityIdBase(
+                    reference_id="user-0",
+                ),
+                text="How do I reset my password?",
+            ),
+            ConversationMessageResponse_Bot(
+                bot_message_type="BOT_RESPONSE",
+                conversation_message_id=EntityId(
+                    reference_id="message-1",
+                    app_id="myapp",
+                    organization_id="acme",
+                    agent_id="support",
+                    type="CONVERSATION_MESSAGE",
+                ),
+                responses=[
+                    BotResponse_Text(
+                        text="Hi! Go to acme.com/reset-password",
+                    )
+                ],
+                metadata=BotResponseMetadata(
+                    followup_questions=["What if I did not get the reset email?"],
+                    sources=[],
+                ),
+            ),
+        ],
+    )
+    """
+
     conversation_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="conversationId")] = pydantic.Field()
     """
     The ID that uniquely identifies this conversation

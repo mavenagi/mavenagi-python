@@ -10,6 +10,27 @@ import typing
 
 
 class FeedbackRequest(FeedbackBase):
+    """
+    Examples
+    --------
+    from mavenagi.commons import EntityIdBase
+    from mavenagi.conversation import FeedbackRequest
+
+    FeedbackRequest(
+        feedback_id=EntityIdBase(
+            reference_id="feedback-0",
+        ),
+        conversation_id=EntityIdBase(
+            reference_id="conversation-0",
+        ),
+        conversation_message_id=EntityIdBase(
+            reference_id="message-1",
+        ),
+        type="THUMBS_UP",
+        text="Great answer!",
+    )
+    """
+
     feedback_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="feedbackId")] = pydantic.Field()
     """
     The ID that uniquely identifies this feedback

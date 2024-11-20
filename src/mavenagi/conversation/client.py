@@ -106,24 +106,7 @@ class ConversationClient:
             conversation_id=EntityIdBase(
                 reference_id="string",
             ),
-            messages=[
-                ConversationMessageRequest(
-                    conversation_message_id=EntityIdBase(
-                        reference_id="string",
-                    ),
-                    user_id=EntityIdBase(
-                        reference_id="string",
-                    ),
-                    text="string",
-                    user_message_type="USER",
-                    created_at=datetime.datetime.fromisoformat(
-                        "2024-01-15 09:30:00+00:00",
-                    ),
-                    updated_at=datetime.datetime.fromisoformat(
-                        "2024-01-15 09:30:00+00:00",
-                    ),
-                )
-            ],
+            messages=[ConversationMessageRequest()],
             response_config=ResponseConfig(
                 capabilities=["MARKDOWN"],
                 is_copilot=True,
@@ -465,12 +448,12 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.ask(
-            conversation_id="string",
+            conversation_id="conversation-0",
             conversation_message_id=EntityIdBase(
-                reference_id="message-1",
+                reference_id="message-0",
             ),
             user_id=EntityIdBase(
-                reference_id="user-1",
+                reference_id="user-0",
             ),
             text="How do I reset my password?",
             attachments=[
@@ -595,10 +578,10 @@ class ConversationClient:
         response = client.conversation.ask_stream(
             conversation_id="conversation-0",
             conversation_message_id=EntityIdBase(
-                reference_id="message-1",
+                reference_id="message-0",
             ),
             user_id=EntityIdBase(
-                reference_id="user-1",
+                reference_id="user-0",
             ),
             text="How do I reset my password?",
             attachments=[
@@ -874,7 +857,7 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Feedback:
         """
-        Create feedback
+        Update feedback or create it if it doesn't exist
 
         Parameters
         ----------
@@ -913,16 +896,16 @@ class ConversationClient:
         )
         client.conversation.create_feedback(
             feedback_id=EntityIdBase(
-                reference_id="string",
+                reference_id="feedback-0",
             ),
             conversation_id=EntityIdBase(
-                reference_id="string",
+                reference_id="conversation-0",
             ),
             conversation_message_id=EntityIdBase(
-                reference_id="string",
+                reference_id="message-1",
             ),
             type="THUMBS_UP",
-            text="string",
+            text="Great answer!",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -1259,24 +1242,7 @@ class AsyncConversationClient:
                 conversation_id=EntityIdBase(
                     reference_id="string",
                 ),
-                messages=[
-                    ConversationMessageRequest(
-                        conversation_message_id=EntityIdBase(
-                            reference_id="string",
-                        ),
-                        user_id=EntityIdBase(
-                            reference_id="string",
-                        ),
-                        text="string",
-                        user_message_type="USER",
-                        created_at=datetime.datetime.fromisoformat(
-                            "2024-01-15 09:30:00+00:00",
-                        ),
-                        updated_at=datetime.datetime.fromisoformat(
-                            "2024-01-15 09:30:00+00:00",
-                        ),
-                    )
-                ],
+                messages=[ConversationMessageRequest()],
                 response_config=ResponseConfig(
                     capabilities=["MARKDOWN"],
                     is_copilot=True,
@@ -1641,12 +1607,12 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.ask(
-                conversation_id="string",
+                conversation_id="conversation-0",
                 conversation_message_id=EntityIdBase(
-                    reference_id="message-1",
+                    reference_id="message-0",
                 ),
                 user_id=EntityIdBase(
-                    reference_id="user-1",
+                    reference_id="user-0",
                 ),
                 text="How do I reset my password?",
                 attachments=[
@@ -1779,10 +1745,10 @@ class AsyncConversationClient:
             response = await client.conversation.ask_stream(
                 conversation_id="conversation-0",
                 conversation_message_id=EntityIdBase(
-                    reference_id="message-1",
+                    reference_id="message-0",
                 ),
                 user_id=EntityIdBase(
-                    reference_id="user-1",
+                    reference_id="user-0",
                 ),
                 text="How do I reset my password?",
                 attachments=[
@@ -2077,7 +2043,7 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Feedback:
         """
-        Create feedback
+        Update feedback or create it if it doesn't exist
 
         Parameters
         ----------
@@ -2121,16 +2087,16 @@ class AsyncConversationClient:
         async def main() -> None:
             await client.conversation.create_feedback(
                 feedback_id=EntityIdBase(
-                    reference_id="string",
+                    reference_id="feedback-0",
                 ),
                 conversation_id=EntityIdBase(
-                    reference_id="string",
+                    reference_id="conversation-0",
                 ),
                 conversation_message_id=EntityIdBase(
-                    reference_id="string",
+                    reference_id="message-1",
                 ),
                 type="THUMBS_UP",
-                text="string",
+                text="Great answer!",
             )
 
 

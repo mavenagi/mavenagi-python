@@ -9,13 +9,15 @@ from .ask_stream_start_event import AskStreamStartEvent
 from .ask_stream_text_event import AskStreamTextEvent
 from .attachment import Attachment
 from .bot_action_form_response import BotActionFormResponse
+from .bot_chart_response import BotChartResponse
 from .bot_conversation_message_type import BotConversationMessageType
 from .bot_message import BotMessage
-from .bot_response import BotResponse, BotResponse_ActionForm, BotResponse_Text
+from .bot_response import BotResponse, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Text
 from .bot_response_metadata import BotResponseMetadata
 from .bot_text_response import BotTextResponse
 from .capability import Capability
 from .categorization_response import CategorizationResponse
+from .chart_spec_schema import ChartSpecSchema
 from .conversation_analysis import ConversationAnalysis
 from .conversation_base import ConversationBase
 from .conversation_message_base import ConversationMessageBase
@@ -56,15 +58,18 @@ __all__ = [
     "AskStreamTextEvent",
     "Attachment",
     "BotActionFormResponse",
+    "BotChartResponse",
     "BotConversationMessageType",
     "BotMessage",
     "BotResponse",
     "BotResponseMetadata",
     "BotResponse_ActionForm",
+    "BotResponse_Chart",
     "BotResponse_Text",
     "BotTextResponse",
     "Capability",
     "CategorizationResponse",
+    "ChartSpecSchema",
     "ConversationAnalysis",
     "ConversationBase",
     "ConversationMessageBase",

@@ -8,6 +8,7 @@ import pydantic
 import typing_extensions
 from ...core.serialization import FieldMetadata
 from .action_form_field import ActionFormField
+from .chart_spec_schema import ChartSpecSchema
 
 
 class BotResponse_Text(UniversalBaseModel):
@@ -41,4 +42,20 @@ class BotResponse_ActionForm(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-BotResponse = typing.Union[BotResponse_Text, BotResponse_ActionForm]
+class BotResponse_Chart(UniversalBaseModel):
+    type: typing.Literal["chart"] = "chart"
+    label: str
+    spec_schema: typing_extensions.Annotated[ChartSpecSchema, FieldMetadata(alias="specSchema")]
+    spec: str
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+BotResponse = typing.Union[BotResponse_Text, BotResponse_ActionForm, BotResponse_Chart]

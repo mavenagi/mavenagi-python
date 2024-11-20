@@ -19,10 +19,10 @@ class AskRequest(UniversalBaseModel):
 
     AskRequest(
         conversation_message_id=EntityIdBase(
-            reference_id="message-1",
+            reference_id="message-0",
         ),
         user_id=EntityIdBase(
-            reference_id="user-1",
+            reference_id="user-0",
         ),
         text="How do I reset my password?",
         attachments=[
