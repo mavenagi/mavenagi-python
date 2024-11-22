@@ -8,6 +8,7 @@ from ...core.serialization import FieldMetadata
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 from .action_form_field import ActionFormField
+from .chart_spec_schema import ChartSpecSchema
 from .source import Source
 from ...commons.types.entity_id import EntityId
 from ...commons.types.error_message import ErrorMessage
@@ -33,6 +34,22 @@ class StreamResponse_Action(UniversalBaseModel):
     form_label: typing_extensions.Annotated[str, FieldMetadata(alias="formLabel")]
     fields: typing.List[ActionFormField]
     submit_label: typing_extensions.Annotated[str, FieldMetadata(alias="submitLabel")]
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class StreamResponse_Chart(UniversalBaseModel):
+    event_type: typing_extensions.Annotated[typing.Literal["chart"], FieldMetadata(alias="eventType")] = "chart"
+    label: str
+    spec_schema: typing_extensions.Annotated[ChartSpecSchema, FieldMetadata(alias="specSchema")]
+    spec: str
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -89,5 +106,10 @@ class StreamResponse_End(UniversalBaseModel):
 
 
 StreamResponse = typing.Union[
-    StreamResponse_Text, StreamResponse_Action, StreamResponse_Metadata, StreamResponse_Start, StreamResponse_End
+    StreamResponse_Text,
+    StreamResponse_Action,
+    StreamResponse_Chart,
+    StreamResponse_Metadata,
+    StreamResponse_Start,
+    StreamResponse_End,
 ]

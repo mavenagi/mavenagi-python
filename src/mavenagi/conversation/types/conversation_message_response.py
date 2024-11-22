@@ -6,6 +6,7 @@ import typing
 import typing_extensions
 from ...commons.types.entity_id import EntityId
 from ...core.serialization import FieldMetadata
+from .user_message_attachment import UserMessageAttachment
 from ...commons.types.entity_id_base import EntityIdBase
 from .user_conversation_message_type import UserConversationMessageType
 import datetime as dt
@@ -20,6 +21,7 @@ class ConversationMessageResponse_User(UniversalBaseModel):
     type: typing.Literal["user"] = "user"
     conversation_message_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="conversationMessageId")]
     language: typing.Optional[str] = None
+    attachments: typing.List[UserMessageAttachment]
     user_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="userId")]
     text: str
     user_message_type: typing_extensions.Annotated[UserConversationMessageType, FieldMetadata(alias="userMessageType")]

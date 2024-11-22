@@ -23,6 +23,7 @@ class ConversationResponse(ConversationBase):
         ConversationMessageResponse_Bot,
         ConversationMessageResponse_User,
         ConversationResponse,
+        UserMessageAttachment,
     )
 
     ConversationResponse(
@@ -51,6 +52,11 @@ class ConversationResponse(ConversationBase):
                     reference_id="user-0",
                 ),
                 text="How do I reset my password?",
+                attachments=[
+                    UserMessageAttachment(
+                        url="https://example.com/attachment-0",
+                    )
+                ],
             ),
             ConversationMessageResponse_Bot(
                 bot_message_type="BOT_RESPONSE",

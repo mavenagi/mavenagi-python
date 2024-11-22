@@ -6,6 +6,7 @@ from ...commons.types.entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
 import typing
+from .user_message_attachment import UserMessageAttachment
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
@@ -20,6 +21,11 @@ class UserMessage(UserMessageBase):
     language: typing.Optional[str] = pydantic.Field(default=None)
     """
     The language of the message in ISO 639-1 code format
+    """
+
+    attachments: typing.List[UserMessageAttachment] = pydantic.Field()
+    """
+    The attachments associated with the message
     """
 
     if IS_PYDANTIC_V2:

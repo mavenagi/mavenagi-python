@@ -433,7 +433,7 @@ class ConversationClient:
         Returns
         -------
         ConversationResponse
-            Updated Conversation with a USER message of the question and a BOT_SUGGESTION message with the response
+            Updated Conversation with a user message of the question and a bot message with the response
 
         Examples
         --------
@@ -1587,7 +1587,7 @@ class AsyncConversationClient:
         Returns
         -------
         ConversationResponse
-            Updated Conversation with a USER message of the question and a BOT_SUGGESTION message with the response
+            Updated Conversation with a user message of the question and a bot message with the response
 
         Examples
         --------

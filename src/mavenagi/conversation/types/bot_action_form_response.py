@@ -10,6 +10,10 @@ import pydantic
 
 
 class BotActionFormResponse(UniversalBaseModel):
+    """
+    This response should be rendered as a form which users can submit. Upon submission call the submit action form API.
+    """
+
     id: str
     form_label: typing_extensions.Annotated[str, FieldMetadata(alias="formLabel")]
     fields: typing.List[ActionFormField]

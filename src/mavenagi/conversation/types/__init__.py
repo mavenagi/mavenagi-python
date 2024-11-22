@@ -3,16 +3,24 @@
 from .action_form_field import ActionFormField
 from .ask_request import AskRequest
 from .ask_stream_action_event import AskStreamActionEvent
+from .ask_stream_chart_event import AskStreamChartEvent
 from .ask_stream_end_event import AskStreamEndEvent
 from .ask_stream_metadata_event import AskStreamMetadataEvent
 from .ask_stream_start_event import AskStreamStartEvent
 from .ask_stream_text_event import AskStreamTextEvent
 from .attachment import Attachment
 from .bot_action_form_response import BotActionFormResponse
+from .bot_action_response import BotActionResponse
 from .bot_chart_response import BotChartResponse
 from .bot_conversation_message_type import BotConversationMessageType
 from .bot_message import BotMessage
-from .bot_response import BotResponse, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Text
+from .bot_response import (
+    BotResponse,
+    BotResponse_ActionForm,
+    BotResponse_ActionResponse,
+    BotResponse_Chart,
+    BotResponse_Text,
+)
 from .bot_response_metadata import BotResponseMetadata
 from .bot_text_response import BotTextResponse
 from .capability import Capability
@@ -38,6 +46,7 @@ from .source import Source
 from .stream_response import (
     StreamResponse,
     StreamResponse_Action,
+    StreamResponse_Chart,
     StreamResponse_End,
     StreamResponse_Metadata,
     StreamResponse_Start,
@@ -46,24 +55,28 @@ from .stream_response import (
 from .submit_action_form_request import SubmitActionFormRequest
 from .user_conversation_message_type import UserConversationMessageType
 from .user_message import UserMessage
+from .user_message_attachment import UserMessageAttachment
 from .user_message_base import UserMessageBase
 
 __all__ = [
     "ActionFormField",
     "AskRequest",
     "AskStreamActionEvent",
+    "AskStreamChartEvent",
     "AskStreamEndEvent",
     "AskStreamMetadataEvent",
     "AskStreamStartEvent",
     "AskStreamTextEvent",
     "Attachment",
     "BotActionFormResponse",
+    "BotActionResponse",
     "BotChartResponse",
     "BotConversationMessageType",
     "BotMessage",
     "BotResponse",
     "BotResponseMetadata",
     "BotResponse_ActionForm",
+    "BotResponse_ActionResponse",
     "BotResponse_Chart",
     "BotResponse_Text",
     "BotTextResponse",
@@ -87,6 +100,7 @@ __all__ = [
     "Source",
     "StreamResponse",
     "StreamResponse_Action",
+    "StreamResponse_Chart",
     "StreamResponse_End",
     "StreamResponse_Metadata",
     "StreamResponse_Start",
@@ -94,5 +108,6 @@ __all__ = [
     "SubmitActionFormRequest",
     "UserConversationMessageType",
     "UserMessage",
+    "UserMessageAttachment",
     "UserMessageBase",
 ]

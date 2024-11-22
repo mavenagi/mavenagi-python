@@ -10,9 +10,13 @@ import typing
 
 
 class BotChartResponse(UniversalBaseModel):
+    """
+    Will only be provided if the responseConfig contains the charts_highcharts_ts capability.
+    """
+
     label: str = pydantic.Field()
     """
-    The name/label of the chart
+    The label of the chart
     """
 
     spec_schema: typing_extensions.Annotated[ChartSpecSchema, FieldMetadata(alias="specSchema")]
