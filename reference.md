@@ -1137,6 +1137,9 @@ client.conversation.create_feedback(
     feedback_id=EntityIdBase(
         reference_id="feedback-0",
     ),
+    user_id=EntityIdBase(
+        reference_id="user-0",
+    ),
     conversation_id=EntityIdBase(
         reference_id="conversation-0",
     ),
@@ -1186,6 +1189,14 @@ client.conversation.create_feedback(
 <dd>
 
 **type:** `FeedbackType` — The type of feedback
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_id:** `typing.Optional[EntityIdBase]` — The ID of the user who is creating the feedback
     
 </dd>
 </dl>

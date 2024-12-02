@@ -853,6 +853,7 @@ class ConversationClient:
         conversation_id: EntityIdBase,
         conversation_message_id: EntityIdBase,
         type: FeedbackType,
+        user_id: typing.Optional[EntityIdBase] = OMIT,
         text: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Feedback:
@@ -872,6 +873,9 @@ class ConversationClient:
 
         type : FeedbackType
             The type of feedback
+
+        user_id : typing.Optional[EntityIdBase]
+            The ID of the user who is creating the feedback
 
         text : typing.Optional[str]
             The feedback text
@@ -898,6 +902,9 @@ class ConversationClient:
             feedback_id=EntityIdBase(
                 reference_id="feedback-0",
             ),
+            user_id=EntityIdBase(
+                reference_id="user-0",
+            ),
             conversation_id=EntityIdBase(
                 reference_id="conversation-0",
             ),
@@ -920,6 +927,9 @@ class ConversationClient:
                 ),
                 "conversationMessageId": convert_and_respect_annotation_metadata(
                     object_=conversation_message_id, annotation=EntityIdBase, direction="write"
+                ),
+                "userId": convert_and_respect_annotation_metadata(
+                    object_=user_id, annotation=EntityIdBase, direction="write"
                 ),
                 "type": type,
                 "text": text,
@@ -2039,6 +2049,7 @@ class AsyncConversationClient:
         conversation_id: EntityIdBase,
         conversation_message_id: EntityIdBase,
         type: FeedbackType,
+        user_id: typing.Optional[EntityIdBase] = OMIT,
         text: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Feedback:
@@ -2058,6 +2069,9 @@ class AsyncConversationClient:
 
         type : FeedbackType
             The type of feedback
+
+        user_id : typing.Optional[EntityIdBase]
+            The ID of the user who is creating the feedback
 
         text : typing.Optional[str]
             The feedback text
@@ -2089,6 +2103,9 @@ class AsyncConversationClient:
                 feedback_id=EntityIdBase(
                     reference_id="feedback-0",
                 ),
+                user_id=EntityIdBase(
+                    reference_id="user-0",
+                ),
                 conversation_id=EntityIdBase(
                     reference_id="conversation-0",
                 ),
@@ -2114,6 +2131,9 @@ class AsyncConversationClient:
                 ),
                 "conversationMessageId": convert_and_respect_annotation_metadata(
                     object_=conversation_message_id, annotation=EntityIdBase, direction="write"
+                ),
+                "userId": convert_and_respect_annotation_metadata(
+                    object_=user_id, annotation=EntityIdBase, direction="write"
                 ),
                 "type": type,
                 "text": text,

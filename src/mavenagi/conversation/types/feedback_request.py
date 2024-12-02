@@ -5,8 +5,8 @@ import typing_extensions
 from ...commons.types.entity_id_base import EntityIdBase
 from ...core.serialization import FieldMetadata
 import pydantic
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class FeedbackRequest(FeedbackBase):
@@ -19,6 +19,9 @@ class FeedbackRequest(FeedbackBase):
     FeedbackRequest(
         feedback_id=EntityIdBase(
             reference_id="feedback-0",
+        ),
+        user_id=EntityIdBase(
+            reference_id="user-0",
         ),
         conversation_id=EntityIdBase(
             reference_id="conversation-0",
@@ -46,6 +49,13 @@ class FeedbackRequest(FeedbackBase):
     )
     """
     The ID that uniquely identifies the message within the conversation the feedback is about
+    """
+
+    user_id: typing_extensions.Annotated[typing.Optional[EntityIdBase], FieldMetadata(alias="userId")] = pydantic.Field(
+        default=None
+    )
+    """
+    The ID of the user who is creating the feedback
     """
 
     if IS_PYDANTIC_V2:

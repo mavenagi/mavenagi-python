@@ -5,8 +5,9 @@ import typing_extensions
 from .entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
+import datetime as dt
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class Feedback(FeedbackBase):
@@ -37,6 +38,13 @@ class Feedback(FeedbackBase):
             agent_id="support",
             type="CONVERSATION_MESSAGE",
         ),
+        user_id=EntityId(
+            reference_id="user-0",
+            app_id="myapp",
+            organization_id="acme",
+            agent_id="support",
+            type="USER",
+        ),
         type="THUMBS_UP",
         text="Great answer!",
     )
@@ -57,6 +65,20 @@ class Feedback(FeedbackBase):
     )
     """
     The ID of the conversation message the feedback is about
+    """
+
+    user_id: typing_extensions.Annotated[typing.Optional[EntityId], FieldMetadata(alias="userId")] = pydantic.Field(
+        default=None
+    )
+    """
+    The ID of the user who created the feedback
+    """
+
+    created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The date and time the feedback was created
     """
 
     if IS_PYDANTIC_V2:
