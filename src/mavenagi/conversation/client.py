@@ -90,11 +90,9 @@ class ConversationClient:
 
         Examples
         --------
-        import datetime
-
         from mavenagi import MavenAGI
         from mavenagi.commons import EntityIdBase
-        from mavenagi.conversation import ConversationMessageRequest, ResponseConfig
+        from mavenagi.conversation import ConversationMessageRequest
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -104,24 +102,20 @@ class ConversationClient:
         )
         client.conversation.initialize(
             conversation_id=EntityIdBase(
-                reference_id="string",
+                reference_id="referenceId",
             ),
-            messages=[ConversationMessageRequest()],
-            response_config=ResponseConfig(
-                capabilities=["MARKDOWN"],
-                is_copilot=True,
-                response_length="SHORT",
-            ),
-            subject="string",
-            url="string",
-            created_at=datetime.datetime.fromisoformat(
-                "2024-01-15 09:30:00+00:00",
-            ),
-            updated_at=datetime.datetime.fromisoformat(
-                "2024-01-15 09:30:00+00:00",
-            ),
-            tags={"string"},
-            metadata={"string": "string"},
+            messages=[
+                ConversationMessageRequest(
+                    conversation_message_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                ),
+                ConversationMessageRequest(
+                    conversation_message_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                ),
+            ],
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -227,8 +221,7 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.get(
-            conversation_id="string",
-            app_id="string",
+            conversation_id="conversationId",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -310,8 +303,6 @@ class ConversationClient:
 
         Examples
         --------
-        import datetime
-
         from mavenagi import MavenAGI
         from mavenagi.commons import EntityIdBase
         from mavenagi.conversation import ConversationMessageRequest
@@ -323,24 +314,18 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.append_new_messages(
-            conversation_id="string",
+            conversation_id="conversationId",
             request=[
                 ConversationMessageRequest(
                     conversation_message_id=EntityIdBase(
-                        reference_id="string",
+                        reference_id="referenceId",
                     ),
-                    user_id=EntityIdBase(
-                        reference_id="string",
+                ),
+                ConversationMessageRequest(
+                    conversation_message_id=EntityIdBase(
+                        reference_id="referenceId",
                     ),
-                    text="string",
-                    user_message_type="USER",
-                    created_at=datetime.datetime.fromisoformat(
-                        "2024-01-15 09:30:00+00:00",
-                    ),
-                    updated_at=datetime.datetime.fromisoformat(
-                        "2024-01-15 09:30:00+00:00",
-                    ),
-                )
+                ),
             ],
         )
         """
@@ -701,11 +686,14 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.generate_maven_suggestions(
-            conversation_id="string",
+            conversation_id="conversationId",
             conversation_message_ids=[
                 EntityIdBase(
-                    reference_id="string",
-                )
+                    reference_id="referenceId",
+                ),
+                EntityIdBase(
+                    reference_id="referenceId",
+                ),
             ],
         )
         """
@@ -794,7 +782,7 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.categorize(
-            conversation_id="string",
+            conversation_id="conversationId",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -1021,9 +1009,9 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.submit_action_form(
-            conversation_id="string",
-            action_form_id="string",
-            parameters={"string": {"key": "value"}},
+            conversation_id="conversationId",
+            action_form_id="actionFormId",
+            parameters={"parameters": {"key": "value"}},
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -1116,7 +1104,7 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.add_conversation_metadata(
-            conversation_id="string",
+            conversation_id="conversationId",
             request={"string": "string"},
         )
         """
@@ -1233,11 +1221,10 @@ class AsyncConversationClient:
         Examples
         --------
         import asyncio
-        import datetime
 
         from mavenagi import AsyncMavenAGI
         from mavenagi.commons import EntityIdBase
-        from mavenagi.conversation import ConversationMessageRequest, ResponseConfig
+        from mavenagi.conversation import ConversationMessageRequest
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1250,24 +1237,20 @@ class AsyncConversationClient:
         async def main() -> None:
             await client.conversation.initialize(
                 conversation_id=EntityIdBase(
-                    reference_id="string",
+                    reference_id="referenceId",
                 ),
-                messages=[ConversationMessageRequest()],
-                response_config=ResponseConfig(
-                    capabilities=["MARKDOWN"],
-                    is_copilot=True,
-                    response_length="SHORT",
-                ),
-                subject="string",
-                url="string",
-                created_at=datetime.datetime.fromisoformat(
-                    "2024-01-15 09:30:00+00:00",
-                ),
-                updated_at=datetime.datetime.fromisoformat(
-                    "2024-01-15 09:30:00+00:00",
-                ),
-                tags={"string"},
-                metadata={"string": "string"},
+                messages=[
+                    ConversationMessageRequest(
+                        conversation_message_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                    ),
+                    ConversationMessageRequest(
+                        conversation_message_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                    ),
+                ],
             )
 
 
@@ -1381,8 +1364,7 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.get(
-                conversation_id="string",
-                app_id="string",
+                conversation_id="conversationId",
             )
 
 
@@ -1468,7 +1450,6 @@ class AsyncConversationClient:
         Examples
         --------
         import asyncio
-        import datetime
 
         from mavenagi import AsyncMavenAGI
         from mavenagi.commons import EntityIdBase
@@ -1484,24 +1465,18 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.append_new_messages(
-                conversation_id="string",
+                conversation_id="conversationId",
                 request=[
                     ConversationMessageRequest(
                         conversation_message_id=EntityIdBase(
-                            reference_id="string",
+                            reference_id="referenceId",
                         ),
-                        user_id=EntityIdBase(
-                            reference_id="string",
+                    ),
+                    ConversationMessageRequest(
+                        conversation_message_id=EntityIdBase(
+                            reference_id="referenceId",
                         ),
-                        text="string",
-                        user_message_type="USER",
-                        created_at=datetime.datetime.fromisoformat(
-                            "2024-01-15 09:30:00+00:00",
-                        ),
-                        updated_at=datetime.datetime.fromisoformat(
-                            "2024-01-15 09:30:00+00:00",
-                        ),
-                    )
+                    ),
                 ],
             )
 
@@ -1886,11 +1861,14 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.generate_maven_suggestions(
-                conversation_id="string",
+                conversation_id="conversationId",
                 conversation_message_ids=[
                     EntityIdBase(
-                        reference_id="string",
-                    )
+                        reference_id="referenceId",
+                    ),
+                    EntityIdBase(
+                        reference_id="referenceId",
+                    ),
                 ],
             )
 
@@ -1987,7 +1965,7 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.categorize(
-                conversation_id="string",
+                conversation_id="conversationId",
             )
 
 
@@ -2230,9 +2208,9 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.submit_action_form(
-                conversation_id="string",
-                action_form_id="string",
-                parameters={"string": {"key": "value"}},
+                conversation_id="conversationId",
+                action_form_id="actionFormId",
+                parameters={"parameters": {"key": "value"}},
             )
 
 
@@ -2333,7 +2311,7 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.add_conversation_metadata(
-                conversation_id="string",
+                conversation_id="conversationId",
                 request={"string": "string"},
             )
 
