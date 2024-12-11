@@ -2,6 +2,7 @@
 
 from ...core.pydantic_utilities import UniversalBaseModel
 import typing
+from ...commons.types.action_parameter_type import ActionParameterType
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
@@ -11,7 +12,8 @@ class ActionFormField(UniversalBaseModel):
     label: str
     description: str
     required: bool
-    suggestion: typing.Optional[str] = None
+    suggestion: typing.Optional[typing.Optional[typing.Any]] = None
+    type: ActionParameterType
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

@@ -13,7 +13,15 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 class ResponseConfig(UniversalBaseModel):
     capabilities: typing.List[Capability] = pydantic.Field()
     """
-    List of capabilities supported by the caller. Defaults to everything except charts_highcharts_ts. Note that the forms and images capabilities are not respected at this time.
+    List of capabilities supported by the caller. Defaults to [MARKDOWN, FORMS, IMAGES].
+    
+    MARKDOWN: Whether the response should include markdown formatting. If not provided, the response will be plain text. Not respected while streaming.
+    
+    FORMS: Whether the response should include forms. If provided, the caller needs to render action forms when returned from the ask API and allow submission of the forms with the submitActionForm API. If not provided, then actions which require user interaction will not be considered by the LLM. Removing this capability is recommended for surfaces which can not display UI (e.g. SMS, voice).
+    
+    IMAGES: Whether the response should include images. Not yet supported.
+    
+    CHARTS_HIGHCHARTS_TS: Whether the response should include a Highcharts typescript chart if applicable.
     """
 
     is_copilot: typing_extensions.Annotated[bool, FieldMetadata(alias="isCopilot")] = pydantic.Field()

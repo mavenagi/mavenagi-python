@@ -24,6 +24,7 @@ from .actions import (
 )
 from .client import AsyncMavenAGI, MavenAGI
 from .commons import (
+    ActionParameterType,
     AppUser,
     AppUserIdentifier,
     AppUserIdentifyingPropertyType,
@@ -119,6 +120,7 @@ __all__ = [
     "ActionBase",
     "ActionFormField",
     "ActionParameter",
+    "ActionParameterType",
     "ActionRequest",
     "ActionResponse",
     "AppUser",

@@ -10,7 +10,7 @@ EntityType = typing.Union[
         "KNOWLEDGE_DOCUMENT",
         "ACTION",
         "USER",
-        "USER_EVENT",
+        "EVENT",
         "EVENT_TRIGGER",
         "USER_PROFILE",
         "FEEDBACK",
