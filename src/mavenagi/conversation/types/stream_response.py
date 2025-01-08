@@ -7,9 +7,9 @@ import typing
 from ...core.serialization import FieldMetadata
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
-from .action_form_field import ActionFormField
-from .chart_spec_schema import ChartSpecSchema
-from .source import Source
+from ...commons.types.action_form_field import ActionFormField
+from ...commons.types.chart_spec_schema import ChartSpecSchema
+from ...commons.types.source import Source
 from ...commons.types.entity_id import EntityId
 from ...commons.types.error_message import ErrorMessage
 

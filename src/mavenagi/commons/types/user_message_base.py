@@ -2,7 +2,7 @@
 
 from .conversation_message_base import ConversationMessageBase
 import typing_extensions
-from ...commons.types.entity_id_base import EntityIdBase
+from .entity_id_base import EntityIdBase
 from ...core.serialization import FieldMetadata
 import pydantic
 from .user_conversation_message_type import UserConversationMessageType

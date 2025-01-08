@@ -9,7 +9,6 @@ import typing_extensions
 from ...core.serialization import FieldMetadata
 from .action_form_field import ActionFormField
 from .chart_spec_schema import ChartSpecSchema
-from ...commons.types.entity_id import EntityId
 
 
 class BotResponse_Text(UniversalBaseModel):
@@ -59,24 +58,4 @@ class BotResponse_Chart(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class BotResponse_ActionResponse(UniversalBaseModel):
-    type: typing.Literal["actionResponse"] = "actionResponse"
-    action_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="actionId")]
-    action_parameters: typing_extensions.Annotated[
-        typing.Dict[str, typing.Optional[typing.Any]], FieldMetadata(alias="actionParameters")
-    ]
-    action_response: typing_extensions.Annotated[str, FieldMetadata(alias="actionResponse")]
-    auto_action: typing_extensions.Annotated[bool, FieldMetadata(alias="autoAction")]
-    action_error: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="actionError")] = None
-
-    if IS_PYDANTIC_V2:
-        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
-    else:
-
-        class Config:
-            frozen = True
-            smart_union = True
-            extra = pydantic.Extra.allow
-
-
-BotResponse = typing.Union[BotResponse_Text, BotResponse_ActionForm, BotResponse_Chart, BotResponse_ActionResponse]
+BotResponse = typing.Union[BotResponse_Text, BotResponse_ActionForm, BotResponse_Chart]

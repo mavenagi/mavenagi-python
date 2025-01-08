@@ -28,8 +28,7 @@ Update an action or create it if it doesn't exist
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.actions import Precondition_Group, Precondition_User
-from mavenagi.commons import EntityIdBase
+from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -732,6 +731,7 @@ client.conversation.ask(
             content="iVBORw0KGgo...",
         )
     ],
+    transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
 )
 
 ```
@@ -781,6 +781,14 @@ client.conversation.ask(
 <dd>
 
 **attachments:** `typing.Optional[typing.Sequence[Attachment]]` — The attachments to the message.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
     
 </dd>
 </dl>
@@ -852,6 +860,7 @@ response = client.conversation.ask_stream(
             content="iVBORw0KGgo...",
         )
     ],
+    transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
 )
 for chunk in response:
     yield chunk
@@ -903,6 +912,14 @@ for chunk in response:
 <dd>
 
 **attachments:** `typing.Optional[typing.Sequence[Attachment]]` — The attachments to the message.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
     
 </dd>
 </dl>
@@ -1291,6 +1308,14 @@ client.conversation.submit_action_form(
 <dl>
 <dd>
 
+**transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken. For example, one may put in user tokens as transient data.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -1469,6 +1494,14 @@ client.knowledge.create_or_update_knowledge_base(
 <dd>
 
 **url:** `typing.Optional[str]` — The URL to pull content from for RSS and URL knowledge bases.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**precondition:** `typing.Optional[Precondition]` — (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
     
 </dd>
 </dl>
@@ -2585,6 +2618,14 @@ client.users.get(
 <dd>
 
 **user_id:** `str` — The reference ID of the user to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the user to get. If not provided the ID of the calling app will be used.
     
 </dd>
 </dl>

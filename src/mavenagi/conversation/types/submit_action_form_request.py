@@ -15,6 +15,13 @@ class SubmitActionFormRequest(UniversalBaseModel):
     Map of parameter IDs to values provided by the user. All required action fields must be provided.
     """
 
+    transient_data: typing_extensions.Annotated[
+        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="transientData")
+    ] = pydantic.Field(default=None)
+    """
+    Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken. For example, one may put in user tokens as transient data.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

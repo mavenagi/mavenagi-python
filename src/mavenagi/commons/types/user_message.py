@@ -2,7 +2,7 @@
 
 from .user_message_base import UserMessageBase
 import typing_extensions
-from ...commons.types.entity_id import EntityId
+from .entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
 import typing

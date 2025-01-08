@@ -4,7 +4,7 @@ from __future__ import annotations
 from .action_base import ActionBase
 from .precondition_group import PreconditionGroup
 import typing_extensions
-from ...commons.types.entity_id import EntityId
+from .entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
@@ -16,12 +16,12 @@ class ActionResponse(ActionBase):
     """
     Examples
     --------
-    from mavenagi.actions import (
+    from mavenagi.commons import (
         ActionResponse,
+        EntityId,
         Precondition_Group,
         Precondition_User,
     )
-    from mavenagi.commons import EntityId
 
     ActionResponse(
         action_id=EntityId(

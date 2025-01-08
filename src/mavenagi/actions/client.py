@@ -3,10 +3,10 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..commons.types.entity_id_base import EntityIdBase
-from .types.action_parameter import ActionParameter
-from .types.precondition import Precondition
+from ..commons.types.action_parameter import ActionParameter
+from ..commons.types.precondition import Precondition
 from ..core.request_options import RequestOptions
-from .types.action_response import ActionResponse
+from ..commons.types.action_response import ActionResponse
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..core.pydantic_utilities import parse_obj_as
 from ..commons.errors.not_found_error import NotFoundError
@@ -74,8 +74,7 @@ class ActionsClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.actions import Precondition_Group, Precondition_User
-        from mavenagi.commons import EntityIdBase
+        from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -378,8 +377,7 @@ class AsyncActionsClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.actions import Precondition_Group, Precondition_User
-        from mavenagi.commons import EntityIdBase
+        from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",

@@ -4,10 +4,10 @@ import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..commons.types.entity_id_base import EntityIdBase
 from .types.conversation_message_request import ConversationMessageRequest
-from .types.response_config import ResponseConfig
+from ..commons.types.response_config import ResponseConfig
 import datetime as dt
 from ..core.request_options import RequestOptions
-from .types.conversation_response import ConversationResponse
+from ..commons.types.conversation_response import ConversationResponse
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..core.pydantic_utilities import parse_obj_as
 from ..commons.errors.not_found_error import NotFoundError
@@ -390,6 +390,7 @@ class ConversationClient:
         user_id: EntityIdBase,
         text: str,
         attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -411,6 +412,9 @@ class ConversationClient:
 
         attachments : typing.Optional[typing.Sequence[Attachment]]
             The attachments to the message.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -447,6 +451,7 @@ class ConversationClient:
                     content="iVBORw0KGgo...",
                 )
             ],
+            transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -463,6 +468,7 @@ class ConversationClient:
                 "attachments": convert_and_respect_annotation_metadata(
                     object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
                 ),
+                "transientData": transient_data,
             },
             request_options=request_options,
             omit=OMIT,
@@ -519,6 +525,7 @@ class ConversationClient:
         user_id: EntityIdBase,
         text: str,
         attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.Iterator[StreamResponse]:
         """
@@ -540,6 +547,9 @@ class ConversationClient:
 
         attachments : typing.Optional[typing.Sequence[Attachment]]
             The attachments to the message.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -575,6 +585,7 @@ class ConversationClient:
                     content="iVBORw0KGgo...",
                 )
             ],
+            transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
         )
         for chunk in response:
             yield chunk
@@ -593,6 +604,7 @@ class ConversationClient:
                 "attachments": convert_and_respect_annotation_metadata(
                     object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
                 ),
+                "transientData": transient_data,
             },
             request_options=request_options,
             omit=OMIT,
@@ -975,6 +987,7 @@ class ConversationClient:
         *,
         action_form_id: str,
         parameters: typing.Dict[str, typing.Optional[typing.Any]],
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -989,6 +1002,9 @@ class ConversationClient:
 
         parameters : typing.Dict[str, typing.Optional[typing.Any]]
             Map of parameter IDs to values provided by the user. All required action fields must be provided.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken. For example, one may put in user tokens as transient data.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1020,6 +1036,7 @@ class ConversationClient:
             json={
                 "actionFormId": action_form_id,
                 "parameters": parameters,
+                "transientData": transient_data,
             },
             request_options=request_options,
             omit=OMIT,
@@ -1544,6 +1561,7 @@ class AsyncConversationClient:
         user_id: EntityIdBase,
         text: str,
         attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -1565,6 +1583,9 @@ class AsyncConversationClient:
 
         attachments : typing.Optional[typing.Sequence[Attachment]]
             The attachments to the message.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1606,6 +1627,7 @@ class AsyncConversationClient:
                         content="iVBORw0KGgo...",
                     )
                 ],
+                transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
             )
 
 
@@ -1625,6 +1647,7 @@ class AsyncConversationClient:
                 "attachments": convert_and_respect_annotation_metadata(
                     object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
                 ),
+                "transientData": transient_data,
             },
             request_options=request_options,
             omit=OMIT,
@@ -1681,6 +1704,7 @@ class AsyncConversationClient:
         user_id: EntityIdBase,
         text: str,
         attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.AsyncIterator[StreamResponse]:
         """
@@ -1702,6 +1726,9 @@ class AsyncConversationClient:
 
         attachments : typing.Optional[typing.Sequence[Attachment]]
             The attachments to the message.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1742,6 +1769,7 @@ class AsyncConversationClient:
                         content="iVBORw0KGgo...",
                     )
                 ],
+                transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
             )
             async for chunk in response:
                 yield chunk
@@ -1763,6 +1791,7 @@ class AsyncConversationClient:
                 "attachments": convert_and_respect_annotation_metadata(
                     object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
                 ),
+                "transientData": transient_data,
             },
             request_options=request_options,
             omit=OMIT,
@@ -2169,6 +2198,7 @@ class AsyncConversationClient:
         *,
         action_form_id: str,
         parameters: typing.Dict[str, typing.Optional[typing.Any]],
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -2183,6 +2213,9 @@ class AsyncConversationClient:
 
         parameters : typing.Dict[str, typing.Optional[typing.Any]]
             Map of parameter IDs to values provided by the user. All required action fields must be provided.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken. For example, one may put in user tokens as transient data.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -2222,6 +2255,7 @@ class AsyncConversationClient:
             json={
                 "actionFormId": action_form_id,
                 "parameters": parameters,
+                "transientData": transient_data,
             },
             request_options=request_options,
             omit=OMIT,

@@ -4,10 +4,10 @@ from __future__ import annotations
 from ...core.pydantic_utilities import UniversalBaseModel
 import typing
 import typing_extensions
-from ...commons.types.entity_id import EntityId
+from .entity_id import EntityId
 from ...core.serialization import FieldMetadata
 from .user_message_attachment import UserMessageAttachment
-from ...commons.types.entity_id_base import EntityIdBase
+from .entity_id_base import EntityIdBase
 from .user_conversation_message_type import UserConversationMessageType
 import datetime as dt
 from ...core.pydantic_utilities import IS_PYDANTIC_V2

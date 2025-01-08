@@ -144,7 +144,13 @@ class UsersClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    def get(self, user_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> AppUserResponse:
+    def get(
+        self,
+        user_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AppUserResponse:
         """
         Get a user by its supplied ID
 
@@ -152,6 +158,9 @@ class UsersClient:
         ----------
         user_id : str
             The reference ID of the user to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the user to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -177,6 +186,9 @@ class UsersClient:
         _response = self._client_wrapper.httpx_client.request(
             f"v1/users/{jsonable_encoder(user_id)}",
             method="GET",
+            params={
+                "appId": app_id,
+            },
             request_options=request_options,
         )
         try:
@@ -354,7 +366,13 @@ class AsyncUsersClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
-    async def get(self, user_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> AppUserResponse:
+    async def get(
+        self,
+        user_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AppUserResponse:
         """
         Get a user by its supplied ID
 
@@ -362,6 +380,9 @@ class AsyncUsersClient:
         ----------
         user_id : str
             The reference ID of the user to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the user to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -395,6 +416,9 @@ class AsyncUsersClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"v1/users/{jsonable_encoder(user_id)}",
             method="GET",
+            params={
+                "appId": app_id,
+            },
             request_options=request_options,
         )
         try:

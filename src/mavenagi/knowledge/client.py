@@ -4,6 +4,7 @@ import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..commons.types.entity_id_base import EntityIdBase
 from .types.knowledge_base_type import KnowledgeBaseType
+from ..commons.types.precondition import Precondition
 from ..core.request_options import RequestOptions
 from .types.knowledge_base_response import KnowledgeBaseResponse
 from ..core.serialization import convert_and_respect_annotation_metadata
@@ -37,6 +38,7 @@ class KnowledgeClient:
         name: str,
         type: KnowledgeBaseType,
         url: typing.Optional[str] = OMIT,
+        precondition: typing.Optional[Precondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
         """
@@ -55,6 +57,9 @@ class KnowledgeClient:
 
         url : typing.Optional[str]
             The URL to pull content from for RSS and URL knowledge bases.
+
+        precondition : typing.Optional[Precondition]
+            (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -92,6 +97,9 @@ class KnowledgeClient:
                 "name": name,
                 "type": type,
                 "url": url,
+                "precondition": convert_and_respect_annotation_metadata(
+                    object_=precondition, annotation=Precondition, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,
@@ -764,6 +772,7 @@ class AsyncKnowledgeClient:
         name: str,
         type: KnowledgeBaseType,
         url: typing.Optional[str] = OMIT,
+        precondition: typing.Optional[Precondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
         """
@@ -782,6 +791,9 @@ class AsyncKnowledgeClient:
 
         url : typing.Optional[str]
             The URL to pull content from for RSS and URL knowledge bases.
+
+        precondition : typing.Optional[Precondition]
+            (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -827,6 +839,9 @@ class AsyncKnowledgeClient:
                 "name": name,
                 "type": type,
                 "url": url,
+                "precondition": convert_and_respect_annotation_metadata(
+                    object_=precondition, annotation=Precondition, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,

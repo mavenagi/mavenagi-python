@@ -14,7 +14,7 @@ class Attachment(UniversalBaseModel):
 
     content: str = pydantic.Field()
     """
-    The attachment data.
+    The attachment data, up to 5MB.
     """
 
     if IS_PYDANTIC_V2:

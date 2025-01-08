@@ -2,7 +2,7 @@
 
 from .conversation_base import ConversationBase
 import typing_extensions
-from ...commons.types.entity_id import EntityId
+from .entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
 import typing
@@ -15,14 +15,15 @@ class ConversationResponse(ConversationBase):
     """
     Examples
     --------
-    from mavenagi.commons import EntityId, EntityIdBase
-    from mavenagi.conversation import (
+    from mavenagi.commons import (
         BotResponse_Text,
         BotResponseMetadata,
         ConversationAnalysis,
         ConversationMessageResponse_Bot,
         ConversationMessageResponse_User,
         ConversationResponse,
+        EntityId,
+        EntityIdBase,
         UserMessageAttachment,
     )
 

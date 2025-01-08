@@ -31,6 +31,7 @@ class AskRequest(UniversalBaseModel):
                 content="iVBORw0KGgo...",
             )
         ],
+        transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
     )
     """
 
@@ -54,6 +55,13 @@ class AskRequest(UniversalBaseModel):
     attachments: typing.Optional[typing.List[Attachment]] = pydantic.Field(default=None)
     """
     The attachments to the message.
+    """
+
+    transient_data: typing_extensions.Annotated[
+        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="transientData")
+    ] = pydantic.Field(default=None)
+    """
+    Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
     """
 
     if IS_PYDANTIC_V2:

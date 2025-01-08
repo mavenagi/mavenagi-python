@@ -17,7 +17,7 @@ class Precondition_User(UniversalBaseModel):
     """
     Examples
     --------
-    from mavenagi.actions import Precondition_Group, Precondition_User
+    from mavenagi.commons import Precondition_Group, Precondition_User
 
     Precondition_Group(
         operator="AND",
@@ -68,7 +68,7 @@ class Precondition_Group(UniversalBaseModel):
     """
     Examples
     --------
-    from mavenagi.actions import Precondition_Group, Precondition_User
+    from mavenagi.commons import Precondition_Group, Precondition_User
 
     Precondition_Group(
         operator="AND",
@@ -102,7 +102,7 @@ class Precondition_Group(UniversalBaseModel):
 from .precondition_group import PreconditionGroup  # noqa: E402
 
 """
-from mavenagi.actions import Precondition_Group, Precondition_User
+from mavenagi.commons import Precondition_Group, Precondition_User
 
 Precondition_Group(
     operator="AND",
