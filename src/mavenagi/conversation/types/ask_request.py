@@ -39,7 +39,7 @@ class AskRequest(UniversalBaseModel):
         pydantic.Field()
     )
     """
-    Externally supplied ID to uniquely identify this message within the conversation
+    Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
     """
 
     user_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="userId")] = pydantic.Field()

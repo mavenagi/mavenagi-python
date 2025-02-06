@@ -6,6 +6,7 @@ import os
 import httpx
 from .core.client_wrapper import SyncClientWrapper
 from .actions.client import ActionsClient
+from .analytics.client import AnalyticsClient
 from .app_settings.client import AppSettingsClient
 from .conversation.client import ConversationClient
 from .knowledge.client import KnowledgeClient
@@ -14,6 +15,7 @@ from .triggers.client import TriggersClient
 from .users.client import UsersClient
 from .core.client_wrapper import AsyncClientWrapper
 from .actions.client import AsyncActionsClient
+from .analytics.client import AsyncAnalyticsClient
 from .app_settings.client import AsyncAppSettingsClient
 from .conversation.client import AsyncConversationClient
 from .knowledge.client import AsyncKnowledgeClient
@@ -93,6 +95,7 @@ class MavenAGI:
             timeout=_defaulted_timeout,
         )
         self.actions = ActionsClient(client_wrapper=self._client_wrapper)
+        self.analytics = AnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AppSettingsClient(client_wrapper=self._client_wrapper)
         self.conversation = ConversationClient(client_wrapper=self._client_wrapper)
         self.knowledge = KnowledgeClient(client_wrapper=self._client_wrapper)
@@ -172,6 +175,7 @@ class AsyncMavenAGI:
             timeout=_defaulted_timeout,
         )
         self.actions = AsyncActionsClient(client_wrapper=self._client_wrapper)
+        self.analytics = AsyncAnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AsyncAppSettingsClient(client_wrapper=self._client_wrapper)
         self.conversation = AsyncConversationClient(client_wrapper=self._client_wrapper)
         self.knowledge = AsyncKnowledgeClient(client_wrapper=self._client_wrapper)

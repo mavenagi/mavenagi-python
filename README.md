@@ -21,8 +21,14 @@ Instantiate and use the client with the following:
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-from mavenagi.conversation import ConversationMessageRequest
+from mavenagi.analytics import (
+    ColumnDefinition,
+    GroupBy,
+    Metric_Average,
+    Metric_Count,
+    Metric_Percentile,
+)
+from mavenagi.conversation import ConversationFilter
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -30,19 +36,32 @@ client = MavenAGI(
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
-client.conversation.initialize(
-    conversation_id=EntityIdBase(
-        reference_id="referenceId",
+client.analytics.get_conversation_table(
+    conversation_filter=ConversationFilter(
+        languages=["en", "es"],
     ),
-    messages=[
-        ConversationMessageRequest(
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
+    time_grouping="DAY",
+    field_groupings=[
+        GroupBy(
+            field="Category",
+        )
+    ],
+    column_definitions=[
+        ColumnDefinition(
+            header="count",
+            metric=Metric_Count(),
+        ),
+        ColumnDefinition(
+            header="avg_first_response_time",
+            metric=Metric_Average(
+                target_field="FirstResponseTime",
             ),
         ),
-        ConversationMessageRequest(
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
+        ColumnDefinition(
+            header="percentile_handle_time",
+            metric=Metric_Percentile(
+                target_field="HandleTime",
+                percentiles=[25.0, 75.0],
             ),
         ),
     ],
@@ -57,8 +76,14 @@ The SDK also exports an `async` client so that you can make non-blocking calls t
 import asyncio
 
 from mavenagi import AsyncMavenAGI
-from mavenagi.commons import EntityIdBase
-from mavenagi.conversation import ConversationMessageRequest
+from mavenagi.analytics import (
+    ColumnDefinition,
+    GroupBy,
+    Metric_Average,
+    Metric_Count,
+    Metric_Percentile,
+)
+from mavenagi.conversation import ConversationFilter
 
 client = AsyncMavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -69,19 +94,32 @@ client = AsyncMavenAGI(
 
 
 async def main() -> None:
-    await client.conversation.initialize(
-        conversation_id=EntityIdBase(
-            reference_id="referenceId",
+    await client.analytics.get_conversation_table(
+        conversation_filter=ConversationFilter(
+            languages=["en", "es"],
         ),
-        messages=[
-            ConversationMessageRequest(
-                conversation_message_id=EntityIdBase(
-                    reference_id="referenceId",
+        time_grouping="DAY",
+        field_groupings=[
+            GroupBy(
+                field="Category",
+            )
+        ],
+        column_definitions=[
+            ColumnDefinition(
+                header="count",
+                metric=Metric_Count(),
+            ),
+            ColumnDefinition(
+                header="avg_first_response_time",
+                metric=Metric_Average(
+                    target_field="FirstResponseTime",
                 ),
             ),
-            ConversationMessageRequest(
-                conversation_message_id=EntityIdBase(
-                    reference_id="referenceId",
+            ColumnDefinition(
+                header="percentile_handle_time",
+                metric=Metric_Percentile(
+                    target_field="HandleTime",
+                    percentiles=[25.0, 75.0],
                 ),
             ),
         ],
@@ -100,7 +138,7 @@ will be thrown.
 from mavenagi.core.api_error import ApiError
 
 try:
-    client.conversation.initialize(...)
+    client.analytics.get_conversation_table(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -159,7 +197,7 @@ A request is deemed retriable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.conversation.initialize(..., request_options={
+client.analytics.get_conversation_table(..., request_options={
     "max_retries": 1
 })
 ```
@@ -179,7 +217,7 @@ client = MavenAGI(
 
 
 # Override timeout for a specific method
-client.conversation.initialize(..., request_options={
+client.analytics.get_conversation_table(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

@@ -276,6 +276,103 @@ class ConversationClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
+    def delete(
+        self,
+        conversation_id: str,
+        *,
+        reason: str,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        Wipes a conversation of all user data.
+        The conversation ID will still exist and non-user specific data will still be retained.
+        Attempts to modify or add messages to the conversation will throw an error.
+
+        <Warning>This is a destructive operation and cannot be undone. <br/><br/>
+        The exact fields cleared include: the conversation subject, userRequest, agentResponse.
+        As well as the text response, followup questions, and backend LLM prompt of all messages.</Warning>
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of the conversation to delete
+
+        reason : str
+            The reason for deleting the conversation. This message will replace all user messages in the conversation.
+
+        app_id : typing.Optional[str]
+            The App ID of the conversation to delete. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.conversation.delete(
+            conversation_id="conversation-0",
+            reason="GDPR deletion request 1234.",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/conversations/{jsonable_encoder(conversation_id)}",
+            method="DELETE",
+            params={
+                "appId": app_id,
+                "reason": reason,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
     def append_new_messages(
         self,
         conversation_id: str,
@@ -284,7 +381,7 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Append messages to an existing conversation. The conversation must be initialized first. If a message with the same id already exists, it will be ignored.
+        Append messages to an existing conversation. The conversation must be initialized first. If a message with the same ID already exists, it will be ignored. Messages do not allow modification.
 
         Parameters
         ----------
@@ -394,7 +491,15 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Ask a question
+        Get an answer from Maven for a given user question. If the user question or its answer already exists,
+        they will be reused and will not be updated. Messages do not allow modification once generated.
+
+        Concurrency Behavior:
+        - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+        - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+        Known Limitation:
+        - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
 
         Parameters
         ----------
@@ -402,7 +507,7 @@ class ConversationClient:
             The ID of a new or existing conversation to use as context for the question
 
         conversation_message_id : EntityIdBase
-            Externally supplied ID to uniquely identify this message within the conversation
+            Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
 
         user_id : EntityIdBase
             Externally supplied ID to uniquely identify the user that created this message
@@ -422,7 +527,7 @@ class ConversationClient:
         Returns
         -------
         ConversationResponse
-            Updated Conversation with a user message of the question and a bot message with the response
+            Updated Conversation with a user message of the question and a bot message with the response.
 
         Examples
         --------
@@ -529,7 +634,19 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.Iterator[StreamResponse]:
         """
-        Ask a question with a streaming response. The response will be sent as a stream of events. The text portions of stream responses should be concatenated to form the full response text. Action and metadata events should overwrite past data and do not need concatenation.
+        Get an answer from Maven for a given user question with a streaming response. The response will be sent as a stream of events.
+        The text portions of stream responses should be concatenated to form the full response text.
+        Action and metadata events should overwrite past data and do not need concatenation.
+
+        If the user question or its answer already exists, they will be reused and will not be updated.
+        Messages do not allow modification once generated.
+
+        Concurrency Behavior:
+        - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+        - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+        Known Limitation:
+        - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
 
         Parameters
         ----------
@@ -537,7 +654,7 @@ class ConversationClient:
             The ID of a new or existing conversation to use as context for the question
 
         conversation_message_id : EntityIdBase
-            Externally supplied ID to uniquely identify this message within the conversation
+            Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
 
         user_id : EntityIdBase
             Externally supplied ID to uniquely identify the user that created this message
@@ -668,7 +785,7 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Generate a response suggestion for each requested message id in a conversation
+        This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
 
         Parameters
         ----------
@@ -1439,6 +1556,111 @@ class AsyncConversationClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
+    async def delete(
+        self,
+        conversation_id: str,
+        *,
+        reason: str,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        Wipes a conversation of all user data.
+        The conversation ID will still exist and non-user specific data will still be retained.
+        Attempts to modify or add messages to the conversation will throw an error.
+
+        <Warning>This is a destructive operation and cannot be undone. <br/><br/>
+        The exact fields cleared include: the conversation subject, userRequest, agentResponse.
+        As well as the text response, followup questions, and backend LLM prompt of all messages.</Warning>
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of the conversation to delete
+
+        reason : str
+            The reason for deleting the conversation. This message will replace all user messages in the conversation.
+
+        app_id : typing.Optional[str]
+            The App ID of the conversation to delete. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.conversation.delete(
+                conversation_id="conversation-0",
+                reason="GDPR deletion request 1234.",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/conversations/{jsonable_encoder(conversation_id)}",
+            method="DELETE",
+            params={
+                "appId": app_id,
+                "reason": reason,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
     async def append_new_messages(
         self,
         conversation_id: str,
@@ -1447,7 +1669,7 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Append messages to an existing conversation. The conversation must be initialized first. If a message with the same id already exists, it will be ignored.
+        Append messages to an existing conversation. The conversation must be initialized first. If a message with the same ID already exists, it will be ignored. Messages do not allow modification.
 
         Parameters
         ----------
@@ -1565,7 +1787,15 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Ask a question
+        Get an answer from Maven for a given user question. If the user question or its answer already exists,
+        they will be reused and will not be updated. Messages do not allow modification once generated.
+
+        Concurrency Behavior:
+        - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+        - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+        Known Limitation:
+        - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
 
         Parameters
         ----------
@@ -1573,7 +1803,7 @@ class AsyncConversationClient:
             The ID of a new or existing conversation to use as context for the question
 
         conversation_message_id : EntityIdBase
-            Externally supplied ID to uniquely identify this message within the conversation
+            Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
 
         user_id : EntityIdBase
             Externally supplied ID to uniquely identify the user that created this message
@@ -1593,7 +1823,7 @@ class AsyncConversationClient:
         Returns
         -------
         ConversationResponse
-            Updated Conversation with a user message of the question and a bot message with the response
+            Updated Conversation with a user message of the question and a bot message with the response.
 
         Examples
         --------
@@ -1708,7 +1938,19 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.AsyncIterator[StreamResponse]:
         """
-        Ask a question with a streaming response. The response will be sent as a stream of events. The text portions of stream responses should be concatenated to form the full response text. Action and metadata events should overwrite past data and do not need concatenation.
+        Get an answer from Maven for a given user question with a streaming response. The response will be sent as a stream of events.
+        The text portions of stream responses should be concatenated to form the full response text.
+        Action and metadata events should overwrite past data and do not need concatenation.
+
+        If the user question or its answer already exists, they will be reused and will not be updated.
+        Messages do not allow modification once generated.
+
+        Concurrency Behavior:
+        - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+        - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+        Known Limitation:
+        - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
 
         Parameters
         ----------
@@ -1716,7 +1958,7 @@ class AsyncConversationClient:
             The ID of a new or existing conversation to use as context for the question
 
         conversation_message_id : EntityIdBase
-            Externally supplied ID to uniquely identify this message within the conversation
+            Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
 
         user_id : EntityIdBase
             Externally supplied ID to uniquely identify the user that created this message
@@ -1855,7 +2097,7 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Generate a response suggestion for each requested message id in a conversation
+        This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
 
         Parameters
         ----------

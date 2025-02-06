@@ -285,6 +285,146 @@ client.actions.delete(
 </dl>
 </details>
 
+## Analytics
+<details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_conversation_table</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves structured conversation data formatted as a table, allowing users to group, filter, and define specific metrics to display as columns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import (
+    ColumnDefinition,
+    GroupBy,
+    Metric_Average,
+    Metric_Count,
+    Metric_Percentile,
+)
+from mavenagi.conversation import ConversationFilter
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.analytics.get_conversation_table(
+    conversation_filter=ConversationFilter(
+        languages=["en", "es"],
+    ),
+    time_grouping="DAY",
+    field_groupings=[
+        GroupBy(
+            field="Category",
+        )
+    ],
+    column_definitions=[
+        ColumnDefinition(
+            header="count",
+            metric=Metric_Count(),
+        ),
+        ColumnDefinition(
+            header="avg_first_response_time",
+            metric=Metric_Average(
+                target_field="FirstResponseTime",
+            ),
+        ),
+        ColumnDefinition(
+            header="percentile_handle_time",
+            metric=Metric_Percentile(
+                target_field="HandleTime",
+                percentiles=[25.0, 75.0],
+            ),
+        ),
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_groupings:** `typing.Sequence[GroupBy]` 
+
+Specifies the fields by which data should be grouped. Each unique combination forms a row.
+If multiple fields are provided, the result is grouped by their unique value combinations.
+If empty, all data is aggregated into a single row.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**column_definitions:** `typing.Sequence[ColumnDefinition]` — Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**time_grouping:** `typing.Optional[TimeInterval]` 
+
+Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+Example: If set to "DAY," data will be aggregated by day.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**conversation_filter:** `typing.Optional[ConversationFilter]` — Optional filter applied to refine the conversation data before processing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## AppSettings
 <details><summary><code>client.app_settings.<a href="src/mavenagi/app_settings/client.py">get</a>()</code></summary>
 <dl>
@@ -584,6 +724,102 @@ client.conversation.get(
 </dl>
 </details>
 
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">delete</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Wipes a conversation of all user data. 
+The conversation ID will still exist and non-user specific data will still be retained. 
+Attempts to modify or add messages to the conversation will throw an error. 
+
+<Warning>This is a destructive operation and cannot be undone. <br/><br/>
+The exact fields cleared include: the conversation subject, userRequest, agentResponse. 
+As well as the text response, followup questions, and backend LLM prompt of all messages.</Warning>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation.delete(
+    conversation_id="conversation-0",
+    reason="GDPR deletion request 1234.",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversation_id:** `str` — The ID of the conversation to delete
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**reason:** `str` — The reason for deleting the conversation. This message will replace all user messages in the conversation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the conversation to delete. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">append_new_messages</a>(...)</code></summary>
 <dl>
 <dd>
@@ -596,7 +832,7 @@ client.conversation.get(
 <dl>
 <dd>
 
-Append messages to an existing conversation. The conversation must be initialized first. If a message with the same id already exists, it will be ignored.
+Append messages to an existing conversation. The conversation must be initialized first. If a message with the same ID already exists, it will be ignored. Messages do not allow modification.
 </dd>
 </dl>
 </dd>
@@ -691,7 +927,15 @@ client.conversation.append_new_messages(
 <dl>
 <dd>
 
-Ask a question
+Get an answer from Maven for a given user question. If the user question or its answer already exists, 
+they will be reused and will not be updated. Messages do not allow modification once generated. 
+
+Concurrency Behavior:
+- If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+- The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+Known Limitation:
+- The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
 </dd>
 </dl>
 </dd>
@@ -756,7 +1000,7 @@ client.conversation.ask(
 <dl>
 <dd>
 
-**conversation_message_id:** `EntityIdBase` — Externally supplied ID to uniquely identify this message within the conversation
+**conversation_message_id:** `EntityIdBase` — Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
     
 </dd>
 </dl>
@@ -820,7 +1064,19 @@ client.conversation.ask(
 <dl>
 <dd>
 
-Ask a question with a streaming response. The response will be sent as a stream of events. The text portions of stream responses should be concatenated to form the full response text. Action and metadata events should overwrite past data and do not need concatenation.
+Get an answer from Maven for a given user question with a streaming response. The response will be sent as a stream of events. 
+The text portions of stream responses should be concatenated to form the full response text. 
+Action and metadata events should overwrite past data and do not need concatenation.
+
+If the user question or its answer already exists, they will be reused and will not be updated. 
+Messages do not allow modification once generated.
+        
+Concurrency Behavior:
+- If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+- The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+Known Limitation:
+- The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
 </dd>
 </dl>
 </dd>
@@ -887,7 +1143,7 @@ for chunk in response:
 <dl>
 <dd>
 
-**conversation_message_id:** `EntityIdBase` — Externally supplied ID to uniquely identify this message within the conversation
+**conversation_message_id:** `EntityIdBase` — Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
     
 </dd>
 </dl>
@@ -951,7 +1207,7 @@ for chunk in response:
 <dl>
 <dd>
 
-Generate a response suggestion for each requested message id in a conversation
+This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
 </dd>
 </dl>
 </dd>

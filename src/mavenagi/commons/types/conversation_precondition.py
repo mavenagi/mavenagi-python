@@ -8,6 +8,7 @@ from ...core.serialization import FieldMetadata
 from .precondition_operator import PreconditionOperator
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
+from .response_length import ResponseLength
 
 
 class ConversationPrecondition_Tags(UniversalBaseModel):
@@ -63,6 +64,32 @@ class ConversationPrecondition_ActionExecuted(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class ConversationPrecondition_ResponseConfig(UniversalBaseModel):
+    conversation_precondition_type: typing_extensions.Annotated[
+        typing.Literal["responseConfig"], FieldMetadata(alias="conversationPreconditionType")
+    ] = "responseConfig"
+    use_markdown: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="useMarkdown")] = None
+    use_forms: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="useForms")] = None
+    use_images: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="useImages")] = None
+    is_copilot: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="isCopilot")] = None
+    response_length: typing_extensions.Annotated[
+        typing.Optional[ResponseLength], FieldMetadata(alias="responseLength")
+    ] = None
+    operator: typing.Optional[PreconditionOperator] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 ConversationPrecondition = typing.Union[
-    ConversationPrecondition_Tags, ConversationPrecondition_Metadata, ConversationPrecondition_ActionExecuted
+    ConversationPrecondition_Tags,
+    ConversationPrecondition_Metadata,
+    ConversationPrecondition_ActionExecuted,
+    ConversationPrecondition_ResponseConfig,
 ]
