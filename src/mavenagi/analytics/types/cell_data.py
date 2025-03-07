@@ -59,17 +59,4 @@ class CellData_String(UniversalBaseModel):
             smart_union = True
 
 
-class CellData_PercentileMap(UniversalBaseModel):
-    value: typing.Dict[str, float]
-    type: typing.Literal["percentileMap"] = "percentileMap"
-
-    if IS_PYDANTIC_V2:
-        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(frozen=True)  # type: ignore # Pydantic v2
-    else:
-
-        class Config:
-            frozen = True
-            smart_union = True
-
-
-CellData = typing.Union[CellData_Double, CellData_Long, CellData_Millisecond, CellData_String, CellData_PercentileMap]
+CellData = typing.Union[CellData_Double, CellData_Long, CellData_Millisecond, CellData_String]

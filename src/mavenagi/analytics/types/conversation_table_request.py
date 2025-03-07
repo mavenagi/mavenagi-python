@@ -3,11 +3,11 @@
 from .conversation_analytics_request import ConversationAnalyticsRequest
 import typing_extensions
 import typing
-from ...analytics_commons.types.time_interval import TimeInterval
+from .time_interval import TimeInterval
 from ...core.serialization import FieldMetadata
 import pydantic
-from .group_by import GroupBy
-from .column_definition import ColumnDefinition
+from .conversation_group_by import ConversationGroupBy
+from .conversation_column_definition import ConversationColumnDefinition
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
@@ -16,12 +16,12 @@ class ConversationTableRequest(ConversationAnalyticsRequest):
     Examples
     --------
     from mavenagi.analytics import (
-        ColumnDefinition,
+        ConversationColumnDefinition,
+        ConversationGroupBy,
+        ConversationMetric_Average,
+        ConversationMetric_Count,
+        ConversationMetric_Percentile,
         ConversationTableRequest,
-        GroupBy,
-        Metric_Average,
-        Metric_Count,
-        Metric_Percentile,
     )
     from mavenagi.conversation import ConversationFilter
 
@@ -31,26 +31,26 @@ class ConversationTableRequest(ConversationAnalyticsRequest):
         ),
         time_grouping="DAY",
         field_groupings=[
-            GroupBy(
+            ConversationGroupBy(
                 field="Category",
             )
         ],
         column_definitions=[
-            ColumnDefinition(
+            ConversationColumnDefinition(
                 header="count",
-                metric=Metric_Count(),
+                metric=ConversationMetric_Count(),
             ),
-            ColumnDefinition(
+            ConversationColumnDefinition(
                 header="avg_first_response_time",
-                metric=Metric_Average(
+                metric=ConversationMetric_Average(
                     target_field="FirstResponseTime",
                 ),
             ),
-            ColumnDefinition(
+            ConversationColumnDefinition(
                 header="percentile_handle_time",
-                metric=Metric_Percentile(
+                metric=ConversationMetric_Percentile(
                     target_field="HandleTime",
-                    percentiles=[25.0, 75.0],
+                    percentile=25.0,
                 ),
             ),
         ],
@@ -61,13 +61,12 @@ class ConversationTableRequest(ConversationAnalyticsRequest):
         pydantic.Field(default=None)
     )
     """
-    Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
-    Example: If set to "DAY," data will be aggregated by day.
+    Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
     """
 
-    field_groupings: typing_extensions.Annotated[typing.List[GroupBy], FieldMetadata(alias="fieldGroupings")] = (
-        pydantic.Field()
-    )
+    field_groupings: typing_extensions.Annotated[
+        typing.List[ConversationGroupBy], FieldMetadata(alias="fieldGroupings")
+    ] = pydantic.Field()
     """
     Specifies the fields by which data should be grouped. Each unique combination forms a row.
     If multiple fields are provided, the result is grouped by their unique value combinations.
@@ -75,7 +74,7 @@ class ConversationTableRequest(ConversationAnalyticsRequest):
     """
 
     column_definitions: typing_extensions.Annotated[
-        typing.List[ColumnDefinition], FieldMetadata(alias="columnDefinitions")
+        typing.List[ConversationColumnDefinition], FieldMetadata(alias="columnDefinitions")
     ] = pydantic.Field()
     """
     Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.

@@ -45,7 +45,12 @@ class TriggersClient:
             The description of what the event trigger does, shown in the Maven Dashboard
 
         type : EventTriggerType
-            The type of event trigger this app wishes to handle
+            The type of event trigger this app wishes to handle.
+
+            Conversation triggers fire when a conversation is created, after each additional message, and upon deletion events.
+            There is a small delay before trigger execution to allow time for conversation analysis to complete.
+
+            Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -309,7 +314,12 @@ class AsyncTriggersClient:
             The description of what the event trigger does, shown in the Maven Dashboard
 
         type : EventTriggerType
-            The type of event trigger this app wishes to handle
+            The type of event trigger this app wishes to handle.
+
+            Conversation triggers fire when a conversation is created, after each additional message, and upon deletion events.
+            There is a small delay before trigger execution to allow time for conversation analysis to complete.
+
+            Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

@@ -2,20 +2,19 @@
 
 from ...core.pydantic_utilities import UniversalBaseModel
 import pydantic
-from .metric import Metric
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
 
 
-class ColumnDefinition(UniversalBaseModel):
-    header: str = pydantic.Field()
+class TimeDataPoint(UniversalBaseModel):
+    x: int = pydantic.Field()
     """
-    Unique column header, serving as the key for corresponding metric values.
+    X-axis value representing time in epoch milliseconds.
     """
 
-    metric: Metric = pydantic.Field()
+    y: float = pydantic.Field()
     """
-    The metric calculated for this column, stored in the row data under the specified header.
+    Y-axis value representing the measured data.
     """
 
     if IS_PYDANTIC_V2:

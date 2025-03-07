@@ -315,11 +315,11 @@ Retrieves structured conversation data formatted as a table, allowing users to g
 ```python
 from mavenagi import MavenAGI
 from mavenagi.analytics import (
-    ColumnDefinition,
-    GroupBy,
-    Metric_Average,
-    Metric_Count,
-    Metric_Percentile,
+    ConversationColumnDefinition,
+    ConversationGroupBy,
+    ConversationMetric_Average,
+    ConversationMetric_Count,
+    ConversationMetric_Percentile,
 )
 from mavenagi.conversation import ConversationFilter
 
@@ -335,26 +335,26 @@ client.analytics.get_conversation_table(
     ),
     time_grouping="DAY",
     field_groupings=[
-        GroupBy(
+        ConversationGroupBy(
             field="Category",
         )
     ],
     column_definitions=[
-        ColumnDefinition(
+        ConversationColumnDefinition(
             header="count",
-            metric=Metric_Count(),
+            metric=ConversationMetric_Count(),
         ),
-        ColumnDefinition(
+        ConversationColumnDefinition(
             header="avg_first_response_time",
-            metric=Metric_Average(
+            metric=ConversationMetric_Average(
                 target_field="FirstResponseTime",
             ),
         ),
-        ColumnDefinition(
+        ConversationColumnDefinition(
             header="percentile_handle_time",
-            metric=Metric_Percentile(
+            metric=ConversationMetric_Percentile(
                 target_field="HandleTime",
-                percentiles=[25.0, 75.0],
+                percentile=25.0,
             ),
         ),
     ],
@@ -374,7 +374,7 @@ client.analytics.get_conversation_table(
 <dl>
 <dd>
 
-**field_groupings:** `typing.Sequence[GroupBy]` 
+**field_groupings:** `typing.Sequence[ConversationGroupBy]` 
 
 Specifies the fields by which data should be grouped. Each unique combination forms a row.
 If multiple fields are provided, the result is grouped by their unique value combinations.
@@ -386,7 +386,221 @@ If empty, all data is aggregated into a single row.
 <dl>
 <dd>
 
-**column_definitions:** `typing.Sequence[ColumnDefinition]` — Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
+**column_definitions:** `typing.Sequence[ConversationColumnDefinition]` — Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**time_grouping:** `typing.Optional[TimeInterval]` — Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**conversation_filter:** `typing.Optional[ConversationFilter]` — Optional filter applied to refine the conversation data before processing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_conversation_chart</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetches conversation data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import (
+    ConversationChartRequest_BarChart,
+    ConversationGroupBy,
+    ConversationMetric_Count,
+)
+from mavenagi.conversation import ConversationFilter
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.analytics.get_conversation_chart(
+    request=ConversationChartRequest_BarChart(
+        conversation_filter=ConversationFilter(
+            languages=["en", "es"],
+        ),
+        bar_definition=ConversationGroupBy(
+            field="Category",
+        ),
+        metric=ConversationMetric_Count(),
+        vertical_grouping=ConversationGroupBy(
+            field="ResolutionStatus",
+        ),
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ConversationChartRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_feedback_table</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves structured feedback data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import (
+    FeedbackColumnDefinition,
+    FeedbackGroupBy,
+    FeedbackMetric_Count,
+)
+from mavenagi.conversation import FeedbackFilter
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.analytics.get_feedback_table(
+    feedback_filter=FeedbackFilter(
+        types=["THUMBS_UP", "INSERT"],
+    ),
+    field_groupings=[
+        FeedbackGroupBy(
+            field="CreatedBy",
+        )
+    ],
+    column_definitions=[
+        FeedbackColumnDefinition(
+            header="feedback_count",
+            metric=FeedbackMetric_Count(),
+        )
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_groupings:** `typing.Sequence[FeedbackGroupBy]` 
+
+Specifies the fields by which data should be grouped. Each unique combination forms a row.
+If multiple fields are provided, the result is grouped by their unique value combinations.
+If empty, all data is aggregated into a single row.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**column_definitions:** `typing.Sequence[FeedbackColumnDefinition]` 
+
+Specifies the metrics to be displayed as columns.
+Column headers act as keys, with computed metric values as their mapped values.
+There needs to be at least one column definition in the table request.
     
 </dd>
 </dl>
@@ -397,7 +611,7 @@ If empty, all data is aggregated into a single row.
 **time_grouping:** `typing.Optional[TimeInterval]` 
 
 Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
-Example: If set to "DAY," data will be aggregated by day.
+ Example: If set to "DAY," data will be aggregated by day.
     
 </dd>
 </dl>
@@ -405,7 +619,7 @@ Example: If set to "DAY," data will be aggregated by day.
 <dl>
 <dd>
 
-**conversation_filter:** `typing.Optional[ConversationFilter]` — Optional filter applied to refine the conversation data before processing.
+**feedback_filter:** `typing.Optional[FeedbackFilter]` — Optional filter applied to refine the feedback data before processing.
     
 </dd>
 </dl>
@@ -533,11 +747,21 @@ client.conversation.initialize(
     ),
     messages=[
         ConversationMessageRequest(
+            user_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+            text="text",
+            user_message_type="USER",
             conversation_message_id=EntityIdBase(
                 reference_id="referenceId",
             ),
         ),
         ConversationMessageRequest(
+            user_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+            text="text",
+            user_message_type="USER",
             conversation_message_id=EntityIdBase(
                 reference_id="referenceId",
             ),
@@ -861,11 +1085,21 @@ client.conversation.append_new_messages(
     conversation_id="conversationId",
     request=[
         ConversationMessageRequest(
+            user_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+            text="text",
+            user_message_type="USER",
             conversation_message_id=EntityIdBase(
                 reference_id="referenceId",
             ),
         ),
         ConversationMessageRequest(
+            user_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+            text="text",
+            user_message_type="USER",
             conversation_message_id=EntityIdBase(
                 reference_id="referenceId",
             ),
@@ -2549,7 +2783,14 @@ client.triggers.create_or_update(
 <dl>
 <dd>
 
-**type:** `EventTriggerType` — The type of event trigger this app wishes to handle
+**type:** `EventTriggerType` 
+
+The type of event trigger this app wishes to handle.
+
+Conversation triggers fire when a conversation is created, after each additional message, and upon deletion events.
+There is a small delay before trigger execution to allow time for conversation analysis to complete.
+
+Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
     
 </dd>
 </dl>
@@ -2882,6 +3123,92 @@ client.users.get(
 <dd>
 
 **app_id:** `typing.Optional[str]` — The App ID of the user to get. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.users.<a href="src/mavenagi/users/client.py">delete</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deletes all identifiers and user data saved by the specified app. 
+Does not modify data or identifiers saved by other apps.
+
+If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
+
+<Warning>This is a destructive operation and cannot be undone.</Warning>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.users.delete(
+    user_id="user-0",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**user_id:** `str` — The reference ID of the user to delete. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the user to delete. If not provided the ID of the calling app will be used.
     
 </dd>
 </dl>

@@ -22,11 +22,11 @@ Instantiate and use the client with the following:
 ```python
 from mavenagi import MavenAGI
 from mavenagi.analytics import (
-    ColumnDefinition,
-    GroupBy,
-    Metric_Average,
-    Metric_Count,
-    Metric_Percentile,
+    ConversationColumnDefinition,
+    ConversationGroupBy,
+    ConversationMetric_Average,
+    ConversationMetric_Count,
+    ConversationMetric_Percentile,
 )
 from mavenagi.conversation import ConversationFilter
 
@@ -42,26 +42,26 @@ client.analytics.get_conversation_table(
     ),
     time_grouping="DAY",
     field_groupings=[
-        GroupBy(
+        ConversationGroupBy(
             field="Category",
         )
     ],
     column_definitions=[
-        ColumnDefinition(
+        ConversationColumnDefinition(
             header="count",
-            metric=Metric_Count(),
+            metric=ConversationMetric_Count(),
         ),
-        ColumnDefinition(
+        ConversationColumnDefinition(
             header="avg_first_response_time",
-            metric=Metric_Average(
+            metric=ConversationMetric_Average(
                 target_field="FirstResponseTime",
             ),
         ),
-        ColumnDefinition(
+        ConversationColumnDefinition(
             header="percentile_handle_time",
-            metric=Metric_Percentile(
+            metric=ConversationMetric_Percentile(
                 target_field="HandleTime",
-                percentiles=[25.0, 75.0],
+                percentile=25.0,
             ),
         ),
     ],
@@ -77,11 +77,11 @@ import asyncio
 
 from mavenagi import AsyncMavenAGI
 from mavenagi.analytics import (
-    ColumnDefinition,
-    GroupBy,
-    Metric_Average,
-    Metric_Count,
-    Metric_Percentile,
+    ConversationColumnDefinition,
+    ConversationGroupBy,
+    ConversationMetric_Average,
+    ConversationMetric_Count,
+    ConversationMetric_Percentile,
 )
 from mavenagi.conversation import ConversationFilter
 
@@ -100,26 +100,26 @@ async def main() -> None:
         ),
         time_grouping="DAY",
         field_groupings=[
-            GroupBy(
+            ConversationGroupBy(
                 field="Category",
             )
         ],
         column_definitions=[
-            ColumnDefinition(
+            ConversationColumnDefinition(
                 header="count",
-                metric=Metric_Count(),
+                metric=ConversationMetric_Count(),
             ),
-            ColumnDefinition(
+            ConversationColumnDefinition(
                 header="avg_first_response_time",
-                metric=Metric_Average(
+                metric=ConversationMetric_Average(
                     target_field="FirstResponseTime",
                 ),
             ),
-            ColumnDefinition(
+            ConversationColumnDefinition(
                 header="percentile_handle_time",
-                metric=Metric_Percentile(
+                metric=ConversationMetric_Percentile(
                     target_field="HandleTime",
-                    percentiles=[25.0, 75.0],
+                    percentile=25.0,
                 ),
             ),
         ],

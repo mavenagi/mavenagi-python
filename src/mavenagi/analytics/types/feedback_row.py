@@ -2,14 +2,14 @@
 
 from .row_base import RowBase
 import typing
-from ...conversation.types.conversation_field import ConversationField
+from ...conversation.types.feedback_field import FeedbackField
 from .field_value import FieldValue
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
-class ConversationRow(RowBase):
-    identifier: typing.Dict[ConversationField, FieldValue] = pydantic.Field()
+class FeedbackRow(RowBase):
+    identifier: typing.Dict[FeedbackField, FieldValue] = pydantic.Field()
     """
     A unique identifier for each row, consisting of field names mapped to their respective values.
     This includes time groupings and any specified field groupings.

@@ -6,14 +6,15 @@ import typing
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 import typing_extensions
-from ...conversation.types.conversation_field import ConversationField
+from ...conversation.types.numeric_conversation_field import NumericConversationField
 from ...core.serialization import FieldMetadata
+from ...conversation.types.conversation_field import ConversationField
 
 
-class Metric_Count(UniversalBaseModel):
+class ConversationMetric_Count(UniversalBaseModel):
     """
     Defines the metric to be calculated for a column or chart.
-    Only numeric fields are supported, except for Count and DistinctCount, which can be applied to any field.
+    Only numeric fields are supported, except for ConversationCount and ConversationDistinctCount, which can be applied to any field.
     """
 
     type: typing.Literal["count"] = "count"
@@ -28,14 +29,14 @@ class Metric_Count(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class Metric_Sum(UniversalBaseModel):
+class ConversationMetric_Sum(UniversalBaseModel):
     """
     Defines the metric to be calculated for a column or chart.
-    Only numeric fields are supported, except for Count and DistinctCount, which can be applied to any field.
+    Only numeric fields are supported, except for ConversationCount and ConversationDistinctCount, which can be applied to any field.
     """
 
     type: typing.Literal["sum"] = "sum"
-    target_field: typing_extensions.Annotated[ConversationField, FieldMetadata(alias="targetField")]
+    target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -47,14 +48,14 @@ class Metric_Sum(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class Metric_Average(UniversalBaseModel):
+class ConversationMetric_Average(UniversalBaseModel):
     """
     Defines the metric to be calculated for a column or chart.
-    Only numeric fields are supported, except for Count and DistinctCount, which can be applied to any field.
+    Only numeric fields are supported, except for ConversationCount and ConversationDistinctCount, which can be applied to any field.
     """
 
     type: typing.Literal["average"] = "average"
-    target_field: typing_extensions.Annotated[ConversationField, FieldMetadata(alias="targetField")]
+    target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -66,14 +67,14 @@ class Metric_Average(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class Metric_Min(UniversalBaseModel):
+class ConversationMetric_Min(UniversalBaseModel):
     """
     Defines the metric to be calculated for a column or chart.
-    Only numeric fields are supported, except for Count and DistinctCount, which can be applied to any field.
+    Only numeric fields are supported, except for ConversationCount and ConversationDistinctCount, which can be applied to any field.
     """
 
     type: typing.Literal["min"] = "min"
-    target_field: typing_extensions.Annotated[ConversationField, FieldMetadata(alias="targetField")]
+    target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -85,14 +86,14 @@ class Metric_Min(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class Metric_Max(UniversalBaseModel):
+class ConversationMetric_Max(UniversalBaseModel):
     """
     Defines the metric to be calculated for a column or chart.
-    Only numeric fields are supported, except for Count and DistinctCount, which can be applied to any field.
+    Only numeric fields are supported, except for ConversationCount and ConversationDistinctCount, which can be applied to any field.
     """
 
     type: typing.Literal["max"] = "max"
-    target_field: typing_extensions.Annotated[ConversationField, FieldMetadata(alias="targetField")]
+    target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -104,15 +105,15 @@ class Metric_Max(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class Metric_Percentile(UniversalBaseModel):
+class ConversationMetric_Percentile(UniversalBaseModel):
     """
     Defines the metric to be calculated for a column or chart.
-    Only numeric fields are supported, except for Count and DistinctCount, which can be applied to any field.
+    Only numeric fields are supported, except for ConversationCount and ConversationDistinctCount, which can be applied to any field.
     """
 
     type: typing.Literal["percentile"] = "percentile"
-    percentiles: typing.List[float]
-    target_field: typing_extensions.Annotated[ConversationField, FieldMetadata(alias="targetField")]
+    percentile: float
+    target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -124,14 +125,14 @@ class Metric_Percentile(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class Metric_Median(UniversalBaseModel):
+class ConversationMetric_Median(UniversalBaseModel):
     """
     Defines the metric to be calculated for a column or chart.
-    Only numeric fields are supported, except for Count and DistinctCount, which can be applied to any field.
+    Only numeric fields are supported, except for ConversationCount and ConversationDistinctCount, which can be applied to any field.
     """
 
     type: typing.Literal["median"] = "median"
-    target_field: typing_extensions.Annotated[ConversationField, FieldMetadata(alias="targetField")]
+    target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -143,10 +144,10 @@ class Metric_Median(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class Metric_DistinctCount(UniversalBaseModel):
+class ConversationMetric_DistinctCount(UniversalBaseModel):
     """
     Defines the metric to be calculated for a column or chart.
-    Only numeric fields are supported, except for Count and DistinctCount, which can be applied to any field.
+    Only numeric fields are supported, except for ConversationCount and ConversationDistinctCount, which can be applied to any field.
     """
 
     type: typing.Literal["distinctCount"] = "distinctCount"
@@ -162,13 +163,13 @@ class Metric_DistinctCount(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-Metric = typing.Union[
-    Metric_Count,
-    Metric_Sum,
-    Metric_Average,
-    Metric_Min,
-    Metric_Max,
-    Metric_Percentile,
-    Metric_Median,
-    Metric_DistinctCount,
+ConversationMetric = typing.Union[
+    ConversationMetric_Count,
+    ConversationMetric_Sum,
+    ConversationMetric_Average,
+    ConversationMetric_Min,
+    ConversationMetric_Max,
+    ConversationMetric_Percentile,
+    ConversationMetric_Median,
+    ConversationMetric_DistinctCount,
 ]

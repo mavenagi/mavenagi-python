@@ -106,11 +106,21 @@ class ConversationClient:
             ),
             messages=[
                 ConversationMessageRequest(
+                    user_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                    text="text",
+                    user_message_type="USER",
                     conversation_message_id=EntityIdBase(
                         reference_id="referenceId",
                     ),
                 ),
                 ConversationMessageRequest(
+                    user_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                    text="text",
+                    user_message_type="USER",
                     conversation_message_id=EntityIdBase(
                         reference_id="referenceId",
                     ),
@@ -414,11 +424,21 @@ class ConversationClient:
             conversation_id="conversationId",
             request=[
                 ConversationMessageRequest(
+                    user_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                    text="text",
+                    user_message_type="USER",
                     conversation_message_id=EntityIdBase(
                         reference_id="referenceId",
                     ),
                 ),
                 ConversationMessageRequest(
+                    user_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                    text="text",
+                    user_message_type="USER",
                     conversation_message_id=EntityIdBase(
                         reference_id="referenceId",
                     ),
@@ -1375,11 +1395,21 @@ class AsyncConversationClient:
                 ),
                 messages=[
                     ConversationMessageRequest(
+                        user_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                        text="text",
+                        user_message_type="USER",
                         conversation_message_id=EntityIdBase(
                             reference_id="referenceId",
                         ),
                     ),
                     ConversationMessageRequest(
+                        user_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                        text="text",
+                        user_message_type="USER",
                         conversation_message_id=EntityIdBase(
                             reference_id="referenceId",
                         ),
@@ -1707,11 +1737,21 @@ class AsyncConversationClient:
                 conversation_id="conversationId",
                 request=[
                     ConversationMessageRequest(
+                        user_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                        text="text",
+                        user_message_type="USER",
                         conversation_message_id=EntityIdBase(
                             reference_id="referenceId",
                         ),
                     ),
                     ConversationMessageRequest(
+                        user_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                        text="text",
+                        user_message_type="USER",
                         conversation_message_id=EntityIdBase(
                             reference_id="referenceId",
                         ),
