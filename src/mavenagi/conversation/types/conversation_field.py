@@ -17,6 +17,7 @@ ConversationField = typing.Union[
         "ResponseLength",
         "ThumbsUpCount",
         "ThumbsDownCount",
+        "InsertCount",
         "Tags",
         "UserMessageCount",
         "Languages",

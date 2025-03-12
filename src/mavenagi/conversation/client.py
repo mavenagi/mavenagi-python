@@ -24,6 +24,7 @@ import json
 from .types.categorization_response import CategorizationResponse
 from ..commons.types.feedback_type import FeedbackType
 from ..commons.types.feedback import Feedback
+from .types.conversation_metadata import ConversationMetadata
 from ..core.client_wrapper import AsyncClientWrapper
 
 # this is used as the default value for optional parameters
@@ -39,6 +40,7 @@ class ConversationClient:
         *,
         conversation_id: EntityIdBase,
         messages: typing.Sequence[ConversationMessageRequest],
+        all_metadata: typing.Dict[str, typing.Dict[str, str]],
         response_config: typing.Optional[ResponseConfig] = OMIT,
         subject: typing.Optional[str] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -59,6 +61,9 @@ class ConversationClient:
         messages : typing.Sequence[ConversationMessageRequest]
             The messages in the conversation
 
+        all_metadata : typing.Dict[str, typing.Dict[str, str]]
+            All metadata for the conversation. Keyed by appId.
+
         response_config : typing.Optional[ResponseConfig]
             Optional configurations for responses to this conversation
 
@@ -78,7 +83,7 @@ class ConversationClient:
             The tags of the conversation. Used for filtering in Agent Designer.
 
         metadata : typing.Optional[typing.Dict[str, str]]
-            The metadata of the conversation.
+            The metadata of the conversation supplied by the app which created the conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -101,6 +106,7 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.initialize(
+            all_metadata={"allMetadata": {"allMetadata": "allMetadata"}},
             conversation_id=EntityIdBase(
                 reference_id="referenceId",
             ),
@@ -147,6 +153,7 @@ class ConversationClient:
                 "updatedAt": updated_at,
                 "tags": tags,
                 "metadata": metadata,
+                "allMetadata": all_metadata,
             },
             request_options=request_options,
             omit=OMIT,
@@ -1230,7 +1237,9 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.Dict[str, str]:
         """
-        Add metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
+        Replaced by `updateConversationMetadata`.
+
+        Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
 
         Parameters
         ----------
@@ -1313,6 +1322,111 @@ class ConversationClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
+    def update_conversation_metadata(
+        self,
+        conversation_id: str,
+        *,
+        values: typing.Dict[str, str],
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ConversationMetadata:
+        """
+        Update metadata supplied by the calling application for an existing conversation.
+        Does not modify metadata saved by other apps.
+
+        If a metadata field already exists for the calling app, it will be overwritten.
+        If it does not exist, it will be added. Will not remove metadata fields.
+
+        Returns all metadata saved by any app on the conversation.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of the conversation to modify metadata for
+
+        values : typing.Dict[str, str]
+            The metadata values to add to the conversation.
+
+        app_id : typing.Optional[str]
+            The App ID of the conversation to modify metadata for. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ConversationMetadata
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.conversation.update_conversation_metadata(
+            conversation_id="conversation-0",
+            app_id="conversation-owning-app",
+            values={"key": "newValue"},
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/conversations/{jsonable_encoder(conversation_id)}/metadata",
+            method="PUT",
+            json={
+                "appId": app_id,
+                "values": values,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    ConversationMetadata,
+                    parse_obj_as(
+                        type_=ConversationMetadata,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
 
 class AsyncConversationClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -1323,6 +1437,7 @@ class AsyncConversationClient:
         *,
         conversation_id: EntityIdBase,
         messages: typing.Sequence[ConversationMessageRequest],
+        all_metadata: typing.Dict[str, typing.Dict[str, str]],
         response_config: typing.Optional[ResponseConfig] = OMIT,
         subject: typing.Optional[str] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -1343,6 +1458,9 @@ class AsyncConversationClient:
         messages : typing.Sequence[ConversationMessageRequest]
             The messages in the conversation
 
+        all_metadata : typing.Dict[str, typing.Dict[str, str]]
+            All metadata for the conversation. Keyed by appId.
+
         response_config : typing.Optional[ResponseConfig]
             Optional configurations for responses to this conversation
 
@@ -1362,7 +1480,7 @@ class AsyncConversationClient:
             The tags of the conversation. Used for filtering in Agent Designer.
 
         metadata : typing.Optional[typing.Dict[str, str]]
-            The metadata of the conversation.
+            The metadata of the conversation supplied by the app which created the conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1390,6 +1508,7 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.initialize(
+                all_metadata={"allMetadata": {"allMetadata": "allMetadata"}},
                 conversation_id=EntityIdBase(
                     reference_id="referenceId",
                 ),
@@ -1439,6 +1558,7 @@ class AsyncConversationClient:
                 "updatedAt": updated_at,
                 "tags": tags,
                 "metadata": metadata,
+                "allMetadata": all_metadata,
             },
             request_options=request_options,
             omit=OMIT,
@@ -2594,7 +2714,9 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.Dict[str, str]:
         """
-        Add metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
+        Replaced by `updateConversationMetadata`.
+
+        Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
 
         Parameters
         ----------
@@ -2647,6 +2769,119 @@ class AsyncConversationClient:
                     typing.Dict[str, str],
                     parse_obj_as(
                         type_=typing.Dict[str, str],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def update_conversation_metadata(
+        self,
+        conversation_id: str,
+        *,
+        values: typing.Dict[str, str],
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ConversationMetadata:
+        """
+        Update metadata supplied by the calling application for an existing conversation.
+        Does not modify metadata saved by other apps.
+
+        If a metadata field already exists for the calling app, it will be overwritten.
+        If it does not exist, it will be added. Will not remove metadata fields.
+
+        Returns all metadata saved by any app on the conversation.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of the conversation to modify metadata for
+
+        values : typing.Dict[str, str]
+            The metadata values to add to the conversation.
+
+        app_id : typing.Optional[str]
+            The App ID of the conversation to modify metadata for. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ConversationMetadata
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.conversation.update_conversation_metadata(
+                conversation_id="conversation-0",
+                app_id="conversation-owning-app",
+                values={"key": "newValue"},
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/conversations/{jsonable_encoder(conversation_id)}/metadata",
+            method="PUT",
+            json={
+                "appId": app_id,
+                "values": values,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    ConversationMetadata,
+                    parse_obj_as(
+                        type_=ConversationMetadata,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

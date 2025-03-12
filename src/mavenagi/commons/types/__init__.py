@@ -23,6 +23,7 @@ from .chart_spec_schema import ChartSpecSchema
 from .conversation_analysis import ConversationAnalysis
 from .conversation_base import ConversationBase
 from .conversation_executed_action_precondition import ConversationExecutedActionPrecondition
+from .conversation_information import ConversationInformation
 from .conversation_message_base import ConversationMessageBase
 from .conversation_message_response import (
     ConversationMessageResponse,
@@ -38,6 +39,7 @@ from .conversation_precondition import (
 )
 from .conversation_response import ConversationResponse
 from .conversation_summary import ConversationSummary
+from .document_information import DocumentInformation
 from .entity_id import EntityId
 from .entity_id_base import EntityIdBase
 from .entity_id_filter import EntityIdFilter
@@ -50,7 +52,33 @@ from .event_trigger_type import EventTriggerType
 from .feedback import Feedback
 from .feedback_base import FeedbackBase
 from .feedback_type import FeedbackType
+from .inbox_item import (
+    InboxItem,
+    InboxItem_DuplicateDocuments,
+    InboxItem_DuplicateKnowledgeBase,
+    InboxItem_KnowledgeBaseAlert,
+    InboxItem_MissingKnowledge,
+)
+from .inbox_item_base import InboxItemBase
+from .inbox_item_duplicate_documents import InboxItemDuplicateDocuments
+from .inbox_item_duplicate_knowledge_base import InboxItemDuplicateKnowledgeBase
+from .inbox_item_fix import (
+    InboxItemFix,
+    InboxItemFix_AddDocument,
+    InboxItemFix_DeactivateDocument,
+    InboxItemFix_DeactivateKnowledgeBase,
+)
+from .inbox_item_fix_add_document import InboxItemFixAddDocument
+from .inbox_item_fix_base import InboxItemFixBase
+from .inbox_item_fix_deactivate_document import InboxItemFixDeactivateDocument
+from .inbox_item_fix_deactivate_knowledge_base import InboxItemFixDeactivateKnowledgeBase
+from .inbox_item_knowledge_base_alert import InboxItemKnowledgeBaseAlert
+from .inbox_item_missing_knowledge import InboxItemMissingKnowledge
+from .inbox_item_status import InboxItemStatus
+from .inbox_item_type import InboxItemType
+from .knowledge_base_information import KnowledgeBaseInformation
 from .metadata_precondition import MetadataPrecondition
+from .page import Page
 from .precondition import Precondition, Precondition_Conversation, Precondition_Group, Precondition_User
 from .precondition_base import PreconditionBase
 from .precondition_group import PreconditionGroup
@@ -96,6 +124,7 @@ __all__ = [
     "ConversationAnalysis",
     "ConversationBase",
     "ConversationExecutedActionPrecondition",
+    "ConversationInformation",
     "ConversationMessageBase",
     "ConversationMessageResponse",
     "ConversationMessageResponse_Bot",
@@ -107,6 +136,7 @@ __all__ = [
     "ConversationPrecondition_Tags",
     "ConversationResponse",
     "ConversationSummary",
+    "DocumentInformation",
     "EntityId",
     "EntityIdBase",
     "EntityIdFilter",
@@ -119,7 +149,29 @@ __all__ = [
     "Feedback",
     "FeedbackBase",
     "FeedbackType",
+    "InboxItem",
+    "InboxItemBase",
+    "InboxItemDuplicateDocuments",
+    "InboxItemDuplicateKnowledgeBase",
+    "InboxItemFix",
+    "InboxItemFixAddDocument",
+    "InboxItemFixBase",
+    "InboxItemFixDeactivateDocument",
+    "InboxItemFixDeactivateKnowledgeBase",
+    "InboxItemFix_AddDocument",
+    "InboxItemFix_DeactivateDocument",
+    "InboxItemFix_DeactivateKnowledgeBase",
+    "InboxItemKnowledgeBaseAlert",
+    "InboxItemMissingKnowledge",
+    "InboxItemStatus",
+    "InboxItemType",
+    "InboxItem_DuplicateDocuments",
+    "InboxItem_DuplicateKnowledgeBase",
+    "InboxItem_KnowledgeBaseAlert",
+    "InboxItem_MissingKnowledge",
+    "KnowledgeBaseInformation",
     "MetadataPrecondition",
+    "Page",
     "Precondition",
     "PreconditionBase",
     "PreconditionGroup",

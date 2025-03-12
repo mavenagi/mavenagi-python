@@ -10,7 +10,7 @@ import typing
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
-class BarChartRequest(ConversationAnalyticsRequest):
+class ConversationBarChartRequest(ConversationAnalyticsRequest):
     bar_definition: typing_extensions.Annotated[ConversationGroupBy, FieldMetadata(alias="barDefinition")] = (
         pydantic.Field()
     )

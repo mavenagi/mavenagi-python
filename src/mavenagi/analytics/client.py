@@ -49,7 +49,8 @@ class AnalyticsClient:
         field_groupings : typing.Sequence[ConversationGroupBy]
             Specifies the fields by which data should be grouped. Each unique combination forms a row.
             If multiple fields are provided, the result is grouped by their unique value combinations.
-            If empty, all data is aggregated into a single row.
+            If empty, all data is aggregated into a single row. |
+            Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
 
         column_definitions : typing.Sequence[ConversationColumnDefinition]
             Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
@@ -296,6 +297,7 @@ class AnalyticsClient:
             Specifies the fields by which data should be grouped. Each unique combination forms a row.
             If multiple fields are provided, the result is grouped by their unique value combinations.
             If empty, all data is aggregated into a single row.
+            Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
 
         column_definitions : typing.Sequence[FeedbackColumnDefinition]
             Specifies the metrics to be displayed as columns.
@@ -433,7 +435,8 @@ class AsyncAnalyticsClient:
         field_groupings : typing.Sequence[ConversationGroupBy]
             Specifies the fields by which data should be grouped. Each unique combination forms a row.
             If multiple fields are provided, the result is grouped by their unique value combinations.
-            If empty, all data is aggregated into a single row.
+            If empty, all data is aggregated into a single row. |
+            Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
 
         column_definitions : typing.Sequence[ConversationColumnDefinition]
             Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
@@ -696,6 +699,7 @@ class AsyncAnalyticsClient:
             Specifies the fields by which data should be grouped. Each unique combination forms a row.
             If multiple fields are provided, the result is grouped by their unique value combinations.
             If empty, all data is aggregated into a single row.
+            Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
 
         column_definitions : typing.Sequence[FeedbackColumnDefinition]
             Specifies the metrics to be displayed as columns.

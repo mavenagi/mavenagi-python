@@ -46,6 +46,8 @@ class ConversationResponse(ConversationBase):
             action_ids=[],
             incomplete_action_ids=[],
         ),
+        metadata={},
+        all_metadata={},
         messages=[
             ConversationMessageResponse_User(
                 user_message_type="USER",

@@ -49,7 +49,14 @@ class ConversationBase(UniversalBaseModel):
 
     metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
     """
-    The metadata of the conversation.
+    The metadata of the conversation supplied by the app which created the conversation.
+    """
+
+    all_metadata: typing_extensions.Annotated[
+        typing.Dict[str, typing.Dict[str, str]], FieldMetadata(alias="allMetadata")
+    ] = pydantic.Field()
+    """
+    All metadata for the conversation. Keyed by appId.
     """
 
     if IS_PYDANTIC_V2:

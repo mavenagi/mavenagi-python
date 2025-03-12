@@ -12,6 +12,7 @@ from .categorization_response import CategorizationResponse
 from .conversation_field import ConversationField
 from .conversation_filter import ConversationFilter
 from .conversation_message_request import ConversationMessageRequest
+from .conversation_metadata import ConversationMetadata
 from .conversation_request import ConversationRequest
 from .feedback_field import FeedbackField
 from .feedback_filter import FeedbackFilter
@@ -20,6 +21,7 @@ from .generate_maven_suggestions_request import GenerateMavenSuggestionsRequest
 from .numeric_conversation_field import NumericConversationField
 from .quality import Quality
 from .quality_reason import QualityReason
+from .resolution_status import ResolutionStatus
 from .stream_response import (
     StreamResponse,
     StreamResponse_Action,
@@ -30,6 +32,7 @@ from .stream_response import (
     StreamResponse_Text,
 )
 from .submit_action_form_request import SubmitActionFormRequest
+from .update_metadata_request import UpdateMetadataRequest
 
 __all__ = [
     "AskRequest",
@@ -44,6 +47,7 @@ __all__ = [
     "ConversationField",
     "ConversationFilter",
     "ConversationMessageRequest",
+    "ConversationMetadata",
     "ConversationRequest",
     "FeedbackField",
     "FeedbackFilter",
@@ -52,6 +56,7 @@ __all__ = [
     "NumericConversationField",
     "Quality",
     "QualityReason",
+    "ResolutionStatus",
     "StreamResponse",
     "StreamResponse_Action",
     "StreamResponse_Chart",
@@ -60,4 +65,5 @@ __all__ = [
     "StreamResponse_Start",
     "StreamResponse_Text",
     "SubmitActionFormRequest",
+    "UpdateMetadataRequest",
 ]

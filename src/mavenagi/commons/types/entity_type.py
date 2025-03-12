@@ -14,6 +14,8 @@ EntityType = typing.Union[
         "EVENT_TRIGGER",
         "USER_PROFILE",
         "FEEDBACK",
+        "INBOX_ITEM",
+        "INBOX_ITEM_FIX",
     ],
     typing.Any,
 ]

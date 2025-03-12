@@ -378,7 +378,8 @@ client.analytics.get_conversation_table(
 
 Specifies the fields by which data should be grouped. Each unique combination forms a row.
 If multiple fields are provided, the result is grouped by their unique value combinations.
-If empty, all data is aggregated into a single row.
+If empty, all data is aggregated into a single row. |
+Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
     
 </dd>
 </dl>
@@ -586,9 +587,10 @@ client.analytics.get_feedback_table(
 
 **field_groupings:** `typing.Sequence[FeedbackGroupBy]` 
 
-Specifies the fields by which data should be grouped. Each unique combination forms a row.
-If multiple fields are provided, the result is grouped by their unique value combinations.
-If empty, all data is aggregated into a single row.
+Specifies the fields by which data should be grouped. Each unique combination forms a row. 
+If multiple fields are provided, the result is grouped by their unique value combinations. 
+If empty, all data is aggregated into a single row. 
+Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
     
 </dd>
 </dl>
@@ -742,6 +744,7 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.conversation.initialize(
+    all_metadata={"allMetadata": {"allMetadata": "allMetadata"}},
     conversation_id=EntityIdBase(
         reference_id="referenceId",
     ),
@@ -799,6 +802,14 @@ client.conversation.initialize(
 <dl>
 <dd>
 
+**all_metadata:** `typing.Dict[str, typing.Dict[str, str]]` — All metadata for the conversation. Keyed by appId.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **response_config:** `typing.Optional[ResponseConfig]` — Optional configurations for responses to this conversation
     
 </dd>
@@ -847,7 +858,7 @@ client.conversation.initialize(
 <dl>
 <dd>
 
-**metadata:** `typing.Optional[typing.Dict[str, str]]` — The metadata of the conversation.
+**metadata:** `typing.Optional[typing.Dict[str, str]]` — The metadata of the conversation supplied by the app which created the conversation.
     
 </dd>
 </dl>
@@ -1830,7 +1841,9 @@ client.conversation.submit_action_form(
 <dl>
 <dd>
 
-Add metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
+Replaced by `updateConversationMetadata`. 
+
+Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
 </dd>
 </dl>
 </dd>
@@ -1881,6 +1894,551 @@ client.conversation.add_conversation_metadata(
 <dd>
 
 **request:** `typing.Dict[str, str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">update_conversation_metadata</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update metadata supplied by the calling application for an existing conversation. 
+Does not modify metadata saved by other apps.
+
+If a metadata field already exists for the calling app, it will be overwritten. 
+If it does not exist, it will be added. Will not remove metadata fields.
+
+Returns all metadata saved by any app on the conversation.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation.update_conversation_metadata(
+    conversation_id="conversation-0",
+    app_id="conversation-owning-app",
+    values={"key": "newValue"},
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversation_id:** `str` — The ID of the conversation to modify metadata for
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**values:** `typing.Dict[str, str]` — The metadata values to add to the conversation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the conversation to modify metadata for. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Inbox
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve a paginated list of inbox items for an agent.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.inbox.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**statuses:** `typing.Optional[typing.Sequence[InboxItemStatus]]` — List of inbox item statuses to filter by.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `typing.Optional[typing.Sequence[InboxItemType]]` — List of inbox item types to filter by.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**created_after:** `typing.Optional[dt.datetime]` — Filter for items created after this timestamp.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**created_before:** `typing.Optional[dt.datetime]` — Filter for items created before this timestamp.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve details of a specific inbox item by its ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.inbox.get(
+    inbox_item_id="inboxItemId",
+    app_id="appId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inbox_item_id:** `str` — The ID of the inbox item to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `str` — The App ID of the inbox item to retrieve
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">get_fix</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve a suggested fix. Includes document information if the fix is a Missing Knowledge suggestion.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.inbox.get_fix(
+    inbox_item_fix_id="inboxItemFixId",
+    app_id="appId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inbox_item_fix_id:** `str` — Unique identifier for the inbox fix.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `str` — The App ID of the inbox item fix to retrieve
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">apply_fix</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Apply a fix to an inbox item with a specific document.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.inbox.apply_fix(
+    inbox_item_fix_id="inboxItemFixId",
+    app_id="appId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inbox_item_fix_id:** `str` — Unique identifier for the inbox fix.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**add_document_request:** `typing.Optional[AddDocumentFixRequest]` — Content for Add Document fixes
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">ignore</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Ignore a specific inbox item by its ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.inbox.ignore(
+    inbox_item_id="inboxItemId",
+    app_id="appId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inbox_item_id:** `str` — Unique identifier for the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `str` — The App ID of the inbox item fix to ignore
     
 </dd>
 </dl>

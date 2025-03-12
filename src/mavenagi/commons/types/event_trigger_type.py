@@ -2,4 +2,6 @@
 
 import typing
 
-EventTriggerType = typing.Union[typing.Literal["CONVERSATION_CREATED", "FEEDBACK_CREATED"], typing.Any]
+EventTriggerType = typing.Union[
+    typing.Literal["CONVERSATION_CREATED", "FEEDBACK_CREATED", "INBOX_ITEM_CREATED"], typing.Any
+]

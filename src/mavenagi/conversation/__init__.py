@@ -13,6 +13,7 @@ from .types import (
     ConversationField,
     ConversationFilter,
     ConversationMessageRequest,
+    ConversationMetadata,
     ConversationRequest,
     FeedbackField,
     FeedbackFilter,
@@ -21,6 +22,7 @@ from .types import (
     NumericConversationField,
     Quality,
     QualityReason,
+    ResolutionStatus,
     StreamResponse,
     StreamResponse_Action,
     StreamResponse_Chart,
@@ -29,6 +31,7 @@ from .types import (
     StreamResponse_Start,
     StreamResponse_Text,
     SubmitActionFormRequest,
+    UpdateMetadataRequest,
 )
 
 __all__ = [
@@ -44,6 +47,7 @@ __all__ = [
     "ConversationField",
     "ConversationFilter",
     "ConversationMessageRequest",
+    "ConversationMetadata",
     "ConversationRequest",
     "FeedbackField",
     "FeedbackFilter",
@@ -52,6 +56,7 @@ __all__ = [
     "NumericConversationField",
     "Quality",
     "QualityReason",
+    "ResolutionStatus",
     "StreamResponse",
     "StreamResponse_Action",
     "StreamResponse_Chart",
@@ -60,4 +65,5 @@ __all__ = [
     "StreamResponse_Start",
     "StreamResponse_Text",
     "SubmitActionFormRequest",
+    "UpdateMetadataRequest",
 ]

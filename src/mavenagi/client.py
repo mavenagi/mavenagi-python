@@ -9,6 +9,7 @@ from .actions.client import ActionsClient
 from .analytics.client import AnalyticsClient
 from .app_settings.client import AppSettingsClient
 from .conversation.client import ConversationClient
+from .inbox.client import InboxClient
 from .knowledge.client import KnowledgeClient
 from .translations.client import TranslationsClient
 from .triggers.client import TriggersClient
@@ -18,6 +19,7 @@ from .actions.client import AsyncActionsClient
 from .analytics.client import AsyncAnalyticsClient
 from .app_settings.client import AsyncAppSettingsClient
 from .conversation.client import AsyncConversationClient
+from .inbox.client import AsyncInboxClient
 from .knowledge.client import AsyncKnowledgeClient
 from .translations.client import AsyncTranslationsClient
 from .triggers.client import AsyncTriggersClient
@@ -98,6 +100,7 @@ class MavenAGI:
         self.analytics = AnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AppSettingsClient(client_wrapper=self._client_wrapper)
         self.conversation = ConversationClient(client_wrapper=self._client_wrapper)
+        self.inbox = InboxClient(client_wrapper=self._client_wrapper)
         self.knowledge = KnowledgeClient(client_wrapper=self._client_wrapper)
         self.translations = TranslationsClient(client_wrapper=self._client_wrapper)
         self.triggers = TriggersClient(client_wrapper=self._client_wrapper)
@@ -178,6 +181,7 @@ class AsyncMavenAGI:
         self.analytics = AsyncAnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AsyncAppSettingsClient(client_wrapper=self._client_wrapper)
         self.conversation = AsyncConversationClient(client_wrapper=self._client_wrapper)
+        self.inbox = AsyncInboxClient(client_wrapper=self._client_wrapper)
         self.knowledge = AsyncKnowledgeClient(client_wrapper=self._client_wrapper)
         self.translations = AsyncTranslationsClient(client_wrapper=self._client_wrapper)
         self.triggers = AsyncTriggersClient(client_wrapper=self._client_wrapper)

@@ -11,6 +11,7 @@ from .quality import Quality
 from .quality_reason import QualityReason
 from ...commons.types.response_length import ResponseLength
 from ...commons.types.sentiment import Sentiment
+from .resolution_status import ResolutionStatus
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 
@@ -41,6 +42,9 @@ class ConversationFilter(UniversalBaseModel):
     ] = None
     sentiment: typing.Optional[typing.List[Sentiment]] = None
     tags: typing.Optional[typing.List[str]] = None
+    resolution_status: typing_extensions.Annotated[
+        typing.Optional[typing.List[ResolutionStatus]], FieldMetadata(alias="resolutionStatus")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

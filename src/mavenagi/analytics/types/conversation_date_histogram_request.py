@@ -11,7 +11,7 @@ from .conversation_metric import ConversationMetric
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
-class DateHistogramRequest(ConversationAnalyticsRequest):
+class ConversationDateHistogramRequest(ConversationAnalyticsRequest):
     time_interval: typing_extensions.Annotated[TimeInterval, FieldMetadata(alias="timeInterval")] = pydantic.Field()
     """
     Time-based grouping interval (e.g., HOUR, DAY, WEEK) for the date histogram.

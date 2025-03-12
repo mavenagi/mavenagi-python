@@ -10,7 +10,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
 
 
-class PieChartRequest(ConversationAnalyticsRequest):
+class ConversationPieChartRequest(ConversationAnalyticsRequest):
     group_by: typing_extensions.Annotated[ConversationGroupBy, FieldMetadata(alias="groupBy")] = pydantic.Field()
     """
     Field used to group data into slices for the pie chart.
