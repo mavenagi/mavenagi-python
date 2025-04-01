@@ -3,7 +3,6 @@
 import typing
 from ..core.client_wrapper import SyncClientWrapper
 from ..commons.types.entity_id_base import EntityIdBase
-from .types.knowledge_base_type import KnowledgeBaseType
 from ..commons.types.precondition import Precondition
 from ..core.request_options import RequestOptions
 from .types.knowledge_base_response import KnowledgeBaseResponse
@@ -36,8 +35,6 @@ class KnowledgeClient:
         *,
         knowledge_base_id: EntityIdBase,
         name: str,
-        type: KnowledgeBaseType,
-        url: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
@@ -51,12 +48,6 @@ class KnowledgeClient:
 
         name : str
             The name of the knowledge base
-
-        type : KnowledgeBaseType
-            The type of the knowledge base. Can not be changed once created.
-
-        url : typing.Optional[str]
-            The URL to pull content from for RSS and URL knowledge bases.
 
         precondition : typing.Optional[Precondition]
             (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
@@ -84,7 +75,6 @@ class KnowledgeClient:
                 reference_id="help-center",
             ),
             name="Help center",
-            type="API",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -95,8 +85,6 @@ class KnowledgeClient:
                     object_=knowledge_base_id, annotation=EntityIdBase, direction="write"
                 ),
                 "name": name,
-                "type": type,
-                "url": url,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
                 ),
@@ -770,8 +758,6 @@ class AsyncKnowledgeClient:
         *,
         knowledge_base_id: EntityIdBase,
         name: str,
-        type: KnowledgeBaseType,
-        url: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
@@ -785,12 +771,6 @@ class AsyncKnowledgeClient:
 
         name : str
             The name of the knowledge base
-
-        type : KnowledgeBaseType
-            The type of the knowledge base. Can not be changed once created.
-
-        url : typing.Optional[str]
-            The URL to pull content from for RSS and URL knowledge bases.
 
         precondition : typing.Optional[Precondition]
             (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
@@ -823,7 +803,6 @@ class AsyncKnowledgeClient:
                     reference_id="help-center",
                 ),
                 name="Help center",
-                type="API",
             )
 
 
@@ -837,8 +816,6 @@ class AsyncKnowledgeClient:
                     object_=knowledge_base_id, annotation=EntityIdBase, direction="write"
                 ),
                 "name": name,
-                "type": type,
-                "url": url,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
                 ),

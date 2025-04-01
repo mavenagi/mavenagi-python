@@ -24,7 +24,6 @@ class KnowledgeBaseRequest(KnowledgeBaseProperties):
             reference_id="help-center",
         ),
         name="Help center",
-        type="API",
     )
     """
 

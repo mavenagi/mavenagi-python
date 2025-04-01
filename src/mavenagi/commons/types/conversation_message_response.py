@@ -15,6 +15,7 @@ import pydantic
 from .bot_conversation_message_type import BotConversationMessageType
 from .bot_response import BotResponse
 from .bot_response_metadata import BotResponseMetadata
+from .bot_message_status import BotMessageStatus
 
 
 class ConversationMessageResponse_User(UniversalBaseModel):
@@ -44,6 +45,7 @@ class ConversationMessageResponse_Bot(UniversalBaseModel):
     bot_message_type: typing_extensions.Annotated[BotConversationMessageType, FieldMetadata(alias="botMessageType")]
     responses: typing.List[BotResponse]
     metadata: BotResponseMetadata
+    status: BotMessageStatus
     created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = None
     updated_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="updatedAt")] = None
 

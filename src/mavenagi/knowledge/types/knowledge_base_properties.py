@@ -4,7 +4,6 @@ from __future__ import annotations
 from ...core.pydantic_utilities import UniversalBaseModel
 from ...commons.types.precondition_group import PreconditionGroup
 import pydantic
-from .knowledge_base_type import KnowledgeBaseType
 import typing
 from ...commons.types.precondition import Precondition
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
@@ -15,16 +14,6 @@ class KnowledgeBaseProperties(UniversalBaseModel):
     name: str = pydantic.Field()
     """
     The name of the knowledge base
-    """
-
-    type: KnowledgeBaseType = pydantic.Field()
-    """
-    The type of the knowledge base. Can not be changed once created.
-    """
-
-    url: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    The URL to pull content from for RSS and URL knowledge bases.
     """
 
     precondition: typing.Optional[Precondition] = pydantic.Field(default=None)

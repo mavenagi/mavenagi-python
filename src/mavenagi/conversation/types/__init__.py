@@ -14,6 +14,8 @@ from .conversation_filter import ConversationFilter
 from .conversation_message_request import ConversationMessageRequest
 from .conversation_metadata import ConversationMetadata
 from .conversation_request import ConversationRequest
+from .conversations_response import ConversationsResponse
+from .conversations_search_request import ConversationsSearchRequest
 from .feedback_field import FeedbackField
 from .feedback_filter import FeedbackFilter
 from .feedback_request import FeedbackRequest
@@ -49,6 +51,8 @@ __all__ = [
     "ConversationMessageRequest",
     "ConversationMetadata",
     "ConversationRequest",
+    "ConversationsResponse",
+    "ConversationsSearchRequest",
     "FeedbackField",
     "FeedbackFilter",
     "FeedbackRequest",

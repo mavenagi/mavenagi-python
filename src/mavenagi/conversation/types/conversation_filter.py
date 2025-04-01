@@ -45,6 +45,7 @@ class ConversationFilter(UniversalBaseModel):
     resolution_status: typing_extensions.Annotated[
         typing.Optional[typing.List[ResolutionStatus]], FieldMetadata(alias="resolutionStatus")
     ] = None
+    resolved_by_maven: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="resolvedByMaven")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

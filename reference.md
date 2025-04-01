@@ -55,6 +55,7 @@ client.actions.create_or_update(
             ),
         ],
     ),
+    language="en",
 )
 
 ```
@@ -111,7 +112,7 @@ client.actions.create_or_update(
 <dl>
 <dd>
 
-**button_name:** `typing.Optional[str]` — When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action
+**button_name:** `typing.Optional[str]` — When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action. Defaults to "Submit" if not supplied.
     
 </dd>
 </dl>
@@ -120,6 +121,14 @@ client.actions.create_or_update(
 <dd>
 
 **precondition:** `typing.Optional[Precondition]` — The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**language:** `typing.Optional[str]` — The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
     
 </dd>
 </dl>
@@ -744,7 +753,6 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.conversation.initialize(
-    all_metadata={"allMetadata": {"allMetadata": "allMetadata"}},
     conversation_id=EntityIdBase(
         reference_id="referenceId",
     ),
@@ -795,14 +803,6 @@ client.conversation.initialize(
 <dd>
 
 **messages:** `typing.Sequence[ConversationMessageRequest]` — The messages in the conversation
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**all_metadata:** `typing.Dict[str, typing.Dict[str, str]]` — All metadata for the conversation. Keyed by appId.
     
 </dd>
 </dl>
@@ -2010,6 +2010,109 @@ client.conversation.update_conversation_metadata(
 </dl>
 </details>
 
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search conversations
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[ConversationField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[ConversationFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Inbox
 <details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">search</a>(...)</code></summary>
 <dl>
@@ -2500,7 +2603,6 @@ client.knowledge.create_or_update_knowledge_base(
         reference_id="help-center",
     ),
     name="Help center",
-    type="API",
 )
 
 ```
@@ -2526,22 +2628,6 @@ client.knowledge.create_or_update_knowledge_base(
 <dd>
 
 **name:** `str` — The name of the knowledge base
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**type:** `KnowledgeBaseType` — The type of the knowledge base. Can not be changed once created.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**url:** `typing.Optional[str]` — The URL to pull content from for RSS and URL knowledge bases.
     
 </dd>
 </dl>

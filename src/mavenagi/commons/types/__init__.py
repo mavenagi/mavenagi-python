@@ -11,17 +11,19 @@ from .app_user_identifier import AppUserIdentifier
 from .app_user_identifying_property_type import AppUserIdentifyingPropertyType
 from .app_user_request import AppUserRequest
 from .app_user_response import AppUserResponse
+from .base_conversation_response import BaseConversationResponse
+from .base_paginated_request import BasePaginatedRequest
 from .bot_action_form_response import BotActionFormResponse
 from .bot_chart_response import BotChartResponse
 from .bot_conversation_message_type import BotConversationMessageType
 from .bot_message import BotMessage
+from .bot_message_status import BotMessageStatus
 from .bot_response import BotResponse, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Text
 from .bot_response_metadata import BotResponseMetadata
 from .bot_text_response import BotTextResponse
 from .capability import Capability
 from .chart_spec_schema import ChartSpecSchema
 from .conversation_analysis import ConversationAnalysis
-from .conversation_base import ConversationBase
 from .conversation_executed_action_precondition import ConversationExecutedActionPrecondition
 from .conversation_information import ConversationInformation
 from .conversation_message_base import ConversationMessageBase
@@ -37,6 +39,7 @@ from .conversation_precondition import (
     ConversationPrecondition_ResponseConfig,
     ConversationPrecondition_Tags,
 )
+from .conversation_preview import ConversationPreview
 from .conversation_response import ConversationResponse
 from .conversation_summary import ConversationSummary
 from .document_information import DocumentInformation
@@ -109,10 +112,13 @@ __all__ = [
     "AppUserIdentifyingPropertyType",
     "AppUserRequest",
     "AppUserResponse",
+    "BaseConversationResponse",
+    "BasePaginatedRequest",
     "BotActionFormResponse",
     "BotChartResponse",
     "BotConversationMessageType",
     "BotMessage",
+    "BotMessageStatus",
     "BotResponse",
     "BotResponseMetadata",
     "BotResponse_ActionForm",
@@ -122,7 +128,6 @@ __all__ = [
     "Capability",
     "ChartSpecSchema",
     "ConversationAnalysis",
-    "ConversationBase",
     "ConversationExecutedActionPrecondition",
     "ConversationInformation",
     "ConversationMessageBase",
@@ -134,6 +139,7 @@ __all__ = [
     "ConversationPrecondition_Metadata",
     "ConversationPrecondition_ResponseConfig",
     "ConversationPrecondition_Tags",
+    "ConversationPreview",
     "ConversationResponse",
     "ConversationSummary",
     "DocumentInformation",

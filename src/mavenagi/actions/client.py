@@ -36,6 +36,7 @@ class ActionsClient:
         user_form_parameters: typing.Sequence[ActionParameter],
         button_name: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
+        language: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ActionResponse:
         """
@@ -59,10 +60,13 @@ class ActionsClient:
             The parameters that the action uses as input. An action will only be executed when all of the required parameters are provided. During execution, actions all have access to the full Conversation and User objects. Parameter values may be inferred from the user's conversation by the LLM.
 
         button_name : typing.Optional[str]
-            When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action
+            When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action. Defaults to "Submit" if not supplied.
 
         precondition : typing.Optional[Precondition]
             The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
+
+        language : typing.Optional[str]
+            The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -101,6 +105,7 @@ class ActionsClient:
                     ),
                 ],
             ),
+            language="en",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -120,6 +125,7 @@ class ActionsClient:
                 "userFormParameters": convert_and_respect_annotation_metadata(
                     object_=user_form_parameters, annotation=typing.Sequence[ActionParameter], direction="write"
                 ),
+                "language": language,
             },
             request_options=request_options,
             omit=OMIT,
@@ -337,6 +343,7 @@ class AsyncActionsClient:
         user_form_parameters: typing.Sequence[ActionParameter],
         button_name: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
+        language: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ActionResponse:
         """
@@ -360,10 +367,13 @@ class AsyncActionsClient:
             The parameters that the action uses as input. An action will only be executed when all of the required parameters are provided. During execution, actions all have access to the full Conversation and User objects. Parameter values may be inferred from the user's conversation by the LLM.
 
         button_name : typing.Optional[str]
-            When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action
+            When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action. Defaults to "Submit" if not supplied.
 
         precondition : typing.Optional[Precondition]
             The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
+
+        language : typing.Optional[str]
+            The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -407,6 +417,7 @@ class AsyncActionsClient:
                         ),
                     ],
                 ),
+                language="en",
             )
 
 
@@ -429,6 +440,7 @@ class AsyncActionsClient:
                 "userFormParameters": convert_and_respect_annotation_metadata(
                     object_=user_form_parameters, annotation=typing.Sequence[ActionParameter], direction="write"
                 ),
+                "language": language,
             },
             request_options=request_options,
             omit=OMIT,

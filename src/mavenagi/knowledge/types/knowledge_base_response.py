@@ -28,7 +28,6 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
             type="KNOWLEDGE_BASE",
         ),
         name="Help center",
-        type="API",
     )
     """
 

@@ -35,7 +35,7 @@ class ActionBase(UniversalBaseModel):
         default=None
     )
     """
-    When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action
+    When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action. Defaults to "Submit" if not supplied.
     """
 
     precondition: typing.Optional[Precondition] = pydantic.Field(default=None)
@@ -48,6 +48,11 @@ class ActionBase(UniversalBaseModel):
     ] = pydantic.Field()
     """
     The parameters that the action uses as input. An action will only be executed when all of the required parameters are provided. During execution, actions all have access to the full Conversation and User objects. Parameter values may be inferred from the user's conversation by the LLM.
+    """
+
+    language: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
     """
 
     if IS_PYDANTIC_V2:

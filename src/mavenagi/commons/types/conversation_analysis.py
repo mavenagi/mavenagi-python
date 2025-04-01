@@ -41,6 +41,13 @@ class ConversationAnalysis(UniversalBaseModel):
     Generated sentiment of the conversation
     """
 
+    resolved_by_maven: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="resolvedByMaven")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Whether the conversation was resolved by Maven
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
