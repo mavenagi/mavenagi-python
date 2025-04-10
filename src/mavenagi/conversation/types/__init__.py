@@ -21,8 +21,6 @@ from .feedback_filter import FeedbackFilter
 from .feedback_request import FeedbackRequest
 from .generate_maven_suggestions_request import GenerateMavenSuggestionsRequest
 from .numeric_conversation_field import NumericConversationField
-from .quality import Quality
-from .quality_reason import QualityReason
 from .resolution_status import ResolutionStatus
 from .stream_response import (
     StreamResponse,
@@ -58,8 +56,6 @@ __all__ = [
     "FeedbackRequest",
     "GenerateMavenSuggestionsRequest",
     "NumericConversationField",
-    "Quality",
-    "QualityReason",
     "ResolutionStatus",
     "StreamResponse",
     "StreamResponse_Action",

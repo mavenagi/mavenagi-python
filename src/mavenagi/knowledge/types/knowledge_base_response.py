@@ -7,6 +7,7 @@ import typing_extensions
 from ...commons.types.entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
+from .knowledge_base_type import KnowledgeBaseType
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
 from ...core.pydantic_utilities import update_forward_refs
@@ -28,12 +29,18 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
             type="KNOWLEDGE_BASE",
         ),
         name="Help center",
+        type="API",
     )
     """
 
     knowledge_base_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="knowledgeBaseId")] = pydantic.Field()
     """
     ID that uniquely identifies this knowledge base
+    """
+
+    type: KnowledgeBaseType = pydantic.Field()
+    """
+    The type of the knowledge base. Can not be changed once created.
     """
 
     if IS_PYDANTIC_V2:

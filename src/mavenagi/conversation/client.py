@@ -53,7 +53,14 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Initialize a new conversation. Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
+        Initialize a new conversation.
+        Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
+
+        Conversations can not be modified using this API. If the conversation already exists then the existing conversation will be returned.
+
+        After initialization,
+        - metadata can be changed using the `updateConversationMetadata` API.
+        - messages can be added to the conversation with the `appendNewMessages` or `ask` APIs.
 
         Parameters
         ----------
@@ -1550,7 +1557,14 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Initialize a new conversation. Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
+        Initialize a new conversation.
+        Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
+
+        Conversations can not be modified using this API. If the conversation already exists then the existing conversation will be returned.
+
+        After initialization,
+        - metadata can be changed using the `updateConversationMetadata` API.
+        - messages can be added to the conversation with the `appendNewMessages` or `ask` APIs.
 
         Parameters
         ----------

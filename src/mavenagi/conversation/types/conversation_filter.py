@@ -7,8 +7,8 @@ import datetime as dt
 from ...core.serialization import FieldMetadata
 from ...commons.types.entity_id_filter import EntityIdFilter
 from ...commons.types.feedback_type import FeedbackType
-from .quality import Quality
-from .quality_reason import QualityReason
+from ...commons.types.quality import Quality
+from ...commons.types.quality_reason import QualityReason
 from ...commons.types.response_length import ResponseLength
 from ...commons.types.sentiment import Sentiment
 from .resolution_status import ResolutionStatus

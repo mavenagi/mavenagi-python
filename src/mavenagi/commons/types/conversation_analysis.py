@@ -6,6 +6,8 @@ import typing
 from ...core.serialization import FieldMetadata
 import pydantic
 from .sentiment import Sentiment
+from .quality import Quality
+from .quality_reason import QualityReason
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
@@ -41,11 +43,30 @@ class ConversationAnalysis(UniversalBaseModel):
     Generated sentiment of the conversation
     """
 
+    quality: typing.Optional[Quality] = pydantic.Field(default=None)
+    """
+    Generated quality of the conversation
+    """
+
+    quality_reason: typing_extensions.Annotated[
+        typing.Optional[QualityReason], FieldMetadata(alias="qualityReason")
+    ] = pydantic.Field(default=None)
+    """
+    If the quality of the conversation is `UNKNOWN` or `NEEDS_IMPROVEMENT` then a reason for the quality will be provided when possible.
+    """
+
     resolved_by_maven: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="resolvedByMaven")] = (
         pydantic.Field(default=None)
     )
     """
     Whether the conversation was resolved by Maven
+    """
+
+    primary_language: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="primaryLanguage")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Primary language of the conversation in ISO 639-1 code format
     """
 
     if IS_PYDANTIC_V2:

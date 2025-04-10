@@ -87,6 +87,8 @@ from .precondition_base import PreconditionBase
 from .precondition_group import PreconditionGroup
 from .precondition_group_operator import PreconditionGroupOperator
 from .precondition_operator import PreconditionOperator
+from .quality import Quality
+from .quality_reason import QualityReason
 from .response_config import ResponseConfig
 from .response_config_precondition import ResponseConfigPrecondition
 from .response_length import ResponseLength
@@ -186,6 +188,8 @@ __all__ = [
     "Precondition_Conversation",
     "Precondition_Group",
     "Precondition_User",
+    "Quality",
+    "QualityReason",
     "ResponseConfig",
     "ResponseConfigPrecondition",
     "ResponseLength",

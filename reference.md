@@ -714,6 +714,85 @@ client.app_settings.get()
 </dl>
 </details>
 
+<details><summary><code>client.app_settings.<a href="src/mavenagi/app_settings/client.py">update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update app settings. Performs a merge of the provided settings with the existing app settings.
+
+- If a new key is provided, it will be added to the app settings.
+- If an existing key is provided, it will be updated.
+- No keys will be removed.
+
+Note that if an array value is provided it will fully replace an existing value as arrays cannot be merged.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.app_settings.update(
+    request={"string": {"key": "value"}},
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `typing.Dict[str, typing.Optional[typing.Any]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Conversation
 <details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">initialize</a>(...)</code></summary>
 <dl>
@@ -727,7 +806,14 @@ client.app_settings.get()
 <dl>
 <dd>
 
-Initialize a new conversation. Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
+Initialize a new conversation. 
+Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
+
+Conversations can not be modified using this API. If the conversation already exists then the existing conversation will be returned.
+
+After initialization,
+- metadata can be changed using the `updateConversationMetadata` API.
+- messages can be added to the conversation with the `appendNewMessages` or `ask` APIs.
 </dd>
 </dl>
 </dd>
@@ -2740,7 +2826,9 @@ client.knowledge.get_knowledge_base(
 <dl>
 <dd>
 
-Create a new knowledge base version. Only supported on API knowledge bases. Will throw an exception if there is an existing version in progress.
+Create a new knowledge base version.
+
+If an existing version is in progress, then that version will be finalized in an error state.
 </dd>
 </dl>
 </dd>

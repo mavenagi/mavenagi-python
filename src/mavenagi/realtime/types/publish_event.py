@@ -27,4 +27,22 @@ class PublishEvent_Audio(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-PublishEvent = PublishEvent_Audio
+class PublishEvent_HangUp(UniversalBaseModel):
+    """
+    The input from the user to send through the WebSocket.
+    """
+
+    message_type: typing_extensions.Annotated[typing.Literal["hangUp"], FieldMetadata(alias="messageType")] = "hangUp"
+    message: typing.Optional[str] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+PublishEvent = typing.Union[PublishEvent_Audio, PublishEvent_HangUp]

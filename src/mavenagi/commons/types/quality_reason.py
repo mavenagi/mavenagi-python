@@ -9,7 +9,6 @@ QualityReason = typing.Union[
         "MISSING_ACTION",
         "NEEDS_USER_CLARIFICATION",
         "UNSUPPORTED_FORMAT",
-        "GREAT_ANSWER",
         "INTERRUPTED",
         "UNSUPPORTED_USER_BEHAVIOR",
         "UNKNOWN",
