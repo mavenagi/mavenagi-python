@@ -7,6 +7,7 @@ import typing
 from ...core.serialization import FieldMetadata
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
+from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...commons.types.action_form_field import ActionFormField
 from ...commons.types.chart_spec_schema import ChartSpecSchema
 from ...commons.types.source import Source
@@ -31,6 +32,7 @@ class StreamResponse_Text(UniversalBaseModel):
 class StreamResponse_Action(UniversalBaseModel):
     event_type: typing_extensions.Annotated[typing.Literal["action"], FieldMetadata(alias="eventType")] = "action"
     id: str
+    action_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="actionId")]
     form_label: typing_extensions.Annotated[str, FieldMetadata(alias="formLabel")]
     fields: typing.List[ActionFormField]
     submit_label: typing_extensions.Annotated[str, FieldMetadata(alias="submitLabel")]

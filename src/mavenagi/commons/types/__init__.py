@@ -6,6 +6,7 @@ from .action_form_field import ActionFormField
 from .action_parameter import ActionParameter
 from .action_parameter_type import ActionParameterType
 from .action_response import ActionResponse
+from .app_precondition import AppPrecondition
 from .app_user import AppUser
 from .app_user_identifier import AppUserIdentifier
 from .app_user_identifying_property_type import AppUserIdentifyingPropertyType
@@ -35,6 +36,7 @@ from .conversation_message_response import (
 from .conversation_precondition import (
     ConversationPrecondition,
     ConversationPrecondition_ActionExecuted,
+    ConversationPrecondition_App,
     ConversationPrecondition_Metadata,
     ConversationPrecondition_ResponseConfig,
     ConversationPrecondition_Tags,
@@ -49,9 +51,6 @@ from .entity_id_filter import EntityIdFilter
 from .entity_id_without_agent import EntityIdWithoutAgent
 from .entity_type import EntityType
 from .error_message import ErrorMessage
-from .event_trigger_base import EventTriggerBase
-from .event_trigger_response import EventTriggerResponse
-from .event_trigger_type import EventTriggerType
 from .feedback import Feedback
 from .feedback_base import FeedbackBase
 from .feedback_type import FeedbackType
@@ -109,6 +108,7 @@ __all__ = [
     "ActionParameter",
     "ActionParameterType",
     "ActionResponse",
+    "AppPrecondition",
     "AppUser",
     "AppUserIdentifier",
     "AppUserIdentifyingPropertyType",
@@ -138,6 +138,7 @@ __all__ = [
     "ConversationMessageResponse_User",
     "ConversationPrecondition",
     "ConversationPrecondition_ActionExecuted",
+    "ConversationPrecondition_App",
     "ConversationPrecondition_Metadata",
     "ConversationPrecondition_ResponseConfig",
     "ConversationPrecondition_Tags",
@@ -151,9 +152,6 @@ __all__ = [
     "EntityIdWithoutAgent",
     "EntityType",
     "ErrorMessage",
-    "EventTriggerBase",
-    "EventTriggerResponse",
-    "EventTriggerType",
     "Feedback",
     "FeedbackBase",
     "FeedbackType",

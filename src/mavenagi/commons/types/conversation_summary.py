@@ -24,6 +24,62 @@ class ConversationSummary(UniversalBaseModel):
     The IDs of the actions that were taken by Maven but not completed in the conversation. Occurs when the user is shown an action form but does not submit it.
     """
 
+    insert_count: typing_extensions.Annotated[int, FieldMetadata(alias="insertCount")] = pydantic.Field()
+    """
+    The number of insert events on messages in the conversation.
+    """
+
+    thumbs_up_count: typing_extensions.Annotated[int, FieldMetadata(alias="thumbsUpCount")] = pydantic.Field()
+    """
+    The number of thumbs up events on messages in the conversation.
+    """
+
+    thumbs_down_count: typing_extensions.Annotated[int, FieldMetadata(alias="thumbsDownCount")] = pydantic.Field()
+    """
+    The number of thumbs down events on messages in the conversation.
+    """
+
+    user_message_count: typing_extensions.Annotated[int, FieldMetadata(alias="userMessageCount")] = pydantic.Field()
+    """
+    The number of messages of type `USER` in the conversation.
+    """
+
+    handle_time: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="handleTime")] = pydantic.Field(
+        default=None
+    )
+    """
+    The total time in milliseconds that the user spent interacting with the conversation. 
+    Calculated by taking the timestamp of the last message in the conversation minus the timestamp of the first message.
+    """
+
+    human_agent_response_delay: typing_extensions.Annotated[
+        typing.Optional[int], FieldMetadata(alias="humanAgentResponseDelay")
+    ] = pydantic.Field(default=None)
+    """
+    The time in milliseconds that elapsed before a human agent responded to the conversation.
+    Calculated by taking the timestamp of the first message of type `HUMAN_AGENT` 
+    minus the timestamp of the first message in the conversation.
+    
+    Will not be provided if the conversation does not have a message of type `HUMAN_AGENT`.
+    """
+
+    human_agents: typing_extensions.Annotated[typing.List[str], FieldMetadata(alias="humanAgents")] = pydantic.Field()
+    """
+    The names of all users that have a message of type `HUMAN_AGENT` on the conversation.
+    """
+
+    human_agents_with_inserts: typing_extensions.Annotated[
+        typing.List[str], FieldMetadata(alias="humanAgentsWithInserts")
+    ] = pydantic.Field()
+    """
+    The names of all users that have an associated insert event on the conversation.
+    """
+
+    users: typing.List[str] = pydantic.Field()
+    """
+    The names of all users that have a message of type `USER` on the conversation.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

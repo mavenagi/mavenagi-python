@@ -7,8 +7,8 @@ import typing_extensions
 from ...commons.types.entity_id_base import EntityIdBase
 from ...core.serialization import FieldMetadata
 import pydantic
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.pydantic_utilities import update_forward_refs
 
 
@@ -32,6 +32,11 @@ class KnowledgeBaseRequest(KnowledgeBaseProperties):
     )
     """
     ID that uniquely identifies this knowledge base
+    """
+
+    metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
+    """
+    Metadata for the knowledge base.
     """
 
     if IS_PYDANTIC_V2:

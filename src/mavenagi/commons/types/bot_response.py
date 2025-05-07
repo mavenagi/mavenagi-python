@@ -6,6 +6,7 @@ import typing
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
 import typing_extensions
+from .entity_id_without_agent import EntityIdWithoutAgent
 from ...core.serialization import FieldMetadata
 from .action_form_field import ActionFormField
 from .chart_spec_schema import ChartSpecSchema
@@ -28,6 +29,7 @@ class BotResponse_Text(UniversalBaseModel):
 class BotResponse_ActionForm(UniversalBaseModel):
     type: typing.Literal["actionForm"] = "actionForm"
     id: str
+    action_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="actionId")]
     form_label: typing_extensions.Annotated[str, FieldMetadata(alias="formLabel")]
     fields: typing.List[ActionFormField]
     submit_label: typing_extensions.Annotated[str, FieldMetadata(alias="submitLabel")]

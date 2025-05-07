@@ -519,6 +519,7 @@ class ConversationClient:
         text: str,
         attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -551,6 +552,9 @@ class ConversationClient:
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -588,6 +592,7 @@ class ConversationClient:
                 )
             ],
             transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
+            timezone="America/New_York",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -605,6 +610,7 @@ class ConversationClient:
                     object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
                 ),
                 "transientData": transient_data,
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,
@@ -662,6 +668,7 @@ class ConversationClient:
         text: str,
         attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.Iterator[StreamResponse]:
         """
@@ -699,6 +706,9 @@ class ConversationClient:
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
 
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -734,6 +744,7 @@ class ConversationClient:
                 )
             ],
             transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
+            timezone="America/New_York",
         )
         for chunk in response:
             yield chunk
@@ -753,6 +764,7 @@ class ConversationClient:
                     object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
                 ),
                 "transientData": transient_data,
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,
@@ -2055,6 +2067,7 @@ class AsyncConversationClient:
         text: str,
         attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -2087,6 +2100,9 @@ class AsyncConversationClient:
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -2129,6 +2145,7 @@ class AsyncConversationClient:
                     )
                 ],
                 transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
+                timezone="America/New_York",
             )
 
 
@@ -2149,6 +2166,7 @@ class AsyncConversationClient:
                     object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
                 ),
                 "transientData": transient_data,
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,
@@ -2206,6 +2224,7 @@ class AsyncConversationClient:
         text: str,
         attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.AsyncIterator[StreamResponse]:
         """
@@ -2242,6 +2261,9 @@ class AsyncConversationClient:
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -2283,6 +2305,7 @@ class AsyncConversationClient:
                     )
                 ],
                 transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
+                timezone="America/New_York",
             )
             async for chunk in response:
                 yield chunk
@@ -2305,6 +2328,7 @@ class AsyncConversationClient:
                     object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
                 ),
                 "transientData": transient_data,
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,

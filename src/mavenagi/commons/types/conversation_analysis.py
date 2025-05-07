@@ -69,6 +69,13 @@ class ConversationAnalysis(UniversalBaseModel):
     Primary language of the conversation in ISO 639-1 code format
     """
 
+    predicted_nps: typing_extensions.Annotated[typing.Optional[float], FieldMetadata(alias="predictedNps")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The predicted NPS of the conversation.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

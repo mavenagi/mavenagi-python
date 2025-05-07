@@ -2,7 +2,7 @@
 
 from .event_trigger_base import EventTriggerBase
 import typing_extensions
-from .entity_id import EntityId
+from ...commons.types.entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
@@ -13,7 +13,8 @@ class EventTriggerResponse(EventTriggerBase):
     """
     Examples
     --------
-    from mavenagi.commons import EntityId, EventTriggerResponse
+    from mavenagi.commons import EntityId
+    from mavenagi.triggers import EventTriggerResponse
 
     EventTriggerResponse(
         trigger_id=EntityId(
@@ -25,12 +26,18 @@ class EventTriggerResponse(EventTriggerBase):
         ),
         description="Stores conversation data in Snowflake",
         type="CONVERSATION_CREATED",
+        enabled=True,
     )
     """
 
     trigger_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="triggerId")] = pydantic.Field()
     """
     ID that uniquely identifies this event trigger
+    """
+
+    enabled: bool = pydantic.Field()
+    """
+    Whether this trigger will be called by Maven.
     """
 
     if IS_PYDANTIC_V2:

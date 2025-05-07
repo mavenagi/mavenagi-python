@@ -13,17 +13,17 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 class ActionFormField(UniversalBaseModel):
     id: str = pydantic.Field()
     """
-    The ID field should be used as the key in the submitActionForm API call.
+    The ID field should be used as the key in the `submitActionForm` API.
     """
 
     label: str = pydantic.Field()
     """
-    The title of the field to show on the form.
+    The title of the field to show on the form. Provided in the user's language.
     """
 
     description: str = pydantic.Field()
     """
-    A longer description of the field which should be shown in smaller text near the label.
+    A longer description of the field which should be shown in smaller text near the label. Provided in the user's language.
     """
 
     required: bool = pydantic.Field()

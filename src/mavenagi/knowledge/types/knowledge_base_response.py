@@ -8,8 +8,8 @@ from ...commons.types.entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
 from .knowledge_base_type import KnowledgeBaseType
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.pydantic_utilities import update_forward_refs
 
 
@@ -30,6 +30,7 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
         ),
         name="Help center",
         type="API",
+        metadata={"key": "value"},
     )
     """
 
@@ -41,6 +42,11 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     type: KnowledgeBaseType = pydantic.Field()
     """
     The type of the knowledge base. Can not be changed once created.
+    """
+
+    metadata: typing.Dict[str, str] = pydantic.Field()
+    """
+    Metadata for the knowledge base.
     """
 
     if IS_PYDANTIC_V2:

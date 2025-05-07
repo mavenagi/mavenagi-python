@@ -28,6 +28,13 @@ class UserMessage(UserMessageBase):
     The attachments associated with the message
     """
 
+    user_display_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="userDisplayName")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The display name of the user who created this message. Only available for users who have saved name information.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

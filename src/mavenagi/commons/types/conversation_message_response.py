@@ -23,6 +23,7 @@ class ConversationMessageResponse_User(UniversalBaseModel):
     conversation_message_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="conversationMessageId")]
     language: typing.Optional[str] = None
     attachments: typing.List[UserMessageAttachment]
+    user_display_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="userDisplayName")] = None
     user_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="userId")]
     text: str
     user_message_type: typing_extensions.Annotated[UserConversationMessageType, FieldMetadata(alias="userMessageType")]

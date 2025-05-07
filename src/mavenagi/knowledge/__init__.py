@@ -2,11 +2,14 @@
 
 from .types import (
     BaseKnowledgeDocument,
+    FinalizeKnowledgeBaseVersionRequest,
     KnowledgeBaseProperties,
     KnowledgeBaseRequest,
     KnowledgeBaseResponse,
     KnowledgeBaseType,
     KnowledgeBaseVersion,
+    KnowledgeBaseVersionFinalizeStatus,
+    KnowledgeBaseVersionStatus,
     KnowledgeBaseVersionType,
     KnowledgeDocumentContentType,
     KnowledgeDocumentRequest,
@@ -15,11 +18,14 @@ from .types import (
 
 __all__ = [
     "BaseKnowledgeDocument",
+    "FinalizeKnowledgeBaseVersionRequest",
     "KnowledgeBaseProperties",
     "KnowledgeBaseRequest",
     "KnowledgeBaseResponse",
     "KnowledgeBaseType",
     "KnowledgeBaseVersion",
+    "KnowledgeBaseVersionFinalizeStatus",
+    "KnowledgeBaseVersionStatus",
     "KnowledgeBaseVersionType",
     "KnowledgeDocumentContentType",
     "KnowledgeDocumentRequest",

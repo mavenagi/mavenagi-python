@@ -52,6 +52,9 @@ class InboxItem_DuplicateDocuments(UniversalBaseModel):
     other_fixes: typing_extensions.Annotated[
         typing.List[InboxItemFixDeactivateDocument], FieldMetadata(alias="otherFixes")
     ]
+    source_document: typing_extensions.Annotated[
+        typing.Optional[DocumentInformation], FieldMetadata(alias="sourceDocument")
+    ] = None
     documents: typing.List[DocumentInformation]
     id: EntityId
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]

@@ -87,9 +87,27 @@ class ConversationPrecondition_ResponseConfig(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class ConversationPrecondition_App(UniversalBaseModel):
+    conversation_precondition_type: typing_extensions.Annotated[
+        typing.Literal["app"], FieldMetadata(alias="conversationPreconditionType")
+    ] = "app"
+    app_id: typing_extensions.Annotated[str, FieldMetadata(alias="appId")]
+    operator: typing.Optional[PreconditionOperator] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 ConversationPrecondition = typing.Union[
     ConversationPrecondition_Tags,
     ConversationPrecondition_Metadata,
     ConversationPrecondition_ActionExecuted,
     ConversationPrecondition_ResponseConfig,
+    ConversationPrecondition_App,
 ]

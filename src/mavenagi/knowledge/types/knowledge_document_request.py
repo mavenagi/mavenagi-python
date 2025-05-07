@@ -5,25 +5,32 @@ import typing_extensions
 from ...commons.types.entity_id_base import EntityIdBase
 from ...core.serialization import FieldMetadata
 import pydantic
+import typing
+from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from .knowledge_document_content_type import KnowledgeDocumentContentType
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
-import typing
 
 
 class KnowledgeDocumentRequest(BaseKnowledgeDocument):
     """
     Examples
     --------
-    from mavenagi.commons import EntityIdBase
+    from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
     from mavenagi.knowledge import KnowledgeDocumentRequest
 
     KnowledgeDocumentRequest(
         knowledge_document_id=EntityIdBase(
             reference_id="getting-started",
         ),
+        version_id=EntityIdWithoutAgent(
+            type="KNOWLEDGE_BASE_VERSION",
+            reference_id="versionId",
+            app_id="maven",
+        ),
         content_type="MARKDOWN",
         content="## Getting started\\nThis is a getting started guide for the help center.",
         title="Getting started",
+        metadata={"category": "getting-started"},
     )
     """
 
@@ -34,10 +41,22 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
     ID that uniquely identifies this knowledge document within its knowledge base
     """
 
+    version_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="versionId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+    """
+
     content_type: typing_extensions.Annotated[KnowledgeDocumentContentType, FieldMetadata(alias="contentType")]
     content: str = pydantic.Field()
     """
     The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
+    """
+
+    metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
+    """
+    Metadata for the knowledge document.
     """
 
     if IS_PYDANTIC_V2:

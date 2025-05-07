@@ -175,6 +175,7 @@ response = client.conversation.ask_stream(
         )
     ],
     transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
+    timezone="America/New_York",
 )
 for chunk in response:
     yield chunk

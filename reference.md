@@ -651,6 +651,83 @@ Defines the time interval for grouping data. If specified, data is grouped accor
 </details>
 
 ## AppSettings
+<details><summary><code>client.app_settings.<a href="src/mavenagi/app_settings/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search for app settings which have the `$index` key set to the provided value.
+
+You can set the `$index` key using the Update app settings API.
+
+<Warning>This API currently requires an organization ID and agent ID for any agent which is installed on the app. This requirement will be removed in a future update.</Warning>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.app_settings.search(
+    index="index",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**index:** `str` — Will return all settings which have the `$index` key set to the provided value.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.app_settings.<a href="src/mavenagi/app_settings/client.py">get</a>()</code></summary>
 <dl>
 <dd>
@@ -1307,6 +1384,7 @@ client.conversation.ask(
         )
     ],
     transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
+    timezone="America/New_York",
 )
 
 ```
@@ -1364,6 +1442,14 @@ client.conversation.ask(
 <dd>
 
 **transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` — IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
     
 </dd>
 </dl>
@@ -1448,6 +1534,7 @@ response = client.conversation.ask_stream(
         )
     ],
     transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
+    timezone="America/New_York",
 )
 for chunk in response:
     yield chunk
@@ -1507,6 +1594,14 @@ for chunk in response:
 <dd>
 
 **transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` — IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
     
 </dd>
 </dl>
@@ -2721,6 +2816,14 @@ client.knowledge.create_or_update_knowledge_base(
 <dl>
 <dd>
 
+**metadata:** `typing.Optional[typing.Dict[str, str]]` — Metadata for the knowledge base.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **precondition:** `typing.Optional[Precondition]` — (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
     
 </dd>
@@ -2844,6 +2947,7 @@ If an existing version is in progress, then that version will be finalized in an
 
 ```python
 from mavenagi import MavenAGI
+from mavenagi.commons import EntityId
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -2853,7 +2957,15 @@ client = MavenAGI(
 )
 client.knowledge.create_knowledge_base_version(
     knowledge_base_reference_id="help-center",
+    version_id=EntityId(
+        type="KNOWLEDGE_BASE_VERSION",
+        reference_id="versionId",
+        app_id="maven",
+        organization_id="acme",
+        agent_id="support",
+    ),
     type="FULL",
+    status="IN_PROGRESS",
 )
 
 ```
@@ -2878,7 +2990,31 @@ client.knowledge.create_knowledge_base_version(
 <dl>
 <dd>
 
+**version_id:** `EntityId` — The unique ID of the knowledge base version.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **type:** `KnowledgeBaseVersionType` — Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `KnowledgeBaseVersionStatus` — The status of the knowledge base version
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**error_message:** `typing.Optional[str]` — A user-facing error message that provides more details about a version failure.
     
 </dd>
 </dl>
@@ -2926,6 +3062,7 @@ Finalize the latest knowledge base version. Required to indicate the version is 
 
 ```python
 from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdWithoutAgent
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -2935,6 +3072,12 @@ client = MavenAGI(
 )
 client.knowledge.finalize_knowledge_base_version(
     knowledge_base_reference_id="help-center",
+    version_id=EntityIdWithoutAgent(
+        type="KNOWLEDGE_BASE_VERSION",
+        reference_id="versionId",
+        app_id="maven",
+    ),
+    status="SUCCEEDED",
 )
 
 ```
@@ -2952,6 +3095,30 @@ client.knowledge.finalize_knowledge_base_version(
 <dd>
 
 **knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to finalize a version for. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**version_id:** `typing.Optional[EntityIdWithoutAgent]` — ID that uniquely identifies which knowledge base version to finalize. If not provided will use the most recent version of the knowledge base.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[KnowledgeBaseVersionFinalizeStatus]` — Whether the knowledge base version processing was successful or not.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**error_message:** `typing.Optional[str]` — A user-facing error message that provides more details about a version failure.
     
 </dd>
 </dl>
@@ -2984,6 +3151,11 @@ client.knowledge.finalize_knowledge_base_version(
 <dd>
 
 Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+        
+<Tip>
+This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields 
+have changed, a new document version will not be created. The existing version will be reused.
+</Tip>
 </dd>
 </dl>
 </dd>
@@ -2999,7 +3171,7 @@ Create knowledge document. Requires an existing knowledge base with an in progre
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
+from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -3012,9 +3184,15 @@ client.knowledge.create_knowledge_document(
     knowledge_document_id=EntityIdBase(
         reference_id="getting-started",
     ),
+    version_id=EntityIdWithoutAgent(
+        type="KNOWLEDGE_BASE_VERSION",
+        reference_id="versionId",
+        app_id="maven",
+    ),
     content_type="MARKDOWN",
     content="## Getting started\\nThis is a getting started guide for the help center.",
     title="Getting started",
+    metadata={"category": "getting-started"},
 )
 
 ```
@@ -3064,6 +3242,22 @@ client.knowledge.create_knowledge_document(
 <dd>
 
 **title:** `str` — The title of the document. Will be shown as part of answers.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**version_id:** `typing.Optional[EntityIdWithoutAgent]` — ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**metadata:** `typing.Optional[typing.Dict[str, str]]` — Metadata for the knowledge document.
     
 </dd>
 </dl>
@@ -3151,7 +3345,7 @@ Not yet implemented. Update knowledge document. Requires an existing knowledge b
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
+from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -3164,9 +3358,15 @@ client.knowledge.update_knowledge_document(
     knowledge_document_id=EntityIdBase(
         reference_id="getting-started",
     ),
+    version_id=EntityIdWithoutAgent(
+        type="KNOWLEDGE_BASE_VERSION",
+        reference_id="versionId",
+        app_id="maven",
+    ),
     content_type="MARKDOWN",
     content="## Getting started\\nThis is a getting started guide for the help center.",
     title="Getting started",
+    metadata={"category": "getting-started"},
 )
 
 ```
@@ -3216,6 +3416,22 @@ client.knowledge.update_knowledge_document(
 <dd>
 
 **title:** `str` — The title of the document. Will be shown as part of answers.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**version_id:** `typing.Optional[EntityIdWithoutAgent]` — ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**metadata:** `typing.Optional[typing.Dict[str, str]]` — Metadata for the knowledge document.
     
 </dd>
 </dl>
@@ -3357,6 +3573,244 @@ client.knowledge.delete_knowledge_document(
 </dl>
 </details>
 
+## Organizations
+<details><summary><code>client.organizations.<a href="src/mavenagi/organizations/client.py">get_conversation_table</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves structured conversation data across all organizations, formatted as a table, 
+allowing users to group, filter, and define specific metrics to display as columns.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import (
+    ConversationColumnDefinition,
+    ConversationGroupBy,
+    ConversationMetric_Average,
+    ConversationMetric_Count,
+    ConversationMetric_Percentile,
+)
+from mavenagi.conversation import ConversationFilter
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.organizations.get_conversation_table(
+    conversation_filter=ConversationFilter(
+        languages=["en", "es"],
+    ),
+    time_grouping="DAY",
+    field_groupings=[
+        ConversationGroupBy(
+            field="Category",
+        )
+    ],
+    column_definitions=[
+        ConversationColumnDefinition(
+            header="count",
+            metric=ConversationMetric_Count(),
+        ),
+        ConversationColumnDefinition(
+            header="avg_first_response_time",
+            metric=ConversationMetric_Average(
+                target_field="FirstResponseTime",
+            ),
+        ),
+        ConversationColumnDefinition(
+            header="percentile_handle_time",
+            metric=ConversationMetric_Percentile(
+                target_field="HandleTime",
+                percentile=25.0,
+            ),
+        ),
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_groupings:** `typing.Sequence[ConversationGroupBy]` 
+
+Specifies the fields by which data should be grouped. Each unique combination forms a row.
+If multiple fields are provided, the result is grouped by their unique value combinations.
+If empty, all data is aggregated into a single row. |
+Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**column_definitions:** `typing.Sequence[ConversationColumnDefinition]` — Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**time_grouping:** `typing.Optional[TimeInterval]` — Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**conversation_filter:** `typing.Optional[ConversationFilter]` — Optional filter applied to refine the conversation data before processing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.organizations.<a href="src/mavenagi/organizations/client.py">get_conversation_chart</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetches conversation data across all organizations, visualized in a chart format. 
+Supported chart types include pie chart, date histogram, and stacked bar charts.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import (
+    ConversationChartRequest_BarChart,
+    ConversationGroupBy,
+    ConversationMetric_Count,
+)
+from mavenagi.conversation import ConversationFilter
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.organizations.get_conversation_chart(
+    request=ConversationChartRequest_BarChart(
+        conversation_filter=ConversationFilter(
+            languages=["en", "es"],
+        ),
+        bar_definition=ConversationGroupBy(
+            field="Category",
+        ),
+        metric=ConversationMetric_Count(),
+        vertical_grouping=ConversationGroupBy(
+            field="ResolutionStatus",
+        ),
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ConversationChartRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Translations
 <details><summary><code>client.translations.<a href="src/mavenagi/translations/client.py">translate</a>(...)</code></summary>
 <dl>
@@ -3441,6 +3895,87 @@ client.translations.translate(
 </details>
 
 ## Triggers
+<details><summary><code>client.triggers.<a href="src/mavenagi/triggers/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.triggers.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[TriggerField]` — The field to sort by, defaults to created timestamp
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.triggers.<a href="src/mavenagi/triggers/client.py">create_or_update</a>(...)</code></summary>
 <dl>
 <dd>
@@ -3669,6 +4204,95 @@ client.triggers.delete(
 <dd>
 
 **trigger_reference_id:** `str` — The reference ID of the event trigger to delete. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.triggers.<a href="src/mavenagi/triggers/client.py">partial_update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Updates an event trigger. Only the enabled field is editable.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.triggers.partial_update(
+    trigger_reference_id="triggerReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**trigger_reference_id:** `str` — The reference ID of the event trigger to update. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the trigger to update. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enabled:** `typing.Optional[bool]` — Whether the trigger will be called by Maven.
     
 </dd>
 </dl>

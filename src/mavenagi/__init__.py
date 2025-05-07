@@ -8,6 +8,7 @@ from . import (
     conversation,
     inbox,
     knowledge,
+    organizations,
     realtime,
     translations,
     triggers,
@@ -89,6 +90,7 @@ from .analytics import (
     TimeInterval,
     TimeSeries,
 )
+from .app_settings import AppSettings, SearchAppSettingsResponse
 from .client import AsyncMavenAGI, MavenAGI
 from .commons import (
     ActionBase,
@@ -97,6 +99,7 @@ from .commons import (
     ActionParameter,
     ActionParameterType,
     ActionResponse,
+    AppPrecondition,
     AppUser,
     AppUserIdentifier,
     AppUserIdentifyingPropertyType,
@@ -127,6 +130,7 @@ from .commons import (
     ConversationMessageResponse_User,
     ConversationPrecondition,
     ConversationPrecondition_ActionExecuted,
+    ConversationPrecondition_App,
     ConversationPrecondition_Metadata,
     ConversationPrecondition_ResponseConfig,
     ConversationPrecondition_Tags,
@@ -140,9 +144,6 @@ from .commons import (
     EntityIdWithoutAgent,
     EntityType,
     ErrorMessage,
-    EventTriggerBase,
-    EventTriggerResponse,
-    EventTriggerType,
     Feedback,
     FeedbackBase,
     FeedbackType,
@@ -237,11 +238,14 @@ from .inbox import (
 )
 from .knowledge import (
     BaseKnowledgeDocument,
+    FinalizeKnowledgeBaseVersionRequest,
     KnowledgeBaseProperties,
     KnowledgeBaseRequest,
     KnowledgeBaseResponse,
     KnowledgeBaseType,
     KnowledgeBaseVersion,
+    KnowledgeBaseVersionFinalizeStatus,
+    KnowledgeBaseVersionStatus,
     KnowledgeBaseVersionType,
     KnowledgeDocumentContentType,
     KnowledgeDocumentRequest,
@@ -262,7 +266,16 @@ from .realtime import (
     SubscribeEvent_ControlSessionStop,
 )
 from .translations import TranslationRequest, TranslationResponse
-from .triggers import EventTriggerRequest
+from .triggers import (
+    EventTriggerBase,
+    EventTriggerRequest,
+    EventTriggerResponse,
+    EventTriggerType,
+    EventTriggersSearchRequest,
+    EventTriggersSearchResponse,
+    TriggerField,
+    TriggerPartialUpdate,
+)
 from .version import __version__
 
 __all__ = [
@@ -274,6 +287,8 @@ __all__ = [
     "ActionRequest",
     "ActionResponse",
     "AddDocumentFixRequest",
+    "AppPrecondition",
+    "AppSettings",
     "AppUser",
     "AppUserIdentifier",
     "AppUserIdentifyingPropertyType",
@@ -363,6 +378,7 @@ __all__ = [
     "ConversationPieChartRequest",
     "ConversationPrecondition",
     "ConversationPrecondition_ActionExecuted",
+    "ConversationPrecondition_App",
     "ConversationPrecondition_Metadata",
     "ConversationPrecondition_ResponseConfig",
     "ConversationPrecondition_Tags",
@@ -388,6 +404,8 @@ __all__ = [
     "EventTriggerRequest",
     "EventTriggerResponse",
     "EventTriggerType",
+    "EventTriggersSearchRequest",
+    "EventTriggersSearchResponse",
     "Feedback",
     "FeedbackAnalyticsRequest",
     "FeedbackBase",
@@ -413,6 +431,7 @@ __all__ = [
     "FieldValue_Long",
     "FieldValue_Range",
     "FieldValue_String",
+    "FinalizeKnowledgeBaseVersionRequest",
     "GenerateMavenSuggestionsRequest",
     "GroupByBase",
     "HangUpPublishEvent",
@@ -444,6 +463,8 @@ __all__ = [
     "KnowledgeBaseResponse",
     "KnowledgeBaseType",
     "KnowledgeBaseVersion",
+    "KnowledgeBaseVersionFinalizeStatus",
+    "KnowledgeBaseVersionStatus",
     "KnowledgeBaseVersionType",
     "KnowledgeDocumentContentType",
     "KnowledgeDocumentRequest",
@@ -475,6 +496,7 @@ __all__ = [
     "ResponseConfigPrecondition",
     "ResponseLength",
     "RowBase",
+    "SearchAppSettingsResponse",
     "Sentiment",
     "Series",
     "ServerError",
@@ -499,6 +521,8 @@ __all__ = [
     "TimeSeries",
     "TranslationRequest",
     "TranslationResponse",
+    "TriggerField",
+    "TriggerPartialUpdate",
     "UpdateMetadataRequest",
     "UserConversationMessageType",
     "UserData",
@@ -514,6 +538,7 @@ __all__ = [
     "conversation",
     "inbox",
     "knowledge",
+    "organizations",
     "realtime",
     "translations",
     "triggers",

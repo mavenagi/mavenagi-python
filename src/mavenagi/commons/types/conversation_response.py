@@ -41,6 +41,13 @@ class ConversationResponse(BaseConversationResponse):
         summary=ConversationSummary(
             action_ids=[],
             incomplete_action_ids=[],
+            insert_count=0,
+            thumbs_up_count=0,
+            thumbs_down_count=0,
+            user_message_count=1,
+            human_agents=[],
+            human_agents_with_inserts=[],
+            users=[],
         ),
         metadata={},
         all_metadata={},

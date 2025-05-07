@@ -15,8 +15,12 @@ from ..commons.errors.server_error import ServerError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
 from ..core.jsonable_encoder import jsonable_encoder
+from ..commons.types.entity_id import EntityId
 from .types.knowledge_base_version_type import KnowledgeBaseVersionType
+from .types.knowledge_base_version_status import KnowledgeBaseVersionStatus
 from .types.knowledge_base_version import KnowledgeBaseVersion
+from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
+from .types.knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
 from .types.knowledge_document_content_type import KnowledgeDocumentContentType
 import datetime as dt
 from .types.knowledge_document_response import KnowledgeDocumentResponse
@@ -35,6 +39,7 @@ class KnowledgeClient:
         *,
         knowledge_base_id: EntityIdBase,
         name: str,
+        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
@@ -48,6 +53,9 @@ class KnowledgeClient:
 
         name : str
             The name of the knowledge base
+
+        metadata : typing.Optional[typing.Dict[str, str]]
+            Metadata for the knowledge base.
 
         precondition : typing.Optional[Precondition]
             (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
@@ -84,6 +92,7 @@ class KnowledgeClient:
                 "knowledgeBaseId": convert_and_respect_annotation_metadata(
                     object_=knowledge_base_id, annotation=EntityIdBase, direction="write"
                 ),
+                "metadata": metadata,
                 "name": name,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
@@ -221,7 +230,10 @@ class KnowledgeClient:
         self,
         knowledge_base_reference_id: str,
         *,
+        version_id: EntityId,
         type: KnowledgeBaseVersionType,
+        status: KnowledgeBaseVersionStatus,
+        error_message: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseVersion:
         """
@@ -234,8 +246,17 @@ class KnowledgeClient:
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to create a version for. All other entity ID fields are inferred from the request.
 
+        version_id : EntityId
+            The unique ID of the knowledge base version.
+
         type : KnowledgeBaseVersionType
             Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
+
+        status : KnowledgeBaseVersionStatus
+            The status of the knowledge base version
+
+        error_message : typing.Optional[str]
+            A user-facing error message that provides more details about a version failure.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -247,6 +268,7 @@ class KnowledgeClient:
         Examples
         --------
         from mavenagi import MavenAGI
+        from mavenagi.commons import EntityId
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -256,14 +278,27 @@ class KnowledgeClient:
         )
         client.knowledge.create_knowledge_base_version(
             knowledge_base_reference_id="help-center",
+            version_id=EntityId(
+                type="KNOWLEDGE_BASE_VERSION",
+                reference_id="versionId",
+                app_id="maven",
+                organization_id="acme",
+                agent_id="support",
+            ),
             type="FULL",
+            status="IN_PROGRESS",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/version",
             method="POST",
             json={
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityId, direction="write"
+                ),
                 "type": type,
+                "status": status,
+                "errorMessage": error_message,
             },
             request_options=request_options,
             omit=OMIT,
@@ -313,8 +348,14 @@ class KnowledgeClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def finalize_knowledge_base_version(
-        self, knowledge_base_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> None:
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        status: typing.Optional[KnowledgeBaseVersionFinalizeStatus] = OMIT,
+        error_message: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBaseVersion:
         """
         Finalize the latest knowledge base version. Required to indicate the version is complete. Will throw an exception if the latest version is not in progress.
 
@@ -323,16 +364,26 @@ class KnowledgeClient:
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to finalize a version for. All other entity ID fields are inferred from the request.
 
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to finalize. If not provided will use the most recent version of the knowledge base.
+
+        status : typing.Optional[KnowledgeBaseVersionFinalizeStatus]
+            Whether the knowledge base version processing was successful or not.
+
+        error_message : typing.Optional[str]
+            A user-facing error message that provides more details about a version failure.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        None
+        KnowledgeBaseVersion
 
         Examples
         --------
         from mavenagi import MavenAGI
+        from mavenagi.commons import EntityIdWithoutAgent
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -342,16 +393,36 @@ class KnowledgeClient:
         )
         client.knowledge.finalize_knowledge_base_version(
             knowledge_base_reference_id="help-center",
+            version_id=EntityIdWithoutAgent(
+                type="KNOWLEDGE_BASE_VERSION",
+                reference_id="versionId",
+                app_id="maven",
+            ),
+            status="SUCCEEDED",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
             f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/version/finalize",
             method="POST",
+            json={
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
+                "status": status,
+                "errorMessage": error_message,
+            },
             request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
-                return
+                return typing.cast(
+                    KnowledgeBaseVersion,
+                    parse_obj_as(
+                        type_=KnowledgeBaseVersion,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
             if _response.status_code == 404:
                 raise NotFoundError(
                     typing.cast(
@@ -395,6 +466,8 @@ class KnowledgeClient:
         content_type: KnowledgeDocumentContentType,
         content: str,
         title: str,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         url: typing.Optional[str] = OMIT,
         language: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
@@ -404,6 +477,11 @@ class KnowledgeClient:
     ) -> KnowledgeDocumentResponse:
         """
         Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+
+        <Tip>
+        This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields
+        have changed, a new document version will not be created. The existing version will be reused.
+        </Tip>
 
         Parameters
         ----------
@@ -420,6 +498,12 @@ class KnowledgeClient:
 
         title : str
             The title of the document. Will be shown as part of answers.
+
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+
+        metadata : typing.Optional[typing.Dict[str, str]]
+            Metadata for the knowledge document.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
@@ -446,7 +530,7 @@ class KnowledgeClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase
+        from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -459,9 +543,15 @@ class KnowledgeClient:
             knowledge_document_id=EntityIdBase(
                 reference_id="getting-started",
             ),
+            version_id=EntityIdWithoutAgent(
+                type="KNOWLEDGE_BASE_VERSION",
+                reference_id="versionId",
+                app_id="maven",
+            ),
             content_type="MARKDOWN",
             content="## Getting started\\nThis is a getting started guide for the help center.",
             title="Getting started",
+            metadata={"category": "getting-started"},
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -471,8 +561,12 @@ class KnowledgeClient:
                 "knowledgeDocumentId": convert_and_respect_annotation_metadata(
                     object_=knowledge_document_id, annotation=EntityIdBase, direction="write"
                 ),
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
                 "contentType": content_type,
                 "content": content,
+                "metadata": metadata,
                 "title": title,
                 "url": url,
                 "language": language,
@@ -535,6 +629,8 @@ class KnowledgeClient:
         content_type: KnowledgeDocumentContentType,
         content: str,
         title: str,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         url: typing.Optional[str] = OMIT,
         language: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
@@ -561,6 +657,12 @@ class KnowledgeClient:
         title : str
             The title of the document. Will be shown as part of answers.
 
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+
+        metadata : typing.Optional[typing.Dict[str, str]]
+            Metadata for the knowledge document.
+
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
 
@@ -586,7 +688,7 @@ class KnowledgeClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase
+        from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -599,9 +701,15 @@ class KnowledgeClient:
             knowledge_document_id=EntityIdBase(
                 reference_id="getting-started",
             ),
+            version_id=EntityIdWithoutAgent(
+                type="KNOWLEDGE_BASE_VERSION",
+                reference_id="versionId",
+                app_id="maven",
+            ),
             content_type="MARKDOWN",
             content="## Getting started\\nThis is a getting started guide for the help center.",
             title="Getting started",
+            metadata={"category": "getting-started"},
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -611,8 +719,12 @@ class KnowledgeClient:
                 "knowledgeDocumentId": convert_and_respect_annotation_metadata(
                     object_=knowledge_document_id, annotation=EntityIdBase, direction="write"
                 ),
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
                 "contentType": content_type,
                 "content": content,
+                "metadata": metadata,
                 "title": title,
                 "url": url,
                 "language": language,
@@ -760,6 +872,7 @@ class AsyncKnowledgeClient:
         *,
         knowledge_base_id: EntityIdBase,
         name: str,
+        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
@@ -773,6 +886,9 @@ class AsyncKnowledgeClient:
 
         name : str
             The name of the knowledge base
+
+        metadata : typing.Optional[typing.Dict[str, str]]
+            Metadata for the knowledge base.
 
         precondition : typing.Optional[Precondition]
             (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
@@ -817,6 +933,7 @@ class AsyncKnowledgeClient:
                 "knowledgeBaseId": convert_and_respect_annotation_metadata(
                     object_=knowledge_base_id, annotation=EntityIdBase, direction="write"
                 ),
+                "metadata": metadata,
                 "name": name,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
@@ -962,7 +1079,10 @@ class AsyncKnowledgeClient:
         self,
         knowledge_base_reference_id: str,
         *,
+        version_id: EntityId,
         type: KnowledgeBaseVersionType,
+        status: KnowledgeBaseVersionStatus,
+        error_message: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseVersion:
         """
@@ -975,8 +1095,17 @@ class AsyncKnowledgeClient:
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to create a version for. All other entity ID fields are inferred from the request.
 
+        version_id : EntityId
+            The unique ID of the knowledge base version.
+
         type : KnowledgeBaseVersionType
             Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
+
+        status : KnowledgeBaseVersionStatus
+            The status of the knowledge base version
+
+        error_message : typing.Optional[str]
+            A user-facing error message that provides more details about a version failure.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -990,6 +1119,7 @@ class AsyncKnowledgeClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityId
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1002,7 +1132,15 @@ class AsyncKnowledgeClient:
         async def main() -> None:
             await client.knowledge.create_knowledge_base_version(
                 knowledge_base_reference_id="help-center",
+                version_id=EntityId(
+                    type="KNOWLEDGE_BASE_VERSION",
+                    reference_id="versionId",
+                    app_id="maven",
+                    organization_id="acme",
+                    agent_id="support",
+                ),
                 type="FULL",
+                status="IN_PROGRESS",
             )
 
 
@@ -1012,7 +1150,12 @@ class AsyncKnowledgeClient:
             f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/version",
             method="POST",
             json={
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityId, direction="write"
+                ),
                 "type": type,
+                "status": status,
+                "errorMessage": error_message,
             },
             request_options=request_options,
             omit=OMIT,
@@ -1062,8 +1205,14 @@ class AsyncKnowledgeClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def finalize_knowledge_base_version(
-        self, knowledge_base_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> None:
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        status: typing.Optional[KnowledgeBaseVersionFinalizeStatus] = OMIT,
+        error_message: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBaseVersion:
         """
         Finalize the latest knowledge base version. Required to indicate the version is complete. Will throw an exception if the latest version is not in progress.
 
@@ -1072,18 +1221,28 @@ class AsyncKnowledgeClient:
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to finalize a version for. All other entity ID fields are inferred from the request.
 
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to finalize. If not provided will use the most recent version of the knowledge base.
+
+        status : typing.Optional[KnowledgeBaseVersionFinalizeStatus]
+            Whether the knowledge base version processing was successful or not.
+
+        error_message : typing.Optional[str]
+            A user-facing error message that provides more details about a version failure.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        None
+        KnowledgeBaseVersion
 
         Examples
         --------
         import asyncio
 
         from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityIdWithoutAgent
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1096,6 +1255,12 @@ class AsyncKnowledgeClient:
         async def main() -> None:
             await client.knowledge.finalize_knowledge_base_version(
                 knowledge_base_reference_id="help-center",
+                version_id=EntityIdWithoutAgent(
+                    type="KNOWLEDGE_BASE_VERSION",
+                    reference_id="versionId",
+                    app_id="maven",
+                ),
+                status="SUCCEEDED",
             )
 
 
@@ -1104,11 +1269,25 @@ class AsyncKnowledgeClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/version/finalize",
             method="POST",
+            json={
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
+                "status": status,
+                "errorMessage": error_message,
+            },
             request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
-                return
+                return typing.cast(
+                    KnowledgeBaseVersion,
+                    parse_obj_as(
+                        type_=KnowledgeBaseVersion,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
             if _response.status_code == 404:
                 raise NotFoundError(
                     typing.cast(
@@ -1152,6 +1331,8 @@ class AsyncKnowledgeClient:
         content_type: KnowledgeDocumentContentType,
         content: str,
         title: str,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         url: typing.Optional[str] = OMIT,
         language: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
@@ -1161,6 +1342,11 @@ class AsyncKnowledgeClient:
     ) -> KnowledgeDocumentResponse:
         """
         Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+
+        <Tip>
+        This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields
+        have changed, a new document version will not be created. The existing version will be reused.
+        </Tip>
 
         Parameters
         ----------
@@ -1177,6 +1363,12 @@ class AsyncKnowledgeClient:
 
         title : str
             The title of the document. Will be shown as part of answers.
+
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+
+        metadata : typing.Optional[typing.Dict[str, str]]
+            Metadata for the knowledge document.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
@@ -1205,7 +1397,7 @@ class AsyncKnowledgeClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase
+        from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1221,9 +1413,15 @@ class AsyncKnowledgeClient:
                 knowledge_document_id=EntityIdBase(
                     reference_id="getting-started",
                 ),
+                version_id=EntityIdWithoutAgent(
+                    type="KNOWLEDGE_BASE_VERSION",
+                    reference_id="versionId",
+                    app_id="maven",
+                ),
                 content_type="MARKDOWN",
                 content="## Getting started\\nThis is a getting started guide for the help center.",
                 title="Getting started",
+                metadata={"category": "getting-started"},
             )
 
 
@@ -1236,8 +1434,12 @@ class AsyncKnowledgeClient:
                 "knowledgeDocumentId": convert_and_respect_annotation_metadata(
                     object_=knowledge_document_id, annotation=EntityIdBase, direction="write"
                 ),
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
                 "contentType": content_type,
                 "content": content,
+                "metadata": metadata,
                 "title": title,
                 "url": url,
                 "language": language,
@@ -1300,6 +1502,8 @@ class AsyncKnowledgeClient:
         content_type: KnowledgeDocumentContentType,
         content: str,
         title: str,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         url: typing.Optional[str] = OMIT,
         language: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
@@ -1325,6 +1529,12 @@ class AsyncKnowledgeClient:
 
         title : str
             The title of the document. Will be shown as part of answers.
+
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+
+        metadata : typing.Optional[typing.Dict[str, str]]
+            Metadata for the knowledge document.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
@@ -1353,7 +1563,7 @@ class AsyncKnowledgeClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase
+        from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1369,9 +1579,15 @@ class AsyncKnowledgeClient:
                 knowledge_document_id=EntityIdBase(
                     reference_id="getting-started",
                 ),
+                version_id=EntityIdWithoutAgent(
+                    type="KNOWLEDGE_BASE_VERSION",
+                    reference_id="versionId",
+                    app_id="maven",
+                ),
                 content_type="MARKDOWN",
                 content="## Getting started\\nThis is a getting started guide for the help center.",
                 title="Getting started",
+                metadata={"category": "getting-started"},
             )
 
 
@@ -1384,8 +1600,12 @@ class AsyncKnowledgeClient:
                 "knowledgeDocumentId": convert_and_respect_annotation_metadata(
                     object_=knowledge_document_id, annotation=EntityIdBase, direction="write"
                 ),
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
                 "contentType": content_type,
                 "content": content,
+                "metadata": metadata,
                 "title": title,
                 "url": url,
                 "language": language,

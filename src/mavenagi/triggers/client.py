@@ -2,11 +2,9 @@
 
 import typing
 from ..core.client_wrapper import SyncClientWrapper
-from ..commons.types.entity_id_base import EntityIdBase
-from ..commons.types.event_trigger_type import EventTriggerType
+from .types.trigger_field import TriggerField
 from ..core.request_options import RequestOptions
-from ..commons.types.event_trigger_response import EventTriggerResponse
-from ..core.serialization import convert_and_respect_annotation_metadata
+from .types.event_triggers_search_response import EventTriggersSearchResponse
 from ..core.pydantic_utilities import parse_obj_as
 from ..commons.errors.not_found_error import NotFoundError
 from ..commons.types.error_message import ErrorMessage
@@ -14,6 +12,10 @@ from ..commons.errors.bad_request_error import BadRequestError
 from ..commons.errors.server_error import ServerError
 from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
+from ..commons.types.entity_id_base import EntityIdBase
+from .types.event_trigger_type import EventTriggerType
+from .types.event_trigger_response import EventTriggerResponse
+from ..core.serialization import convert_and_respect_annotation_metadata
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.client_wrapper import AsyncClientWrapper
 
@@ -24,6 +26,105 @@ OMIT = typing.cast(typing.Any, ...)
 class TriggersClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
+
+    def search(
+        self,
+        *,
+        sort: typing.Optional[TriggerField] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EventTriggersSearchResponse:
+        """
+        Parameters
+        ----------
+        sort : typing.Optional[TriggerField]
+            The field to sort by, defaults to created timestamp
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventTriggersSearchResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.triggers.search()
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/triggers",
+            method="POST",
+            json={
+                "sort": sort,
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    EventTriggersSearchResponse,
+                    parse_obj_as(
+                        type_=EventTriggersSearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def create_or_update(
         self,
@@ -289,10 +390,217 @@ class TriggersClient:
             raise ApiError(status_code=_response.status_code, body=_response.text)
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
+    def partial_update(
+        self,
+        trigger_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        enabled: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EventTriggerResponse:
+        """
+        Updates an event trigger. Only the enabled field is editable.
+
+        Parameters
+        ----------
+        trigger_reference_id : str
+            The reference ID of the event trigger to update. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the trigger to update. If not provided, the ID of the calling app will be used.
+
+        enabled : typing.Optional[bool]
+            Whether the trigger will be called by Maven.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventTriggerResponse
+            The updated event trigger
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.triggers.partial_update(
+            trigger_reference_id="triggerReferenceId",
+        )
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/triggers/{jsonable_encoder(trigger_reference_id)}",
+            method="PATCH",
+            params={
+                "appId": app_id,
+            },
+            json={
+                "enabled": enabled,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    EventTriggerResponse,
+                    parse_obj_as(
+                        type_=EventTriggerResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
 
 class AsyncTriggersClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
+
+    async def search(
+        self,
+        *,
+        sort: typing.Optional[TriggerField] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EventTriggersSearchResponse:
+        """
+        Parameters
+        ----------
+        sort : typing.Optional[TriggerField]
+            The field to sort by, defaults to created timestamp
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventTriggersSearchResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.triggers.search()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/triggers",
+            method="POST",
+            json={
+                "sort": sort,
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    EventTriggersSearchResponse,
+                    parse_obj_as(
+                        type_=EventTriggersSearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def create_or_update(
         self,
@@ -549,6 +857,114 @@ class AsyncTriggersClient:
         try:
             if 200 <= _response.status_code < 300:
                 return
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    )
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, body=_response.text)
+        raise ApiError(status_code=_response.status_code, body=_response_json)
+
+    async def partial_update(
+        self,
+        trigger_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        enabled: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EventTriggerResponse:
+        """
+        Updates an event trigger. Only the enabled field is editable.
+
+        Parameters
+        ----------
+        trigger_reference_id : str
+            The reference ID of the event trigger to update. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the trigger to update. If not provided, the ID of the calling app will be used.
+
+        enabled : typing.Optional[bool]
+            Whether the trigger will be called by Maven.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventTriggerResponse
+            The updated event trigger
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.triggers.partial_update(
+                trigger_reference_id="triggerReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/triggers/{jsonable_encoder(trigger_reference_id)}",
+            method="PATCH",
+            params={
+                "appId": app_id,
+            },
+            json={
+                "enabled": enabled,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return typing.cast(
+                    EventTriggerResponse,
+                    parse_obj_as(
+                        type_=EventTriggerResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
             if _response.status_code == 404:
                 raise NotFoundError(
                     typing.cast(

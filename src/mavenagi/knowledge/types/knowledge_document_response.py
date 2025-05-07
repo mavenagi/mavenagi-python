@@ -5,8 +5,8 @@ import typing_extensions
 from ...commons.types.entity_id import EntityId
 from ...core.serialization import FieldMetadata
 import pydantic
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class KnowledgeDocumentResponse(BaseKnowledgeDocument):
@@ -26,6 +26,7 @@ class KnowledgeDocumentResponse(BaseKnowledgeDocument):
         ),
         content="## Getting started This is a getting started guide for the help center.",
         title="Getting started",
+        metadata={"category": "getting-started"},
     )
     """
 
@@ -39,6 +40,11 @@ class KnowledgeDocumentResponse(BaseKnowledgeDocument):
     content: str = pydantic.Field()
     """
     The content of the document in markdown format. Not shown directly to users.
+    """
+
+    metadata: typing.Dict[str, str] = pydantic.Field()
+    """
+    Metadata for the knowledge document.
     """
 
     if IS_PYDANTIC_V2:
