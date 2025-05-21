@@ -7,6 +7,7 @@ import typing
 from ...core.serialization import FieldMetadata
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import pydantic
+from .audio_format import AudioFormat
 
 
 class SubscribeEvent_Audio(UniversalBaseModel):
@@ -36,6 +37,8 @@ class SubscribeEvent_ControlSessionStart(UniversalBaseModel):
         typing.Literal["controlSessionStart"], FieldMetadata(alias="messageType")
     ] = "controlSessionStart"
     reason: typing.Optional[str] = None
+    unused: typing.Optional[AudioFormat] = None
+    seq_id: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="seqId")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -56,6 +59,8 @@ class SubscribeEvent_ControlSessionStop(UniversalBaseModel):
         typing.Literal["controlSessionStop"], FieldMetadata(alias="messageType")
     ] = "controlSessionStop"
     reason: typing.Optional[str] = None
+    unused: typing.Optional[AudioFormat] = None
+    seq_id: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="seqId")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -76,6 +81,30 @@ class SubscribeEvent_ControlAudioDone(UniversalBaseModel):
         typing.Literal["controlAudioDone"], FieldMetadata(alias="messageType")
     ] = "controlAudioDone"
     reason: typing.Optional[str] = None
+    unused: typing.Optional[AudioFormat] = None
+    seq_id: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="seqId")] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class SubscribeEvent_ControlSessionUpdated(UniversalBaseModel):
+    """
+    The response from the server sent through the WebSocket.
+    """
+
+    message_type: typing_extensions.Annotated[
+        typing.Literal["controlSessionUpdated"], FieldMetadata(alias="messageType")
+    ] = "controlSessionUpdated"
+    reason: typing.Optional[str] = None
+    unused: typing.Optional[AudioFormat] = None
+    seq_id: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="seqId")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -92,4 +121,5 @@ SubscribeEvent = typing.Union[
     SubscribeEvent_ControlSessionStart,
     SubscribeEvent_ControlSessionStop,
     SubscribeEvent_ControlAudioDone,
+    SubscribeEvent_ControlSessionUpdated,
 ]

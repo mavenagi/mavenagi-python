@@ -4,6 +4,7 @@ import typing
 
 EntityType = typing.Union[
     typing.Literal[
+        "AGENT",
         "CONVERSATION",
         "CONVERSATION_MESSAGE",
         "KNOWLEDGE_BASE",

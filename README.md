@@ -21,14 +21,6 @@ Instantiate and use the client with the following:
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.analytics import (
-    ConversationColumnDefinition,
-    ConversationGroupBy,
-    ConversationMetric_Average,
-    ConversationMetric_Count,
-    ConversationMetric_Percentile,
-)
-from mavenagi.conversation import ConversationFilter
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -36,36 +28,7 @@ client = MavenAGI(
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
-client.analytics.get_conversation_table(
-    conversation_filter=ConversationFilter(
-        languages=["en", "es"],
-    ),
-    time_grouping="DAY",
-    field_groupings=[
-        ConversationGroupBy(
-            field="Category",
-        )
-    ],
-    column_definitions=[
-        ConversationColumnDefinition(
-            header="count",
-            metric=ConversationMetric_Count(),
-        ),
-        ConversationColumnDefinition(
-            header="avg_first_response_time",
-            metric=ConversationMetric_Average(
-                target_field="FirstResponseTime",
-            ),
-        ),
-        ConversationColumnDefinition(
-            header="percentile_handle_time",
-            metric=ConversationMetric_Percentile(
-                target_field="HandleTime",
-                percentile=25.0,
-            ),
-        ),
-    ],
-)
+client.agents.search()
 ```
 
 ## Async Client
@@ -76,14 +39,6 @@ The SDK also exports an `async` client so that you can make non-blocking calls t
 import asyncio
 
 from mavenagi import AsyncMavenAGI
-from mavenagi.analytics import (
-    ConversationColumnDefinition,
-    ConversationGroupBy,
-    ConversationMetric_Average,
-    ConversationMetric_Count,
-    ConversationMetric_Percentile,
-)
-from mavenagi.conversation import ConversationFilter
 
 client = AsyncMavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -94,36 +49,7 @@ client = AsyncMavenAGI(
 
 
 async def main() -> None:
-    await client.analytics.get_conversation_table(
-        conversation_filter=ConversationFilter(
-            languages=["en", "es"],
-        ),
-        time_grouping="DAY",
-        field_groupings=[
-            ConversationGroupBy(
-                field="Category",
-            )
-        ],
-        column_definitions=[
-            ConversationColumnDefinition(
-                header="count",
-                metric=ConversationMetric_Count(),
-            ),
-            ConversationColumnDefinition(
-                header="avg_first_response_time",
-                metric=ConversationMetric_Average(
-                    target_field="FirstResponseTime",
-                ),
-            ),
-            ConversationColumnDefinition(
-                header="percentile_handle_time",
-                metric=ConversationMetric_Percentile(
-                    target_field="HandleTime",
-                    percentile=25.0,
-                ),
-            ),
-        ],
-    )
+    await client.agents.search()
 
 
 asyncio.run(main())
@@ -138,7 +64,7 @@ will be thrown.
 from mavenagi.core.api_error import ApiError
 
 try:
-    client.analytics.get_conversation_table(...)
+    client.agents.search(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -198,7 +124,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.analytics.get_conversation_table(..., request_options={
+client.agents.search(..., request_options={
     "max_retries": 1
 })
 ```
@@ -218,7 +144,7 @@ client = MavenAGI(
 
 
 # Override timeout for a specific method
-client.analytics.get_conversation_table(..., request_options={
+client.agents.search(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

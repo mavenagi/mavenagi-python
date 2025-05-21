@@ -43,6 +43,13 @@ class ActionParameter(UniversalBaseModel):
     Restricts the action parameter to only the options in this list. Valid for type `STRING`, `BOOLEAN`, and `NUMBER`.
     """
 
+    schema_: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="schema")] = pydantic.Field(
+        default=None
+    )
+    """
+    JSON schema for validating the parameter value. Only valid when type is `SCHEMA`.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

@@ -294,6 +294,269 @@ client.actions.delete(
 </dl>
 </details>
 
+## Agents
+<details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search for agents across all organizations.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agents.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[AgentField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[AgentFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">list</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists all agents for an organization
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agents.list(
+    organization_reference_id="organizationReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get an agent
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agents.get(
+    organization_reference_id="organizationReferenceId",
+    agent_reference_id="agentReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agent_reference_id:** `str` — The ID of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Analytics
 <details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_conversation_table</a>(...)</code></summary>
 <dl>
@@ -2251,6 +2514,110 @@ client.conversation.search()
 <dd>
 
 **filter:** `typing.Optional[ConversationFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Events
+<details><summary><code>client.events.<a href="src/mavenagi/events/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search events
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.events.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[EventField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[EventFilter]` 
     
 </dd>
 </dl>
