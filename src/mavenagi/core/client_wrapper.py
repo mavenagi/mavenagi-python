@@ -28,7 +28,7 @@ class BaseClientWrapper:
         headers: typing.Dict[str, str] = {
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "mavenagi",
-            "X-Fern-SDK-Version": "1.0.14",
+            "X-Fern-SDK-Version": "1.0.15",
         }
         app_id = self._get_app_id()
         app_secret = self._get_app_secret()

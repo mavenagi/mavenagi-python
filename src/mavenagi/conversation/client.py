@@ -118,24 +118,24 @@ class ConversationClient:
             ),
             messages=[
                 ConversationMessageRequest(
-                    conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
-                    ),
                     user_id=EntityIdBase(
                         reference_id="referenceId",
                     ),
                     text="text",
                     user_message_type="USER",
+                    conversation_message_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
                 ),
                 ConversationMessageRequest(
-                    conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
-                    ),
                     user_id=EntityIdBase(
                         reference_id="referenceId",
                     ),
                     text="text",
                     user_message_type="USER",
+                    conversation_message_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
                 ),
             ],
         )
@@ -436,24 +436,24 @@ class ConversationClient:
             conversation_id="conversationId",
             request=[
                 ConversationMessageRequest(
-                    conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
-                    ),
                     user_id=EntityIdBase(
                         reference_id="referenceId",
                     ),
                     text="text",
                     user_message_type="USER",
+                    conversation_message_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
                 ),
                 ConversationMessageRequest(
-                    conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
-                    ),
                     user_id=EntityIdBase(
                         reference_id="referenceId",
                     ),
                     text="text",
                     user_message_type="USER",
+                    conversation_message_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
                 ),
             ],
         )
@@ -994,7 +994,6 @@ class ConversationClient:
         )
         client.conversation.generate_object(
             conversation_id="conversationId",
-            schema="schema",
             conversation_message_id=EntityIdBase(
                 reference_id="referenceId",
             ),
@@ -1002,6 +1001,7 @@ class ConversationClient:
                 reference_id="referenceId",
             ),
             text="text",
+            schema="schema",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -1783,24 +1783,24 @@ class AsyncConversationClient:
                 ),
                 messages=[
                     ConversationMessageRequest(
-                        conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
-                        ),
                         user_id=EntityIdBase(
                             reference_id="referenceId",
                         ),
                         text="text",
                         user_message_type="USER",
+                        conversation_message_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
                     ),
                     ConversationMessageRequest(
-                        conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
-                        ),
                         user_id=EntityIdBase(
                             reference_id="referenceId",
                         ),
                         text="text",
                         user_message_type="USER",
+                        conversation_message_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
                     ),
                 ],
             )
@@ -2125,24 +2125,24 @@ class AsyncConversationClient:
                 conversation_id="conversationId",
                 request=[
                     ConversationMessageRequest(
-                        conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
-                        ),
                         user_id=EntityIdBase(
                             reference_id="referenceId",
                         ),
                         text="text",
                         user_message_type="USER",
+                        conversation_message_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
                     ),
                     ConversationMessageRequest(
-                        conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
-                        ),
                         user_id=EntityIdBase(
                             reference_id="referenceId",
                         ),
                         text="text",
                         user_message_type="USER",
+                        conversation_message_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
                     ),
                 ],
             )
@@ -2715,7 +2715,6 @@ class AsyncConversationClient:
         async def main() -> None:
             await client.conversation.generate_object(
                 conversation_id="conversationId",
-                schema="schema",
                 conversation_message_id=EntityIdBase(
                     reference_id="referenceId",
                 ),
@@ -2723,6 +2722,7 @@ class AsyncConversationClient:
                     reference_id="referenceId",
                 ),
                 text="text",
+                schema="schema",
             )
 
 

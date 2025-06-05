@@ -1184,24 +1184,24 @@ client.conversation.initialize(
     ),
     messages=[
         ConversationMessageRequest(
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
         ),
         ConversationMessageRequest(
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
         ),
     ],
 )
@@ -1522,24 +1522,24 @@ client.conversation.append_new_messages(
     conversation_id="conversationId",
     request=[
         ConversationMessageRequest(
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
         ),
         ConversationMessageRequest(
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
         ),
     ],
 )
@@ -2018,7 +2018,6 @@ client = MavenAGI(
 )
 client.conversation.generate_object(
     conversation_id="conversationId",
-    schema="schema",
     conversation_message_id=EntityIdBase(
         reference_id="referenceId",
     ),
@@ -2026,6 +2025,7 @@ client.conversation.generate_object(
         reference_id="referenceId",
     ),
     text="text",
+    schema="schema",
 )
 
 ```
