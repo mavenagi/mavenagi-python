@@ -2,4 +2,4 @@
 
 import typing
 
-FeedbackField = typing.Union[typing.Literal["Type", "CreatedBy", "CreatedAt"], typing.Any]
+FeedbackField = typing.Union[typing.Literal["Type", "CreatedBy", "CreatedAt", "App"], typing.Any]

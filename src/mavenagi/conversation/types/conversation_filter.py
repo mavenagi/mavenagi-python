@@ -2,6 +2,7 @@
 
 from ...core.pydantic_utilities import UniversalBaseModel
 import typing
+import pydantic
 import typing_extensions
 import datetime as dt
 from ...core.serialization import FieldMetadata
@@ -12,40 +13,125 @@ from ...commons.types.quality_reason import QualityReason
 from ...commons.types.response_length import ResponseLength
 from ...commons.types.sentiment import Sentiment
 from .resolution_status import ResolutionStatus
+from ...commons.types.number_range import NumberRange
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
-import pydantic
 
 
 class ConversationFilter(UniversalBaseModel):
-    search: typing.Optional[str] = None
-    created_after: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAfter")] = None
-    created_before: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdBefore")] = (
-        None
+    search: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Full-text search query for matching conversations by content. When you search with this parameter, you're performing a full-text search across all textual content in the conversations, including both the user's messages and the AI's responses.
+    """
+
+    created_after: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAfter")] = (
+        pydantic.Field(default=None)
     )
-    apps: typing.Optional[typing.List[str]] = None
-    categories: typing.Optional[typing.List[str]] = None
-    actions: typing.Optional[typing.List[EntityIdFilter]] = None
+    """
+    Filter conversations created on or after this timestamp
+    """
+
+    created_before: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdBefore")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Filter conversations created on or before this timestamp
+    """
+
+    apps: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Filter by app IDs
+    """
+
+    categories: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Filter by conversation categories
+    """
+
+    actions: typing.Optional[typing.List[EntityIdFilter]] = pydantic.Field(default=None)
+    """
+    Filter by actions that were executed in the conversation
+    """
+
     incomplete_actions: typing_extensions.Annotated[
         typing.Optional[typing.List[EntityIdFilter]], FieldMetadata(alias="incompleteActions")
-    ] = None
-    feedback: typing.Optional[typing.List[FeedbackType]] = None
+    ] = pydantic.Field(default=None)
+    """
+    Filter by actions that were suggested but not completed by the AI agent
+    """
+
+    feedback: typing.Optional[typing.List[FeedbackType]] = pydantic.Field(default=None)
+    """
+    Filter by user feedback types received in the conversation
+    """
+
     human_agents: typing_extensions.Annotated[typing.Optional[typing.List[str]], FieldMetadata(alias="humanAgents")] = (
-        None
+        pydantic.Field(default=None)
     )
-    languages: typing.Optional[typing.List[str]] = None
-    quality: typing.Optional[typing.List[Quality]] = None
+    """
+    Filter by human agents who participated in the conversation
+    """
+
+    human_agents_with_inserts: typing_extensions.Annotated[
+        typing.Optional[typing.List[str]], FieldMetadata(alias="humanAgentsWithInserts")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by human agents who inserted a maven AI generated suggestion in the conversation
+    """
+
+    languages: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Filter by conversation languages
+    """
+
+    quality: typing.Optional[typing.List[Quality]] = pydantic.Field(default=None)
+    """
+    Filter by AI assessed conversation quality classification
+    """
+
     quality_reason: typing_extensions.Annotated[
         typing.Optional[typing.List[QualityReason]], FieldMetadata(alias="qualityReason")
-    ] = None
+    ] = pydantic.Field(default=None)
+    """
+    Filter by AI assessed quality reason classification
+    """
+
     response_length: typing_extensions.Annotated[
         typing.Optional[typing.List[ResponseLength]], FieldMetadata(alias="responseLength")
-    ] = None
-    sentiment: typing.Optional[typing.List[Sentiment]] = None
-    tags: typing.Optional[typing.List[str]] = None
+    ] = pydantic.Field(default=None)
+    """
+    Filter by AI response length classification
+    """
+
+    sentiment: typing.Optional[typing.List[Sentiment]] = pydantic.Field(default=None)
+    """
+    Filter by AI assessed sentiment analysis
+    """
+
+    tags: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Filter by tags applied to the conversation
+    """
+
     resolution_status: typing_extensions.Annotated[
         typing.Optional[typing.List[ResolutionStatus]], FieldMetadata(alias="resolutionStatus")
-    ] = None
-    resolved_by_maven: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="resolvedByMaven")] = None
+    ] = pydantic.Field(default=None)
+    """
+    Filter by conversation resolution status which is determined by AI based on the conversation content.
+    """
+
+    resolved_by_maven: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="resolvedByMaven")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Filter conversations based on whether they were resolved by Maven AI
+    """
+
+    user_message_count: typing_extensions.Annotated[
+        typing.Optional[NumberRange], FieldMetadata(alias="userMessageCount")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by the number of messages sent by the user in the conversation
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

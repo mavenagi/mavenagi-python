@@ -1184,24 +1184,24 @@ client.conversation.initialize(
     ),
     messages=[
         ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
         ),
         ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
         ),
     ],
 )
@@ -1522,24 +1522,24 @@ client.conversation.append_new_messages(
     conversation_id="conversationId",
     request=[
         ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
         ),
         ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
         ),
     ],
 )
@@ -1955,6 +1955,150 @@ client.conversation.generate_maven_suggestions(
 <dd>
 
 **conversation_message_ids:** `typing.Sequence[EntityIdBase]` — The message ids to generate a suggested response for. One suggestion will be generated for each message id.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">generate_object</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate a structured object response based on a provided schema and user prompt.
+
+If the user question and object response already exist, they will be reused and not updated.
+
+Known Limitations:
+- Schema enforcement is best-effort and may not guarantee exact conformity.
+- This endpoint does not stream results. Use `askDataStream` (coming soon) for progressive rendering.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdBase
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation.generate_object(
+    conversation_id="conversationId",
+    schema="schema",
+    conversation_message_id=EntityIdBase(
+        reference_id="referenceId",
+    ),
+    user_id=EntityIdBase(
+        reference_id="referenceId",
+    ),
+    text="text",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversation_id:** `str` — The ID of a new or existing conversation to use as context for the object generation request
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**schema:** `str` — JSON schema string defining the expected object shape.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**conversation_message_id:** `EntityIdBase` — Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_id:** `EntityIdBase` — Externally supplied ID to uniquely identify the user that created this message
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**text:** `str` — The text of the message
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**attachments:** `typing.Optional[typing.Sequence[Attachment]]` — The attachments to the message.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` — IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
     
 </dd>
 </dl>

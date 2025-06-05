@@ -60,4 +60,19 @@ class BotResponse_Chart(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-BotResponse = typing.Union[BotResponse_Text, BotResponse_ActionForm, BotResponse_Chart]
+class BotResponse_Object(UniversalBaseModel):
+    type: typing.Literal["object"] = "object"
+    label: typing.Optional[str] = None
+    object: typing.Optional[typing.Any] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+BotResponse = typing.Union[BotResponse_Text, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Object]

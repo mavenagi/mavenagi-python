@@ -40,7 +40,7 @@ class ActionParameter(UniversalBaseModel):
         typing.Optional[typing.List[ActionEnumOption]], FieldMetadata(alias="enumOptions")
     ] = pydantic.Field(default=None)
     """
-    Restricts the action parameter to only the options in this list. Valid for type `STRING`, `BOOLEAN`, and `NUMBER`.
+    Restricts the action parameter to only the options in this list. Valid for type `STRING`, `BOOLEAN`, and `NUMBER`. Should not be used when type is `SCHEMA`.
     """
 
     schema_: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="schema")] = pydantic.Field(

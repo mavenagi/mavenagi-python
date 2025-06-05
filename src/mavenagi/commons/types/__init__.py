@@ -19,7 +19,8 @@ from .bot_chart_response import BotChartResponse
 from .bot_conversation_message_type import BotConversationMessageType
 from .bot_message import BotMessage
 from .bot_message_status import BotMessageStatus
-from .bot_response import BotResponse, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Text
+from .bot_object_response import BotObjectResponse
+from .bot_response import BotResponse, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Object, BotResponse_Text
 from .bot_response_metadata import BotResponseMetadata
 from .bot_text_response import BotTextResponse
 from .capability import Capability
@@ -80,6 +81,7 @@ from .inbox_item_status import InboxItemStatus
 from .inbox_item_type import InboxItemType
 from .knowledge_base_information import KnowledgeBaseInformation
 from .metadata_precondition import MetadataPrecondition
+from .number_range import NumberRange
 from .page import Page
 from .precondition import Precondition, Precondition_Conversation, Precondition_Group, Precondition_User
 from .precondition_base import PreconditionBase
@@ -121,10 +123,12 @@ __all__ = [
     "BotConversationMessageType",
     "BotMessage",
     "BotMessageStatus",
+    "BotObjectResponse",
     "BotResponse",
     "BotResponseMetadata",
     "BotResponse_ActionForm",
     "BotResponse_Chart",
+    "BotResponse_Object",
     "BotResponse_Text",
     "BotTextResponse",
     "Capability",
@@ -177,6 +181,7 @@ __all__ = [
     "InboxItem_MissingKnowledge",
     "KnowledgeBaseInformation",
     "MetadataPrecondition",
+    "NumberRange",
     "Page",
     "Precondition",
     "PreconditionBase",

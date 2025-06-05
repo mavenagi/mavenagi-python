@@ -8,6 +8,7 @@ ConversationField = typing.Union[
         "FirstResponseTime",
         "HandleTime",
         "HumanAgents",
+        "HumanAgentsWithInserts",
         "App",
         "Sentiment",
         "QualityReason",
