@@ -16,6 +16,8 @@ class FeedbackFilter(UniversalBaseModel):
     created_before: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdBefore")] = (
         None
     )
+    users: typing.Optional[typing.List[str]] = None
+    apps: typing.Optional[typing.List[str]] = None
     types: typing.Optional[typing.List[FeedbackType]] = None
 
     if IS_PYDANTIC_V2:
