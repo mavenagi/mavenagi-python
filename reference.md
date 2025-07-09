@@ -1974,150 +1974,6 @@ client.conversation.generate_maven_suggestions(
 </dl>
 </details>
 
-<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">generate_object</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Generate a structured object response based on a provided schema and user prompt.
-
-If the user question and object response already exist, they will be reused and not updated.
-
-Known Limitations:
-- Schema enforcement is best-effort and may not guarantee exact conformity.
-- This endpoint does not stream results. Use `askDataStream` (coming soon) for progressive rendering.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.conversation.generate_object(
-    conversation_id="conversationId",
-    conversation_message_id=EntityIdBase(
-        reference_id="referenceId",
-    ),
-    user_id=EntityIdBase(
-        reference_id="referenceId",
-    ),
-    text="text",
-    schema="schema",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**conversation_id:** `str` — The ID of a new or existing conversation to use as context for the object generation request
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**schema:** `str` — JSON schema string defining the expected object shape.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**conversation_message_id:** `EntityIdBase` — Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**user_id:** `EntityIdBase` — Externally supplied ID to uniquely identify the user that created this message
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**text:** `str` — The text of the message
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**attachments:** `typing.Optional[typing.Sequence[Attachment]]` — The attachments to the message.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**timezone:** `typing.Optional[str]` — IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">categorize</a>(...)</code></summary>
 <dl>
 <dd>
@@ -2889,6 +2745,22 @@ client.inbox.search()
 <dl>
 <dd>
 
+**sort_id:** `typing.Optional[str]` — The field to sort by, defaults to created timestamp.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **page:** `typing.Optional[int]` — Page number to return, defaults to 0
     
 </dd>
@@ -2955,6 +2827,7 @@ client = MavenAGI(
 client.inbox.get(
     inbox_item_id="inboxItemId",
     app_id="appId",
+    item_type="DUPLICATE_DOCUMENT",
 )
 
 ```
@@ -2980,6 +2853,14 @@ client.inbox.get(
 <dd>
 
 **app_id:** `str` — The App ID of the inbox item to retrieve
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**item_type:** `InboxItemType` — The type of the inbox item to retrieve
     
 </dd>
 </dl>
@@ -3037,6 +2918,7 @@ client = MavenAGI(
 client.inbox.get_fix(
     inbox_item_fix_id="inboxItemFixId",
     app_id="appId",
+    fix_type="REMOVE_DOCUMENT",
 )
 
 ```
@@ -3062,6 +2944,14 @@ client.inbox.get_fix(
 <dd>
 
 **app_id:** `str` — The App ID of the inbox item fix to retrieve
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**fix_type:** `InboxItemFixType` — The type of the inbox item fix to retrieve
     
 </dd>
 </dl>
@@ -3119,6 +3009,7 @@ client = MavenAGI(
 client.inbox.apply_fix(
     inbox_item_fix_id="inboxItemFixId",
     app_id="appId",
+    fix_type="REMOVE_DOCUMENT",
 )
 
 ```
@@ -3144,6 +3035,14 @@ client.inbox.apply_fix(
 <dd>
 
 **app_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**fix_type:** `InboxItemFixType` — The type of the inbox item fix to retrieve
     
 </dd>
 </dl>
@@ -3209,6 +3108,7 @@ client = MavenAGI(
 client.inbox.ignore(
     inbox_item_id="inboxItemId",
     app_id="appId",
+    item_type="DUPLICATE_DOCUMENT",
 )
 
 ```
@@ -3234,6 +3134,14 @@ client.inbox.ignore(
 <dd>
 
 **app_id:** `str` — The App ID of the inbox item fix to ignore
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**item_type:** `InboxItemType` — The type of the inbox item to retrieve
     
 </dd>
 </dl>

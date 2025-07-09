@@ -16,6 +16,7 @@ from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
 from ..commons.types.inbox_item import InboxItem
 from ..core.jsonable_encoder import jsonable_encoder
+from ..commons.types.inbox_item_fix_type import InboxItemFixType
 from ..commons.types.inbox_item_fix import InboxItemFix
 from .types.add_document_fix_request import AddDocumentFixRequest
 from ..core.serialization import convert_and_respect_annotation_metadata
@@ -36,6 +37,8 @@ class InboxClient:
         type: typing.Optional[typing.Sequence[InboxItemType]] = OMIT,
         created_after: typing.Optional[dt.datetime] = OMIT,
         created_before: typing.Optional[dt.datetime] = OMIT,
+        sort_id: typing.Optional[str] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -56,6 +59,12 @@ class InboxClient:
 
         created_before : typing.Optional[dt.datetime]
             Filter for items created before this timestamp.
+
+        sort_id : typing.Optional[str]
+            The field to sort by, defaults to created timestamp.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -90,6 +99,8 @@ class InboxClient:
                 "type": type,
                 "createdAfter": created_after,
                 "createdBefore": created_before,
+                "sortId": sort_id,
+                "sortDesc": sort_desc,
                 "page": page,
                 "size": size,
             },
@@ -141,7 +152,12 @@ class InboxClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get(
-        self, inbox_item_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        inbox_item_id: str,
+        *,
+        app_id: str,
+        item_type: InboxItemType,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> InboxItem:
         """
         Retrieve details of a specific inbox item by its ID.
@@ -153,6 +169,9 @@ class InboxClient:
 
         app_id : str
             The App ID of the inbox item to retrieve
+
+        item_type : InboxItemType
+            The type of the inbox item to retrieve
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -175,6 +194,7 @@ class InboxClient:
         client.inbox.get(
             inbox_item_id="inboxItemId",
             app_id="appId",
+            item_type="DUPLICATE_DOCUMENT",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -182,6 +202,7 @@ class InboxClient:
             method="GET",
             params={
                 "appId": app_id,
+                "itemType": item_type,
             },
             request_options=request_options,
         )
@@ -230,7 +251,12 @@ class InboxClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def get_fix(
-        self, inbox_item_fix_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        inbox_item_fix_id: str,
+        *,
+        app_id: str,
+        fix_type: InboxItemFixType,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> InboxItemFix:
         """
         Retrieve a suggested fix. Includes document information if the fix is a Missing Knowledge suggestion.
@@ -242,6 +268,9 @@ class InboxClient:
 
         app_id : str
             The App ID of the inbox item fix to retrieve
+
+        fix_type : InboxItemFixType
+            The type of the inbox item fix to retrieve
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -264,6 +293,7 @@ class InboxClient:
         client.inbox.get_fix(
             inbox_item_fix_id="inboxItemFixId",
             app_id="appId",
+            fix_type="REMOVE_DOCUMENT",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -271,6 +301,7 @@ class InboxClient:
             method="GET",
             params={
                 "appId": app_id,
+                "fixType": fix_type,
             },
             request_options=request_options,
         )
@@ -323,6 +354,7 @@ class InboxClient:
         inbox_item_fix_id: str,
         *,
         app_id: str,
+        fix_type: InboxItemFixType,
         add_document_request: typing.Optional[AddDocumentFixRequest] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
@@ -335,6 +367,9 @@ class InboxClient:
             Unique identifier for the inbox fix.
 
         app_id : str
+
+        fix_type : InboxItemFixType
+            The type of the inbox item fix to retrieve
 
         add_document_request : typing.Optional[AddDocumentFixRequest]
             Content for Add Document fixes
@@ -359,6 +394,7 @@ class InboxClient:
         client.inbox.apply_fix(
             inbox_item_fix_id="inboxItemFixId",
             app_id="appId",
+            fix_type="REMOVE_DOCUMENT",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -366,6 +402,7 @@ class InboxClient:
             method="POST",
             json={
                 "appId": app_id,
+                "fixType": fix_type,
                 "addDocumentRequest": convert_and_respect_annotation_metadata(
                     object_=add_document_request, annotation=AddDocumentFixRequest, direction="write"
                 ),
@@ -412,7 +449,12 @@ class InboxClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     def ignore(
-        self, inbox_item_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        inbox_item_id: str,
+        *,
+        app_id: str,
+        item_type: InboxItemType,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
         Ignore a specific inbox item by its ID.
@@ -424,6 +466,9 @@ class InboxClient:
 
         app_id : str
             The App ID of the inbox item fix to ignore
+
+        item_type : InboxItemType
+            The type of the inbox item to retrieve
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -445,6 +490,7 @@ class InboxClient:
         client.inbox.ignore(
             inbox_item_id="inboxItemId",
             app_id="appId",
+            item_type="DUPLICATE_DOCUMENT",
         )
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -452,6 +498,7 @@ class InboxClient:
             method="POST",
             params={
                 "appId": app_id,
+                "itemType": item_type,
             },
             request_options=request_options,
         )
@@ -505,6 +552,8 @@ class AsyncInboxClient:
         type: typing.Optional[typing.Sequence[InboxItemType]] = OMIT,
         created_after: typing.Optional[dt.datetime] = OMIT,
         created_before: typing.Optional[dt.datetime] = OMIT,
+        sort_id: typing.Optional[str] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -525,6 +574,12 @@ class AsyncInboxClient:
 
         created_before : typing.Optional[dt.datetime]
             Filter for items created before this timestamp.
+
+        sort_id : typing.Optional[str]
+            The field to sort by, defaults to created timestamp.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -567,6 +622,8 @@ class AsyncInboxClient:
                 "type": type,
                 "createdAfter": created_after,
                 "createdBefore": created_before,
+                "sortId": sort_id,
+                "sortDesc": sort_desc,
                 "page": page,
                 "size": size,
             },
@@ -618,7 +675,12 @@ class AsyncInboxClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get(
-        self, inbox_item_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        inbox_item_id: str,
+        *,
+        app_id: str,
+        item_type: InboxItemType,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> InboxItem:
         """
         Retrieve details of a specific inbox item by its ID.
@@ -630,6 +692,9 @@ class AsyncInboxClient:
 
         app_id : str
             The App ID of the inbox item to retrieve
+
+        item_type : InboxItemType
+            The type of the inbox item to retrieve
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -657,6 +722,7 @@ class AsyncInboxClient:
             await client.inbox.get(
                 inbox_item_id="inboxItemId",
                 app_id="appId",
+                item_type="DUPLICATE_DOCUMENT",
             )
 
 
@@ -667,6 +733,7 @@ class AsyncInboxClient:
             method="GET",
             params={
                 "appId": app_id,
+                "itemType": item_type,
             },
             request_options=request_options,
         )
@@ -715,7 +782,12 @@ class AsyncInboxClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def get_fix(
-        self, inbox_item_fix_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        inbox_item_fix_id: str,
+        *,
+        app_id: str,
+        fix_type: InboxItemFixType,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> InboxItemFix:
         """
         Retrieve a suggested fix. Includes document information if the fix is a Missing Knowledge suggestion.
@@ -727,6 +799,9 @@ class AsyncInboxClient:
 
         app_id : str
             The App ID of the inbox item fix to retrieve
+
+        fix_type : InboxItemFixType
+            The type of the inbox item fix to retrieve
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -754,6 +829,7 @@ class AsyncInboxClient:
             await client.inbox.get_fix(
                 inbox_item_fix_id="inboxItemFixId",
                 app_id="appId",
+                fix_type="REMOVE_DOCUMENT",
             )
 
 
@@ -764,6 +840,7 @@ class AsyncInboxClient:
             method="GET",
             params={
                 "appId": app_id,
+                "fixType": fix_type,
             },
             request_options=request_options,
         )
@@ -816,6 +893,7 @@ class AsyncInboxClient:
         inbox_item_fix_id: str,
         *,
         app_id: str,
+        fix_type: InboxItemFixType,
         add_document_request: typing.Optional[AddDocumentFixRequest] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
@@ -828,6 +906,9 @@ class AsyncInboxClient:
             Unique identifier for the inbox fix.
 
         app_id : str
+
+        fix_type : InboxItemFixType
+            The type of the inbox item fix to retrieve
 
         add_document_request : typing.Optional[AddDocumentFixRequest]
             Content for Add Document fixes
@@ -857,6 +938,7 @@ class AsyncInboxClient:
             await client.inbox.apply_fix(
                 inbox_item_fix_id="inboxItemFixId",
                 app_id="appId",
+                fix_type="REMOVE_DOCUMENT",
             )
 
 
@@ -867,6 +949,7 @@ class AsyncInboxClient:
             method="POST",
             json={
                 "appId": app_id,
+                "fixType": fix_type,
                 "addDocumentRequest": convert_and_respect_annotation_metadata(
                     object_=add_document_request, annotation=AddDocumentFixRequest, direction="write"
                 ),
@@ -913,7 +996,12 @@ class AsyncInboxClient:
         raise ApiError(status_code=_response.status_code, body=_response_json)
 
     async def ignore(
-        self, inbox_item_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        inbox_item_id: str,
+        *,
+        app_id: str,
+        item_type: InboxItemType,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
         Ignore a specific inbox item by its ID.
@@ -925,6 +1013,9 @@ class AsyncInboxClient:
 
         app_id : str
             The App ID of the inbox item fix to ignore
+
+        item_type : InboxItemType
+            The type of the inbox item to retrieve
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -951,6 +1042,7 @@ class AsyncInboxClient:
             await client.inbox.ignore(
                 inbox_item_id="inboxItemId",
                 app_id="appId",
+                item_type="DUPLICATE_DOCUMENT",
             )
 
 
@@ -961,6 +1053,7 @@ class AsyncInboxClient:
             method="POST",
             params={
                 "appId": app_id,
+                "itemType": item_type,
             },
             request_options=request_options,
         )

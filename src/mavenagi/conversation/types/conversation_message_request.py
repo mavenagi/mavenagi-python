@@ -5,8 +5,9 @@ import typing_extensions
 from ...commons.types.entity_id_base import EntityIdBase
 from ...core.serialization import FieldMetadata
 import pydantic
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
 import typing
+from .attachment import Attachment
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class ConversationMessageRequest(UserMessageBase):
@@ -15,6 +16,11 @@ class ConversationMessageRequest(UserMessageBase):
     )
     """
     The ID that uniquely identifies this message within the conversation
+    """
+
+    attachments: typing.Optional[typing.List[Attachment]] = pydantic.Field(default=None)
+    """
+    The attachments to the message.
     """
 
     if IS_PYDANTIC_V2:

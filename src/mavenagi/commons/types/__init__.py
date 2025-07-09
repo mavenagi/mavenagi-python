@@ -75,6 +75,7 @@ from .inbox_item_fix_add_document import InboxItemFixAddDocument
 from .inbox_item_fix_base import InboxItemFixBase
 from .inbox_item_fix_deactivate_document import InboxItemFixDeactivateDocument
 from .inbox_item_fix_deactivate_knowledge_base import InboxItemFixDeactivateKnowledgeBase
+from .inbox_item_fix_type import InboxItemFixType
 from .inbox_item_knowledge_base_alert import InboxItemKnowledgeBaseAlert
 from .inbox_item_missing_knowledge import InboxItemMissingKnowledge
 from .inbox_item_status import InboxItemStatus
@@ -168,6 +169,7 @@ __all__ = [
     "InboxItemFixBase",
     "InboxItemFixDeactivateDocument",
     "InboxItemFixDeactivateKnowledgeBase",
+    "InboxItemFixType",
     "InboxItemFix_AddDocument",
     "InboxItemFix_DeactivateDocument",
     "InboxItemFix_DeactivateKnowledgeBase",

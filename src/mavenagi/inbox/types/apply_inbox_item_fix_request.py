@@ -3,14 +3,20 @@
 from ...core.pydantic_utilities import UniversalBaseModel
 import typing_extensions
 from ...core.serialization import FieldMetadata
+from ...commons.types.inbox_item_fix_type import InboxItemFixType
+import pydantic
 import typing
 from .add_document_fix_request import AddDocumentFixRequest
-import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class ApplyInboxItemFixRequest(UniversalBaseModel):
     app_id: typing_extensions.Annotated[str, FieldMetadata(alias="appId")]
+    fix_type: typing_extensions.Annotated[InboxItemFixType, FieldMetadata(alias="fixType")] = pydantic.Field()
+    """
+    The type of the inbox item fix to retrieve
+    """
+
     add_document_request: typing_extensions.Annotated[
         typing.Optional[AddDocumentFixRequest], FieldMetadata(alias="addDocumentRequest")
     ] = pydantic.Field(default=None)

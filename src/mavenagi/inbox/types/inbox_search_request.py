@@ -36,6 +36,20 @@ class InboxSearchRequest(BaseInboxSearchRequest):
     Filter for items created before this timestamp.
     """
 
+    sort_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="sortId")] = pydantic.Field(
+        default=None
+    )
+    """
+    The field to sort by, defaults to created timestamp.
+    """
+
+    sort_desc: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="sortDesc")] = pydantic.Field(
+        default=None
+    )
+    """
+    Whether to sort descending, defaults to true.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

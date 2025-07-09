@@ -20,7 +20,6 @@ from .feedback_field import FeedbackField
 from .feedback_filter import FeedbackFilter
 from .feedback_request import FeedbackRequest
 from .generate_maven_suggestions_request import GenerateMavenSuggestionsRequest
-from .generate_object_request import GenerateObjectRequest
 from .numeric_conversation_field import NumericConversationField
 from .resolution_status import ResolutionStatus
 from .stream_response import (
@@ -56,7 +55,6 @@ __all__ = [
     "FeedbackFilter",
     "FeedbackRequest",
     "GenerateMavenSuggestionsRequest",
-    "GenerateObjectRequest",
     "NumericConversationField",
     "ResolutionStatus",
     "StreamResponse",
