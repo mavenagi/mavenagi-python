@@ -103,11 +103,31 @@ response = client.conversation.ask_stream(
     transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
     timezone="America/New_York",
 )
-for chunk in response:
+for chunk in response.data:
     yield chunk
 ```
 
 ## Advanced
+
+### Access Raw Response Data
+
+The SDK provides access to raw response data, including headers, through the `.with_raw_response` property.
+The `.with_raw_response` property returns a "raw" client that can be used to access the `.headers` and `.data` attributes.
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    ...,
+)
+response = client.agents.with_raw_response.search(...)
+print(response.headers)  # access the response headers
+print(response.data)  # access the underlying object
+with client.conversation.with_raw_response.ask_stream(...) as response:
+    print(response.headers)  # access the response headers
+    for chunk in response.data:
+        print(chunk)  # access the underlying object(s)
+```
 
 ### Retries
 
@@ -153,6 +173,7 @@ client.agents.search(..., request_options={
 
 You can override the `httpx` client to customize it for your use-case. Some common use-cases include support for proxies
 and transports.
+
 ```python
 import httpx
 from mavenagi import MavenAGI

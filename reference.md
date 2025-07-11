@@ -1184,24 +1184,24 @@ client.conversation.initialize(
     ),
     messages=[
         ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
         ),
         ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
         ),
     ],
 )
@@ -1522,24 +1522,24 @@ client.conversation.append_new_messages(
     conversation_id="conversationId",
     request=[
         ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
         ),
         ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
             user_id=EntityIdBase(
                 reference_id="referenceId",
             ),
             text="text",
             user_message_type="USER",
-            conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
-            ),
         ),
     ],
 )
@@ -1799,7 +1799,7 @@ response = client.conversation.ask_stream(
     transient_data={"userToken": "abcdef123", "queryApiKey": "foobar456"},
     timezone="America/New_York",
 )
-for chunk in response:
+for chunk in response.data:
     yield chunk
 
 ```
