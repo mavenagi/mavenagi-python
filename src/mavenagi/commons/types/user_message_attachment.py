@@ -27,6 +27,11 @@ class UserMessageAttachment(UniversalBaseModel):
     The URL to access the attachment, The URL will be valid for 20 minutes.
     """
 
+    name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    An optional name for the attachment.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

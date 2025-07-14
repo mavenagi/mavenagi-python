@@ -30,6 +30,11 @@ class Attachment(UniversalBaseModel):
     The attachment data, up to 5MB.
     """
 
+    name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The name of the attachment, if one was provided.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
