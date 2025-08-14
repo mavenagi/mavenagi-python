@@ -4,18 +4,18 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.attachment_request import AttachmentRequest
 from ...commons.types.entity_id_base import EntityIdBase
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
-from .attachment import Attachment
 
 
 class AskRequest(UniversalBaseModel):
     """
     Examples
     --------
-    from mavenagi.commons import EntityIdBase
-    from mavenagi.conversation import AskRequest, Attachment
+    from mavenagi.commons import AttachmentRequest, EntityIdBase
+    from mavenagi.conversation import AskRequest
 
     AskRequest(
         conversation_message_id=EntityIdBase(
@@ -26,7 +26,7 @@ class AskRequest(UniversalBaseModel):
         ),
         text="How do I reset my password?",
         attachments=[
-            Attachment(
+            AttachmentRequest(
                 type="image/png",
                 content="iVBORw0KGgo...",
             )
@@ -53,9 +53,10 @@ class AskRequest(UniversalBaseModel):
     The text of the message
     """
 
-    attachments: typing.Optional[typing.List[Attachment]] = pydantic.Field(default=None)
+    attachments: typing.Optional[typing.List[AttachmentRequest]] = pydantic.Field(default=None)
     """
-    The attachments to the message.
+    The attachments to the message. Image attachments will be sent to the LLM as additional data.
+    Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
     """
 
     transient_data: typing_extensions.Annotated[

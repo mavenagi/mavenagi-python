@@ -9,13 +9,11 @@ from ...core.serialization import FieldMetadata
 from .entity_id_without_agent import EntityIdWithoutAgent
 
 
-class KnowledgeBaseInformation(UniversalBaseModel):
-    knowledge_base_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="knowledgeBaseId")] = (
-        pydantic.Field()
-    )
-    """
-    Unique identifier for the knowledge base.
-    """
+class BotLogicKnowledgeDetail(UniversalBaseModel):
+    knowledge_base_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="knowledgeBaseId")]
+    document_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="documentId")]
+    document_name: typing_extensions.Annotated[str, FieldMetadata(alias="documentName")]
+    document_excerpt: typing_extensions.Annotated[str, FieldMetadata(alias="documentExcerpt")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

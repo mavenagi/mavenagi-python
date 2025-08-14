@@ -6,9 +6,11 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .attachment_response import AttachmentResponse
 from .entity_id import EntityId
-from .user_message_attachment import UserMessageAttachment
+from .message_status import MessageStatus
 from .user_message_base import UserMessageBase
+from .user_message_response_state import UserMessageResponseState
 
 
 class UserMessage(UserMessageBase):
@@ -24,9 +26,16 @@ class UserMessage(UserMessageBase):
     The language of the message in ISO 639-1 code format
     """
 
-    attachments: typing.List[UserMessageAttachment] = pydantic.Field()
+    attachments: typing.List[AttachmentResponse] = pydantic.Field()
     """
     The attachments associated with the message
+    """
+
+    agent_user_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="agentUserId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The ID of the agent user that created this message. More detail can be fetched via the agent user APIs. Will be empty only for legacy conversations.
     """
 
     user_display_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="userDisplayName")] = (
@@ -34,6 +43,28 @@ class UserMessage(UserMessageBase):
     )
     """
     The display name of the user who created this message. Only available for users who have saved name information.
+    """
+
+    status: MessageStatus = pydantic.Field()
+    """
+    The delivery status of the message. Only applicable to messages sent via the deliverMessage API.
+    All other messages have an `UNKNOWN` status.
+    
+    * `SENT`: The message has been sent to the user.
+    * `FAILED`: The message sending encountered an error.
+    * `UNKNOWN`: The message status is unknown.
+    """
+
+    response_state: typing_extensions.Annotated[
+        typing.Optional[UserMessageResponseState], FieldMetadata(alias="responseState")
+    ] = pydantic.Field(default=None)
+    """
+    Only present on newer messaged where `userMessageType` is `USER`.
+    Indicates the state of the answer to the user message.
+    
+    - `NOT_ASKED`: An answer was not requested for this user message.
+    - `LLM_ENABLED`: An answer was requested for this user message and the LLM was enabled.
+    - `LLM_DISABLED`: An answer was requested for this user message and the LLM was disabled.
     """
 
     if IS_PYDANTIC_V2:

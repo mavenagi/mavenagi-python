@@ -14,13 +14,35 @@ from .app_user_identifier import AppUserIdentifier
 from .app_user_identifying_property_type import AppUserIdentifyingPropertyType
 from .app_user_request import AppUserRequest
 from .app_user_response import AppUserResponse
+from .attachment_request import AttachmentRequest
+from .attachment_response import AttachmentResponse
+from .attachment_status import AttachmentStatus
+from .base_attachment import BaseAttachment
 from .base_conversation_response import BaseConversationResponse
 from .base_paginated_request import BasePaginatedRequest
 from .bot_action_form_response import BotActionFormResponse
 from .bot_chart_response import BotChartResponse
 from .bot_conversation_message_type import BotConversationMessageType
+from .bot_logic import BotLogic
+from .bot_logic_action_executed_detail import BotLogicActionExecutedDetail
+from .bot_logic_action_item import BotLogicActionItem
+from .bot_logic_action_reviewed_detail import BotLogicActionReviewedDetail
+from .bot_logic_form_submission_item import BotLogicFormSubmissionItem
+from .bot_logic_item import (
+    BotLogicItem,
+    BotLogicItem_Actions,
+    BotLogicItem_Form,
+    BotLogicItem_Knowledge,
+    BotLogicItem_Safety,
+    BotLogicItem_Segments,
+    BotLogicItem_User,
+)
+from .bot_logic_knowledge_detail import BotLogicKnowledgeDetail
+from .bot_logic_knowledge_item import BotLogicKnowledgeItem
+from .bot_logic_safety_item import BotLogicSafetyItem
+from .bot_logic_segments_item import BotLogicSegmentsItem
+from .bot_logic_user_item import BotLogicUserItem
 from .bot_message import BotMessage
-from .bot_message_status import BotMessageStatus
 from .bot_object_response import BotObjectResponse
 from .bot_response import BotResponse, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Object, BotResponse_Text
 from .bot_response_metadata import BotResponseMetadata
@@ -57,32 +79,19 @@ from .error_message import ErrorMessage
 from .feedback import Feedback
 from .feedback_base import FeedbackBase
 from .feedback_type import FeedbackType
-from .inbox_item import (
-    InboxItem,
-    InboxItem_DuplicateDocuments,
-    InboxItem_DuplicateKnowledgeBase,
-    InboxItem_KnowledgeBaseAlert,
-    InboxItem_MissingKnowledge,
-)
+from .inbox_item import InboxItem, InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge
 from .inbox_item_base import InboxItemBase
 from .inbox_item_duplicate_documents import InboxItemDuplicateDocuments
-from .inbox_item_duplicate_knowledge_base import InboxItemDuplicateKnowledgeBase
-from .inbox_item_fix import (
-    InboxItemFix,
-    InboxItemFix_AddDocument,
-    InboxItemFix_DeactivateDocument,
-    InboxItemFix_DeactivateKnowledgeBase,
-)
+from .inbox_item_fix import InboxItemFix, InboxItemFix_AddDocument, InboxItemFix_DeactivateDocument
 from .inbox_item_fix_add_document import InboxItemFixAddDocument
 from .inbox_item_fix_base import InboxItemFixBase
 from .inbox_item_fix_deactivate_document import InboxItemFixDeactivateDocument
-from .inbox_item_fix_deactivate_knowledge_base import InboxItemFixDeactivateKnowledgeBase
-from .inbox_item_fix_type import InboxItemFixType
-from .inbox_item_knowledge_base_alert import InboxItemKnowledgeBaseAlert
 from .inbox_item_missing_knowledge import InboxItemMissingKnowledge
+from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
 from .inbox_item_type import InboxItemType
-from .knowledge_base_information import KnowledgeBaseInformation
+from .llm_inclusion_status import LlmInclusionStatus
+from .message_status import MessageStatus
 from .metadata_precondition import MetadataPrecondition
 from .number_range import NumberRange
 from .page import Page
@@ -102,8 +111,8 @@ from .tags_precondition import TagsPrecondition
 from .user_conversation_message_type import UserConversationMessageType
 from .user_data import UserData
 from .user_message import UserMessage
-from .user_message_attachment import UserMessageAttachment
 from .user_message_base import UserMessageBase
+from .user_message_response_state import UserMessageResponseState
 from .visibility_type import VisibilityType
 
 __all__ = [
@@ -119,13 +128,33 @@ __all__ = [
     "AppUserIdentifyingPropertyType",
     "AppUserRequest",
     "AppUserResponse",
+    "AttachmentRequest",
+    "AttachmentResponse",
+    "AttachmentStatus",
+    "BaseAttachment",
     "BaseConversationResponse",
     "BasePaginatedRequest",
     "BotActionFormResponse",
     "BotChartResponse",
     "BotConversationMessageType",
+    "BotLogic",
+    "BotLogicActionExecutedDetail",
+    "BotLogicActionItem",
+    "BotLogicActionReviewedDetail",
+    "BotLogicFormSubmissionItem",
+    "BotLogicItem",
+    "BotLogicItem_Actions",
+    "BotLogicItem_Form",
+    "BotLogicItem_Knowledge",
+    "BotLogicItem_Safety",
+    "BotLogicItem_Segments",
+    "BotLogicItem_User",
+    "BotLogicKnowledgeDetail",
+    "BotLogicKnowledgeItem",
+    "BotLogicSafetyItem",
+    "BotLogicSegmentsItem",
+    "BotLogicUserItem",
     "BotMessage",
-    "BotMessageStatus",
     "BotObjectResponse",
     "BotResponse",
     "BotResponseMetadata",
@@ -165,25 +194,20 @@ __all__ = [
     "InboxItem",
     "InboxItemBase",
     "InboxItemDuplicateDocuments",
-    "InboxItemDuplicateKnowledgeBase",
     "InboxItemFix",
     "InboxItemFixAddDocument",
     "InboxItemFixBase",
     "InboxItemFixDeactivateDocument",
-    "InboxItemFixDeactivateKnowledgeBase",
-    "InboxItemFixType",
     "InboxItemFix_AddDocument",
     "InboxItemFix_DeactivateDocument",
-    "InboxItemFix_DeactivateKnowledgeBase",
-    "InboxItemKnowledgeBaseAlert",
     "InboxItemMissingKnowledge",
+    "InboxItemSeverity",
     "InboxItemStatus",
     "InboxItemType",
     "InboxItem_DuplicateDocuments",
-    "InboxItem_DuplicateKnowledgeBase",
-    "InboxItem_KnowledgeBaseAlert",
     "InboxItem_MissingKnowledge",
-    "KnowledgeBaseInformation",
+    "LlmInclusionStatus",
+    "MessageStatus",
     "MetadataPrecondition",
     "NumberRange",
     "Page",
@@ -206,7 +230,7 @@ __all__ = [
     "UserConversationMessageType",
     "UserData",
     "UserMessage",
-    "UserMessageAttachment",
     "UserMessageBase",
+    "UserMessageResponseState",
     "VisibilityType",
 ]

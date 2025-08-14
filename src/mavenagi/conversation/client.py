@@ -3,6 +3,7 @@
 import datetime as dt
 import typing
 
+from ..commons.types.attachment_request import AttachmentRequest
 from ..commons.types.conversation_response import ConversationResponse
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.feedback import Feedback
@@ -11,13 +12,15 @@ from ..commons.types.response_config import ResponseConfig
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawConversationClient, RawConversationClient
-from .types.attachment import Attachment
 from .types.categorization_response import CategorizationResponse
 from .types.conversation_field import ConversationField
 from .types.conversation_filter import ConversationFilter
 from .types.conversation_message_request import ConversationMessageRequest
 from .types.conversation_metadata import ConversationMetadata
 from .types.conversations_response import ConversationsResponse
+from .types.deliver_message_request import DeliverMessageRequest
+from .types.deliver_message_response import DeliverMessageResponse
+from .types.object_stream_response import ObjectStreamResponse
 from .types.stream_response import StreamResponse
 
 # this is used as the default value for optional parameters
@@ -150,6 +153,71 @@ class ConversationClient:
             updated_at=updated_at,
             tags=tags,
             metadata=metadata,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def patch(
+        self,
+        conversation_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        open: typing.Optional[bool] = OMIT,
+        llm_enabled: typing.Optional[bool] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ConversationResponse:
+        """
+        Update mutable conversation fields.
+
+        The `appId` field can be provided to update a conversation owned by a different app.
+        All other fields will overwrite the existing value on the conversation only if provided.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of the conversation to patch
+
+        app_id : typing.Optional[str]
+            The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
+
+        open : typing.Optional[bool]
+            Whether the conversation is able to receive asynchronous messages. Only valid for conversations with the `ASYNC` capability.
+
+        llm_enabled : typing.Optional[bool]
+            Whether the LLM is enabled for this conversation.
+
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            A list of attachments to add to the conversation. Attachments can only be appended. Removal is not allowed.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ConversationResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.conversation.patch(
+            conversation_id="conversation-0",
+            llm_enabled=True,
+        )
+        """
+        _response = self._raw_client.patch(
+            conversation_id,
+            app_id=app_id,
+            open=open,
+            llm_enabled=llm_enabled,
+            attachments=attachments,
             request_options=request_options,
         )
         return _response.data
@@ -326,7 +394,7 @@ class ConversationClient:
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
         text: str,
-        attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -356,8 +424,9 @@ class ConversationClient:
         text : str
             The text of the message
 
-        attachments : typing.Optional[typing.Sequence[Attachment]]
-            The attachments to the message.
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -376,8 +445,7 @@ class ConversationClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase
-        from mavenagi.conversation import Attachment
+        from mavenagi.commons import AttachmentRequest, EntityIdBase
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -395,7 +463,7 @@ class ConversationClient:
             ),
             text="How do I reset my password?",
             attachments=[
-                Attachment(
+                AttachmentRequest(
                     type="image/png",
                     content="iVBORw0KGgo...",
                 )
@@ -423,7 +491,7 @@ class ConversationClient:
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
         text: str,
-        attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -457,8 +525,9 @@ class ConversationClient:
         text : str
             The text of the message
 
-        attachments : typing.Optional[typing.Sequence[Attachment]]
-            The attachments to the message.
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -476,8 +545,7 @@ class ConversationClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase
-        from mavenagi.conversation import Attachment
+        from mavenagi.commons import AttachmentRequest, EntityIdBase
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -495,7 +563,7 @@ class ConversationClient:
             ),
             text="How do I reset my password?",
             attachments=[
-                Attachment(
+                AttachmentRequest(
                     type="image/png",
                     content="iVBORw0KGgo...",
                 )
@@ -571,6 +639,106 @@ class ConversationClient:
             conversation_id, conversation_message_ids=conversation_message_ids, request_options=request_options
         )
         return _response.data
+
+    def ask_object_stream(
+        self,
+        conversation_id: str,
+        *,
+        schema: str,
+        conversation_message_id: EntityIdBase,
+        user_id: EntityIdBase,
+        text: str,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.Iterator[ObjectStreamResponse]:
+        """
+        Generate a structured object response based on a provided schema and user prompt with a streaming response.
+        The response will be sent as a stream of events containing text, start, and end events.
+        The text portions of stream responses should be concatenated to form the full response text.
+
+        If the user question and object response already exist, they will be reused and not updated.
+
+        Concurrency Behavior:
+        - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+        - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+        Known Limitations:
+        - Schema enforcement is best-effort and may not guarantee exact conformity.
+        - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of a new or existing conversation to use as context for the object generation request
+
+        schema : str
+            JSON schema string defining the expected object shape.
+
+        conversation_message_id : EntityIdBase
+            Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
+
+        user_id : EntityIdBase
+            Externally supplied ID to uniquely identify the user that created this message
+
+        text : str
+            The text of the message
+
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Yields
+        ------
+        typing.Iterator[ObjectStreamResponse]
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.commons import EntityIdBase
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        response = client.conversation.ask_object_stream(
+            conversation_id="conversationId",
+            schema="schema",
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+            user_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+            text="text",
+        )
+        for chunk in response:
+            yield chunk
+        """
+        with self._raw_client.ask_object_stream(
+            conversation_id,
+            schema=schema,
+            conversation_message_id=conversation_message_id,
+            user_id=user_id,
+            text=text,
+            attachments=attachments,
+            transient_data=transient_data,
+            timezone=timezone,
+            request_options=request_options,
+        ) as r:
+            yield from r.data
 
     def categorize(
         self, conversation_id: str, *, request_options: typing.Optional[RequestOptions] = None
@@ -901,6 +1069,66 @@ class ConversationClient:
         )
         return _response.data
 
+    def deliver_message(
+        self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> DeliverMessageResponse:
+        """
+        Deliver a message to a user or conversation.
+
+        <Warning>
+        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
+        User message delivery is not yet supported.
+        </Warning>
+
+        Parameters
+        ----------
+        request : DeliverMessageRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DeliverMessageResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
+        from mavenagi.conversation import (
+            ConversationMessageRequest,
+            DeliverMessageRequest_User,
+        )
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.conversation.deliver_message(
+            request=DeliverMessageRequest_User(
+                user_id=EntityIdWithoutAgent(
+                    type="AGENT",
+                    app_id="appId",
+                    reference_id="referenceId",
+                ),
+                message=ConversationMessageRequest(
+                    conversation_message_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                    user_id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                    text="text",
+                    user_message_type="USER",
+                ),
+            ),
+        )
+        """
+        _response = self._raw_client.deliver_message(request=request, request_options=request_options)
+        return _response.data
+
 
 class AsyncConversationClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -1036,6 +1264,79 @@ class AsyncConversationClient:
             updated_at=updated_at,
             tags=tags,
             metadata=metadata,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def patch(
+        self,
+        conversation_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        open: typing.Optional[bool] = OMIT,
+        llm_enabled: typing.Optional[bool] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ConversationResponse:
+        """
+        Update mutable conversation fields.
+
+        The `appId` field can be provided to update a conversation owned by a different app.
+        All other fields will overwrite the existing value on the conversation only if provided.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of the conversation to patch
+
+        app_id : typing.Optional[str]
+            The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
+
+        open : typing.Optional[bool]
+            Whether the conversation is able to receive asynchronous messages. Only valid for conversations with the `ASYNC` capability.
+
+        llm_enabled : typing.Optional[bool]
+            Whether the LLM is enabled for this conversation.
+
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            A list of attachments to add to the conversation. Attachments can only be appended. Removal is not allowed.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ConversationResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.conversation.patch(
+                conversation_id="conversation-0",
+                llm_enabled=True,
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.patch(
+            conversation_id,
+            app_id=app_id,
+            open=open,
+            llm_enabled=llm_enabled,
+            attachments=attachments,
             request_options=request_options,
         )
         return _response.data
@@ -1236,7 +1537,7 @@ class AsyncConversationClient:
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
         text: str,
-        attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1266,8 +1567,9 @@ class AsyncConversationClient:
         text : str
             The text of the message
 
-        attachments : typing.Optional[typing.Sequence[Attachment]]
-            The attachments to the message.
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -1288,8 +1590,7 @@ class AsyncConversationClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase
-        from mavenagi.conversation import Attachment
+        from mavenagi.commons import AttachmentRequest, EntityIdBase
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1310,7 +1611,7 @@ class AsyncConversationClient:
                 ),
                 text="How do I reset my password?",
                 attachments=[
-                    Attachment(
+                    AttachmentRequest(
                         type="image/png",
                         content="iVBORw0KGgo...",
                     )
@@ -1341,7 +1642,7 @@ class AsyncConversationClient:
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
         text: str,
-        attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1375,8 +1676,9 @@ class AsyncConversationClient:
         text : str
             The text of the message
 
-        attachments : typing.Optional[typing.Sequence[Attachment]]
-            The attachments to the message.
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -1396,8 +1698,7 @@ class AsyncConversationClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase
-        from mavenagi.conversation import Attachment
+        from mavenagi.commons import AttachmentRequest, EntityIdBase
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1418,7 +1719,7 @@ class AsyncConversationClient:
                 ),
                 text="How do I reset my password?",
                 attachments=[
-                    Attachment(
+                    AttachmentRequest(
                         type="image/png",
                         content="iVBORw0KGgo...",
                     )
@@ -1506,6 +1807,115 @@ class AsyncConversationClient:
             conversation_id, conversation_message_ids=conversation_message_ids, request_options=request_options
         )
         return _response.data
+
+    async def ask_object_stream(
+        self,
+        conversation_id: str,
+        *,
+        schema: str,
+        conversation_message_id: EntityIdBase,
+        user_id: EntityIdBase,
+        text: str,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.AsyncIterator[ObjectStreamResponse]:
+        """
+        Generate a structured object response based on a provided schema and user prompt with a streaming response.
+        The response will be sent as a stream of events containing text, start, and end events.
+        The text portions of stream responses should be concatenated to form the full response text.
+
+        If the user question and object response already exist, they will be reused and not updated.
+
+        Concurrency Behavior:
+        - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+        - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+        Known Limitations:
+        - Schema enforcement is best-effort and may not guarantee exact conformity.
+        - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of a new or existing conversation to use as context for the object generation request
+
+        schema : str
+            JSON schema string defining the expected object shape.
+
+        conversation_message_id : EntityIdBase
+            Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
+
+        user_id : EntityIdBase
+            Externally supplied ID to uniquely identify the user that created this message
+
+        text : str
+            The text of the message
+
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Yields
+        ------
+        typing.AsyncIterator[ObjectStreamResponse]
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityIdBase
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            response = await client.conversation.ask_object_stream(
+                conversation_id="conversationId",
+                schema="schema",
+                conversation_message_id=EntityIdBase(
+                    reference_id="referenceId",
+                ),
+                user_id=EntityIdBase(
+                    reference_id="referenceId",
+                ),
+                text="text",
+            )
+            async for chunk in response:
+                yield chunk
+
+
+        asyncio.run(main())
+        """
+        async with self._raw_client.ask_object_stream(
+            conversation_id,
+            schema=schema,
+            conversation_message_id=conversation_message_id,
+            user_id=user_id,
+            text=text,
+            attachments=attachments,
+            transient_data=transient_data,
+            timezone=timezone,
+            request_options=request_options,
+        ) as r:
+            async for _chunk in r.data:
+                yield _chunk
 
     async def categorize(
         self, conversation_id: str, *, request_options: typing.Optional[RequestOptions] = None
@@ -1882,4 +2292,72 @@ class AsyncConversationClient:
         _response = await self._raw_client.search(
             sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
+        return _response.data
+
+    async def deliver_message(
+        self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> DeliverMessageResponse:
+        """
+        Deliver a message to a user or conversation.
+
+        <Warning>
+        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
+        User message delivery is not yet supported.
+        </Warning>
+
+        Parameters
+        ----------
+        request : DeliverMessageRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DeliverMessageResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
+        from mavenagi.conversation import (
+            ConversationMessageRequest,
+            DeliverMessageRequest_User,
+        )
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.conversation.deliver_message(
+                request=DeliverMessageRequest_User(
+                    user_id=EntityIdWithoutAgent(
+                        type="AGENT",
+                        app_id="appId",
+                        reference_id="referenceId",
+                    ),
+                    message=ConversationMessageRequest(
+                        conversation_message_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                        user_id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                        text="text",
+                        user_message_type="USER",
+                    ),
+                ),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.deliver_message(request=request, request_options=request_options)
         return _response.data

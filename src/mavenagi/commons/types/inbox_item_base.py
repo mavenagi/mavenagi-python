@@ -8,6 +8,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .entity_id import EntityId
+from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
 
 
@@ -30,6 +31,11 @@ class InboxItemBase(UniversalBaseModel):
     status: InboxItemStatus = pydantic.Field()
     """
     Status of the inbox item.
+    """
+
+    severity: InboxItemSeverity = pydantic.Field()
+    """
+    Severity of the inbox item.
     """
 
     if IS_PYDANTIC_V2:

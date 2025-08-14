@@ -10,6 +10,7 @@ import httpx_sse
 from ..commons.errors.bad_request_error import BadRequestError
 from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.server_error import ServerError
+from ..commons.types.attachment_request import AttachmentRequest
 from ..commons.types.conversation_response import ConversationResponse
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
@@ -23,13 +24,15 @@ from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
-from .types.attachment import Attachment
 from .types.categorization_response import CategorizationResponse
 from .types.conversation_field import ConversationField
 from .types.conversation_filter import ConversationFilter
 from .types.conversation_message_request import ConversationMessageRequest
 from .types.conversation_metadata import ConversationMetadata
 from .types.conversations_response import ConversationsResponse
+from .types.deliver_message_request import DeliverMessageRequest
+from .types.deliver_message_response import DeliverMessageResponse
+from .types.object_stream_response import ObjectStreamResponse
 from .types.stream_response import StreamResponse
 
 # this is used as the default value for optional parameters
@@ -119,6 +122,108 @@ class RawConversationClient:
                 "metadata": metadata,
                 "messages": convert_and_respect_annotation_metadata(
                     object_=messages, annotation=typing.Sequence[ConversationMessageRequest], direction="write"
+                ),
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ConversationResponse,
+                    parse_obj_as(
+                        type_=ConversationResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def patch(
+        self,
+        conversation_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        open: typing.Optional[bool] = OMIT,
+        llm_enabled: typing.Optional[bool] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ConversationResponse]:
+        """
+        Update mutable conversation fields.
+
+        The `appId` field can be provided to update a conversation owned by a different app.
+        All other fields will overwrite the existing value on the conversation only if provided.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of the conversation to patch
+
+        app_id : typing.Optional[str]
+            The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
+
+        open : typing.Optional[bool]
+            Whether the conversation is able to receive asynchronous messages. Only valid for conversations with the `ASYNC` capability.
+
+        llm_enabled : typing.Optional[bool]
+            Whether the LLM is enabled for this conversation.
+
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            A list of attachments to add to the conversation. Attachments can only be appended. Removal is not allowed.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ConversationResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/conversations/{jsonable_encoder(conversation_id)}",
+            method="PATCH",
+            json={
+                "appId": app_id,
+                "open": open,
+                "llmEnabled": llm_enabled,
+                "attachments": convert_and_respect_annotation_metadata(
+                    object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
             },
             request_options=request_options,
@@ -427,7 +532,7 @@ class RawConversationClient:
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
         text: str,
-        attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -457,8 +562,9 @@ class RawConversationClient:
         text : str
             The text of the message
 
-        attachments : typing.Optional[typing.Sequence[Attachment]]
-            The attachments to the message.
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -486,7 +592,7 @@ class RawConversationClient:
                 ),
                 "text": text,
                 "attachments": convert_and_respect_annotation_metadata(
-                    object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
+                    object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
                 "transientData": transient_data,
                 "timezone": timezone,
@@ -550,7 +656,7 @@ class RawConversationClient:
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
         text: str,
-        attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -584,8 +690,9 @@ class RawConversationClient:
         text : str
             The text of the message
 
-        attachments : typing.Optional[typing.Sequence[Attachment]]
-            The attachments to the message.
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -612,7 +719,7 @@ class RawConversationClient:
                 ),
                 "text": text,
                 "attachments": convert_and_respect_annotation_metadata(
-                    object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
+                    object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
                 "transientData": transient_data,
                 "timezone": timezone,
@@ -770,6 +877,156 @@ class RawConversationClient:
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    @contextlib.contextmanager
+    def ask_object_stream(
+        self,
+        conversation_id: str,
+        *,
+        schema: str,
+        conversation_message_id: EntityIdBase,
+        user_id: EntityIdBase,
+        text: str,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.Iterator[HttpResponse[typing.Iterator[ObjectStreamResponse]]]:
+        """
+        Generate a structured object response based on a provided schema and user prompt with a streaming response.
+        The response will be sent as a stream of events containing text, start, and end events.
+        The text portions of stream responses should be concatenated to form the full response text.
+
+        If the user question and object response already exist, they will be reused and not updated.
+
+        Concurrency Behavior:
+        - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+        - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+        Known Limitations:
+        - Schema enforcement is best-effort and may not guarantee exact conformity.
+        - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of a new or existing conversation to use as context for the object generation request
+
+        schema : str
+            JSON schema string defining the expected object shape.
+
+        conversation_message_id : EntityIdBase
+            Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
+
+        user_id : EntityIdBase
+            Externally supplied ID to uniquely identify the user that created this message
+
+        text : str
+            The text of the message
+
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Yields
+        ------
+        typing.Iterator[HttpResponse[typing.Iterator[ObjectStreamResponse]]]
+        """
+        with self._client_wrapper.httpx_client.stream(
+            f"v1/conversations/{jsonable_encoder(conversation_id)}/ask_object_stream",
+            method="POST",
+            json={
+                "schema": schema,
+                "conversationMessageId": convert_and_respect_annotation_metadata(
+                    object_=conversation_message_id, annotation=EntityIdBase, direction="write"
+                ),
+                "userId": convert_and_respect_annotation_metadata(
+                    object_=user_id, annotation=EntityIdBase, direction="write"
+                ),
+                "text": text,
+                "attachments": convert_and_respect_annotation_metadata(
+                    object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
+                ),
+                "transientData": transient_data,
+                "timezone": timezone,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        ) as _response:
+
+            def _stream() -> HttpResponse[typing.Iterator[ObjectStreamResponse]]:
+                try:
+                    if 200 <= _response.status_code < 300:
+
+                        def _iter():
+                            _event_source = httpx_sse.EventSource(_response)
+                            for _sse in _event_source.iter_sse():
+                                if _sse.data == None:
+                                    return
+                                try:
+                                    yield typing.cast(
+                                        ObjectStreamResponse,
+                                        parse_obj_as(
+                                            type_=ObjectStreamResponse,  # type: ignore
+                                            object_=json.loads(_sse.data),
+                                        ),
+                                    )
+                                except Exception:
+                                    pass
+                            return
+
+                        return HttpResponse(response=_response, data=_iter())
+                    _response.read()
+                    if _response.status_code == 404:
+                        raise NotFoundError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 400:
+                        raise BadRequestError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 500:
+                        raise ServerError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    _response_json = _response.json()
+                except JSONDecodeError:
+                    raise ApiError(
+                        status_code=_response.status_code, headers=dict(_response.headers), body=_response.text
+                    )
+                raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+            yield _stream()
 
     def categorize(
         self, conversation_id: str, *, request_options: typing.Optional[RequestOptions] = None
@@ -1319,6 +1576,85 @@ class RawConversationClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def deliver_message(
+        self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[DeliverMessageResponse]:
+        """
+        Deliver a message to a user or conversation.
+
+        <Warning>
+        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
+        User message delivery is not yet supported.
+        </Warning>
+
+        Parameters
+        ----------
+        request : DeliverMessageRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[DeliverMessageResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/conversations/deliver-message",
+            method="POST",
+            json=convert_and_respect_annotation_metadata(
+                object_=request, annotation=DeliverMessageRequest, direction="write"
+            ),
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    DeliverMessageResponse,
+                    parse_obj_as(
+                        type_=DeliverMessageResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawConversationClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -1403,6 +1739,108 @@ class AsyncRawConversationClient:
                 "metadata": metadata,
                 "messages": convert_and_respect_annotation_metadata(
                     object_=messages, annotation=typing.Sequence[ConversationMessageRequest], direction="write"
+                ),
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ConversationResponse,
+                    parse_obj_as(
+                        type_=ConversationResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def patch(
+        self,
+        conversation_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        open: typing.Optional[bool] = OMIT,
+        llm_enabled: typing.Optional[bool] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ConversationResponse]:
+        """
+        Update mutable conversation fields.
+
+        The `appId` field can be provided to update a conversation owned by a different app.
+        All other fields will overwrite the existing value on the conversation only if provided.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of the conversation to patch
+
+        app_id : typing.Optional[str]
+            The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
+
+        open : typing.Optional[bool]
+            Whether the conversation is able to receive asynchronous messages. Only valid for conversations with the `ASYNC` capability.
+
+        llm_enabled : typing.Optional[bool]
+            Whether the LLM is enabled for this conversation.
+
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            A list of attachments to add to the conversation. Attachments can only be appended. Removal is not allowed.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ConversationResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/conversations/{jsonable_encoder(conversation_id)}",
+            method="PATCH",
+            json={
+                "appId": app_id,
+                "open": open,
+                "llmEnabled": llm_enabled,
+                "attachments": convert_and_respect_annotation_metadata(
+                    object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
             },
             request_options=request_options,
@@ -1711,7 +2149,7 @@ class AsyncRawConversationClient:
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
         text: str,
-        attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1741,8 +2179,9 @@ class AsyncRawConversationClient:
         text : str
             The text of the message
 
-        attachments : typing.Optional[typing.Sequence[Attachment]]
-            The attachments to the message.
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -1770,7 +2209,7 @@ class AsyncRawConversationClient:
                 ),
                 "text": text,
                 "attachments": convert_and_respect_annotation_metadata(
-                    object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
+                    object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
                 "transientData": transient_data,
                 "timezone": timezone,
@@ -1834,7 +2273,7 @@ class AsyncRawConversationClient:
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
         text: str,
-        attachments: typing.Optional[typing.Sequence[Attachment]] = OMIT,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1868,8 +2307,9 @@ class AsyncRawConversationClient:
         text : str
             The text of the message
 
-        attachments : typing.Optional[typing.Sequence[Attachment]]
-            The attachments to the message.
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
             Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -1896,7 +2336,7 @@ class AsyncRawConversationClient:
                 ),
                 "text": text,
                 "attachments": convert_and_respect_annotation_metadata(
-                    object_=attachments, annotation=typing.Sequence[Attachment], direction="write"
+                    object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
                 "transientData": transient_data,
                 "timezone": timezone,
@@ -2054,6 +2494,156 @@ class AsyncRawConversationClient:
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    @contextlib.asynccontextmanager
+    async def ask_object_stream(
+        self,
+        conversation_id: str,
+        *,
+        schema: str,
+        conversation_message_id: EntityIdBase,
+        user_id: EntityIdBase,
+        text: str,
+        attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
+        transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.AsyncIterator[AsyncHttpResponse[typing.AsyncIterator[ObjectStreamResponse]]]:
+        """
+        Generate a structured object response based on a provided schema and user prompt with a streaming response.
+        The response will be sent as a stream of events containing text, start, and end events.
+        The text portions of stream responses should be concatenated to form the full response text.
+
+        If the user question and object response already exist, they will be reused and not updated.
+
+        Concurrency Behavior:
+        - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+        - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+        Known Limitations:
+        - Schema enforcement is best-effort and may not guarantee exact conformity.
+        - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
+
+        Parameters
+        ----------
+        conversation_id : str
+            The ID of a new or existing conversation to use as context for the object generation request
+
+        schema : str
+            JSON schema string defining the expected object shape.
+
+        conversation_message_id : EntityIdBase
+            Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
+
+        user_id : EntityIdBase
+            Externally supplied ID to uniquely identify the user that created this message
+
+        text : str
+            The text of the message
+
+        attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
+            The attachments to the message. Image attachments will be sent to the LLM as additional data.
+            Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
+
+        transient_data : typing.Optional[typing.Dict[str, str]]
+            Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Yields
+        ------
+        typing.AsyncIterator[AsyncHttpResponse[typing.AsyncIterator[ObjectStreamResponse]]]
+        """
+        async with self._client_wrapper.httpx_client.stream(
+            f"v1/conversations/{jsonable_encoder(conversation_id)}/ask_object_stream",
+            method="POST",
+            json={
+                "schema": schema,
+                "conversationMessageId": convert_and_respect_annotation_metadata(
+                    object_=conversation_message_id, annotation=EntityIdBase, direction="write"
+                ),
+                "userId": convert_and_respect_annotation_metadata(
+                    object_=user_id, annotation=EntityIdBase, direction="write"
+                ),
+                "text": text,
+                "attachments": convert_and_respect_annotation_metadata(
+                    object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
+                ),
+                "transientData": transient_data,
+                "timezone": timezone,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        ) as _response:
+
+            async def _stream() -> AsyncHttpResponse[typing.AsyncIterator[ObjectStreamResponse]]:
+                try:
+                    if 200 <= _response.status_code < 300:
+
+                        async def _iter():
+                            _event_source = httpx_sse.EventSource(_response)
+                            async for _sse in _event_source.aiter_sse():
+                                if _sse.data == None:
+                                    return
+                                try:
+                                    yield typing.cast(
+                                        ObjectStreamResponse,
+                                        parse_obj_as(
+                                            type_=ObjectStreamResponse,  # type: ignore
+                                            object_=json.loads(_sse.data),
+                                        ),
+                                    )
+                                except Exception:
+                                    pass
+                            return
+
+                        return AsyncHttpResponse(response=_response, data=_iter())
+                    await _response.aread()
+                    if _response.status_code == 404:
+                        raise NotFoundError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 400:
+                        raise BadRequestError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 500:
+                        raise ServerError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    _response_json = _response.json()
+                except JSONDecodeError:
+                    raise ApiError(
+                        status_code=_response.status_code, headers=dict(_response.headers), body=_response.text
+                    )
+                raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+            yield await _stream()
 
     async def categorize(
         self, conversation_id: str, *, request_options: typing.Optional[RequestOptions] = None
@@ -2561,6 +3151,85 @@ class AsyncRawConversationClient:
                     ConversationsResponse,
                     parse_obj_as(
                         type_=ConversationsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def deliver_message(
+        self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[DeliverMessageResponse]:
+        """
+        Deliver a message to a user or conversation.
+
+        <Warning>
+        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
+        User message delivery is not yet supported.
+        </Warning>
+
+        Parameters
+        ----------
+        request : DeliverMessageRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[DeliverMessageResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/conversations/deliver-message",
+            method="POST",
+            json=convert_and_respect_annotation_metadata(
+                object_=request, annotation=DeliverMessageRequest, direction="write"
+            ),
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    DeliverMessageResponse,
+                    parse_obj_as(
+                        type_=DeliverMessageResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

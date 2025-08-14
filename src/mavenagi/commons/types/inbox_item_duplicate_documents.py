@@ -26,9 +26,9 @@ class InboxItemDuplicateDocuments(InboxItemBase):
     List of fixes associated with the inbox item.
     """
 
-    source_document: typing_extensions.Annotated[
-        typing.Optional[DocumentInformation], FieldMetadata(alias="sourceDocument")
-    ] = pydantic.Field(default=None)
+    source_document: typing_extensions.Annotated[DocumentInformation, FieldMetadata(alias="sourceDocument")] = (
+        pydantic.Field()
+    )
     """
     Information about the source document associated with the inbox item.
     """

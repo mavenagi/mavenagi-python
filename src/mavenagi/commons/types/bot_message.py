@@ -7,11 +7,12 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .bot_conversation_message_type import BotConversationMessageType
-from .bot_message_status import BotMessageStatus
+from .bot_logic import BotLogic
 from .bot_response import BotResponse
 from .bot_response_metadata import BotResponseMetadata
 from .conversation_message_base import ConversationMessageBase
 from .entity_id import EntityId
+from .message_status import MessageStatus
 
 
 class BotMessage(ConversationMessageBase):
@@ -25,7 +26,11 @@ class BotMessage(ConversationMessageBase):
     bot_message_type: typing_extensions.Annotated[BotConversationMessageType, FieldMetadata(alias="botMessageType")]
     responses: typing.List[BotResponse]
     metadata: BotResponseMetadata
-    status: BotMessageStatus
+    status: MessageStatus
+    logic: typing.Optional[BotLogic] = pydantic.Field(default=None)
+    """
+    The logic that was used to generate the response. Response size may be large; only present on the getConversation request.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

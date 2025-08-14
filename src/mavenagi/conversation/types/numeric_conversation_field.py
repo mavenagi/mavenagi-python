@@ -4,7 +4,13 @@ import typing
 
 NumericConversationField = typing.Union[
     typing.Literal[
-        "ThumbsUpCount", "ThumbsDownCount", "InsertCount", "UserMessageCount", "HandleTime", "FirstResponseTime"
+        "ThumbsUpCount",
+        "ThumbsDownCount",
+        "InsertCount",
+        "UserMessageCount",
+        "HandleTime",
+        "FirstResponseTime",
+        "PredictedNPS",
     ],
     typing.Any,
 ]

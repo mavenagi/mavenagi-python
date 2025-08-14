@@ -6,7 +6,20 @@ from .agent import Agent
 from .agent_environment import AgentEnvironment
 from .agent_field import AgentField
 from .agent_filter import AgentFilter
+from .agent_patch_request import AgentPatchRequest
 from .agents_search_request import AgentsSearchRequest
 from .agents_search_response import AgentsSearchResponse
+from .create_agent_request import CreateAgentRequest
+from .pii_category import PiiCategory
 
-__all__ = ["Agent", "AgentEnvironment", "AgentField", "AgentFilter", "AgentsSearchRequest", "AgentsSearchResponse"]
+__all__ = [
+    "Agent",
+    "AgentEnvironment",
+    "AgentField",
+    "AgentFilter",
+    "AgentPatchRequest",
+    "AgentsSearchRequest",
+    "AgentsSearchResponse",
+    "CreateAgentRequest",
+    "PiiCategory",
+]

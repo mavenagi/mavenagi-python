@@ -10,7 +10,6 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .document_information import DocumentInformation
 from .entity_id import EntityId
-from .knowledge_base_information import KnowledgeBaseInformation
 
 
 class InboxItemFix_AddDocument(UniversalBaseModel):
@@ -44,21 +43,4 @@ class InboxItemFix_DeactivateDocument(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class InboxItemFix_DeactivateKnowledgeBase(UniversalBaseModel):
-    type: typing.Literal["deactivateKnowledgeBase"] = "deactivateKnowledgeBase"
-    knowledge_base: typing_extensions.Annotated[KnowledgeBaseInformation, FieldMetadata(alias="knowledgeBase")]
-    id: EntityId
-
-    if IS_PYDANTIC_V2:
-        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
-    else:
-
-        class Config:
-            frozen = True
-            smart_union = True
-            extra = pydantic.Extra.allow
-
-
-InboxItemFix = typing.Union[
-    InboxItemFix_AddDocument, InboxItemFix_DeactivateDocument, InboxItemFix_DeactivateKnowledgeBase
-]
+InboxItemFix = typing.Union[InboxItemFix_AddDocument, InboxItemFix_DeactivateDocument]

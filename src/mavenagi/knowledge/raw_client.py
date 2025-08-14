@@ -11,6 +11,7 @@ from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.error_message import ErrorMessage
+from ..commons.types.llm_inclusion_status import LlmInclusionStatus
 from ..commons.types.precondition import Precondition
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -19,13 +20,20 @@ from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
+from .types.knowledge_base_field import KnowledgeBaseField
+from .types.knowledge_base_filter import KnowledgeBaseFilter
+from .types.knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .types.knowledge_base_response import KnowledgeBaseResponse
 from .types.knowledge_base_version import KnowledgeBaseVersion
 from .types.knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
 from .types.knowledge_base_version_status import KnowledgeBaseVersionStatus
 from .types.knowledge_base_version_type import KnowledgeBaseVersionType
+from .types.knowledge_bases_response import KnowledgeBasesResponse
 from .types.knowledge_document_content_type import KnowledgeDocumentContentType
+from .types.knowledge_document_field import KnowledgeDocumentField
+from .types.knowledge_document_filter import KnowledgeDocumentFilter
 from .types.knowledge_document_response import KnowledgeDocumentResponse
+from .types.knowledge_documents_response import KnowledgeDocumentsResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -34,6 +42,104 @@ OMIT = typing.cast(typing.Any, ...)
 class RawKnowledgeClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
+
+    def search_knowledge_bases(
+        self,
+        *,
+        sort: typing.Optional[KnowledgeBaseField] = OMIT,
+        filter: typing.Optional[KnowledgeBaseFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[KnowledgeBasesResponse]:
+        """
+        Search knowledge bases
+
+        Parameters
+        ----------
+        sort : typing.Optional[KnowledgeBaseField]
+
+        filter : typing.Optional[KnowledgeBaseFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[KnowledgeBasesResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/knowledge/search",
+            method="POST",
+            json={
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=KnowledgeBaseFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeBasesResponse,
+                    parse_obj_as(
+                        type_=KnowledgeBasesResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def create_or_update_knowledge_base(
         self,
@@ -59,7 +165,7 @@ class RawKnowledgeClient:
             Metadata for the knowledge base.
 
         precondition : typing.Optional[Precondition]
-            (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
+            The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -133,7 +239,11 @@ class RawKnowledgeClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get_knowledge_base(
-        self, knowledge_base_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[KnowledgeBaseResponse]:
         """
         Get an existing knowledge base by its supplied ID
@@ -142,6 +252,9 @@ class RawKnowledgeClient:
         ----------
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -153,7 +266,115 @@ class RawKnowledgeClient:
         _response = self._client_wrapper.httpx_client.request(
             f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}",
             method="GET",
+            params={
+                "appId": app_id,
+            },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeBaseResponse,
+                    parse_obj_as(
+                        type_=KnowledgeBaseResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def patch_knowledge_base(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        name: typing.Optional[str] = OMIT,
+        tags: typing.Optional[typing.Set[str]] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[KnowledgeBaseResponse]:
+        """
+        Update mutable knowledge base fields
+
+        The `appId` field can be provided to update a knowledge base owned by a different app.
+        All other fields will overwrite the existing value on the knowledge base only if provided.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to patch.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to patch. If not provided the ID of the calling app will be used.
+
+        name : typing.Optional[str]
+            The name of the knowledge base.
+
+        tags : typing.Optional[typing.Set[str]]
+            The tags of the knowledge base.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
+
+        refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
+            How often the knowledge base should be refreshed.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[KnowledgeBaseResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}",
+            method="PATCH",
+            json={
+                "appId": app_id,
+                "name": name,
+                "tags": tags,
+                "llmInclusionStatus": llm_inclusion_status,
+                "refreshFrequency": refresh_frequency,
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
@@ -356,6 +577,104 @@ class RawKnowledgeClient:
                     KnowledgeBaseVersion,
                     parse_obj_as(
                         type_=KnowledgeBaseVersion,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def search_knowledge_documents(
+        self,
+        *,
+        sort: typing.Optional[KnowledgeDocumentField] = OMIT,
+        filter: typing.Optional[KnowledgeDocumentFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[KnowledgeDocumentsResponse]:
+        """
+        Search knowledge documents
+
+        Parameters
+        ----------
+        sort : typing.Optional[KnowledgeDocumentField]
+
+        filter : typing.Optional[KnowledgeDocumentFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[KnowledgeDocumentsResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/knowledge/documents/search",
+            method="POST",
+            json={
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=KnowledgeDocumentFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeDocumentsResponse,
+                    parse_obj_as(
+                        type_=KnowledgeDocumentsResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -749,6 +1068,104 @@ class AsyncRawKnowledgeClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
+    async def search_knowledge_bases(
+        self,
+        *,
+        sort: typing.Optional[KnowledgeBaseField] = OMIT,
+        filter: typing.Optional[KnowledgeBaseFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[KnowledgeBasesResponse]:
+        """
+        Search knowledge bases
+
+        Parameters
+        ----------
+        sort : typing.Optional[KnowledgeBaseField]
+
+        filter : typing.Optional[KnowledgeBaseFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[KnowledgeBasesResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/knowledge/search",
+            method="POST",
+            json={
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=KnowledgeBaseFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeBasesResponse,
+                    parse_obj_as(
+                        type_=KnowledgeBasesResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def create_or_update_knowledge_base(
         self,
         *,
@@ -773,7 +1190,7 @@ class AsyncRawKnowledgeClient:
             Metadata for the knowledge base.
 
         precondition : typing.Optional[Precondition]
-            (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
+            The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -847,7 +1264,11 @@ class AsyncRawKnowledgeClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get_knowledge_base(
-        self, knowledge_base_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[KnowledgeBaseResponse]:
         """
         Get an existing knowledge base by its supplied ID
@@ -856,6 +1277,9 @@ class AsyncRawKnowledgeClient:
         ----------
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -867,7 +1291,115 @@ class AsyncRawKnowledgeClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}",
             method="GET",
+            params={
+                "appId": app_id,
+            },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeBaseResponse,
+                    parse_obj_as(
+                        type_=KnowledgeBaseResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def patch_knowledge_base(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        name: typing.Optional[str] = OMIT,
+        tags: typing.Optional[typing.Set[str]] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[KnowledgeBaseResponse]:
+        """
+        Update mutable knowledge base fields
+
+        The `appId` field can be provided to update a knowledge base owned by a different app.
+        All other fields will overwrite the existing value on the knowledge base only if provided.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to patch.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to patch. If not provided the ID of the calling app will be used.
+
+        name : typing.Optional[str]
+            The name of the knowledge base.
+
+        tags : typing.Optional[typing.Set[str]]
+            The tags of the knowledge base.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
+
+        refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
+            How often the knowledge base should be refreshed.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[KnowledgeBaseResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}",
+            method="PATCH",
+            json={
+                "appId": app_id,
+                "name": name,
+                "tags": tags,
+                "llmInclusionStatus": llm_inclusion_status,
+                "refreshFrequency": refresh_frequency,
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
@@ -1070,6 +1602,104 @@ class AsyncRawKnowledgeClient:
                     KnowledgeBaseVersion,
                     parse_obj_as(
                         type_=KnowledgeBaseVersion,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def search_knowledge_documents(
+        self,
+        *,
+        sort: typing.Optional[KnowledgeDocumentField] = OMIT,
+        filter: typing.Optional[KnowledgeDocumentFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[KnowledgeDocumentsResponse]:
+        """
+        Search knowledge documents
+
+        Parameters
+        ----------
+        sort : typing.Optional[KnowledgeDocumentField]
+
+        filter : typing.Optional[KnowledgeDocumentFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[KnowledgeDocumentsResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/knowledge/documents/search",
+            method="POST",
+            json={
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=KnowledgeDocumentFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeDocumentsResponse,
+                    parse_obj_as(
+                        type_=KnowledgeDocumentsResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

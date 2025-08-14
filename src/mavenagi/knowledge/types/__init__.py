@@ -4,30 +4,52 @@
 
 from .base_knowledge_document import BaseKnowledgeDocument
 from .finalize_knowledge_base_version_request import FinalizeKnowledgeBaseVersionRequest
+from .knowledge_base_field import KnowledgeBaseField
+from .knowledge_base_filter import KnowledgeBaseFilter
+from .knowledge_base_patch_request import KnowledgeBasePatchRequest
 from .knowledge_base_properties import KnowledgeBaseProperties
+from .knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .knowledge_base_request import KnowledgeBaseRequest
 from .knowledge_base_response import KnowledgeBaseResponse
+from .knowledge_base_search_request import KnowledgeBaseSearchRequest
 from .knowledge_base_type import KnowledgeBaseType
 from .knowledge_base_version import KnowledgeBaseVersion
 from .knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
 from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 from .knowledge_base_version_type import KnowledgeBaseVersionType
+from .knowledge_bases_response import KnowledgeBasesResponse
 from .knowledge_document_content_type import KnowledgeDocumentContentType
+from .knowledge_document_field import KnowledgeDocumentField
+from .knowledge_document_filter import KnowledgeDocumentFilter
 from .knowledge_document_request import KnowledgeDocumentRequest
 from .knowledge_document_response import KnowledgeDocumentResponse
+from .knowledge_document_search_request import KnowledgeDocumentSearchRequest
+from .knowledge_document_search_response import KnowledgeDocumentSearchResponse
+from .knowledge_documents_response import KnowledgeDocumentsResponse
 
 __all__ = [
     "BaseKnowledgeDocument",
     "FinalizeKnowledgeBaseVersionRequest",
+    "KnowledgeBaseField",
+    "KnowledgeBaseFilter",
+    "KnowledgeBasePatchRequest",
     "KnowledgeBaseProperties",
+    "KnowledgeBaseRefreshFrequency",
     "KnowledgeBaseRequest",
     "KnowledgeBaseResponse",
+    "KnowledgeBaseSearchRequest",
     "KnowledgeBaseType",
     "KnowledgeBaseVersion",
     "KnowledgeBaseVersionFinalizeStatus",
     "KnowledgeBaseVersionStatus",
     "KnowledgeBaseVersionType",
+    "KnowledgeBasesResponse",
     "KnowledgeDocumentContentType",
+    "KnowledgeDocumentField",
+    "KnowledgeDocumentFilter",
     "KnowledgeDocumentRequest",
     "KnowledgeDocumentResponse",
+    "KnowledgeDocumentSearchRequest",
+    "KnowledgeDocumentSearchResponse",
+    "KnowledgeDocumentsResponse",
 ]

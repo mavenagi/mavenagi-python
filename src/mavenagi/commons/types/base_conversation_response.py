@@ -82,6 +82,19 @@ class BaseConversationResponse(UniversalBaseModel):
     Whether the conversation user-specific data has been deleted. See `deleteConversation` for details.
     """
 
+    open: bool = pydantic.Field()
+    """
+    Whether the conversation is able to receive asynchronous messages. 
+    Only applicable if a conversation is initialized with the `ASYNC` capability. Defaults to true. Can be closed using the `PATCH` API.
+    """
+
+    llm_enabled: typing_extensions.Annotated[bool, FieldMetadata(alias="llmEnabled")] = pydantic.Field()
+    """
+    Whether the LLM is enabled for this conversation. 
+    If true, `USER` messages sent via the ask API will be sent to the LLM and a `BOT_RESPONSE` or `BOT_SUGGESTION` message will be generated. 
+    If false, `USER` messages will not be sent to the LLM.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

@@ -4,18 +4,18 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.page import Page
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
-from .inbox_item_fix_base import InboxItemFixBase
-from .knowledge_base_information import KnowledgeBaseInformation
+from .knowledge_document_search_response import KnowledgeDocumentSearchResponse
 
 
-class InboxItemFixDeactivateKnowledgeBase(InboxItemFixBase):
-    knowledge_base: typing_extensions.Annotated[KnowledgeBaseInformation, FieldMetadata(alias="knowledgeBase")] = (
-        pydantic.Field()
-    )
+class KnowledgeDocumentsResponse(Page):
+    knowledge_documents: typing_extensions.Annotated[
+        typing.List[KnowledgeDocumentSearchResponse], FieldMetadata(alias="knowledgeDocuments")
+    ] = pydantic.Field()
     """
-    The knowledge base associated with this fix.
+    The knowledge documents that match the search criteria. Content will not be included.
     """
 
     if IS_PYDANTIC_V2:

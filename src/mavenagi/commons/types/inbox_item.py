@@ -14,35 +14,8 @@ from .document_information import DocumentInformation
 from .entity_id import EntityId
 from .inbox_item_fix_add_document import InboxItemFixAddDocument
 from .inbox_item_fix_deactivate_document import InboxItemFixDeactivateDocument
-from .inbox_item_fix_deactivate_knowledge_base import InboxItemFixDeactivateKnowledgeBase
+from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
-from .knowledge_base_information import KnowledgeBaseInformation
-
-
-class InboxItem_DuplicateKnowledgeBase(UniversalBaseModel):
-    type: typing.Literal["duplicateKnowledgeBase"] = "duplicateKnowledgeBase"
-    recommended_fixes: typing_extensions.Annotated[
-        typing.List[InboxItemFixDeactivateKnowledgeBase], FieldMetadata(alias="recommendedFixes")
-    ]
-    other_fixes: typing_extensions.Annotated[
-        typing.List[InboxItemFixDeactivateKnowledgeBase], FieldMetadata(alias="otherFixes")
-    ]
-    knowledge_bases: typing_extensions.Annotated[
-        typing.List[KnowledgeBaseInformation], FieldMetadata(alias="knowledgeBases")
-    ]
-    id: EntityId
-    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
-    updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]
-    status: InboxItemStatus
-
-    if IS_PYDANTIC_V2:
-        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
-    else:
-
-        class Config:
-            frozen = True
-            smart_union = True
-            extra = pydantic.Extra.allow
 
 
 class InboxItem_DuplicateDocuments(UniversalBaseModel):
@@ -53,33 +26,13 @@ class InboxItem_DuplicateDocuments(UniversalBaseModel):
     other_fixes: typing_extensions.Annotated[
         typing.List[InboxItemFixDeactivateDocument], FieldMetadata(alias="otherFixes")
     ]
-    source_document: typing_extensions.Annotated[
-        typing.Optional[DocumentInformation], FieldMetadata(alias="sourceDocument")
-    ] = None
+    source_document: typing_extensions.Annotated[DocumentInformation, FieldMetadata(alias="sourceDocument")]
     documents: typing.List[DocumentInformation]
     id: EntityId
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]
     status: InboxItemStatus
-
-    if IS_PYDANTIC_V2:
-        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
-    else:
-
-        class Config:
-            frozen = True
-            smart_union = True
-            extra = pydantic.Extra.allow
-
-
-class InboxItem_KnowledgeBaseAlert(UniversalBaseModel):
-    type: typing.Literal["knowledgeBaseAlert"] = "knowledgeBaseAlert"
-    fix: InboxItemFixDeactivateKnowledgeBase
-    knowledge_base: typing_extensions.Annotated[KnowledgeBaseInformation, FieldMetadata(alias="knowledgeBase")]
-    id: EntityId
-    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
-    updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]
-    status: InboxItemStatus
+    severity: InboxItemSeverity
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -99,6 +52,7 @@ class InboxItem_MissingKnowledge(UniversalBaseModel):
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]
     status: InboxItemStatus
+    severity: InboxItemSeverity
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -110,9 +64,4 @@ class InboxItem_MissingKnowledge(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-InboxItem = typing.Union[
-    InboxItem_DuplicateKnowledgeBase,
-    InboxItem_DuplicateDocuments,
-    InboxItem_KnowledgeBaseAlert,
-    InboxItem_MissingKnowledge,
-]
+InboxItem = typing.Union[InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge]

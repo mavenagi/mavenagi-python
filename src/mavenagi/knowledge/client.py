@@ -6,17 +6,25 @@ import typing
 from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
+from ..commons.types.llm_inclusion_status import LlmInclusionStatus
 from ..commons.types.precondition import Precondition
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawKnowledgeClient, RawKnowledgeClient
+from .types.knowledge_base_field import KnowledgeBaseField
+from .types.knowledge_base_filter import KnowledgeBaseFilter
+from .types.knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .types.knowledge_base_response import KnowledgeBaseResponse
 from .types.knowledge_base_version import KnowledgeBaseVersion
 from .types.knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
 from .types.knowledge_base_version_status import KnowledgeBaseVersionStatus
 from .types.knowledge_base_version_type import KnowledgeBaseVersionType
+from .types.knowledge_bases_response import KnowledgeBasesResponse
 from .types.knowledge_document_content_type import KnowledgeDocumentContentType
+from .types.knowledge_document_field import KnowledgeDocumentField
+from .types.knowledge_document_filter import KnowledgeDocumentFilter
 from .types.knowledge_document_response import KnowledgeDocumentResponse
+from .types.knowledge_documents_response import KnowledgeDocumentsResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -36,6 +44,58 @@ class KnowledgeClient:
         RawKnowledgeClient
         """
         return self._raw_client
+
+    def search_knowledge_bases(
+        self,
+        *,
+        sort: typing.Optional[KnowledgeBaseField] = OMIT,
+        filter: typing.Optional[KnowledgeBaseFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBasesResponse:
+        """
+        Search knowledge bases
+
+        Parameters
+        ----------
+        sort : typing.Optional[KnowledgeBaseField]
+
+        filter : typing.Optional[KnowledgeBaseFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeBasesResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.search_knowledge_bases()
+        """
+        _response = self._raw_client.search_knowledge_bases(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        )
+        return _response.data
 
     def create_or_update_knowledge_base(
         self,
@@ -61,7 +121,7 @@ class KnowledgeClient:
             Metadata for the knowledge base.
 
         precondition : typing.Optional[Precondition]
-            (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
+            The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -98,7 +158,11 @@ class KnowledgeClient:
         return _response.data
 
     def get_knowledge_base(
-        self, knowledge_base_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
         """
         Get an existing knowledge base by its supplied ID
@@ -107,6 +171,9 @@ class KnowledgeClient:
         ----------
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -129,7 +196,78 @@ class KnowledgeClient:
             knowledge_base_reference_id="help-center",
         )
         """
-        _response = self._raw_client.get_knowledge_base(knowledge_base_reference_id, request_options=request_options)
+        _response = self._raw_client.get_knowledge_base(
+            knowledge_base_reference_id, app_id=app_id, request_options=request_options
+        )
+        return _response.data
+
+    def patch_knowledge_base(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        name: typing.Optional[str] = OMIT,
+        tags: typing.Optional[typing.Set[str]] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBaseResponse:
+        """
+        Update mutable knowledge base fields
+
+        The `appId` field can be provided to update a knowledge base owned by a different app.
+        All other fields will overwrite the existing value on the knowledge base only if provided.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to patch.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to patch. If not provided the ID of the calling app will be used.
+
+        name : typing.Optional[str]
+            The name of the knowledge base.
+
+        tags : typing.Optional[typing.Set[str]]
+            The tags of the knowledge base.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
+
+        refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
+            How often the knowledge base should be refreshed.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeBaseResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.patch_knowledge_base(
+            knowledge_base_reference_id="knowledgeBaseReferenceId",
+        )
+        """
+        _response = self._raw_client.patch_knowledge_base(
+            knowledge_base_reference_id,
+            app_id=app_id,
+            name=name,
+            tags=tags,
+            llm_inclusion_status=llm_inclusion_status,
+            refresh_frequency=refresh_frequency,
+            request_options=request_options,
+        )
         return _response.data
 
     def create_knowledge_base_version(
@@ -265,6 +403,58 @@ class KnowledgeClient:
             status=status,
             error_message=error_message,
             request_options=request_options,
+        )
+        return _response.data
+
+    def search_knowledge_documents(
+        self,
+        *,
+        sort: typing.Optional[KnowledgeDocumentField] = OMIT,
+        filter: typing.Optional[KnowledgeDocumentFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeDocumentsResponse:
+        """
+        Search knowledge documents
+
+        Parameters
+        ----------
+        sort : typing.Optional[KnowledgeDocumentField]
+
+        filter : typing.Optional[KnowledgeDocumentFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeDocumentsResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.search_knowledge_documents()
+        """
+        _response = self._raw_client.search_knowledge_documents(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
         return _response.data
 
@@ -550,6 +740,66 @@ class AsyncKnowledgeClient:
         """
         return self._raw_client
 
+    async def search_knowledge_bases(
+        self,
+        *,
+        sort: typing.Optional[KnowledgeBaseField] = OMIT,
+        filter: typing.Optional[KnowledgeBaseFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBasesResponse:
+        """
+        Search knowledge bases
+
+        Parameters
+        ----------
+        sort : typing.Optional[KnowledgeBaseField]
+
+        filter : typing.Optional[KnowledgeBaseFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeBasesResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.search_knowledge_bases()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search_knowledge_bases(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        )
+        return _response.data
+
     async def create_or_update_knowledge_base(
         self,
         *,
@@ -574,7 +824,7 @@ class AsyncKnowledgeClient:
             Metadata for the knowledge base.
 
         precondition : typing.Optional[Precondition]
-            (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
+            The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -619,7 +869,11 @@ class AsyncKnowledgeClient:
         return _response.data
 
     async def get_knowledge_base(
-        self, knowledge_base_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
         """
         Get an existing knowledge base by its supplied ID
@@ -628,6 +882,9 @@ class AsyncKnowledgeClient:
         ----------
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -659,7 +916,84 @@ class AsyncKnowledgeClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_knowledge_base(
-            knowledge_base_reference_id, request_options=request_options
+            knowledge_base_reference_id, app_id=app_id, request_options=request_options
+        )
+        return _response.data
+
+    async def patch_knowledge_base(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        name: typing.Optional[str] = OMIT,
+        tags: typing.Optional[typing.Set[str]] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBaseResponse:
+        """
+        Update mutable knowledge base fields
+
+        The `appId` field can be provided to update a knowledge base owned by a different app.
+        All other fields will overwrite the existing value on the knowledge base only if provided.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to patch.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to patch. If not provided the ID of the calling app will be used.
+
+        name : typing.Optional[str]
+            The name of the knowledge base.
+
+        tags : typing.Optional[typing.Set[str]]
+            The tags of the knowledge base.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
+
+        refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
+            How often the knowledge base should be refreshed.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeBaseResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.patch_knowledge_base(
+                knowledge_base_reference_id="knowledgeBaseReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.patch_knowledge_base(
+            knowledge_base_reference_id,
+            app_id=app_id,
+            name=name,
+            tags=tags,
+            llm_inclusion_status=llm_inclusion_status,
+            refresh_frequency=refresh_frequency,
+            request_options=request_options,
         )
         return _response.data
 
@@ -812,6 +1146,66 @@ class AsyncKnowledgeClient:
             status=status,
             error_message=error_message,
             request_options=request_options,
+        )
+        return _response.data
+
+    async def search_knowledge_documents(
+        self,
+        *,
+        sort: typing.Optional[KnowledgeDocumentField] = OMIT,
+        filter: typing.Optional[KnowledgeDocumentFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeDocumentsResponse:
+        """
+        Search knowledge documents
+
+        Parameters
+        ----------
+        sort : typing.Optional[KnowledgeDocumentField]
+
+        filter : typing.Optional[KnowledgeDocumentFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeDocumentsResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.search_knowledge_documents()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search_knowledge_documents(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
         return _response.data
 

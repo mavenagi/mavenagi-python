@@ -2,6 +2,7 @@
 
 # isort: skip_file
 
+from .ask_object_request import AskObjectRequest
 from .ask_request import AskRequest
 from .ask_stream_action_event import AskStreamActionEvent
 from .ask_stream_chart_event import AskStreamChartEvent
@@ -9,20 +10,35 @@ from .ask_stream_end_event import AskStreamEndEvent
 from .ask_stream_metadata_event import AskStreamMetadataEvent
 from .ask_stream_start_event import AskStreamStartEvent
 from .ask_stream_text_event import AskStreamTextEvent
-from .attachment import Attachment
 from .categorization_response import CategorizationResponse
 from .conversation_field import ConversationField
 from .conversation_filter import ConversationFilter
 from .conversation_message_request import ConversationMessageRequest
 from .conversation_metadata import ConversationMetadata
+from .conversation_patch_request import ConversationPatchRequest
 from .conversation_request import ConversationRequest
 from .conversations_response import ConversationsResponse
 from .conversations_search_request import ConversationsSearchRequest
+from .deliver_conversation_message_request import DeliverConversationMessageRequest
+from .deliver_message_request import (
+    DeliverMessageRequest,
+    DeliverMessageRequest_Conversation,
+    DeliverMessageRequest_User,
+)
+from .deliver_message_response import DeliverMessageResponse
+from .deliver_user_message_request import DeliverUserMessageRequest
+from .delivery_status import DeliveryStatus
 from .feedback_field import FeedbackField
 from .feedback_filter import FeedbackFilter
 from .feedback_request import FeedbackRequest
 from .generate_maven_suggestions_request import GenerateMavenSuggestionsRequest
 from .numeric_conversation_field import NumericConversationField
+from .object_stream_response import (
+    ObjectStreamResponse,
+    ObjectStreamResponse_End,
+    ObjectStreamResponse_Start,
+    ObjectStreamResponse_Text,
+)
 from .resolution_status import ResolutionStatus
 from .stream_response import (
     StreamResponse,
@@ -37,6 +53,7 @@ from .submit_action_form_request import SubmitActionFormRequest
 from .update_metadata_request import UpdateMetadataRequest
 
 __all__ = [
+    "AskObjectRequest",
     "AskRequest",
     "AskStreamActionEvent",
     "AskStreamChartEvent",
@@ -44,20 +61,31 @@ __all__ = [
     "AskStreamMetadataEvent",
     "AskStreamStartEvent",
     "AskStreamTextEvent",
-    "Attachment",
     "CategorizationResponse",
     "ConversationField",
     "ConversationFilter",
     "ConversationMessageRequest",
     "ConversationMetadata",
+    "ConversationPatchRequest",
     "ConversationRequest",
     "ConversationsResponse",
     "ConversationsSearchRequest",
+    "DeliverConversationMessageRequest",
+    "DeliverMessageRequest",
+    "DeliverMessageRequest_Conversation",
+    "DeliverMessageRequest_User",
+    "DeliverMessageResponse",
+    "DeliverUserMessageRequest",
+    "DeliveryStatus",
     "FeedbackField",
     "FeedbackFilter",
     "FeedbackRequest",
     "GenerateMavenSuggestionsRequest",
     "NumericConversationField",
+    "ObjectStreamResponse",
+    "ObjectStreamResponse_End",
+    "ObjectStreamResponse_Start",
+    "ObjectStreamResponse_Text",
     "ResolutionStatus",
     "StreamResponse",
     "StreamResponse_Action",

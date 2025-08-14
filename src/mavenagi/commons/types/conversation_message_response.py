@@ -9,22 +9,29 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .attachment_response import AttachmentResponse
 from .bot_conversation_message_type import BotConversationMessageType
-from .bot_message_status import BotMessageStatus
+from .bot_logic import BotLogic
 from .bot_response import BotResponse
 from .bot_response_metadata import BotResponseMetadata
 from .entity_id import EntityId
 from .entity_id_base import EntityIdBase
+from .message_status import MessageStatus
 from .user_conversation_message_type import UserConversationMessageType
-from .user_message_attachment import UserMessageAttachment
+from .user_message_response_state import UserMessageResponseState
 
 
 class ConversationMessageResponse_User(UniversalBaseModel):
     type: typing.Literal["user"] = "user"
     conversation_message_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="conversationMessageId")]
     language: typing.Optional[str] = None
-    attachments: typing.List[UserMessageAttachment]
+    attachments: typing.List[AttachmentResponse]
+    agent_user_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="agentUserId")] = None
     user_display_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="userDisplayName")] = None
+    status: MessageStatus
+    response_state: typing_extensions.Annotated[
+        typing.Optional[UserMessageResponseState], FieldMetadata(alias="responseState")
+    ] = None
     user_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="userId")]
     text: str
     user_message_type: typing_extensions.Annotated[UserConversationMessageType, FieldMetadata(alias="userMessageType")]
@@ -47,7 +54,8 @@ class ConversationMessageResponse_Bot(UniversalBaseModel):
     bot_message_type: typing_extensions.Annotated[BotConversationMessageType, FieldMetadata(alias="botMessageType")]
     responses: typing.List[BotResponse]
     metadata: BotResponseMetadata
-    status: BotMessageStatus
+    status: MessageStatus
+    logic: typing.Optional[BotLogic] = None
     created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = None
     updated_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="updatedAt")] = None
 

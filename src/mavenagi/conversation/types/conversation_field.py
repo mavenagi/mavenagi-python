@@ -13,6 +13,7 @@ ConversationField = typing.Union[
         "Sentiment",
         "QualityReason",
         "ResolutionStatus",
+        "ResolvedByMaven",
         "Quality",
         "Users",
         "ResponseLength",
@@ -26,6 +27,9 @@ ConversationField = typing.Union[
         "IncompleteActions",
         "Sources",
         "CreatedAt",
+        "PredictedNPS",
+        "OrganizationId",
+        "AgentId",
     ],
     typing.Any,
 ]

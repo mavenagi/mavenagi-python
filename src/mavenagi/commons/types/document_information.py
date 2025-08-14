@@ -10,6 +10,13 @@ from .entity_id_without_agent import EntityIdWithoutAgent
 
 
 class DocumentInformation(UniversalBaseModel):
+    knowledge_base_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="knowledgeBaseId")] = (
+        pydantic.Field()
+    )
+    """
+    Unique identifier for the knowledge base.
+    """
+
     document_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="documentId")] = pydantic.Field()
     """
     Unique identifier for the document.

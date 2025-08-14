@@ -16,7 +16,7 @@ class KnowledgeBaseProperties(UniversalBaseModel):
 
     precondition: typing.Optional["Precondition"] = pydantic.Field(default=None)
     """
-    (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
+    The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
     """
 
     if IS_PYDANTIC_V2:

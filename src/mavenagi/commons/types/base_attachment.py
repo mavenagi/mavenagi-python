@@ -6,7 +6,7 @@ import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class UserMessageAttachment(UniversalBaseModel):
+class BaseAttachment(UniversalBaseModel):
     type: str = pydantic.Field()
     """
     The mime-type of the attachment. Supported types are:
@@ -16,15 +16,21 @@ class UserMessageAttachment(UniversalBaseModel):
     - image/gif
     - image/webp
     - application/pdf
+    - text/plain
+    - text/csv
+    - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    - application/vnd.openxmlformats-officedocument.presentationml.presentation
+    - application/msword
+    - application/vnd.ms-excel
+    - application/vnd.ms-powerpoint
     - audio/aac
     - audio/mpeg
     - audio/mp4
+    - audio/wav
+    - audio/ogg
     - video/mp4
-    """
-
-    url: str = pydantic.Field()
-    """
-    The URL to access the attachment, The URL will be valid for 20 minutes.
+    - video/webm
     """
 
     name: typing.Optional[str] = pydantic.Field(default=None)

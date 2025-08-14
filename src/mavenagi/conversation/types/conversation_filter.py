@@ -20,7 +20,25 @@ from .resolution_status import ResolutionStatus
 class ConversationFilter(UniversalBaseModel):
     search: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Full-text search query for matching conversations by content. When you search with this parameter, you're performing a full-text search across all textual content in the conversations, including both the user's messages and the AI's responses.
+    Full-text search query for matching conversations by content. 
+    When you search with this parameter, you're performing a full-text search across all textual content 
+    in the conversations, including both the user's messages and the AI's responses.
+    
+    This field also supports a syntax for advanced filtering the `metadata` and `tags` fields.           
+    
+    Metadata examples:
+    - `metadata:myvalue` - matches conversations with any metadata field set to `myvalue`
+    - `metadata.mykey:myvalue` - matches conversations with a metadata field `mykey` set to `myvalue`
+    - `metadata.mykey:myvalue OR anothervalue` - matches conversations with a metadata field `mykey` set to `myvalue` or `anothervalue`
+    - `metadata.mykey:*` - matches conversations with a metadata field `mykey`
+    - `-metadata:myvalue` - matches conversations that do not have any metadata field set to `myvalue`
+    - `_exists_:metadata` - matches conversations that have any metadata field set
+    
+    Tags examples:
+    - `tags:myvalue` - matches conversations with a tag of `myvalue`
+    - `tags:myvalue OR anothervalue` - matches conversations with a tag of `myvalue` or `anothervalue`
+    - `-tags:myvalue` - matches conversations that do not have the tag `myvalue`
+    - `_exists_:tags` - matches conversations that have any tags field set
     """
 
     created_after: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAfter")] = (
@@ -131,6 +149,13 @@ class ConversationFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Filter by the number of messages sent by the user in the conversation
+    """
+
+    has_attachment: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="hasAttachment")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Filter by whether any message in the conversation has an attachment
     """
 
     if IS_PYDANTIC_V2:

@@ -6,9 +6,11 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawAgentsClient, RawAgentsClient
 from .types.agent import Agent
+from .types.agent_environment import AgentEnvironment
 from .types.agent_field import AgentField
 from .types.agent_filter import AgentFilter
 from .types.agents_search_response import AgentsSearchResponse
+from .types.pii_category import PiiCategory
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -121,6 +123,70 @@ class AgentsClient:
         _response = self._raw_client.list(organization_reference_id, request_options=request_options)
         return _response.data
 
+    def create(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        name: str,
+        environment: AgentEnvironment,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Agent:
+        """
+        Create a new agent
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        name : str
+            The name of the agent.
+
+        environment : AgentEnvironment
+            The environment of the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Agent
+            The newly created agent
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.agents.create(
+            organization_reference_id="organizationReferenceId",
+            agent_reference_id="agentReferenceId",
+            name="name",
+            environment="DEMO",
+        )
+        """
+        _response = self._raw_client.create(
+            organization_reference_id,
+            agent_reference_id,
+            name=name,
+            environment=environment,
+            request_options=request_options,
+        )
+        return _response.data
+
     def get(
         self,
         organization_reference_id: str,
@@ -162,6 +228,122 @@ class AgentsClient:
         )
         """
         _response = self._raw_client.get(organization_reference_id, agent_reference_id, request_options=request_options)
+        return _response.data
+
+    def patch(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        environment: typing.Optional[AgentEnvironment] = OMIT,
+        enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Agent:
+        """
+        Update mutable agent fields
+        All fields will overwrite the existing value on the agent only if provided.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        name : typing.Optional[str]
+            The name of the agent.
+
+        environment : typing.Optional[AgentEnvironment]
+            The environment of the agent.
+
+        enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
+            The PII categories that are enabled for the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Agent
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.agents.patch(
+            organization_reference_id="organizationReferenceId",
+            agent_reference_id="agentReferenceId",
+        )
+        """
+        _response = self._raw_client.patch(
+            organization_reference_id,
+            agent_reference_id,
+            name=name,
+            environment=environment,
+            enabled_pii_categories=enabled_pii_categories,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def delete(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        Delete an agent.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.agents.delete(
+            organization_reference_id="organizationReferenceId",
+            agent_reference_id="agentReferenceId",
+        )
+        """
+        _response = self._raw_client.delete(
+            organization_reference_id, agent_reference_id, request_options=request_options
+        )
         return _response.data
 
 
@@ -288,6 +470,78 @@ class AsyncAgentsClient:
         _response = await self._raw_client.list(organization_reference_id, request_options=request_options)
         return _response.data
 
+    async def create(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        name: str,
+        environment: AgentEnvironment,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Agent:
+        """
+        Create a new agent
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        name : str
+            The name of the agent.
+
+        environment : AgentEnvironment
+            The environment of the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Agent
+            The newly created agent
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.agents.create(
+                organization_reference_id="organizationReferenceId",
+                agent_reference_id="agentReferenceId",
+                name="name",
+                environment="DEMO",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create(
+            organization_reference_id,
+            agent_reference_id,
+            name=name,
+            environment=environment,
+            request_options=request_options,
+        )
+        return _response.data
+
     async def get(
         self,
         organization_reference_id: str,
@@ -337,6 +591,138 @@ class AsyncAgentsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get(
+            organization_reference_id, agent_reference_id, request_options=request_options
+        )
+        return _response.data
+
+    async def patch(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        environment: typing.Optional[AgentEnvironment] = OMIT,
+        enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Agent:
+        """
+        Update mutable agent fields
+        All fields will overwrite the existing value on the agent only if provided.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        name : typing.Optional[str]
+            The name of the agent.
+
+        environment : typing.Optional[AgentEnvironment]
+            The environment of the agent.
+
+        enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
+            The PII categories that are enabled for the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Agent
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.agents.patch(
+                organization_reference_id="organizationReferenceId",
+                agent_reference_id="agentReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.patch(
+            organization_reference_id,
+            agent_reference_id,
+            name=name,
+            environment=environment,
+            enabled_pii_categories=enabled_pii_categories,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def delete(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        Delete an agent.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.agents.delete(
+                organization_reference_id="organizationReferenceId",
+                agent_reference_id="agentReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.delete(
             organization_reference_id, agent_reference_id, request_options=request_options
         )
         return _response.data

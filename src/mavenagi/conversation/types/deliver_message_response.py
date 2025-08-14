@@ -4,18 +4,11 @@ import typing
 
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .delivery_status import DeliveryStatus
 
 
-class BaseInboxSearchRequest(UniversalBaseModel):
-    page: typing.Optional[int] = pydantic.Field(default=None)
-    """
-    Page number to return, defaults to 0
-    """
-
-    size: typing.Optional[int] = pydantic.Field(default=None)
-    """
-    The size of the page to return, defaults to 20
-    """
+class DeliverMessageResponse(UniversalBaseModel):
+    status: DeliveryStatus
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

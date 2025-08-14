@@ -10,6 +10,7 @@ from ..commons.types.action_parameter import ActionParameter
 from ..commons.types.action_response import ActionResponse
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
+from ..commons.types.llm_inclusion_status import LlmInclusionStatus
 from ..commons.types.precondition import Precondition
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -18,6 +19,9 @@ from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
+from .types.action_field import ActionField
+from .types.action_filter import ActionFilter
+from .types.actions_response import ActionsResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -26,6 +30,102 @@ OMIT = typing.cast(typing.Any, ...)
 class RawActionsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
+
+    def search(
+        self,
+        *,
+        sort: typing.Optional[ActionField] = OMIT,
+        filter: typing.Optional[ActionFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ActionsResponse]:
+        """
+        Parameters
+        ----------
+        sort : typing.Optional[ActionField]
+
+        filter : typing.Optional[ActionFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ActionsResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/actions/search",
+            method="POST",
+            json={
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=ActionFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ActionsResponse,
+                    parse_obj_as(
+                        type_=ActionsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def create_or_update(
         self,
@@ -147,7 +247,11 @@ class RawActionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get(
-        self, action_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        action_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ActionResponse]:
         """
         Get an action by its supplied ID
@@ -156,6 +260,9 @@ class RawActionsClient:
         ----------
         action_reference_id : str
             The reference ID of the action to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the action to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -167,7 +274,105 @@ class RawActionsClient:
         _response = self._client_wrapper.httpx_client.request(
             f"v1/actions/{jsonable_encoder(action_reference_id)}",
             method="GET",
+            params={
+                "appId": app_id,
+            },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ActionResponse,
+                    parse_obj_as(
+                        type_=ActionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def patch(
+        self,
+        action_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        instructions: typing.Optional[str] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ActionResponse]:
+        """
+        Update mutable action fields
+
+        The `appId` field can be provided to update an action owned by a different app.
+        All other fields will overwrite the existing value on the action only if provided.
+
+        Parameters
+        ----------
+        action_reference_id : str
+            The reference ID of the action to patch.
+
+        app_id : typing.Optional[str]
+            The App ID of the action to patch. If not provided the ID of the calling app will be used.
+
+        instructions : typing.Optional[str]
+            The instructions given to the LLM when determining whether to execute the action.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether the action is sent to the LLM as part of a conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ActionResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/actions/{jsonable_encoder(action_reference_id)}",
+            method="PATCH",
+            json={
+                "appId": app_id,
+                "instructions": instructions,
+                "llmInclusionStatus": llm_inclusion_status,
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
@@ -285,6 +490,102 @@ class RawActionsClient:
 class AsyncRawActionsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
+
+    async def search(
+        self,
+        *,
+        sort: typing.Optional[ActionField] = OMIT,
+        filter: typing.Optional[ActionFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ActionsResponse]:
+        """
+        Parameters
+        ----------
+        sort : typing.Optional[ActionField]
+
+        filter : typing.Optional[ActionFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ActionsResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/actions/search",
+            method="POST",
+            json={
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=ActionFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ActionsResponse,
+                    parse_obj_as(
+                        type_=ActionsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def create_or_update(
         self,
@@ -406,7 +707,11 @@ class AsyncRawActionsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get(
-        self, action_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        action_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ActionResponse]:
         """
         Get an action by its supplied ID
@@ -415,6 +720,9 @@ class AsyncRawActionsClient:
         ----------
         action_reference_id : str
             The reference ID of the action to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the action to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -426,7 +734,105 @@ class AsyncRawActionsClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"v1/actions/{jsonable_encoder(action_reference_id)}",
             method="GET",
+            params={
+                "appId": app_id,
+            },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ActionResponse,
+                    parse_obj_as(
+                        type_=ActionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def patch(
+        self,
+        action_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        instructions: typing.Optional[str] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ActionResponse]:
+        """
+        Update mutable action fields
+
+        The `appId` field can be provided to update an action owned by a different app.
+        All other fields will overwrite the existing value on the action only if provided.
+
+        Parameters
+        ----------
+        action_reference_id : str
+            The reference ID of the action to patch.
+
+        app_id : typing.Optional[str]
+            The App ID of the action to patch. If not provided the ID of the calling app will be used.
+
+        instructions : typing.Optional[str]
+            The instructions given to the LLM when determining whether to execute the action.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether the action is sent to the LLM as part of a conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ActionResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/actions/{jsonable_encoder(action_reference_id)}",
+            method="PATCH",
+            json={
+                "appId": app_id,
+                "instructions": instructions,
+                "llmInclusionStatus": llm_inclusion_status,
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:

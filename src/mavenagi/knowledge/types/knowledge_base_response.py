@@ -7,9 +7,11 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id import EntityId
+from ...commons.types.llm_inclusion_status import LlmInclusionStatus
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .knowledge_base_properties import KnowledgeBaseProperties
+from .knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .knowledge_base_type import KnowledgeBaseType
 
 
@@ -31,6 +33,8 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
         name="Help center",
         type="API",
         metadata={"key": "value"},
+        tags={"tag1", "tag2"},
+        refresh_frequency="DAILY",
     )
     """
 
@@ -47,6 +51,34 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     metadata: typing.Dict[str, str] = pydantic.Field()
     """
     Metadata for the knowledge base.
+    """
+
+    tags: typing.Set[str] = pydantic.Field()
+    """
+    The tags of the knowledge base.
+    """
+
+    llm_inclusion_status: typing_extensions.Annotated[
+        typing.Optional[LlmInclusionStatus], FieldMetadata(alias="llmInclusionStatus")
+    ] = pydantic.Field(default=None)
+    """
+    Determines whether documents in the knowledge base are sent to the LLM as part of a conversation.
+    """
+
+    refresh_frequency: typing_extensions.Annotated[
+        KnowledgeBaseRefreshFrequency, FieldMetadata(alias="refreshFrequency")
+    ] = pydantic.Field()
+    """
+    How often the knowledge base should be refreshed.
+    """
+
+    segment_id: typing_extensions.Annotated[typing.Optional[EntityId], FieldMetadata(alias="segmentId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The IDs of the segment that must be matched for the knowledge base to be relevant to a conversation. 
+    Segments are replacing inline preconditions - a Knowledge Base may not have both an inline precondition and a segment.
+    Inline precondition support will be removed in a future release.
     """
 
     if IS_PYDANTIC_V2:

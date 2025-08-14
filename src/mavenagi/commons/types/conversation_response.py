@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from .attachment_response import AttachmentResponse
 from .base_conversation_response import BaseConversationResponse
 from .conversation_message_response import ConversationMessageResponse
 
@@ -13,6 +14,7 @@ class ConversationResponse(BaseConversationResponse):
     Examples
     --------
     from mavenagi.commons import (
+        AttachmentResponse,
         BotResponse_Text,
         BotResponseMetadata,
         ConversationAnalysis,
@@ -22,7 +24,6 @@ class ConversationResponse(BaseConversationResponse):
         ConversationSummary,
         EntityId,
         EntityIdBase,
-        UserMessageAttachment,
     )
 
     ConversationResponse(
@@ -34,6 +35,8 @@ class ConversationResponse(BaseConversationResponse):
             type="CONVERSATION",
         ),
         deleted=False,
+        open=False,
+        llm_enabled=True,
         analysis=ConversationAnalysis(
             resolution_status="Resolved",
             sentiment="POSITIVE",
@@ -52,6 +55,7 @@ class ConversationResponse(BaseConversationResponse):
         ),
         metadata={},
         all_metadata={},
+        attachments=[],
         messages=[
             ConversationMessageResponse_User(
                 user_message_type="USER",
@@ -62,14 +66,17 @@ class ConversationResponse(BaseConversationResponse):
                     agent_id="support",
                     type="CONVERSATION_MESSAGE",
                 ),
+                status="UNKNOWN",
                 user_id=EntityIdBase(
                     reference_id="user-0",
                 ),
                 text="How do I reset my password?",
                 attachments=[
-                    UserMessageAttachment(
+                    AttachmentResponse(
                         url="https://example.com/attachment-0",
                         type="image/png",
+                        status="ACCEPTED",
+                        size_bytes=1234,
                     )
                 ],
             ),
@@ -100,6 +107,13 @@ class ConversationResponse(BaseConversationResponse):
     messages: typing.List[ConversationMessageResponse] = pydantic.Field()
     """
     The messages in the conversation
+    """
+
+    attachments: typing.List[AttachmentResponse] = pydantic.Field()
+    """
+    The attachments associated with this conversation. Additional attachments may be associated to individual messages.
+    
+    Message attachments are included in LLM context, conversation attachments are not.
     """
 
     if IS_PYDANTIC_V2:

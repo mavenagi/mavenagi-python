@@ -8,6 +8,7 @@ from .actions.client import ActionsClient, AsyncActionsClient
 from .agents.client import AgentsClient, AsyncAgentsClient
 from .analytics.client import AnalyticsClient, AsyncAnalyticsClient
 from .app_settings.client import AppSettingsClient, AsyncAppSettingsClient
+from .assets.client import AssetsClient, AsyncAssetsClient
 from .conversation.client import AsyncConversationClient, ConversationClient
 from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .environment import MavenAGIEnvironment
@@ -15,6 +16,7 @@ from .events.client import AsyncEventsClient, EventsClient
 from .inbox.client import AsyncInboxClient, InboxClient
 from .knowledge.client import AsyncKnowledgeClient, KnowledgeClient
 from .organizations.client import AsyncOrganizationsClient, OrganizationsClient
+from .segments.client import AsyncSegmentsClient, SegmentsClient
 from .translations.client import AsyncTranslationsClient, TranslationsClient
 from .triggers.client import AsyncTriggersClient, TriggersClient
 from .users.client import AsyncUsersClient, UsersClient
@@ -101,11 +103,13 @@ class MavenAGI:
         self.agents = AgentsClient(client_wrapper=self._client_wrapper)
         self.analytics = AnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AppSettingsClient(client_wrapper=self._client_wrapper)
+        self.assets = AssetsClient(client_wrapper=self._client_wrapper)
         self.conversation = ConversationClient(client_wrapper=self._client_wrapper)
         self.events = EventsClient(client_wrapper=self._client_wrapper)
         self.inbox = InboxClient(client_wrapper=self._client_wrapper)
         self.knowledge = KnowledgeClient(client_wrapper=self._client_wrapper)
         self.organizations = OrganizationsClient(client_wrapper=self._client_wrapper)
+        self.segments = SegmentsClient(client_wrapper=self._client_wrapper)
         self.translations = TranslationsClient(client_wrapper=self._client_wrapper)
         self.triggers = TriggersClient(client_wrapper=self._client_wrapper)
         self.users = UsersClient(client_wrapper=self._client_wrapper)
@@ -192,11 +196,13 @@ class AsyncMavenAGI:
         self.agents = AsyncAgentsClient(client_wrapper=self._client_wrapper)
         self.analytics = AsyncAnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AsyncAppSettingsClient(client_wrapper=self._client_wrapper)
+        self.assets = AsyncAssetsClient(client_wrapper=self._client_wrapper)
         self.conversation = AsyncConversationClient(client_wrapper=self._client_wrapper)
         self.events = AsyncEventsClient(client_wrapper=self._client_wrapper)
         self.inbox = AsyncInboxClient(client_wrapper=self._client_wrapper)
         self.knowledge = AsyncKnowledgeClient(client_wrapper=self._client_wrapper)
         self.organizations = AsyncOrganizationsClient(client_wrapper=self._client_wrapper)
+        self.segments = AsyncSegmentsClient(client_wrapper=self._client_wrapper)
         self.translations = AsyncTranslationsClient(client_wrapper=self._client_wrapper)
         self.triggers = AsyncTriggersClient(client_wrapper=self._client_wrapper)
         self.users = AsyncUsersClient(client_wrapper=self._client_wrapper)

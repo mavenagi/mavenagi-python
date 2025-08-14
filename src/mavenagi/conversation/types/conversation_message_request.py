@@ -4,11 +4,11 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.attachment_request import AttachmentRequest
 from ...commons.types.entity_id_base import EntityIdBase
 from ...commons.types.user_message_base import UserMessageBase
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
-from .attachment import Attachment
 
 
 class ConversationMessageRequest(UserMessageBase):
@@ -19,7 +19,7 @@ class ConversationMessageRequest(UserMessageBase):
     The ID that uniquely identifies this message within the conversation
     """
 
-    attachments: typing.Optional[typing.List[Attachment]] = pydantic.Field(default=None)
+    attachments: typing.Optional[typing.List[AttachmentRequest]] = pydantic.Field(default=None)
     """
     The attachments to the message.
     """

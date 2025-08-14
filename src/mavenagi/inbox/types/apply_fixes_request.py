@@ -4,24 +4,29 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...commons.types.inbox_item_fix_type import InboxItemFixType
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .add_document_fix_request import AddDocumentFixRequest
 
 
-class ApplyInboxItemFixRequest(UniversalBaseModel):
-    app_id: typing_extensions.Annotated[str, FieldMetadata(alias="appId")]
-    fix_type: typing_extensions.Annotated[InboxItemFixType, FieldMetadata(alias="fixType")] = pydantic.Field()
+class ApplyFixesRequest(UniversalBaseModel):
+    app_id: typing_extensions.Annotated[str, FieldMetadata(alias="appId")] = pydantic.Field()
     """
-    The type of the inbox item fix to retrieve
+    The appId of the inbox item and fixes.
+    """
+
+    fix_reference_ids: typing_extensions.Annotated[typing.List[str], FieldMetadata(alias="fixReferenceIds")] = (
+        pydantic.Field()
+    )
+    """
+    A list of one or more reference IDs of fixes to apply. All must belong to the same inbox item.
     """
 
     add_document_request: typing_extensions.Annotated[
         typing.Optional[AddDocumentFixRequest], FieldMetadata(alias="addDocumentRequest")
     ] = pydantic.Field(default=None)
     """
-    Content for Add Document fixes
+    Only applies to add document fixes, includes the document content to save.
     """
 
     if IS_PYDANTIC_V2:

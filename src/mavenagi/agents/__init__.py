@@ -2,6 +2,26 @@
 
 # isort: skip_file
 
-from .types import Agent, AgentEnvironment, AgentField, AgentFilter, AgentsSearchRequest, AgentsSearchResponse
+from .types import (
+    Agent,
+    AgentEnvironment,
+    AgentField,
+    AgentFilter,
+    AgentPatchRequest,
+    AgentsSearchRequest,
+    AgentsSearchResponse,
+    CreateAgentRequest,
+    PiiCategory,
+)
 
-__all__ = ["Agent", "AgentEnvironment", "AgentField", "AgentFilter", "AgentsSearchRequest", "AgentsSearchResponse"]
+__all__ = [
+    "Agent",
+    "AgentEnvironment",
+    "AgentField",
+    "AgentFilter",
+    "AgentPatchRequest",
+    "AgentsSearchRequest",
+    "AgentsSearchResponse",
+    "CreateAgentRequest",
+    "PiiCategory",
+]

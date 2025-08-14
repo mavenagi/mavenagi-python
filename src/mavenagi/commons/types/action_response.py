@@ -10,6 +10,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .action_base import ActionBase
 from .entity_id import EntityId
+from .llm_inclusion_status import LlmInclusionStatus
 
 
 class ActionResponse(ActionBase):
@@ -33,6 +34,8 @@ class ActionResponse(ActionBase):
         ),
         name="Get the user's balance",
         description="This action calls an API to get the user's current balance.",
+        instructions="This action calls an API to get the user's current balance.",
+        llm_inclusion_status="WHEN_RELEVANT",
         user_interaction_required=False,
         user_form_parameters=[],
         precondition=Precondition_Group(
@@ -47,12 +50,51 @@ class ActionResponse(ActionBase):
             ],
         ),
         language="en",
+        deleted=False,
     )
     """
 
     action_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="actionId")] = pydantic.Field()
     """
     ID that uniquely identifies this action
+    """
+
+    instructions: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The instructions given to the LLM when determining whether to execute the action.
+    This field defaults to the `description` field if not provided. Use the `patch` API to update.
+    """
+
+    llm_inclusion_status: typing_extensions.Annotated[LlmInclusionStatus, FieldMetadata(alias="llmInclusionStatus")] = (
+        pydantic.Field()
+    )
+    """
+    Determines whether the action is sent to the LLM as part of a conversation.
+    
+    - `ALWAYS`: The action is always available for use in conversations, textual relevance is not considered.
+    - `WHEN_RELEVANT`: The action is available only in conversations where the action is determined to be relevant to the user's question.
+    - `NEVER`: The action is not available for use in conversations.
+    """
+
+    segment_id: typing_extensions.Annotated[typing.Optional[EntityId], FieldMetadata(alias="segmentId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The IDs of the segment that must be matched for the action to be relevant to a conversation. 
+    Segments are replacing inline preconditions - an Action may not have both an inline precondition and a segment.
+    Inline precondition support will be removed in a future release.
+    """
+
+    precondition_explanation: typing_extensions.Annotated[
+        typing.Optional[str], FieldMetadata(alias="preconditionExplanation")
+    ] = pydantic.Field(default=None)
+    """
+    A human-readable explanation of the precondition associated with this action, if present.
+    """
+
+    deleted: bool = pydantic.Field()
+    """
+    Whether the action has been deleted. Deleted actions will not sent to the LLM nor returned in search results.
     """
 
     if IS_PYDANTIC_V2:

@@ -4,24 +4,18 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.page import Page
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
-from .inbox_item_base import InboxItemBase
-from .inbox_item_fix_deactivate_knowledge_base import InboxItemFixDeactivateKnowledgeBase
-from .knowledge_base_information import KnowledgeBaseInformation
+from .agent_user import AgentUser
 
 
-class InboxItemKnowledgeBaseAlert(InboxItemBase):
-    fix: InboxItemFixDeactivateKnowledgeBase = pydantic.Field()
-    """
-    Fix associated with the inbox item.
-    """
-
-    knowledge_base: typing_extensions.Annotated[KnowledgeBaseInformation, FieldMetadata(alias="knowledgeBase")] = (
+class AgentUserSearchResponse(Page):
+    agent_users: typing_extensions.Annotated[typing.List[AgentUser], FieldMetadata(alias="agentUsers")] = (
         pydantic.Field()
     )
     """
-    Information about the Knowledge Base referenced in the inbox item.
+    The agent users that match the search criteria
     """
 
     if IS_PYDANTIC_V2:

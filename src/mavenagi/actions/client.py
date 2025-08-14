@@ -5,10 +5,14 @@ import typing
 from ..commons.types.action_parameter import ActionParameter
 from ..commons.types.action_response import ActionResponse
 from ..commons.types.entity_id_base import EntityIdBase
+from ..commons.types.llm_inclusion_status import LlmInclusionStatus
 from ..commons.types.precondition import Precondition
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawActionsClient, RawActionsClient
+from .types.action_field import ActionField
+from .types.action_filter import ActionFilter
+from .types.actions_response import ActionsResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -28,6 +32,56 @@ class ActionsClient:
         RawActionsClient
         """
         return self._raw_client
+
+    def search(
+        self,
+        *,
+        sort: typing.Optional[ActionField] = OMIT,
+        filter: typing.Optional[ActionFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ActionsResponse:
+        """
+        Parameters
+        ----------
+        sort : typing.Optional[ActionField]
+
+        filter : typing.Optional[ActionFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ActionsResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.actions.search()
+        """
+        _response = self._raw_client.search(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        )
+        return _response.data
 
     def create_or_update(
         self,
@@ -125,7 +179,11 @@ class ActionsClient:
         return _response.data
 
     def get(
-        self, action_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        action_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> ActionResponse:
         """
         Get an action by its supplied ID
@@ -134,6 +192,9 @@ class ActionsClient:
         ----------
         action_reference_id : str
             The reference ID of the action to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the action to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -156,7 +217,66 @@ class ActionsClient:
             action_reference_id="get-balance",
         )
         """
-        _response = self._raw_client.get(action_reference_id, request_options=request_options)
+        _response = self._raw_client.get(action_reference_id, app_id=app_id, request_options=request_options)
+        return _response.data
+
+    def patch(
+        self,
+        action_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        instructions: typing.Optional[str] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ActionResponse:
+        """
+        Update mutable action fields
+
+        The `appId` field can be provided to update an action owned by a different app.
+        All other fields will overwrite the existing value on the action only if provided.
+
+        Parameters
+        ----------
+        action_reference_id : str
+            The reference ID of the action to patch.
+
+        app_id : typing.Optional[str]
+            The App ID of the action to patch. If not provided the ID of the calling app will be used.
+
+        instructions : typing.Optional[str]
+            The instructions given to the LLM when determining whether to execute the action.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether the action is sent to the LLM as part of a conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ActionResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.actions.patch(
+            action_reference_id="actionReferenceId",
+        )
+        """
+        _response = self._raw_client.patch(
+            action_reference_id,
+            app_id=app_id,
+            instructions=instructions,
+            llm_inclusion_status=llm_inclusion_status,
+            request_options=request_options,
+        )
         return _response.data
 
     def delete(self, action_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
@@ -207,6 +327,64 @@ class AsyncActionsClient:
         AsyncRawActionsClient
         """
         return self._raw_client
+
+    async def search(
+        self,
+        *,
+        sort: typing.Optional[ActionField] = OMIT,
+        filter: typing.Optional[ActionFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ActionsResponse:
+        """
+        Parameters
+        ----------
+        sort : typing.Optional[ActionField]
+
+        filter : typing.Optional[ActionFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ActionsResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.actions.search()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        )
+        return _response.data
 
     async def create_or_update(
         self,
@@ -312,7 +490,11 @@ class AsyncActionsClient:
         return _response.data
 
     async def get(
-        self, action_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        action_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> ActionResponse:
         """
         Get an action by its supplied ID
@@ -321,6 +503,9 @@ class AsyncActionsClient:
         ----------
         action_reference_id : str
             The reference ID of the action to get. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the action to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -351,7 +536,74 @@ class AsyncActionsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get(action_reference_id, request_options=request_options)
+        _response = await self._raw_client.get(action_reference_id, app_id=app_id, request_options=request_options)
+        return _response.data
+
+    async def patch(
+        self,
+        action_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        instructions: typing.Optional[str] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ActionResponse:
+        """
+        Update mutable action fields
+
+        The `appId` field can be provided to update an action owned by a different app.
+        All other fields will overwrite the existing value on the action only if provided.
+
+        Parameters
+        ----------
+        action_reference_id : str
+            The reference ID of the action to patch.
+
+        app_id : typing.Optional[str]
+            The App ID of the action to patch. If not provided the ID of the calling app will be used.
+
+        instructions : typing.Optional[str]
+            The instructions given to the LLM when determining whether to execute the action.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether the action is sent to the LLM as part of a conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ActionResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.actions.patch(
+                action_reference_id="actionReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.patch(
+            action_reference_id,
+            app_id=app_id,
+            instructions=instructions,
+            llm_inclusion_status=llm_inclusion_status,
+            request_options=request_options,
+        )
         return _response.data
 
     async def delete(

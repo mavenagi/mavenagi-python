@@ -9,7 +9,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 
 
 class InboxSearchResponse(Page):
-    content: typing.List[InboxItem] = pydantic.Field()
+    items: typing.List[InboxItem] = pydantic.Field()
     """
     The list of inbox items returned in the search response.
     """

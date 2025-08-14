@@ -3,15 +3,9 @@
 # isort: skip_file
 
 from .add_document_fix_request import AddDocumentFixRequest
-from .apply_inbox_item_fix_request import ApplyInboxItemFixRequest
-from .base_inbox_search_request import BaseInboxSearchRequest
+from .apply_fixes_request import ApplyFixesRequest
+from .inbox_filter import InboxFilter
 from .inbox_search_request import InboxSearchRequest
 from .inbox_search_response import InboxSearchResponse
 
-__all__ = [
-    "AddDocumentFixRequest",
-    "ApplyInboxItemFixRequest",
-    "BaseInboxSearchRequest",
-    "InboxSearchRequest",
-    "InboxSearchResponse",
-]
+__all__ = ["AddDocumentFixRequest", "ApplyFixesRequest", "InboxFilter", "InboxSearchRequest", "InboxSearchResponse"]

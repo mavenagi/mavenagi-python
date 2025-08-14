@@ -15,9 +15,11 @@ from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from .types.agent import Agent
+from .types.agent_environment import AgentEnvironment
 from .types.agent_field import AgentField
 from .types.agent_filter import AgentFilter
 from .types.agents_search_response import AgentsSearchResponse
+from .types.pii_category import PiiCategory
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -201,6 +203,102 @@ class RawAgentsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def create(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        name: str,
+        environment: AgentEnvironment,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[Agent]:
+        """
+        Create a new agent
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        name : str
+            The name of the agent.
+
+        environment : AgentEnvironment
+            The environment of the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[Agent]
+            The newly created agent
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}/agents/{jsonable_encoder(agent_reference_id)}",
+            method="POST",
+            json={
+                "name": name,
+                "environment": environment,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Agent,
+                    parse_obj_as(
+                        type_=Agent,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def get(
         self,
         organization_reference_id: str,
@@ -241,6 +339,182 @@ class RawAgentsClient:
                     ),
                 )
                 return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def patch(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        environment: typing.Optional[AgentEnvironment] = OMIT,
+        enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[Agent]:
+        """
+        Update mutable agent fields
+        All fields will overwrite the existing value on the agent only if provided.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        name : typing.Optional[str]
+            The name of the agent.
+
+        environment : typing.Optional[AgentEnvironment]
+            The environment of the agent.
+
+        enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
+            The PII categories that are enabled for the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[Agent]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}/agents/{jsonable_encoder(agent_reference_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "environment": environment,
+                "enabledPiiCategories": enabled_pii_categories,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Agent,
+                    parse_obj_as(
+                        type_=Agent,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def delete(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[None]:
+        """
+        Delete an agent.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[None]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}/agents/{jsonable_encoder(agent_reference_id)}",
+            method="DELETE",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return HttpResponse(response=_response, data=None)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),
@@ -458,6 +732,102 @@ class AsyncRawAgentsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    async def create(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        name: str,
+        environment: AgentEnvironment,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[Agent]:
+        """
+        Create a new agent
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        name : str
+            The name of the agent.
+
+        environment : AgentEnvironment
+            The environment of the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[Agent]
+            The newly created agent
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}/agents/{jsonable_encoder(agent_reference_id)}",
+            method="POST",
+            json={
+                "name": name,
+                "environment": environment,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Agent,
+                    parse_obj_as(
+                        type_=Agent,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def get(
         self,
         organization_reference_id: str,
@@ -498,6 +868,182 @@ class AsyncRawAgentsClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def patch(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        environment: typing.Optional[AgentEnvironment] = OMIT,
+        enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[Agent]:
+        """
+        Update mutable agent fields
+        All fields will overwrite the existing value on the agent only if provided.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        name : typing.Optional[str]
+            The name of the agent.
+
+        environment : typing.Optional[AgentEnvironment]
+            The environment of the agent.
+
+        enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
+            The PII categories that are enabled for the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[Agent]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}/agents/{jsonable_encoder(agent_reference_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "environment": environment,
+                "enabledPiiCategories": enabled_pii_categories,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Agent,
+                    parse_obj_as(
+                        type_=Agent,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def delete(
+        self,
+        organization_reference_id: str,
+        agent_reference_id: str,
+        *,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[None]:
+        """
+        Delete an agent.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The ID of the organization.
+
+        agent_reference_id : str
+            The ID of the agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[None]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}/agents/{jsonable_encoder(agent_reference_id)}",
+            method="DELETE",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return AsyncHttpResponse(response=_response, data=None)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),

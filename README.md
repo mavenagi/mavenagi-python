@@ -28,7 +28,7 @@ client = MavenAGI(
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
-client.agents.search()
+client.actions.search()
 ```
 
 ## Async Client
@@ -49,7 +49,7 @@ client = AsyncMavenAGI(
 
 
 async def main() -> None:
-    await client.agents.search()
+    await client.actions.search()
 
 
 asyncio.run(main())
@@ -64,7 +64,7 @@ will be thrown.
 from mavenagi.core.api_error import ApiError
 
 try:
-    client.agents.search(...)
+    client.actions.search(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -76,8 +76,7 @@ The SDK supports streaming responses, as well, the response will be a generator 
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-from mavenagi.conversation import Attachment
+from mavenagi.commons import AttachmentRequest, EntityIdBase
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -95,7 +94,7 @@ response = client.conversation.ask_stream(
     ),
     text="How do I reset my password?",
     attachments=[
-        Attachment(
+        AttachmentRequest(
             type="image/png",
             content="iVBORw0KGgo...",
         )
@@ -120,7 +119,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     ...,
 )
-response = client.agents.with_raw_response.search(...)
+response = client.actions.with_raw_response.search(...)
 print(response.headers)  # access the response headers
 print(response.data)  # access the underlying object
 with client.conversation.with_raw_response.ask_stream(...) as response:
@@ -144,7 +143,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.agents.search(..., request_options={
+client.actions.search(..., request_options={
     "max_retries": 1
 })
 ```
@@ -164,7 +163,7 @@ client = MavenAGI(
 
 
 # Override timeout for a specific method
-client.agents.search(..., request_options={
+client.actions.search(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

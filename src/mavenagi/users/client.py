@@ -9,6 +9,10 @@ from ..commons.types.user_data import UserData
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawUsersClient, RawUsersClient
+from .types.agent_user import AgentUser
+from .types.agent_user_field import AgentUserField
+from .types.agent_user_filter import AgentUserFilter
+from .types.agent_user_search_response import AgentUserSearchResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -29,6 +33,95 @@ class UsersClient:
         """
         return self._raw_client
 
+    def search(
+        self,
+        *,
+        sort: typing.Optional[AgentUserField] = OMIT,
+        filter: typing.Optional[AgentUserFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AgentUserSearchResponse:
+        """
+        Search across all agent users on an agent.
+
+        Agent users are a merged view of the users created by individual apps.
+
+        Parameters
+        ----------
+        sort : typing.Optional[AgentUserField]
+
+        filter : typing.Optional[AgentUserFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AgentUserSearchResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.users.search()
+        """
+        _response = self._raw_client.search(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        )
+        return _response.data
+
+    def get_agent_user(self, user_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> AgentUser:
+        """
+        Get an agent user by its supplied ID.
+
+        Agent users are a merged view of the users created by individual apps.
+
+        Parameters
+        ----------
+        user_id : str
+            The ID of the agent user to get.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AgentUser
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.users.get_agent_user(
+            user_id="userId",
+        )
+        """
+        _response = self._raw_client.get_agent_user(user_id, request_options=request_options)
+        return _response.data
+
     def create_or_update(
         self,
         *,
@@ -38,7 +131,7 @@ class UsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AppUserResponse:
         """
-        Update a user or create it if it doesn't exist.
+        Update an app user or create it if it doesn't exist.
 
         Parameters
         ----------
@@ -99,15 +192,15 @@ class UsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AppUserResponse:
         """
-        Get a user by its supplied ID
+        Get an app user by its supplied ID
 
         Parameters
         ----------
         user_id : str
-            The reference ID of the user to get. All other entity ID fields are inferred from the request.
+            The reference ID of the app user to get. All other entity ID fields are inferred from the request.
 
         app_id : typing.Optional[str]
-            The App ID of the user to get. If not provided the ID of the calling app will be used.
+            The App ID of the app user to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -151,10 +244,10 @@ class UsersClient:
         Parameters
         ----------
         user_id : str
-            The reference ID of the user to delete. All other entity ID fields are inferred from the request.
+            The reference ID of the app user to delete. All other entity ID fields are inferred from the request.
 
         app_id : typing.Optional[str]
-            The App ID of the user to delete. If not provided the ID of the calling app will be used.
+            The App ID of the app user to delete. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -196,6 +289,113 @@ class AsyncUsersClient:
         """
         return self._raw_client
 
+    async def search(
+        self,
+        *,
+        sort: typing.Optional[AgentUserField] = OMIT,
+        filter: typing.Optional[AgentUserFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AgentUserSearchResponse:
+        """
+        Search across all agent users on an agent.
+
+        Agent users are a merged view of the users created by individual apps.
+
+        Parameters
+        ----------
+        sort : typing.Optional[AgentUserField]
+
+        filter : typing.Optional[AgentUserFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AgentUserSearchResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.users.search()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        )
+        return _response.data
+
+    async def get_agent_user(
+        self, user_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AgentUser:
+        """
+        Get an agent user by its supplied ID.
+
+        Agent users are a merged view of the users created by individual apps.
+
+        Parameters
+        ----------
+        user_id : str
+            The ID of the agent user to get.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AgentUser
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.users.get_agent_user(
+                user_id="userId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_agent_user(user_id, request_options=request_options)
+        return _response.data
+
     async def create_or_update(
         self,
         *,
@@ -205,7 +405,7 @@ class AsyncUsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AppUserResponse:
         """
-        Update a user or create it if it doesn't exist.
+        Update an app user or create it if it doesn't exist.
 
         Parameters
         ----------
@@ -274,15 +474,15 @@ class AsyncUsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AppUserResponse:
         """
-        Get a user by its supplied ID
+        Get an app user by its supplied ID
 
         Parameters
         ----------
         user_id : str
-            The reference ID of the user to get. All other entity ID fields are inferred from the request.
+            The reference ID of the app user to get. All other entity ID fields are inferred from the request.
 
         app_id : typing.Optional[str]
-            The App ID of the user to get. If not provided the ID of the calling app will be used.
+            The App ID of the app user to get. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -334,10 +534,10 @@ class AsyncUsersClient:
         Parameters
         ----------
         user_id : str
-            The reference ID of the user to delete. All other entity ID fields are inferred from the request.
+            The reference ID of the app user to delete. All other entity ID fields are inferred from the request.
 
         app_id : typing.Optional[str]
-            The App ID of the user to delete. If not provided the ID of the calling app will be used.
+            The App ID of the app user to delete. If not provided the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

@@ -1,5 +1,94 @@
 # Reference
 ## Actions
+<details><summary><code>client.actions.<a href="src/mavenagi/actions/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.actions.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[ActionField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[ActionFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.actions.<a href="src/mavenagi/actions/client.py">create_or_update</a>(...)</code></summary>
 <dl>
 <dd>
@@ -202,6 +291,114 @@ client.actions.get(
 <dd>
 
 **action_reference_id:** `str` — The reference ID of the action to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the action to get. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.actions.<a href="src/mavenagi/actions/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable action fields
+
+The `appId` field can be provided to update an action owned by a different app. 
+All other fields will overwrite the existing value on the action only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.actions.patch(
+    action_reference_id="actionReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**action_reference_id:** `str` — The reference ID of the action to patch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the action to patch. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**instructions:** `typing.Optional[str]` — The instructions given to the LLM when determining whether to execute the action.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**llm_inclusion_status:** `typing.Optional[LlmInclusionStatus]` — Determines whether the action is sent to the LLM as part of a conversation.
     
 </dd>
 </dl>
@@ -475,6 +672,110 @@ client.agents.list(
 </dl>
 </details>
 
+<details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">create</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new agent
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agents.create(
+    organization_reference_id="organizationReferenceId",
+    agent_reference_id="agentReferenceId",
+    name="name",
+    environment="DEMO",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agent_reference_id:** `str` — The ID of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` — The name of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**environment:** `AgentEnvironment` — The environment of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">get</a>(...)</code></summary>
 <dl>
 <dd>
@@ -511,6 +812,203 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.agents.get(
+    organization_reference_id="organizationReferenceId",
+    agent_reference_id="agentReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agent_reference_id:** `str` — The ID of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable agent fields 
+All fields will overwrite the existing value on the agent only if provided.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agents.patch(
+    organization_reference_id="organizationReferenceId",
+    agent_reference_id="agentReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agent_reference_id:** `str` — The ID of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — The name of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**environment:** `typing.Optional[AgentEnvironment]` — The environment of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enabled_pii_categories:** `typing.Optional[typing.Set[PiiCategory]]` — The PII categories that are enabled for the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">delete</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete an agent.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agents.delete(
     organization_reference_id="organizationReferenceId",
     agent_reference_id="agentReferenceId",
 )
@@ -1133,6 +1631,194 @@ client.app_settings.update(
 </dl>
 </details>
 
+## Assets
+<details><summary><code>client.assets.<a href="src/mavenagi/assets/client.py">initiate_upload</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Initiate an upload. 
+Returns a pre-signed URL for direct file upload and an asset ID for subsequent operations.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.assets.initiate_upload(
+    type="type",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**type:** `str` 
+
+The mime-type of the attachment. Supported types are:
+- image/jpeg
+- image/jpg
+- image/png
+- image/gif
+- image/webp
+- application/pdf
+- text/plain
+- text/csv
+- application/vnd.openxmlformats-officedocument.wordprocessingml.document
+- application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+- application/vnd.openxmlformats-officedocument.presentationml.presentation
+- application/msword
+- application/vnd.ms-excel
+- application/vnd.ms-powerpoint
+- audio/aac
+- audio/mpeg
+- audio/mp4
+- audio/wav
+- audio/ogg
+- video/mp4
+- video/webm
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — An optional name for the attachment.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.assets.<a href="src/mavenagi/assets/client.py">commit_upload</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Commit an upload after successful file transfer.
+Updates the asset status and makes it available for use.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.assets.commit_upload(
+    asset_reference_id="assetReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**asset_reference_id:** `str` — The reference ID of the asset to commit (provided by the initiate call). All other entity ID fields are inferred from the API request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**checksum:** `typing.Optional[str]` — Checksum of the uploaded file (optional verification)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Conversation
 <details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">initialize</a>(...)</code></summary>
 <dl>
@@ -1285,6 +1971,115 @@ client.conversation.initialize(
 <dd>
 
 **metadata:** `typing.Optional[typing.Dict[str, str]]` — The metadata of the conversation supplied by the app which created the conversation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable conversation fields. 
+
+The `appId` field can be provided to update a conversation owned by a different app. 
+All other fields will overwrite the existing value on the conversation only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation.patch(
+    conversation_id="conversation-0",
+    llm_enabled=True,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversation_id:** `str` — The ID of the conversation to patch
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**open:** `typing.Optional[bool]` — Whether the conversation is able to receive asynchronous messages. Only valid for conversations with the `ASYNC` capability.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**llm_enabled:** `typing.Optional[bool]` — Whether the LLM is enabled for this conversation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**attachments:** `typing.Optional[typing.Sequence[AttachmentRequest]]` — A list of attachments to add to the conversation. Attachments can only be appended. Removal is not allowed.
     
 </dd>
 </dl>
@@ -1622,8 +2417,7 @@ Known Limitation:
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-from mavenagi.conversation import Attachment
+from mavenagi.commons import AttachmentRequest, EntityIdBase
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -1641,7 +2435,7 @@ client.conversation.ask(
     ),
     text="How do I reset my password?",
     attachments=[
-        Attachment(
+        AttachmentRequest(
             type="image/png",
             content="iVBORw0KGgo...",
         )
@@ -1696,7 +2490,10 @@ client.conversation.ask(
 <dl>
 <dd>
 
-**attachments:** `typing.Optional[typing.Sequence[Attachment]]` — The attachments to the message.
+**attachments:** `typing.Optional[typing.Sequence[AttachmentRequest]]` 
+
+The attachments to the message. Image attachments will be sent to the LLM as additional data.
+Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
     
 </dd>
 </dl>
@@ -1772,8 +2569,7 @@ Known Limitation:
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-from mavenagi.conversation import Attachment
+from mavenagi.commons import AttachmentRequest, EntityIdBase
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -1791,7 +2587,7 @@ response = client.conversation.ask_stream(
     ),
     text="How do I reset my password?",
     attachments=[
-        Attachment(
+        AttachmentRequest(
             type="image/png",
             content="iVBORw0KGgo...",
         )
@@ -1848,7 +2644,10 @@ for chunk in response.data:
 <dl>
 <dd>
 
-**attachments:** `typing.Optional[typing.Sequence[Attachment]]` — The attachments to the message.
+**attachments:** `typing.Optional[typing.Sequence[AttachmentRequest]]` 
+
+The attachments to the message. Image attachments will be sent to the LLM as additional data.
+Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
     
 </dd>
 </dl>
@@ -1955,6 +2754,161 @@ client.conversation.generate_maven_suggestions(
 <dd>
 
 **conversation_message_ids:** `typing.Sequence[EntityIdBase]` — The message ids to generate a suggested response for. One suggestion will be generated for each message id.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">ask_object_stream</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate a structured object response based on a provided schema and user prompt with a streaming response. 
+The response will be sent as a stream of events containing text, start, and end events.
+The text portions of stream responses should be concatenated to form the full response text.
+
+If the user question and object response already exist, they will be reused and not updated.
+
+Concurrency Behavior:
+- If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+- The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+Known Limitations:
+- Schema enforcement is best-effort and may not guarantee exact conformity.
+- The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdBase
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+response = client.conversation.ask_object_stream(
+    conversation_id="conversationId",
+    schema="schema",
+    conversation_message_id=EntityIdBase(
+        reference_id="referenceId",
+    ),
+    user_id=EntityIdBase(
+        reference_id="referenceId",
+    ),
+    text="text",
+)
+for chunk in response.data:
+    yield chunk
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversation_id:** `str` — The ID of a new or existing conversation to use as context for the object generation request
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**schema:** `str` — JSON schema string defining the expected object shape.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**conversation_message_id:** `EntityIdBase` — Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_id:** `EntityIdBase` — Externally supplied ID to uniquely identify the user that created this message
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**text:** `str` — The text of the message
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**attachments:** `typing.Optional[typing.Sequence[AttachmentRequest]]` 
+
+The attachments to the message. Image attachments will be sent to the LLM as additional data.
+Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` — IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
     
 </dd>
 </dl>
@@ -2557,6 +3511,105 @@ client.conversation.search()
 </dl>
 </details>
 
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">deliver_message</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deliver a message to a user or conversation.
+
+<Warning>
+Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`. 
+User message delivery is not yet supported.
+</Warning>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
+from mavenagi.conversation import (
+    ConversationMessageRequest,
+    DeliverMessageRequest_User,
+)
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation.deliver_message(
+    request=DeliverMessageRequest_User(
+        user_id=EntityIdWithoutAgent(
+            type="AGENT",
+            app_id="appId",
+            reference_id="referenceId",
+        ),
+        message=ConversationMessageRequest(
+            conversation_message_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+            user_id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+            text="text",
+            user_message_type="USER",
+        ),
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `DeliverMessageRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Events
 <details><summary><code>client.events.<a href="src/mavenagi/events/client.py">search</a>(...)</code></summary>
 <dl>
@@ -2713,47 +3766,7 @@ client.inbox.search()
 <dl>
 <dd>
 
-**statuses:** `typing.Optional[typing.Sequence[InboxItemStatus]]` — List of inbox item statuses to filter by.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**type:** `typing.Optional[typing.Sequence[InboxItemType]]` — List of inbox item types to filter by.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**created_after:** `typing.Optional[dt.datetime]` — Filter for items created after this timestamp.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**created_before:** `typing.Optional[dt.datetime]` — Filter for items created before this timestamp.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sort_id:** `typing.Optional[str]` — The field to sort by, defaults to created timestamp.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true.
+**filter:** `typing.Optional[InboxFilter]` 
     
 </dd>
 </dl>
@@ -2770,6 +3783,14 @@ client.inbox.search()
 <dd>
 
 **size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
     
 </dd>
 </dl>
@@ -2827,7 +3848,6 @@ client = MavenAGI(
 client.inbox.get(
     inbox_item_id="inboxItemId",
     app_id="appId",
-    item_type="DUPLICATE_DOCUMENT",
 )
 
 ```
@@ -2853,14 +3873,6 @@ client.inbox.get(
 <dd>
 
 **app_id:** `str` — The App ID of the inbox item to retrieve
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**item_type:** `InboxItemType` — The type of the inbox item to retrieve
     
 </dd>
 </dl>
@@ -2918,7 +3930,6 @@ client = MavenAGI(
 client.inbox.get_fix(
     inbox_item_fix_id="inboxItemFixId",
     app_id="appId",
-    fix_type="REMOVE_DOCUMENT",
 )
 
 ```
@@ -2951,14 +3962,6 @@ client.inbox.get_fix(
 <dl>
 <dd>
 
-**fix_type:** `InboxItemFixType` — The type of the inbox item fix to retrieve
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -2971,7 +3974,7 @@ client.inbox.get_fix(
 </dl>
 </details>
 
-<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">apply_fix</a>(...)</code></summary>
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">apply_fixes</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -2983,7 +3986,7 @@ client.inbox.get_fix(
 <dl>
 <dd>
 
-Apply a fix to an inbox item with a specific document.
+Apply a list of fixes belonging to an inbox item.
 </dd>
 </dl>
 </dd>
@@ -3006,10 +4009,10 @@ client = MavenAGI(
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
-client.inbox.apply_fix(
-    inbox_item_fix_id="inboxItemFixId",
+client.inbox.apply_fixes(
+    inbox_item_id="inboxItemId",
     app_id="appId",
-    fix_type="REMOVE_DOCUMENT",
+    fix_reference_ids=["fixReferenceIds", "fixReferenceIds"],
 )
 
 ```
@@ -3026,7 +4029,7 @@ client.inbox.apply_fix(
 <dl>
 <dd>
 
-**inbox_item_fix_id:** `str` — Unique identifier for the inbox fix.
+**inbox_item_id:** `str` — Unique identifier for the inbox item.
     
 </dd>
 </dl>
@@ -3034,7 +4037,7 @@ client.inbox.apply_fix(
 <dl>
 <dd>
 
-**app_id:** `str` 
+**app_id:** `str` — The appId of the inbox item and fixes.
     
 </dd>
 </dl>
@@ -3042,7 +4045,7 @@ client.inbox.apply_fix(
 <dl>
 <dd>
 
-**fix_type:** `InboxItemFixType` — The type of the inbox item fix to retrieve
+**fix_reference_ids:** `typing.Sequence[str]` — A list of one or more reference IDs of fixes to apply. All must belong to the same inbox item.
     
 </dd>
 </dl>
@@ -3050,7 +4053,7 @@ client.inbox.apply_fix(
 <dl>
 <dd>
 
-**add_document_request:** `typing.Optional[AddDocumentFixRequest]` — Content for Add Document fixes
+**add_document_request:** `typing.Optional[AddDocumentFixRequest]` — Only applies to add document fixes, includes the document content to save.
     
 </dd>
 </dl>
@@ -3108,7 +4111,6 @@ client = MavenAGI(
 client.inbox.ignore(
     inbox_item_id="inboxItemId",
     app_id="appId",
-    item_type="DUPLICATE_DOCUMENT",
 )
 
 ```
@@ -3141,7 +4143,103 @@ client.inbox.ignore(
 <dl>
 <dd>
 
-**item_type:** `InboxItemType` — The type of the inbox item to retrieve
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Knowledge
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">search_knowledge_bases</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search knowledge bases
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.search_knowledge_bases()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[KnowledgeBaseField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[KnowledgeBaseFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
     
 </dd>
 </dl>
@@ -3161,7 +4259,6 @@ client.inbox.ignore(
 </dl>
 </details>
 
-## Knowledge
 <details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">create_or_update_knowledge_base</a>(...)</code></summary>
 <dl>
 <dd>
@@ -3243,7 +4340,7 @@ client.knowledge.create_or_update_knowledge_base(
 <dl>
 <dd>
 
-**precondition:** `typing.Optional[Precondition]` — (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
+**precondition:** `typing.Optional[Precondition]` — The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
     
 </dd>
 </dl>
@@ -3317,6 +4414,130 @@ client.knowledge.get_knowledge_base(
 <dd>
 
 **knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the knowledge base to get. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">patch_knowledge_base</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable knowledge base fields
+
+The `appId` field can be provided to update a knowledge base owned by a different app. 
+All other fields will overwrite the existing value on the knowledge base only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.patch_knowledge_base(
+    knowledge_base_reference_id="knowledgeBaseReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to patch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the knowledge base to patch. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — The name of the knowledge base.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**tags:** `typing.Optional[typing.Set[str]]` — The tags of the knowledge base.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**llm_inclusion_status:** `typing.Optional[LlmInclusionStatus]` — Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**refresh_frequency:** `typing.Optional[KnowledgeBaseRefreshFrequency]` — How often the knowledge base should be refreshed.
     
 </dd>
 </dl>
@@ -3538,6 +4759,109 @@ client.knowledge.finalize_knowledge_base_version(
 <dd>
 
 **error_message:** `typing.Optional[str]` — A user-facing error message that provides more details about a version failure.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">search_knowledge_documents</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search knowledge documents
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.search_knowledge_documents()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[KnowledgeDocumentField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[KnowledgeDocumentFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
     
 </dd>
 </dl>
@@ -4230,6 +5554,381 @@ client.organizations.get_conversation_chart(
 </dl>
 </details>
 
+## Segments
+<details><summary><code>client.segments.<a href="src/mavenagi/segments/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.segments.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[SegmentField]` — The field to sort by, defaults to created timestamp
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.segments.<a href="src/mavenagi/segments/client.py">create_or_update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a segment or create it if it doesn't exist.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.segments.create_or_update(
+    segment_id=EntityIdBase(
+        reference_id="admin-users",
+    ),
+    name="Admin users",
+    precondition=Precondition_Group(
+        operator="AND",
+        preconditions=[
+            Precondition_User(
+                key="userKey",
+            ),
+            Precondition_User(
+                key="userKey2",
+            ),
+        ],
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**segment_id:** `EntityIdBase` — ID that uniquely identifies this segment
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` — The name of the segment.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**precondition:** `Precondition` — The precondition that must be met for a conversation message to be included in the segment.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.segments.<a href="src/mavenagi/segments/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a segment by its supplied ID
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.segments.get(
+    segment_reference_id="admin-users",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**segment_reference_id:** `str` — The reference ID of the segment to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the segment to get. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.segments.<a href="src/mavenagi/segments/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable segment fields
+
+The `appId` field can be provided to update a segment owned by a different app. 
+All other fields will overwrite the existing value on the segment only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.segments.patch(
+    segment_reference_id="segmentReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**segment_reference_id:** `str` — The reference ID of the segment to update. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the segment to update. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — The name of the segment.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**precondition:** `typing.Optional[Precondition]` — The precondition that must be met for a conversation message to be included in the segment.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[SegmentStatus]` — The status of the segment. Segments can only be deactivated if they are not set on any actions or active knowledge bases.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Translations
 <details><summary><code>client.translations.<a href="src/mavenagi/translations/client.py">translate</a>(...)</code></summary>
 <dl>
@@ -4732,6 +6431,186 @@ client.triggers.partial_update(
 </details>
 
 ## Users
+<details><summary><code>client.users.<a href="src/mavenagi/users/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search across all agent users on an agent.
+
+Agent users are a merged view of the users created by individual apps.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.users.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[AgentUserField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[AgentUserFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.users.<a href="src/mavenagi/users/client.py">get_agent_user</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get an agent user by its supplied ID.
+
+Agent users are a merged view of the users created by individual apps.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.users.get_agent_user(
+    user_id="userId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**user_id:** `str` — The ID of the agent user to get.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.users.<a href="src/mavenagi/users/client.py">create_or_update</a>(...)</code></summary>
 <dl>
 <dd>
@@ -4744,7 +6623,7 @@ client.triggers.partial_update(
 <dl>
 <dd>
 
-Update a user or create it if it doesn't exist.
+Update an app user or create it if it doesn't exist.
 </dd>
 </dl>
 </dd>
@@ -4848,7 +6727,7 @@ client.users.create_or_update(
 <dl>
 <dd>
 
-Get a user by its supplied ID
+Get an app user by its supplied ID
 </dd>
 </dl>
 </dd>
@@ -4889,7 +6768,7 @@ client.users.get(
 <dl>
 <dd>
 
-**user_id:** `str` — The reference ID of the user to get. All other entity ID fields are inferred from the request.
+**user_id:** `str` — The reference ID of the app user to get. All other entity ID fields are inferred from the request.
     
 </dd>
 </dl>
@@ -4897,7 +6776,7 @@ client.users.get(
 <dl>
 <dd>
 
-**app_id:** `typing.Optional[str]` — The App ID of the user to get. If not provided the ID of the calling app will be used.
+**app_id:** `typing.Optional[str]` — The App ID of the app user to get. If not provided the ID of the calling app will be used.
     
 </dd>
 </dl>
@@ -4975,7 +6854,7 @@ client.users.delete(
 <dl>
 <dd>
 
-**user_id:** `str` — The reference ID of the user to delete. All other entity ID fields are inferred from the request.
+**user_id:** `str` — The reference ID of the app user to delete. All other entity ID fields are inferred from the request.
     
 </dd>
 </dl>
@@ -4983,7 +6862,7 @@ client.users.delete(
 <dl>
 <dd>
 
-**app_id:** `typing.Optional[str]` — The App ID of the user to delete. If not provided the ID of the calling app will be used.
+**app_id:** `typing.Optional[str]` — The App ID of the app user to delete. If not provided the ID of the calling app will be used.
     
 </dd>
 </dl>

@@ -9,6 +9,7 @@ from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .agent_environment import AgentEnvironment
+from .pii_category import PiiCategory
 
 
 class Agent(UniversalBaseModel):
@@ -30,6 +31,19 @@ class Agent(UniversalBaseModel):
     environment: AgentEnvironment = pydantic.Field()
     """
     The environment of the agent. Default is `DEMO`.
+    """
+
+    enabled_pii_categories: typing_extensions.Annotated[
+        typing.Set[PiiCategory], FieldMetadata(alias="enabledPiiCategories")
+    ] = pydantic.Field()
+    """
+    The PII categories that are enabled for the agent. 
+    PII will be automatically redacted from all conversation message text. 
+    Attachments and form submissions are not affected. 
+    
+    Defaults to `AbaRoutingNumber`, `CreditCardNumber`, `IpAddress`, `PhoneNumber`, `SwiftCode`, 
+    `UsBankAccountNumber`, `UsDriversLicenseNumber`, `UsIndividualTaxpayerIdentification`,
+    `UsUkPassportNumber`, `UsSocialSecurityNumber`.
     """
 
     if IS_PYDANTIC_V2:
