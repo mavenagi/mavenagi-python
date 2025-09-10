@@ -12,6 +12,7 @@ from ..commons.types.response_config import ResponseConfig
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawConversationClient, RawConversationClient
+from .types.action_form_request_param_value import ActionFormRequestParamValue
 from .types.categorization_response import CategorizationResponse
 from .types.conversation_field import ConversationField
 from .types.conversation_filter import ConversationFilter
@@ -227,6 +228,7 @@ class ConversationClient:
         conversation_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        translation_language: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -239,6 +241,9 @@ class ConversationClient:
 
         app_id : typing.Optional[str]
             The App ID of the conversation to get. If not provided the ID of the calling app will be used.
+
+        translation_language : typing.Optional[str]
+            The language to translate the conversation analysis into
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -261,7 +266,9 @@ class ConversationClient:
             conversation_id="conversationId",
         )
         """
-        _response = self._raw_client.get(conversation_id, app_id=app_id, request_options=request_options)
+        _response = self._raw_client.get(
+            conversation_id, app_id=app_id, translation_language=translation_language, request_options=request_options
+        )
         return _response.data
 
     def delete(
@@ -861,7 +868,7 @@ class ConversationClient:
         conversation_id: str,
         *,
         action_form_id: str,
-        parameters: typing.Dict[str, typing.Optional[typing.Any]],
+        parameters: typing.Dict[str, ActionFormRequestParamValue],
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
@@ -875,7 +882,7 @@ class ConversationClient:
 
         action_form_id : str
 
-        parameters : typing.Dict[str, typing.Optional[typing.Any]]
+        parameters : typing.Dict[str, ActionFormRequestParamValue]
             Map of parameter IDs to values provided by the user. All required action fields must be provided.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
@@ -1346,6 +1353,7 @@ class AsyncConversationClient:
         conversation_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        translation_language: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -1358,6 +1366,9 @@ class AsyncConversationClient:
 
         app_id : typing.Optional[str]
             The App ID of the conversation to get. If not provided the ID of the calling app will be used.
+
+        translation_language : typing.Optional[str]
+            The language to translate the conversation analysis into
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1388,7 +1399,9 @@ class AsyncConversationClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get(conversation_id, app_id=app_id, request_options=request_options)
+        _response = await self._raw_client.get(
+            conversation_id, app_id=app_id, translation_language=translation_language, request_options=request_options
+        )
         return _response.data
 
     async def delete(
@@ -2054,7 +2067,7 @@ class AsyncConversationClient:
         conversation_id: str,
         *,
         action_form_id: str,
-        parameters: typing.Dict[str, typing.Optional[typing.Any]],
+        parameters: typing.Dict[str, ActionFormRequestParamValue],
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
@@ -2068,7 +2081,7 @@ class AsyncConversationClient:
 
         action_form_id : str
 
-        parameters : typing.Dict[str, typing.Optional[typing.Any]]
+        parameters : typing.Dict[str, ActionFormRequestParamValue]
             Map of parameter IDs to values provided by the user. All required action fields must be provided.
 
         transient_data : typing.Optional[typing.Dict[str, str]]

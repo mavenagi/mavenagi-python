@@ -43,6 +43,13 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     ID that uniquely identifies this knowledge base
     """
 
+    active_version_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="activeVersionId")
+    ] = pydantic.Field(default=None)
+    """
+    ID of the knowledge base version that is currently active. Documents can be fetched using this version ID.
+    """
+
     type: KnowledgeBaseType = pydantic.Field()
     """
     The type of the knowledge base. Can not be changed once created.

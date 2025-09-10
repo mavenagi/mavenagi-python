@@ -13,6 +13,7 @@ PiiCategory = typing.Union[
         "UsSocialSecurityNumber",
         "UsUkPassportNumber",
         "UsDriversLicenseNumber",
+        "UsIndividualTaxpayerIdentification",
         "Date",
         "IpAddress",
         "Url",
@@ -60,7 +61,6 @@ PiiCategory = typing.Union[
         "UkNationalHealthNumber",
         "UkNationalInsuranceNumber",
         "UkUniqueTaxpayerNumber",
-        "UsIndividualTaxpayerIdentification",
     ],
     typing.Any,
 ]

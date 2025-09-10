@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 
@@ -43,6 +44,21 @@ class KnowledgeDocumentFilter(UniversalBaseModel):
     )
     """
     Filter knowledge documents created on or before this timestamp
+    """
+
+    app_ids: typing_extensions.Annotated[typing.Optional[typing.List[str]], FieldMetadata(alias="appIds")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Filter by app IDs
+    """
+
+    knowledge_base_version_id: typing_extensions.Annotated[
+        typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="knowledgeBaseVersionId")
+    ] = pydantic.Field(default=None)
+    """
+    Filter documents within the specified knowledge base version. 
+    If not provided all active knowledge base versions within the agent will be searched.
     """
 
     if IS_PYDANTIC_V2:

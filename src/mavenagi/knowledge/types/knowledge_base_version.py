@@ -5,13 +5,13 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id import EntityId
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .knowledge_base_version_request import KnowledgeBaseVersionRequest
 from .knowledge_base_version_status import KnowledgeBaseVersionStatus
-from .knowledge_base_version_type import KnowledgeBaseVersionType
 
 
-class KnowledgeBaseVersion(UniversalBaseModel):
+class KnowledgeBaseVersion(KnowledgeBaseVersionRequest):
     """
     Examples
     --------
@@ -34,11 +34,6 @@ class KnowledgeBaseVersion(UniversalBaseModel):
     version_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="versionId")] = pydantic.Field()
     """
     The unique ID of the knowledge base version.
-    """
-
-    type: KnowledgeBaseVersionType = pydantic.Field()
-    """
-    Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
     """
 
     status: KnowledgeBaseVersionStatus = pydantic.Field()

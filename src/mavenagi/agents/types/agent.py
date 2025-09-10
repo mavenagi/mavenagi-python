@@ -33,6 +33,11 @@ class Agent(UniversalBaseModel):
     The environment of the agent. Default is `DEMO`.
     """
 
+    default_timezone: typing_extensions.Annotated[str, FieldMetadata(alias="defaultTimezone")] = pydantic.Field()
+    """
+    The agent's default timezone. This is used when a timezone is not set on a conversation.
+    """
+
     enabled_pii_categories: typing_extensions.Annotated[
         typing.Set[PiiCategory], FieldMetadata(alias="enabledPiiCategories")
     ] = pydantic.Field()

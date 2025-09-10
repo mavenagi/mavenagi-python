@@ -7,6 +7,8 @@ from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawEventsClient, RawEventsClient
 from .types.event_field import EventField
 from .types.event_filter import EventFilter
+from .types.event_request import EventRequest
+from .types.event_response import EventResponse
 from .types.events_search_response import EventsSearchResponse
 
 # this is used as the default value for optional parameters
@@ -27,6 +29,53 @@ class EventsClient:
         RawEventsClient
         """
         return self._raw_client
+
+    def create(
+        self, *, request: EventRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> EventResponse:
+        """
+        Create a new event
+
+        Parameters
+        ----------
+        request : EventRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventResponse
+            A response indicating the event was successfully accepted
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.commons import EntityIdBase
+        from mavenagi.events import EventRequest_UserEvent, UserInfoBase
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.events.create(
+            request=EventRequest_UserEvent(
+                id=EntityIdBase(
+                    reference_id="referenceId",
+                ),
+                event_name="BUTTON_CLICKED",
+                user_info=UserInfoBase(
+                    id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                ),
+            ),
+        )
+        """
+        _response = self._raw_client.create(request=request, request_options=request_options)
+        return _response.data
 
     def search(
         self,
@@ -95,6 +144,61 @@ class AsyncEventsClient:
         AsyncRawEventsClient
         """
         return self._raw_client
+
+    async def create(
+        self, *, request: EventRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> EventResponse:
+        """
+        Create a new event
+
+        Parameters
+        ----------
+        request : EventRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventResponse
+            A response indicating the event was successfully accepted
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityIdBase
+        from mavenagi.events import EventRequest_UserEvent, UserInfoBase
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.events.create(
+                request=EventRequest_UserEvent(
+                    id=EntityIdBase(
+                        reference_id="referenceId",
+                    ),
+                    event_name="BUTTON_CLICKED",
+                    user_info=UserInfoBase(
+                        id=EntityIdBase(
+                            reference_id="referenceId",
+                        ),
+                    ),
+                ),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create(request=request, request_options=request_options)
+        return _response.data
 
     async def search(
         self,

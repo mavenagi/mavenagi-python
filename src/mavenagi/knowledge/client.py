@@ -17,8 +17,8 @@ from .types.knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequenc
 from .types.knowledge_base_response import KnowledgeBaseResponse
 from .types.knowledge_base_version import KnowledgeBaseVersion
 from .types.knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
-from .types.knowledge_base_version_status import KnowledgeBaseVersionStatus
 from .types.knowledge_base_version_type import KnowledgeBaseVersionType
+from .types.knowledge_base_versions_list_response import KnowledgeBaseVersionsListResponse
 from .types.knowledge_bases_response import KnowledgeBasesResponse
 from .types.knowledge_document_content_type import KnowledgeDocumentContentType
 from .types.knowledge_document_field import KnowledgeDocumentField
@@ -209,6 +209,8 @@ class KnowledgeClient:
         name: typing.Optional[str] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        precondition: typing.Optional[Precondition] = OMIT,
+        segment_id: typing.Optional[EntityId] = OMIT,
         refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
@@ -234,6 +236,16 @@ class KnowledgeClient:
 
         llm_inclusion_status : typing.Optional[LlmInclusionStatus]
             Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
+
+        precondition : typing.Optional[Precondition]
+            The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+
+        segment_id : typing.Optional[EntityId]
+            The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+            A null value will remove the segment from the knowledge base, it will be available on all conversations.
+
+            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
 
         refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
             How often the knowledge base should be refreshed.
@@ -265,6 +277,8 @@ class KnowledgeClient:
             name=name,
             tags=tags,
             llm_inclusion_status=llm_inclusion_status,
+            precondition=precondition,
+            segment_id=segment_id,
             refresh_frequency=refresh_frequency,
             request_options=request_options,
         )
@@ -274,10 +288,7 @@ class KnowledgeClient:
         self,
         knowledge_base_reference_id: str,
         *,
-        version_id: EntityId,
         type: KnowledgeBaseVersionType,
-        status: KnowledgeBaseVersionStatus,
-        error_message: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseVersion:
         """
@@ -290,17 +301,8 @@ class KnowledgeClient:
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to create a version for. All other entity ID fields are inferred from the request.
 
-        version_id : EntityId
-            The unique ID of the knowledge base version.
-
         type : KnowledgeBaseVersionType
             Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
-
-        status : KnowledgeBaseVersionStatus
-            The status of the knowledge base version
-
-        error_message : typing.Optional[str]
-            A user-facing error message that provides more details about a version failure.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -312,7 +314,6 @@ class KnowledgeClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.commons import EntityId
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -322,24 +323,11 @@ class KnowledgeClient:
         )
         client.knowledge.create_knowledge_base_version(
             knowledge_base_reference_id="help-center",
-            version_id=EntityId(
-                type="KNOWLEDGE_BASE_VERSION",
-                reference_id="versionId",
-                app_id="maven",
-                organization_id="acme",
-                agent_id="support",
-            ),
             type="FULL",
-            status="IN_PROGRESS",
         )
         """
         _response = self._raw_client.create_knowledge_base_version(
-            knowledge_base_reference_id,
-            version_id=version_id,
-            type=type,
-            status=status,
-            error_message=error_message,
-            request_options=request_options,
+            knowledge_base_reference_id, type=type, request_options=request_options
         )
         return _response.data
 
@@ -403,6 +391,50 @@ class KnowledgeClient:
             status=status,
             error_message=error_message,
             request_options=request_options,
+        )
+        return _response.data
+
+    def list_knowledge_base_versions(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBaseVersionsListResponse:
+        """
+        List all active versions for a knowledge base. Returns the most recent versions first.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to list versions for. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeBaseVersionsListResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.list_knowledge_base_versions(
+            knowledge_base_reference_id="knowledgeBaseReferenceId",
+        )
+        """
+        _response = self._raw_client.list_knowledge_base_versions(
+            knowledge_base_reference_id, app_id=app_id, request_options=request_options
         )
         return _response.data
 
@@ -476,10 +508,11 @@ class KnowledgeClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeDocumentResponse:
         """
-        Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+        Create or update a knowledge document. Requires an existing knowledge base with an in progress version.
+        Will throw an exception if the latest version is not in progress.
 
         <Tip>
-        This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields
+        This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields
         have changed, a new document version will not be created. The existing version will be reused.
         </Tip>
 
@@ -571,123 +604,17 @@ class KnowledgeClient:
         )
         return _response.data
 
-    def update_knowledge_document(
-        self,
-        knowledge_base_reference_id: str,
-        *,
-        knowledge_document_id: EntityIdBase,
-        content_type: KnowledgeDocumentContentType,
-        content: str,
-        title: str,
-        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        url: typing.Optional[str] = OMIT,
-        language: typing.Optional[str] = OMIT,
-        created_at: typing.Optional[dt.datetime] = OMIT,
-        updated_at: typing.Optional[dt.datetime] = OMIT,
-        author: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> KnowledgeDocumentResponse:
-        """
-        Not yet implemented. Update knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
-
-        Parameters
-        ----------
-        knowledge_base_reference_id : str
-            The reference ID of the knowledge base that contains the document to update. All other entity ID fields are inferred from the request.
-
-        knowledge_document_id : EntityIdBase
-            ID that uniquely identifies this knowledge document within its knowledge base
-
-        content_type : KnowledgeDocumentContentType
-
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
-        title : str
-            The title of the document. Will be shown as part of answers.
-
-        version_id : typing.Optional[EntityIdWithoutAgent]
-            ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
-
-        metadata : typing.Optional[typing.Dict[str, str]]
-            Metadata for the knowledge document.
-
-        url : typing.Optional[str]
-            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-
-        language : typing.Optional[str]
-            The document language. Must be a valid ISO 639-1 language code.
-
-        created_at : typing.Optional[dt.datetime]
-            The time at which this document was created.
-
-        updated_at : typing.Optional[dt.datetime]
-            The time at which this document was last modified.
-
-        author : typing.Optional[str]
-            The name of the author who created this document.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        KnowledgeDocumentResponse
-
-        Examples
-        --------
-        from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
-
-        client = MavenAGI(
-            organization_id="YOUR_ORGANIZATION_ID",
-            agent_id="YOUR_AGENT_ID",
-            app_id="YOUR_APP_ID",
-            app_secret="YOUR_APP_SECRET",
-        )
-        client.knowledge.update_knowledge_document(
-            knowledge_base_reference_id="help-center",
-            knowledge_document_id=EntityIdBase(
-                reference_id="getting-started",
-            ),
-            version_id=EntityIdWithoutAgent(
-                type="KNOWLEDGE_BASE_VERSION",
-                reference_id="versionId",
-                app_id="maven",
-            ),
-            content_type="MARKDOWN",
-            content="## Getting started\\nThis is a getting started guide for the help center.",
-            title="Getting started",
-            metadata={"category": "getting-started"},
-        )
-        """
-        _response = self._raw_client.update_knowledge_document(
-            knowledge_base_reference_id,
-            knowledge_document_id=knowledge_document_id,
-            content_type=content_type,
-            content=content,
-            title=title,
-            version_id=version_id,
-            metadata=metadata,
-            url=url,
-            language=language,
-            created_at=created_at,
-            updated_at=updated_at,
-            author=author,
-            request_options=request_options,
-        )
-        return _response.data
-
     def delete_knowledge_document(
         self,
         knowledge_base_reference_id: str,
         knowledge_document_reference_id: str,
         *,
+        version_id: EntityIdWithoutAgent,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
-        Not yet implemented. Delete knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+        Delete knowledge document from a specific version.
+        Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
 
         Parameters
         ----------
@@ -696,6 +623,9 @@ class KnowledgeClient:
 
         knowledge_document_reference_id : str
             The reference ID of the knowledge document to delete. All other entity ID fields are inferred from the request.
+
+        version_id : EntityIdWithoutAgent
+            ID that uniquely identifies which knowledge base version to delete the document from.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -707,6 +637,7 @@ class KnowledgeClient:
         Examples
         --------
         from mavenagi import MavenAGI
+        from mavenagi.commons import EntityIdWithoutAgent
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -717,10 +648,71 @@ class KnowledgeClient:
         client.knowledge.delete_knowledge_document(
             knowledge_base_reference_id="help-center",
             knowledge_document_reference_id="getting-started",
+            version_id=EntityIdWithoutAgent(
+                type="KNOWLEDGE_BASE_VERSION",
+                app_id="maven",
+                reference_id="versionId",
+            ),
         )
         """
         _response = self._raw_client.delete_knowledge_document(
-            knowledge_base_reference_id, knowledge_document_reference_id, request_options=request_options
+            knowledge_base_reference_id,
+            knowledge_document_reference_id,
+            version_id=version_id,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def get_knowledge_document(
+        self,
+        knowledge_base_version_reference_id: str,
+        knowledge_document_reference_id: str,
+        *,
+        knowledge_base_version_app_id: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeDocumentResponse:
+        """
+        Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
+
+        Parameters
+        ----------
+        knowledge_base_version_reference_id : str
+            The reference ID of the knowledge base version that contains the document. All other entity ID fields are inferred from the request.
+
+        knowledge_document_reference_id : str
+            The reference ID of the knowledge document to get. All other entity ID fields are inferred from the request.
+
+        knowledge_base_version_app_id : str
+            The App ID of the knowledge base version.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeDocumentResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.get_knowledge_document(
+            knowledge_base_version_reference_id="knowledgeBaseVersionReferenceId",
+            knowledge_document_reference_id="knowledgeDocumentReferenceId",
+            knowledge_base_version_app_id="knowledgeBaseVersionAppId",
+        )
+        """
+        _response = self._raw_client.get_knowledge_document(
+            knowledge_base_version_reference_id,
+            knowledge_document_reference_id,
+            knowledge_base_version_app_id=knowledge_base_version_app_id,
+            request_options=request_options,
         )
         return _response.data
 
@@ -928,6 +920,8 @@ class AsyncKnowledgeClient:
         name: typing.Optional[str] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        precondition: typing.Optional[Precondition] = OMIT,
+        segment_id: typing.Optional[EntityId] = OMIT,
         refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
@@ -953,6 +947,16 @@ class AsyncKnowledgeClient:
 
         llm_inclusion_status : typing.Optional[LlmInclusionStatus]
             Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
+
+        precondition : typing.Optional[Precondition]
+            The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+
+        segment_id : typing.Optional[EntityId]
+            The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+            A null value will remove the segment from the knowledge base, it will be available on all conversations.
+
+            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
 
         refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
             How often the knowledge base should be refreshed.
@@ -992,6 +996,8 @@ class AsyncKnowledgeClient:
             name=name,
             tags=tags,
             llm_inclusion_status=llm_inclusion_status,
+            precondition=precondition,
+            segment_id=segment_id,
             refresh_frequency=refresh_frequency,
             request_options=request_options,
         )
@@ -1001,10 +1007,7 @@ class AsyncKnowledgeClient:
         self,
         knowledge_base_reference_id: str,
         *,
-        version_id: EntityId,
         type: KnowledgeBaseVersionType,
-        status: KnowledgeBaseVersionStatus,
-        error_message: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseVersion:
         """
@@ -1017,17 +1020,8 @@ class AsyncKnowledgeClient:
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to create a version for. All other entity ID fields are inferred from the request.
 
-        version_id : EntityId
-            The unique ID of the knowledge base version.
-
         type : KnowledgeBaseVersionType
             Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
-
-        status : KnowledgeBaseVersionStatus
-            The status of the knowledge base version
-
-        error_message : typing.Optional[str]
-            A user-facing error message that provides more details about a version failure.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1041,7 +1035,6 @@ class AsyncKnowledgeClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityId
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1054,27 +1047,14 @@ class AsyncKnowledgeClient:
         async def main() -> None:
             await client.knowledge.create_knowledge_base_version(
                 knowledge_base_reference_id="help-center",
-                version_id=EntityId(
-                    type="KNOWLEDGE_BASE_VERSION",
-                    reference_id="versionId",
-                    app_id="maven",
-                    organization_id="acme",
-                    agent_id="support",
-                ),
                 type="FULL",
-                status="IN_PROGRESS",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.create_knowledge_base_version(
-            knowledge_base_reference_id,
-            version_id=version_id,
-            type=type,
-            status=status,
-            error_message=error_message,
-            request_options=request_options,
+            knowledge_base_reference_id, type=type, request_options=request_options
         )
         return _response.data
 
@@ -1146,6 +1126,58 @@ class AsyncKnowledgeClient:
             status=status,
             error_message=error_message,
             request_options=request_options,
+        )
+        return _response.data
+
+    async def list_knowledge_base_versions(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBaseVersionsListResponse:
+        """
+        List all active versions for a knowledge base. Returns the most recent versions first.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to list versions for. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeBaseVersionsListResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.list_knowledge_base_versions(
+                knowledge_base_reference_id="knowledgeBaseReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_knowledge_base_versions(
+            knowledge_base_reference_id, app_id=app_id, request_options=request_options
         )
         return _response.data
 
@@ -1227,10 +1259,11 @@ class AsyncKnowledgeClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeDocumentResponse:
         """
-        Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+        Create or update a knowledge document. Requires an existing knowledge base with an in progress version.
+        Will throw an exception if the latest version is not in progress.
 
         <Tip>
-        This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields
+        This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields
         have changed, a new document version will not be created. The existing version will be reused.
         </Tip>
 
@@ -1330,131 +1363,17 @@ class AsyncKnowledgeClient:
         )
         return _response.data
 
-    async def update_knowledge_document(
-        self,
-        knowledge_base_reference_id: str,
-        *,
-        knowledge_document_id: EntityIdBase,
-        content_type: KnowledgeDocumentContentType,
-        content: str,
-        title: str,
-        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        url: typing.Optional[str] = OMIT,
-        language: typing.Optional[str] = OMIT,
-        created_at: typing.Optional[dt.datetime] = OMIT,
-        updated_at: typing.Optional[dt.datetime] = OMIT,
-        author: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> KnowledgeDocumentResponse:
-        """
-        Not yet implemented. Update knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
-
-        Parameters
-        ----------
-        knowledge_base_reference_id : str
-            The reference ID of the knowledge base that contains the document to update. All other entity ID fields are inferred from the request.
-
-        knowledge_document_id : EntityIdBase
-            ID that uniquely identifies this knowledge document within its knowledge base
-
-        content_type : KnowledgeDocumentContentType
-
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
-        title : str
-            The title of the document. Will be shown as part of answers.
-
-        version_id : typing.Optional[EntityIdWithoutAgent]
-            ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
-
-        metadata : typing.Optional[typing.Dict[str, str]]
-            Metadata for the knowledge document.
-
-        url : typing.Optional[str]
-            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-
-        language : typing.Optional[str]
-            The document language. Must be a valid ISO 639-1 language code.
-
-        created_at : typing.Optional[dt.datetime]
-            The time at which this document was created.
-
-        updated_at : typing.Optional[dt.datetime]
-            The time at which this document was last modified.
-
-        author : typing.Optional[str]
-            The name of the author who created this document.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        KnowledgeDocumentResponse
-
-        Examples
-        --------
-        import asyncio
-
-        from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
-
-        client = AsyncMavenAGI(
-            organization_id="YOUR_ORGANIZATION_ID",
-            agent_id="YOUR_AGENT_ID",
-            app_id="YOUR_APP_ID",
-            app_secret="YOUR_APP_SECRET",
-        )
-
-
-        async def main() -> None:
-            await client.knowledge.update_knowledge_document(
-                knowledge_base_reference_id="help-center",
-                knowledge_document_id=EntityIdBase(
-                    reference_id="getting-started",
-                ),
-                version_id=EntityIdWithoutAgent(
-                    type="KNOWLEDGE_BASE_VERSION",
-                    reference_id="versionId",
-                    app_id="maven",
-                ),
-                content_type="MARKDOWN",
-                content="## Getting started\\nThis is a getting started guide for the help center.",
-                title="Getting started",
-                metadata={"category": "getting-started"},
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.update_knowledge_document(
-            knowledge_base_reference_id,
-            knowledge_document_id=knowledge_document_id,
-            content_type=content_type,
-            content=content,
-            title=title,
-            version_id=version_id,
-            metadata=metadata,
-            url=url,
-            language=language,
-            created_at=created_at,
-            updated_at=updated_at,
-            author=author,
-            request_options=request_options,
-        )
-        return _response.data
-
     async def delete_knowledge_document(
         self,
         knowledge_base_reference_id: str,
         knowledge_document_reference_id: str,
         *,
+        version_id: EntityIdWithoutAgent,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
-        Not yet implemented. Delete knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+        Delete knowledge document from a specific version.
+        Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
 
         Parameters
         ----------
@@ -1463,6 +1382,9 @@ class AsyncKnowledgeClient:
 
         knowledge_document_reference_id : str
             The reference ID of the knowledge document to delete. All other entity ID fields are inferred from the request.
+
+        version_id : EntityIdWithoutAgent
+            ID that uniquely identifies which knowledge base version to delete the document from.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1476,6 +1398,7 @@ class AsyncKnowledgeClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityIdWithoutAgent
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -1489,12 +1412,81 @@ class AsyncKnowledgeClient:
             await client.knowledge.delete_knowledge_document(
                 knowledge_base_reference_id="help-center",
                 knowledge_document_reference_id="getting-started",
+                version_id=EntityIdWithoutAgent(
+                    type="KNOWLEDGE_BASE_VERSION",
+                    app_id="maven",
+                    reference_id="versionId",
+                ),
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.delete_knowledge_document(
-            knowledge_base_reference_id, knowledge_document_reference_id, request_options=request_options
+            knowledge_base_reference_id,
+            knowledge_document_reference_id,
+            version_id=version_id,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def get_knowledge_document(
+        self,
+        knowledge_base_version_reference_id: str,
+        knowledge_document_reference_id: str,
+        *,
+        knowledge_base_version_app_id: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeDocumentResponse:
+        """
+        Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
+
+        Parameters
+        ----------
+        knowledge_base_version_reference_id : str
+            The reference ID of the knowledge base version that contains the document. All other entity ID fields are inferred from the request.
+
+        knowledge_document_reference_id : str
+            The reference ID of the knowledge document to get. All other entity ID fields are inferred from the request.
+
+        knowledge_base_version_app_id : str
+            The App ID of the knowledge base version.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeDocumentResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.get_knowledge_document(
+                knowledge_base_version_reference_id="knowledgeBaseVersionReferenceId",
+                knowledge_document_reference_id="knowledgeDocumentReferenceId",
+                knowledge_base_version_app_id="knowledgeBaseVersionAppId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_knowledge_document(
+            knowledge_base_version_reference_id,
+            knowledge_document_reference_id,
+            knowledge_base_version_app_id=knowledge_base_version_app_id,
+            request_options=request_options,
         )
         return _response.data

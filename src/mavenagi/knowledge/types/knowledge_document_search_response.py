@@ -18,9 +18,12 @@ class KnowledgeDocumentSearchResponse(BaseKnowledgeDocument):
     ID that uniquely identifies this knowledge document within its knowledge base
     """
 
-    metadata: typing.Dict[str, str] = pydantic.Field()
+    knowledge_base_version_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="knowledgeBaseVersionId")
+    ] = pydantic.Field(default=None)
     """
-    Metadata for the knowledge document.
+    ID that uniquely identifies the knowledge base version that contains this document.
+    This may be missing on legacy documents.
     """
 
     if IS_PYDANTIC_V2:

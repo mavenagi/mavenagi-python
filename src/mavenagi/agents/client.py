@@ -237,6 +237,7 @@ class AgentsClient:
         *,
         name: typing.Optional[str] = OMIT,
         environment: typing.Optional[AgentEnvironment] = OMIT,
+        default_timezone: typing.Optional[str] = OMIT,
         enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Agent:
@@ -261,6 +262,9 @@ class AgentsClient:
 
         environment : typing.Optional[AgentEnvironment]
             The environment of the agent.
+
+        default_timezone : typing.Optional[str]
+            The agent's default timezone. This is used when a timezone is not set on a conversation.
 
         enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
             The PII categories that are enabled for the agent.
@@ -292,6 +296,7 @@ class AgentsClient:
             agent_reference_id,
             name=name,
             environment=environment,
+            default_timezone=default_timezone,
             enabled_pii_categories=enabled_pii_categories,
             request_options=request_options,
         )
@@ -602,6 +607,7 @@ class AsyncAgentsClient:
         *,
         name: typing.Optional[str] = OMIT,
         environment: typing.Optional[AgentEnvironment] = OMIT,
+        default_timezone: typing.Optional[str] = OMIT,
         enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Agent:
@@ -626,6 +632,9 @@ class AsyncAgentsClient:
 
         environment : typing.Optional[AgentEnvironment]
             The environment of the agent.
+
+        default_timezone : typing.Optional[str]
+            The agent's default timezone. This is used when a timezone is not set on a conversation.
 
         enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
             The PII categories that are enabled for the agent.
@@ -665,6 +674,7 @@ class AsyncAgentsClient:
             agent_reference_id,
             name=name,
             environment=environment,
+            default_timezone=default_timezone,
             enabled_pii_categories=enabled_pii_categories,
             request_options=request_options,
         )

@@ -48,6 +48,23 @@ class StreamResponse_Action(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class StreamResponse_OauthButton(UniversalBaseModel):
+    event_type: typing_extensions.Annotated[typing.Literal["oauthButton"], FieldMetadata(alias="eventType")] = (
+        "oauthButton"
+    )
+    button_name: typing_extensions.Annotated[str, FieldMetadata(alias="buttonName")]
+    url: str
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 class StreamResponse_Chart(UniversalBaseModel):
     event_type: typing_extensions.Annotated[typing.Literal["chart"], FieldMetadata(alias="eventType")] = "chart"
     label: str
@@ -111,6 +128,7 @@ class StreamResponse_End(UniversalBaseModel):
 StreamResponse = typing.Union[
     StreamResponse_Text,
     StreamResponse_Action,
+    StreamResponse_OauthButton,
     StreamResponse_Chart,
     StreamResponse_Metadata,
     StreamResponse_Start,

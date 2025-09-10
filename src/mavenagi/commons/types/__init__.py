@@ -4,7 +4,13 @@
 
 from .action_base import ActionBase
 from .action_enum_option import ActionEnumOption
+from .action_execution_param_value import (
+    ActionExecutionParamValue,
+    ActionExecutionParamValue_Attachment,
+    ActionExecutionParamValue_Raw,
+)
 from .action_form_field import ActionFormField
+from .action_o_auth_configuration import ActionOAuthConfiguration
 from .action_parameter import ActionParameter
 from .action_parameter_type import ActionParameterType
 from .action_response import ActionResponse
@@ -43,8 +49,16 @@ from .bot_logic_safety_item import BotLogicSafetyItem
 from .bot_logic_segments_item import BotLogicSegmentsItem
 from .bot_logic_user_item import BotLogicUserItem
 from .bot_message import BotMessage
+from .bot_o_auth_button_response import BotOAuthButtonResponse
 from .bot_object_response import BotObjectResponse
-from .bot_response import BotResponse, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Object, BotResponse_Text
+from .bot_response import (
+    BotResponse,
+    BotResponse_ActionForm,
+    BotResponse_Chart,
+    BotResponse_OauthButton,
+    BotResponse_Object,
+    BotResponse_Text,
+)
 from .bot_response_metadata import BotResponseMetadata
 from .bot_text_response import BotTextResponse
 from .capability import Capability
@@ -118,7 +132,11 @@ from .visibility_type import VisibilityType
 __all__ = [
     "ActionBase",
     "ActionEnumOption",
+    "ActionExecutionParamValue",
+    "ActionExecutionParamValue_Attachment",
+    "ActionExecutionParamValue_Raw",
     "ActionFormField",
+    "ActionOAuthConfiguration",
     "ActionParameter",
     "ActionParameterType",
     "ActionResponse",
@@ -155,11 +173,13 @@ __all__ = [
     "BotLogicSegmentsItem",
     "BotLogicUserItem",
     "BotMessage",
+    "BotOAuthButtonResponse",
     "BotObjectResponse",
     "BotResponse",
     "BotResponseMetadata",
     "BotResponse_ActionForm",
     "BotResponse_Chart",
+    "BotResponse_OauthButton",
     "BotResponse_Object",
     "BotResponse_Text",
     "BotTextResponse",

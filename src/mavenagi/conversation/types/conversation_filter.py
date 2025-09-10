@@ -130,6 +130,13 @@ class ConversationFilter(UniversalBaseModel):
     Filter by tags applied to the conversation
     """
 
+    agent_user_ids: typing_extensions.Annotated[
+        typing.Optional[typing.List[str]], FieldMetadata(alias="agentUserIds")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by agent user IDs associated with the conversation
+    """
+
     resolution_status: typing_extensions.Annotated[
         typing.Optional[typing.List[ResolutionStatus]], FieldMetadata(alias="resolutionStatus")
     ] = pydantic.Field(default=None)
@@ -156,6 +163,13 @@ class ConversationFilter(UniversalBaseModel):
     )
     """
     Filter by whether any message in the conversation has an attachment
+    """
+
+    matched_segment_ids: typing_extensions.Annotated[
+        typing.Optional[typing.List[EntityIdFilter]], FieldMetadata(alias="matchedSegmentIds")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by the segments that any message on a conversation matched.
     """
 
     if IS_PYDANTIC_V2:

@@ -17,9 +17,11 @@ from ..conversation.types.conversation_filter import ConversationFilter
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
+from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
+from .types.organization import Organization
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -29,6 +31,328 @@ class RawOrganizationsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
+    def create(
+        self,
+        organization_reference_id: str,
+        *,
+        name: str,
+        default_language: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[Organization]:
+        """
+        Create a new organization.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        name : str
+            The name of the organization.
+
+        default_language : str
+            The default language for the organization in ISO 639-1 code format.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[Organization]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            method="POST",
+            json={
+                "name": name,
+                "defaultLanguage": default_language,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Organization,
+                    parse_obj_as(
+                        type_=Organization,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get(
+        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[Organization]:
+        """
+        Get an organization by ID
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[Organization]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Organization,
+                    parse_obj_as(
+                        type_=Organization,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def patch(
+        self,
+        organization_reference_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        default_language: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[Organization]:
+        """
+        Update mutable organization fields.
+        All fields will overwrite the existing value on the organization only if provided.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        name : typing.Optional[str]
+            The name of the organization.
+
+        default_language : typing.Optional[str]
+            The default language for the organization in ISO 639-1 code format.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[Organization]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "defaultLanguage": default_language,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Organization,
+                    parse_obj_as(
+                        type_=Organization,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def delete(
+        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[None]:
+        """
+        Delete an organization.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[None]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            method="DELETE",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return HttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def get_conversation_table(
         self,
         *,
@@ -36,6 +360,7 @@ class RawOrganizationsClient:
         column_definitions: typing.Sequence[ConversationColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
         conversation_filter: typing.Optional[ConversationFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ConversationTableResponse]:
         """
@@ -63,6 +388,11 @@ class RawOrganizationsClient:
         conversation_filter : typing.Optional[ConversationFilter]
             Optional filter applied to refine the conversation data before processing.
 
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -86,6 +416,7 @@ class RawOrganizationsClient:
                 "conversationFilter": convert_and_respect_annotation_metadata(
                     object_=conversation_filter, annotation=ConversationFilter, direction="write"
                 ),
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,
@@ -222,6 +553,328 @@ class AsyncRawOrganizationsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
+    async def create(
+        self,
+        organization_reference_id: str,
+        *,
+        name: str,
+        default_language: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[Organization]:
+        """
+        Create a new organization.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        name : str
+            The name of the organization.
+
+        default_language : str
+            The default language for the organization in ISO 639-1 code format.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[Organization]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            method="POST",
+            json={
+                "name": name,
+                "defaultLanguage": default_language,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Organization,
+                    parse_obj_as(
+                        type_=Organization,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get(
+        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[Organization]:
+        """
+        Get an organization by ID
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[Organization]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Organization,
+                    parse_obj_as(
+                        type_=Organization,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def patch(
+        self,
+        organization_reference_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        default_language: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[Organization]:
+        """
+        Update mutable organization fields.
+        All fields will overwrite the existing value on the organization only if provided.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        name : typing.Optional[str]
+            The name of the organization.
+
+        default_language : typing.Optional[str]
+            The default language for the organization in ISO 639-1 code format.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[Organization]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            method="PATCH",
+            json={
+                "name": name,
+                "defaultLanguage": default_language,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    Organization,
+                    parse_obj_as(
+                        type_=Organization,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def delete(
+        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[None]:
+        """
+        Delete an organization.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[None]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            method="DELETE",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return AsyncHttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def get_conversation_table(
         self,
         *,
@@ -229,6 +882,7 @@ class AsyncRawOrganizationsClient:
         column_definitions: typing.Sequence[ConversationColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
         conversation_filter: typing.Optional[ConversationFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ConversationTableResponse]:
         """
@@ -256,6 +910,11 @@ class AsyncRawOrganizationsClient:
         conversation_filter : typing.Optional[ConversationFilter]
             Optional filter applied to refine the conversation data before processing.
 
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -279,6 +938,7 @@ class AsyncRawOrganizationsClient:
                 "conversationFilter": convert_and_respect_annotation_metadata(
                     object_=conversation_filter, annotation=ConversationFilter, direction="write"
                 ),
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,

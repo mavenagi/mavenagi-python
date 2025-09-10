@@ -406,6 +406,20 @@ client.actions.patch(
 <dl>
 <dd>
 
+**segment_id:** `typing.Optional[EntityId]` 
+
+The ID of the segment that must be matched for the action to be relevant to a conversation. 
+A null value will remove the segment from the action, it will be available on all conversations.
+
+Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
+Inline precondition support will be removed in a future release.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -472,6 +486,310 @@ client.actions.delete(
 <dd>
 
 **action_reference_id:** `str` — The reference ID of the action to unregister. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## AgentCapabilities
+<details><summary><code>client.agent_capabilities.<a href="src/mavenagi/agent_capabilities/client.py">list</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all capabilities for an agent.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agent_capabilities.list()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**capability_type:** `typing.Optional[AgentCapabilityType]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pinned:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enabled:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**integration_ids:** `typing.Optional[typing.Sequence[str]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_interaction_required:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_id:** `typing.Optional[AgentCapabilityField]` — The field to sort by, defaults to created timestamp
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.agent_capabilities.<a href="src/mavenagi/agent_capabilities/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agent_capabilities.get(
+    integration_id="integrationId",
+    capability_id="capabilityId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**integration_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**capability_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.agent_capabilities.<a href="src/mavenagi/agent_capabilities/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agent_capabilities.patch(
+    integration_id="integrationId",
+    capability_id="capabilityId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**integration_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**capability_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enabled:** `typing.Optional[bool]` — Whether this capability is enabled or disabled
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description_override:** `typing.Optional[str]` — Override description for action capabilities. Only applies to actions, ignored for triggers.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pinned:** `typing.Optional[bool]` — Whether this action capability is pinned. Only applies to actions, ignored for triggers.
     
 </dd>
 </dl>
@@ -949,6 +1267,14 @@ client.agents.patch(
 <dl>
 <dd>
 
+**default_timezone:** `typing.Optional[str]` — The agent's default timezone. This is used when a timezone is not set on a conversation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **enabled_pii_categories:** `typing.Optional[typing.Set[PiiCategory]]` — The PII categories that are enabled for the agent.
     
 </dd>
@@ -1181,6 +1507,18 @@ Note: The field `CreatedAt` should not be used here, all time-based grouping sho
 <dl>
 <dd>
 
+**timezone:** `typing.Optional[str]` 
+
+IANA timezone identifier (e.g., "America/Los_Angeles").
+When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+otherwise UTC is used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -1392,6 +1730,18 @@ Defines the time interval for grouping data. If specified, data is grouped accor
 <dd>
 
 **feedback_filter:** `typing.Optional[FeedbackFilter]` — Optional filter applied to refine the feedback data before processing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` 
+
+IANA timezone identifier (e.g., "America/Los_Angeles").
+When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+otherwise UTC is used.
     
 </dd>
 </dl>
@@ -2161,6 +2511,14 @@ client.conversation.get(
 <dd>
 
 **app_id:** `typing.Optional[str]` — The App ID of the conversation to get. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**translation_language:** `typing.Optional[str]` — The language to translate the conversation analysis into
     
 </dd>
 </dl>
@@ -3199,7 +3557,7 @@ client.conversation.submit_action_form(
 <dl>
 <dd>
 
-**parameters:** `typing.Dict[str, typing.Optional[typing.Any]]` — Map of parameter IDs to values provided by the user. All required action fields must be provided.
+**parameters:** `typing.Dict[str, ActionFormRequestParamValue]` — Map of parameter IDs to values provided by the user. All required action fields must be provided.
     
 </dd>
 </dl>
@@ -3611,6 +3969,91 @@ client.conversation.deliver_message(
 </details>
 
 ## Events
+<details><summary><code>client.events.<a href="src/mavenagi/events/client.py">create</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new event
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdBase
+from mavenagi.events import EventRequest_UserEvent, UserInfoBase
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.events.create(
+    request=EventRequest_UserEvent(
+        id=EntityIdBase(
+            reference_id="referenceId",
+        ),
+        event_name="BUTTON_CLICKED",
+        user_info=UserInfoBase(
+            id=EntityIdBase(
+                reference_id="referenceId",
+            ),
+        ),
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `EventRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.events.<a href="src/mavenagi/events/client.py">search</a>(...)</code></summary>
 <dl>
 <dd>
@@ -4537,6 +4980,28 @@ client.knowledge.patch_knowledge_base(
 <dl>
 <dd>
 
+**precondition:** `typing.Optional[Precondition]` — The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**segment_id:** `typing.Optional[EntityId]` 
+
+The ID of the segment that must be matched for the knowledge base to be relevant to a conversation. 
+A null value will remove the segment from the knowledge base, it will be available on all conversations.
+
+Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+Inline precondition support will be removed in a future release.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **refresh_frequency:** `typing.Optional[KnowledgeBaseRefreshFrequency]` — How often the knowledge base should be refreshed.
     
 </dd>
@@ -4587,7 +5052,6 @@ If an existing version is in progress, then that version will be finalized in an
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityId
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -4597,15 +5061,7 @@ client = MavenAGI(
 )
 client.knowledge.create_knowledge_base_version(
     knowledge_base_reference_id="help-center",
-    version_id=EntityId(
-        type="KNOWLEDGE_BASE_VERSION",
-        reference_id="versionId",
-        app_id="maven",
-        organization_id="acme",
-        agent_id="support",
-    ),
     type="FULL",
-    status="IN_PROGRESS",
 )
 
 ```
@@ -4630,31 +5086,7 @@ client.knowledge.create_knowledge_base_version(
 <dl>
 <dd>
 
-**version_id:** `EntityId` — The unique ID of the knowledge base version.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **type:** `KnowledgeBaseVersionType` — Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**status:** `KnowledgeBaseVersionStatus` — The status of the knowledge base version
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**error_message:** `typing.Optional[str]` — A user-facing error message that provides more details about a version failure.
     
 </dd>
 </dl>
@@ -4759,6 +5191,87 @@ client.knowledge.finalize_knowledge_base_version(
 <dd>
 
 **error_message:** `typing.Optional[str]` — A user-facing error message that provides more details about a version failure.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">list_knowledge_base_versions</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all active versions for a knowledge base. Returns the most recent versions first.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.list_knowledge_base_versions(
+    knowledge_base_reference_id="knowledgeBaseReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to list versions for. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the knowledge base. If not provided the ID of the calling app will be used.
     
 </dd>
 </dl>
@@ -4893,10 +5406,11 @@ client.knowledge.search_knowledge_documents()
 <dl>
 <dd>
 
-Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+Create or update a knowledge document. Requires an existing knowledge base with an in progress version. 
+Will throw an exception if the latest version is not in progress.
         
 <Tip>
-This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields 
+This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields 
 have changed, a new document version will not be created. The existing version will be reused.
 </Tip>
 </dd>
@@ -5060,180 +5574,6 @@ client.knowledge.create_knowledge_document(
 </dl>
 </details>
 
-<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">update_knowledge_document</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Not yet implemented. Update knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.knowledge.update_knowledge_document(
-    knowledge_base_reference_id="help-center",
-    knowledge_document_id=EntityIdBase(
-        reference_id="getting-started",
-    ),
-    version_id=EntityIdWithoutAgent(
-        type="KNOWLEDGE_BASE_VERSION",
-        reference_id="versionId",
-        app_id="maven",
-    ),
-    content_type="MARKDOWN",
-    content="## Getting started\\nThis is a getting started guide for the help center.",
-    title="Getting started",
-    metadata={"category": "getting-started"},
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**knowledge_base_reference_id:** `str` — The reference ID of the knowledge base that contains the document to update. All other entity ID fields are inferred from the request.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**knowledge_document_id:** `EntityIdBase` — ID that uniquely identifies this knowledge document within its knowledge base
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**content_type:** `KnowledgeDocumentContentType` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**content:** `str` — The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**title:** `str` — The title of the document. Will be shown as part of answers.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**version_id:** `typing.Optional[EntityIdWithoutAgent]` — ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**metadata:** `typing.Optional[typing.Dict[str, str]]` — Metadata for the knowledge document.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**url:** `typing.Optional[str]` — The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**language:** `typing.Optional[str]` — The document language. Must be a valid ISO 639-1 language code.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**created_at:** `typing.Optional[dt.datetime]` — The time at which this document was created.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**updated_at:** `typing.Optional[dt.datetime]` — The time at which this document was last modified.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**author:** `typing.Optional[str]` — The name of the author who created this document.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">delete_knowledge_document</a>(...)</code></summary>
 <dl>
 <dd>
@@ -5246,7 +5586,8 @@ client.knowledge.update_knowledge_document(
 <dl>
 <dd>
 
-Not yet implemented. Delete knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+Delete knowledge document from a specific version. 
+Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
 </dd>
 </dl>
 </dd>
@@ -5262,6 +5603,7 @@ Not yet implemented. Delete knowledge document. Requires an existing knowledge b
 
 ```python
 from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdWithoutAgent
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -5272,6 +5614,11 @@ client = MavenAGI(
 client.knowledge.delete_knowledge_document(
     knowledge_base_reference_id="help-center",
     knowledge_document_reference_id="getting-started",
+    version_id=EntityIdWithoutAgent(
+        type="KNOWLEDGE_BASE_VERSION",
+        app_id="maven",
+        reference_id="versionId",
+    ),
 )
 
 ```
@@ -5304,6 +5651,105 @@ client.knowledge.delete_knowledge_document(
 <dl>
 <dd>
 
+**version_id:** `EntityIdWithoutAgent` — ID that uniquely identifies which knowledge base version to delete the document from.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">get_knowledge_document</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.get_knowledge_document(
+    knowledge_base_version_reference_id="knowledgeBaseVersionReferenceId",
+    knowledge_document_reference_id="knowledgeDocumentReferenceId",
+    knowledge_base_version_app_id="knowledgeBaseVersionAppId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledge_base_version_reference_id:** `str` — The reference ID of the knowledge base version that contains the document. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**knowledge_document_reference_id:** `str` — The reference ID of the knowledge document to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**knowledge_base_version_app_id:** `str` — The App ID of the knowledge base version.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -5317,6 +5763,345 @@ client.knowledge.delete_knowledge_document(
 </details>
 
 ## Organizations
+<details><summary><code>client.organizations.<a href="src/mavenagi/organizations/client.py">create</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new organization.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.organizations.create(
+    organization_reference_id="organizationReferenceId",
+    name="name",
+    default_language="defaultLanguage",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The reference ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` — The name of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**default_language:** `str` — The default language for the organization in ISO 639-1 code format.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.organizations.<a href="src/mavenagi/organizations/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get an organization by ID
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.organizations.get(
+    organization_reference_id="organizationReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The reference ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.organizations.<a href="src/mavenagi/organizations/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable organization fields.
+All fields will overwrite the existing value on the organization only if provided.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.organizations.patch(
+    organization_reference_id="organizationReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The reference ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — The name of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**default_language:** `typing.Optional[str]` — The default language for the organization in ISO 639-1 code format.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.organizations.<a href="src/mavenagi/organizations/client.py">delete</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete an organization.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.organizations.delete(
+    organization_reference_id="organizationReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_reference_id:** `str` — The reference ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.organizations.<a href="src/mavenagi/organizations/client.py">get_conversation_table</a>(...)</code></summary>
 <dl>
 <dd>
@@ -5440,6 +6225,18 @@ Note: The field `CreatedAt` should not be used here, all time-based grouping sho
 <dd>
 
 **conversation_filter:** `typing.Optional[ConversationFilter]` — Optional filter applied to refine the conversation data before processing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` 
+
+IANA timezone identifier (e.g., "America/Los_Angeles").
+When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+otherwise UTC is used.
     
 </dd>
 </dl>

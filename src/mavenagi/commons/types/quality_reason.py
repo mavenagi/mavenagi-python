@@ -12,6 +12,7 @@ QualityReason = typing.Union[
         "INTERRUPTED",
         "UNSUPPORTED_USER_BEHAVIOR",
         "UNKNOWN",
+        "NO_BOT_REPLIES",
     ],
     typing.Any,
 ]

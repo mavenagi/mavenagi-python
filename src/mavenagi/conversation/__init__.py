@@ -3,12 +3,15 @@
 # isort: skip_file
 
 from .types import (
+    ActionFormAttachment,
+    ActionFormRequestParamValue,
     AskObjectRequest,
     AskRequest,
     AskStreamActionEvent,
     AskStreamChartEvent,
     AskStreamEndEvent,
     AskStreamMetadataEvent,
+    AskStreamOAuthButtonEvent,
     AskStreamStartEvent,
     AskStreamTextEvent,
     CategorizationResponse,
@@ -42,6 +45,7 @@ from .types import (
     StreamResponse_Chart,
     StreamResponse_End,
     StreamResponse_Metadata,
+    StreamResponse_OauthButton,
     StreamResponse_Start,
     StreamResponse_Text,
     SubmitActionFormRequest,
@@ -49,12 +53,15 @@ from .types import (
 )
 
 __all__ = [
+    "ActionFormAttachment",
+    "ActionFormRequestParamValue",
     "AskObjectRequest",
     "AskRequest",
     "AskStreamActionEvent",
     "AskStreamChartEvent",
     "AskStreamEndEvent",
     "AskStreamMetadataEvent",
+    "AskStreamOAuthButtonEvent",
     "AskStreamStartEvent",
     "AskStreamTextEvent",
     "CategorizationResponse",
@@ -88,6 +95,7 @@ __all__ = [
     "StreamResponse_Chart",
     "StreamResponse_End",
     "StreamResponse_Metadata",
+    "StreamResponse_OauthButton",
     "StreamResponse_Start",
     "StreamResponse_Text",
     "SubmitActionFormRequest",

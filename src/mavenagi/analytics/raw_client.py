@@ -40,6 +40,7 @@ class RawAnalyticsClient:
         column_definitions: typing.Sequence[ConversationColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
         conversation_filter: typing.Optional[ConversationFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ConversationTableResponse]:
         """
@@ -61,6 +62,11 @@ class RawAnalyticsClient:
 
         conversation_filter : typing.Optional[ConversationFilter]
             Optional filter applied to refine the conversation data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -85,6 +91,7 @@ class RawAnalyticsClient:
                 "conversationFilter": convert_and_respect_annotation_metadata(
                     object_=conversation_filter, annotation=ConversationFilter, direction="write"
                 ),
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,
@@ -218,6 +225,7 @@ class RawAnalyticsClient:
         column_definitions: typing.Sequence[FeedbackColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
         feedback_filter: typing.Optional[FeedbackFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[FeedbackTableResponse]:
         """
@@ -243,6 +251,11 @@ class RawAnalyticsClient:
         feedback_filter : typing.Optional[FeedbackFilter]
             Optional filter applied to refine the feedback data before processing.
 
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -264,6 +277,7 @@ class RawAnalyticsClient:
                 "feedbackFilter": convert_and_respect_annotation_metadata(
                     object_=feedback_filter, annotation=FeedbackFilter, direction="write"
                 ),
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,
@@ -328,6 +342,7 @@ class AsyncRawAnalyticsClient:
         column_definitions: typing.Sequence[ConversationColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
         conversation_filter: typing.Optional[ConversationFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ConversationTableResponse]:
         """
@@ -349,6 +364,11 @@ class AsyncRawAnalyticsClient:
 
         conversation_filter : typing.Optional[ConversationFilter]
             Optional filter applied to refine the conversation data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -373,6 +393,7 @@ class AsyncRawAnalyticsClient:
                 "conversationFilter": convert_and_respect_annotation_metadata(
                     object_=conversation_filter, annotation=ConversationFilter, direction="write"
                 ),
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,
@@ -506,6 +527,7 @@ class AsyncRawAnalyticsClient:
         column_definitions: typing.Sequence[FeedbackColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
         feedback_filter: typing.Optional[FeedbackFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[FeedbackTableResponse]:
         """
@@ -531,6 +553,11 @@ class AsyncRawAnalyticsClient:
         feedback_filter : typing.Optional[FeedbackFilter]
             Optional filter applied to refine the feedback data before processing.
 
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -552,6 +579,7 @@ class AsyncRawAnalyticsClient:
                 "feedbackFilter": convert_and_respect_annotation_metadata(
                     object_=feedback_filter, annotation=FeedbackFilter, direction="write"
                 ),
+                "timezone": timezone,
             },
             request_options=request_options,
             omit=OMIT,

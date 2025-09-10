@@ -12,6 +12,7 @@ from ..conversation.types.conversation_filter import ConversationFilter
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawOrganizationsClient, RawOrganizationsClient
+from .types.organization import Organization
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -32,6 +33,187 @@ class OrganizationsClient:
         """
         return self._raw_client
 
+    def create(
+        self,
+        organization_reference_id: str,
+        *,
+        name: str,
+        default_language: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Organization:
+        """
+        Create a new organization.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        name : str
+            The name of the organization.
+
+        default_language : str
+            The default language for the organization in ISO 639-1 code format.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Organization
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.organizations.create(
+            organization_reference_id="organizationReferenceId",
+            name="name",
+            default_language="defaultLanguage",
+        )
+        """
+        _response = self._raw_client.create(
+            organization_reference_id, name=name, default_language=default_language, request_options=request_options
+        )
+        return _response.data
+
+    def get(
+        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> Organization:
+        """
+        Get an organization by ID
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Organization
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.organizations.get(
+            organization_reference_id="organizationReferenceId",
+        )
+        """
+        _response = self._raw_client.get(organization_reference_id, request_options=request_options)
+        return _response.data
+
+    def patch(
+        self,
+        organization_reference_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        default_language: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Organization:
+        """
+        Update mutable organization fields.
+        All fields will overwrite the existing value on the organization only if provided.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        name : typing.Optional[str]
+            The name of the organization.
+
+        default_language : typing.Optional[str]
+            The default language for the organization in ISO 639-1 code format.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Organization
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.organizations.patch(
+            organization_reference_id="organizationReferenceId",
+        )
+        """
+        _response = self._raw_client.patch(
+            organization_reference_id, name=name, default_language=default_language, request_options=request_options
+        )
+        return _response.data
+
+    def delete(
+        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> None:
+        """
+        Delete an organization.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.organizations.delete(
+            organization_reference_id="organizationReferenceId",
+        )
+        """
+        _response = self._raw_client.delete(organization_reference_id, request_options=request_options)
+        return _response.data
+
     def get_conversation_table(
         self,
         *,
@@ -39,6 +221,7 @@ class OrganizationsClient:
         column_definitions: typing.Sequence[ConversationColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
         conversation_filter: typing.Optional[ConversationFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationTableResponse:
         """
@@ -65,6 +248,11 @@ class OrganizationsClient:
 
         conversation_filter : typing.Optional[ConversationFilter]
             Optional filter applied to refine the conversation data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -127,6 +315,7 @@ class OrganizationsClient:
             column_definitions=column_definitions,
             time_grouping=time_grouping,
             conversation_filter=conversation_filter,
+            timezone=timezone,
             request_options=request_options,
         )
         return _response.data
@@ -200,6 +389,219 @@ class AsyncOrganizationsClient:
         """
         return self._raw_client
 
+    async def create(
+        self,
+        organization_reference_id: str,
+        *,
+        name: str,
+        default_language: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Organization:
+        """
+        Create a new organization.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        name : str
+            The name of the organization.
+
+        default_language : str
+            The default language for the organization in ISO 639-1 code format.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Organization
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.organizations.create(
+                organization_reference_id="organizationReferenceId",
+                name="name",
+                default_language="defaultLanguage",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create(
+            organization_reference_id, name=name, default_language=default_language, request_options=request_options
+        )
+        return _response.data
+
+    async def get(
+        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> Organization:
+        """
+        Get an organization by ID
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Organization
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.organizations.get(
+                organization_reference_id="organizationReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get(organization_reference_id, request_options=request_options)
+        return _response.data
+
+    async def patch(
+        self,
+        organization_reference_id: str,
+        *,
+        name: typing.Optional[str] = OMIT,
+        default_language: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> Organization:
+        """
+        Update mutable organization fields.
+        All fields will overwrite the existing value on the organization only if provided.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        name : typing.Optional[str]
+            The name of the organization.
+
+        default_language : typing.Optional[str]
+            The default language for the organization in ISO 639-1 code format.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        Organization
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.organizations.patch(
+                organization_reference_id="organizationReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.patch(
+            organization_reference_id, name=name, default_language=default_language, request_options=request_options
+        )
+        return _response.data
+
+    async def delete(
+        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> None:
+        """
+        Delete an organization.
+
+        <Tip>
+        This endpoint requires additional permissions. Contact support to request access.
+        </Tip>
+
+        Parameters
+        ----------
+        organization_reference_id : str
+            The reference ID of the organization.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.organizations.delete(
+                organization_reference_id="organizationReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.delete(organization_reference_id, request_options=request_options)
+        return _response.data
+
     async def get_conversation_table(
         self,
         *,
@@ -207,6 +609,7 @@ class AsyncOrganizationsClient:
         column_definitions: typing.Sequence[ConversationColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
         conversation_filter: typing.Optional[ConversationFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationTableResponse:
         """
@@ -233,6 +636,11 @@ class AsyncOrganizationsClient:
 
         conversation_filter : typing.Optional[ConversationFilter]
             Optional filter applied to refine the conversation data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -303,6 +711,7 @@ class AsyncOrganizationsClient:
             column_definitions=column_definitions,
             time_grouping=time_grouping,
             conversation_filter=conversation_filter,
+            timezone=timezone,
             request_options=request_options,
         )
         return _response.data

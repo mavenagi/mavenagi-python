@@ -3,14 +3,11 @@
 import typing
 
 import pydantic
-import typing_extensions
-from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
-from ...core.serialization import FieldMetadata
-from .base_knowledge_document import BaseKnowledgeDocument
+from .knowledge_document_search_response import KnowledgeDocumentSearchResponse
 
 
-class KnowledgeDocumentResponse(BaseKnowledgeDocument):
+class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
     """
     Examples
     --------
@@ -25,17 +22,17 @@ class KnowledgeDocumentResponse(BaseKnowledgeDocument):
             agent_id="support",
             type="KNOWLEDGE_DOCUMENT",
         ),
+        knowledge_base_version_id=EntityId(
+            reference_id="versionId",
+            app_id="maven",
+            organization_id="acme",
+            agent_id="support",
+            type="KNOWLEDGE_BASE_VERSION",
+        ),
         content="## Getting started This is a getting started guide for the help center.",
         title="Getting started",
         metadata={"category": "getting-started"},
     )
-    """
-
-    knowledge_document_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="knowledgeDocumentId")] = (
-        pydantic.Field()
-    )
-    """
-    ID that uniquely identifies this knowledge document within its knowledge base
     """
 
     content: str = pydantic.Field()

@@ -10,6 +10,7 @@ from .device_type import DeviceType
 from .event_base_no_id import EventBaseNoId
 from .event_field import EventField
 from .event_filter import EventFilter
+from .event_request import EventRequest, EventRequest_SystemEvent, EventRequest_UserEvent
 from .event_response import EventResponse, EventResponse_SystemEvent, EventResponse_UserEvent
 from .event_type import EventType
 from .events_search_request import EventsSearchRequest
@@ -18,10 +19,13 @@ from .feedback_info import FeedbackInfo
 from .geo_info import GeoInfo
 from .ip_info import IpInfo
 from .language_info import LanguageInfo
+from .novel_system_event import NovelSystemEvent
 from .novel_system_event_no_id import NovelSystemEventNoId
+from .novel_user_event import NovelUserEvent
 from .os_info import OsInfo
 from .os_type import OsType
 from .page_info import PageInfo
+from .scoped_entity import ScopedEntity
 from .session_info import SessionInfo
 from .source_info import SourceInfo
 from .source_type import SourceType
@@ -31,6 +35,7 @@ from .system_event_name import SystemEventName
 from .user_event import UserEvent
 from .user_event_name import UserEventName
 from .user_info import UserInfo
+from .user_info_base import UserInfoBase
 
 __all__ = [
     "BrowserInfo",
@@ -41,6 +46,9 @@ __all__ = [
     "EventBaseNoId",
     "EventField",
     "EventFilter",
+    "EventRequest",
+    "EventRequest_SystemEvent",
+    "EventRequest_UserEvent",
     "EventResponse",
     "EventResponse_SystemEvent",
     "EventResponse_UserEvent",
@@ -51,10 +59,13 @@ __all__ = [
     "GeoInfo",
     "IpInfo",
     "LanguageInfo",
+    "NovelSystemEvent",
     "NovelSystemEventNoId",
+    "NovelUserEvent",
     "OsInfo",
     "OsType",
     "PageInfo",
+    "ScopedEntity",
     "SessionInfo",
     "SourceInfo",
     "SourceType",
@@ -64,4 +75,5 @@ __all__ = [
     "UserEvent",
     "UserEventName",
     "UserInfo",
+    "UserInfoBase",
 ]

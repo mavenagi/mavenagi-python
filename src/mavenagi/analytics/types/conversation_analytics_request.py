@@ -17,6 +17,13 @@ class ConversationAnalyticsRequest(UniversalBaseModel):
     Optional filter applied to refine the conversation data before processing.
     """
 
+    timezone: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    IANA timezone identifier (e.g., "America/Los_Angeles").
+    When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+    otherwise UTC is used.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

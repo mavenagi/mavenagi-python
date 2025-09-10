@@ -2,4 +2,6 @@
 
 import typing
 
-Capability = typing.Union[typing.Literal["MARKDOWN", "FORMS", "IMAGES", "CHARTS_HIGHCHARTS_TS", "ASYNC"], typing.Any]
+Capability = typing.Union[
+    typing.Literal["MARKDOWN", "FORMS", "IMAGES", "CHARTS_HIGHCHARTS_TS", "ASYNC", "OAUTH_BUTTONS"], typing.Any
+]

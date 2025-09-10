@@ -5,10 +5,10 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .event_type import EventType
+from .scoped_entity import ScopedEntity
 from .system_event_name import SystemEventName
 from .user_event_name import UserEventName
 
@@ -19,7 +19,7 @@ class EventFilter(UniversalBaseModel):
     created_before: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdBefore")] = (
         None
     )
-    references: typing.Optional[typing.List[EntityId]] = None
+    references: typing.Optional[typing.List[ScopedEntity]] = None
     event_types: typing_extensions.Annotated[
         typing.Optional[typing.List[EventType]], FieldMetadata(alias="eventTypes")
     ] = None

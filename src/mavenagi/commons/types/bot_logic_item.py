@@ -8,6 +8,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .action_execution_param_value import ActionExecutionParamValue
 from .bot_logic_action_executed_detail import BotLogicActionExecutedDetail
 from .bot_logic_action_reviewed_detail import BotLogicActionReviewedDetail
 from .bot_logic_knowledge_detail import BotLogicKnowledgeDetail
@@ -56,7 +57,7 @@ class BotLogicItem_Actions(UniversalBaseModel):
 class BotLogicItem_Form(UniversalBaseModel):
     type: typing.Literal["form"] = "form"
     action_parameters: typing_extensions.Annotated[
-        typing.Dict[str, typing.Optional[typing.Any]], FieldMetadata(alias="actionParameters")
+        typing.Dict[str, ActionExecutionParamValue], FieldMetadata(alias="actionParameters")
     ]
     execution_result: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="executionResult")] = None
     execution_error: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="executionError")] = None

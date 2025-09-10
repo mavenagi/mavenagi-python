@@ -24,6 +24,7 @@ from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
+from .types.action_form_request_param_value import ActionFormRequestParamValue
 from .types.categorization_response import CategorizationResponse
 from .types.conversation_field import ConversationField
 from .types.conversation_filter import ConversationFilter
@@ -282,6 +283,7 @@ class RawConversationClient:
         conversation_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        translation_language: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ConversationResponse]:
         """
@@ -295,6 +297,9 @@ class RawConversationClient:
         app_id : typing.Optional[str]
             The App ID of the conversation to get. If not provided the ID of the calling app will be used.
 
+        translation_language : typing.Optional[str]
+            The language to translate the conversation analysis into
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -307,6 +312,7 @@ class RawConversationClient:
             method="GET",
             params={
                 "appId": app_id,
+                "translationLanguage": translation_language,
             },
             request_options=request_options,
         )
@@ -1216,7 +1222,7 @@ class RawConversationClient:
         conversation_id: str,
         *,
         action_form_id: str,
-        parameters: typing.Dict[str, typing.Optional[typing.Any]],
+        parameters: typing.Dict[str, ActionFormRequestParamValue],
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ConversationResponse]:
@@ -1230,7 +1236,7 @@ class RawConversationClient:
 
         action_form_id : str
 
-        parameters : typing.Dict[str, typing.Optional[typing.Any]]
+        parameters : typing.Dict[str, ActionFormRequestParamValue]
             Map of parameter IDs to values provided by the user. All required action fields must be provided.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
@@ -1249,7 +1255,9 @@ class RawConversationClient:
             method="POST",
             json={
                 "actionFormId": action_form_id,
-                "parameters": parameters,
+                "parameters": convert_and_respect_annotation_metadata(
+                    object_=parameters, annotation=typing.Dict[str, ActionFormRequestParamValue], direction="write"
+                ),
                 "transientData": transient_data,
             },
             request_options=request_options,
@@ -1899,6 +1907,7 @@ class AsyncRawConversationClient:
         conversation_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        translation_language: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ConversationResponse]:
         """
@@ -1912,6 +1921,9 @@ class AsyncRawConversationClient:
         app_id : typing.Optional[str]
             The App ID of the conversation to get. If not provided the ID of the calling app will be used.
 
+        translation_language : typing.Optional[str]
+            The language to translate the conversation analysis into
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -1924,6 +1936,7 @@ class AsyncRawConversationClient:
             method="GET",
             params={
                 "appId": app_id,
+                "translationLanguage": translation_language,
             },
             request_options=request_options,
         )
@@ -2833,7 +2846,7 @@ class AsyncRawConversationClient:
         conversation_id: str,
         *,
         action_form_id: str,
-        parameters: typing.Dict[str, typing.Optional[typing.Any]],
+        parameters: typing.Dict[str, ActionFormRequestParamValue],
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ConversationResponse]:
@@ -2847,7 +2860,7 @@ class AsyncRawConversationClient:
 
         action_form_id : str
 
-        parameters : typing.Dict[str, typing.Optional[typing.Any]]
+        parameters : typing.Dict[str, ActionFormRequestParamValue]
             Map of parameter IDs to values provided by the user. All required action fields must be provided.
 
         transient_data : typing.Optional[typing.Dict[str, str]]
@@ -2866,7 +2879,9 @@ class AsyncRawConversationClient:
             method="POST",
             json={
                 "actionFormId": action_form_id,
-                "parameters": parameters,
+                "parameters": convert_and_respect_annotation_metadata(
+                    object_=parameters, annotation=typing.Dict[str, ActionFormRequestParamValue], direction="write"
+                ),
                 "transientData": transient_data,
             },
             request_options=request_options,

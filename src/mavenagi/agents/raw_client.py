@@ -384,6 +384,7 @@ class RawAgentsClient:
         *,
         name: typing.Optional[str] = OMIT,
         environment: typing.Optional[AgentEnvironment] = OMIT,
+        default_timezone: typing.Optional[str] = OMIT,
         enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[Agent]:
@@ -409,6 +410,9 @@ class RawAgentsClient:
         environment : typing.Optional[AgentEnvironment]
             The environment of the agent.
 
+        default_timezone : typing.Optional[str]
+            The agent's default timezone. This is used when a timezone is not set on a conversation.
+
         enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
             The PII categories that are enabled for the agent.
 
@@ -425,6 +429,7 @@ class RawAgentsClient:
             json={
                 "name": name,
                 "environment": environment,
+                "defaultTimezone": default_timezone,
                 "enabledPiiCategories": enabled_pii_categories,
             },
             request_options=request_options,
@@ -913,6 +918,7 @@ class AsyncRawAgentsClient:
         *,
         name: typing.Optional[str] = OMIT,
         environment: typing.Optional[AgentEnvironment] = OMIT,
+        default_timezone: typing.Optional[str] = OMIT,
         enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[Agent]:
@@ -938,6 +944,9 @@ class AsyncRawAgentsClient:
         environment : typing.Optional[AgentEnvironment]
             The environment of the agent.
 
+        default_timezone : typing.Optional[str]
+            The agent's default timezone. This is used when a timezone is not set on a conversation.
+
         enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
             The PII categories that are enabled for the agent.
 
@@ -954,6 +963,7 @@ class AsyncRawAgentsClient:
             json={
                 "name": name,
                 "environment": environment,
+                "defaultTimezone": default_timezone,
                 "enabledPiiCategories": enabled_pii_categories,
             },
             request_options=request_options,

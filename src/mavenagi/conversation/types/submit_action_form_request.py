@@ -6,11 +6,12 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .action_form_request_param_value import ActionFormRequestParamValue
 
 
 class SubmitActionFormRequest(UniversalBaseModel):
     action_form_id: typing_extensions.Annotated[str, FieldMetadata(alias="actionFormId")]
-    parameters: typing.Dict[str, typing.Optional[typing.Any]] = pydantic.Field()
+    parameters: typing.Dict[str, ActionFormRequestParamValue] = pydantic.Field()
     """
     Map of parameter IDs to values provided by the user. All required action fields must be provided.
     """

@@ -4,16 +4,8 @@
 
 from .action_field import ActionField
 from .action_filter import ActionFilter
-from .action_patch_request import ActionPatchRequest
 from .action_request import ActionRequest
 from .actions_response import ActionsResponse
 from .actions_search_request import ActionsSearchRequest
 
-__all__ = [
-    "ActionField",
-    "ActionFilter",
-    "ActionPatchRequest",
-    "ActionRequest",
-    "ActionsResponse",
-    "ActionsSearchRequest",
-]
+__all__ = ["ActionField", "ActionFilter", "ActionRequest", "ActionsResponse", "ActionsSearchRequest"]

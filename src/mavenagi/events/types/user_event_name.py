@@ -2,4 +2,6 @@
 
 import typing
 
-UserEventName = typing.Union[typing.Literal["BUTTON_CLICKED", "LINK_CLICKED", "CHAT_OPENED", "CHAT_CLOSED"], typing.Any]
+UserEventName = typing.Union[
+    typing.Literal["BUTTON_CLICKED", "LINK_CLICKED", "CHAT_OPENED", "CHAT_CLOSED", "TEXT_INSERTED"], typing.Any
+]

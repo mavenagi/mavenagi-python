@@ -2,13 +2,6 @@
 
 # isort: skip_file
 
-from .types import ActionField, ActionFilter, ActionPatchRequest, ActionRequest, ActionsResponse, ActionsSearchRequest
+from .types import ActionField, ActionFilter, ActionRequest, ActionsResponse, ActionsSearchRequest
 
-__all__ = [
-    "ActionField",
-    "ActionFilter",
-    "ActionPatchRequest",
-    "ActionRequest",
-    "ActionsResponse",
-    "ActionsSearchRequest",
-]
+__all__ = ["ActionField", "ActionFilter", "ActionRequest", "ActionsResponse", "ActionsSearchRequest"]

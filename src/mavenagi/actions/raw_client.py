@@ -8,6 +8,7 @@ from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.server_error import ServerError
 from ..commons.types.action_parameter import ActionParameter
 from ..commons.types.action_response import ActionResponse
+from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
 from ..commons.types.llm_inclusion_status import LlmInclusionStatus
@@ -334,6 +335,7 @@ class RawActionsClient:
         app_id: typing.Optional[str] = OMIT,
         instructions: typing.Optional[str] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        segment_id: typing.Optional[EntityId] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ActionResponse]:
         """
@@ -356,6 +358,13 @@ class RawActionsClient:
         llm_inclusion_status : typing.Optional[LlmInclusionStatus]
             Determines whether the action is sent to the LLM as part of a conversation.
 
+        segment_id : typing.Optional[EntityId]
+            The ID of the segment that must be matched for the action to be relevant to a conversation.
+            A null value will remove the segment from the action, it will be available on all conversations.
+
+            Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -370,6 +379,12 @@ class RawActionsClient:
                 "appId": app_id,
                 "instructions": instructions,
                 "llmInclusionStatus": llm_inclusion_status,
+                "segmentId": convert_and_respect_annotation_metadata(
+                    object_=segment_id, annotation=typing.Optional[EntityId], direction="write"
+                ),
+            },
+            headers={
+                "content-type": "application/merge-patch+json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -794,6 +809,7 @@ class AsyncRawActionsClient:
         app_id: typing.Optional[str] = OMIT,
         instructions: typing.Optional[str] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        segment_id: typing.Optional[EntityId] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ActionResponse]:
         """
@@ -816,6 +832,13 @@ class AsyncRawActionsClient:
         llm_inclusion_status : typing.Optional[LlmInclusionStatus]
             Determines whether the action is sent to the LLM as part of a conversation.
 
+        segment_id : typing.Optional[EntityId]
+            The ID of the segment that must be matched for the action to be relevant to a conversation.
+            A null value will remove the segment from the action, it will be available on all conversations.
+
+            Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -830,6 +853,12 @@ class AsyncRawActionsClient:
                 "appId": app_id,
                 "instructions": instructions,
                 "llmInclusionStatus": llm_inclusion_status,
+                "segmentId": convert_and_respect_annotation_metadata(
+                    object_=segment_id, annotation=typing.Optional[EntityId], direction="write"
+                ),
+            },
+            headers={
+                "content-type": "application/merge-patch+json",
             },
             request_options=request_options,
             omit=OMIT,

@@ -6,7 +6,6 @@ from .base_knowledge_document import BaseKnowledgeDocument
 from .finalize_knowledge_base_version_request import FinalizeKnowledgeBaseVersionRequest
 from .knowledge_base_field import KnowledgeBaseField
 from .knowledge_base_filter import KnowledgeBaseFilter
-from .knowledge_base_patch_request import KnowledgeBasePatchRequest
 from .knowledge_base_properties import KnowledgeBaseProperties
 from .knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .knowledge_base_request import KnowledgeBaseRequest
@@ -15,9 +14,12 @@ from .knowledge_base_search_request import KnowledgeBaseSearchRequest
 from .knowledge_base_type import KnowledgeBaseType
 from .knowledge_base_version import KnowledgeBaseVersion
 from .knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
+from .knowledge_base_version_request import KnowledgeBaseVersionRequest
 from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 from .knowledge_base_version_type import KnowledgeBaseVersionType
+from .knowledge_base_versions_list_response import KnowledgeBaseVersionsListResponse
 from .knowledge_bases_response import KnowledgeBasesResponse
+from .knowledge_delete_request import KnowledgeDeleteRequest
 from .knowledge_document_content_type import KnowledgeDocumentContentType
 from .knowledge_document_field import KnowledgeDocumentField
 from .knowledge_document_filter import KnowledgeDocumentFilter
@@ -32,7 +34,6 @@ __all__ = [
     "FinalizeKnowledgeBaseVersionRequest",
     "KnowledgeBaseField",
     "KnowledgeBaseFilter",
-    "KnowledgeBasePatchRequest",
     "KnowledgeBaseProperties",
     "KnowledgeBaseRefreshFrequency",
     "KnowledgeBaseRequest",
@@ -41,9 +42,12 @@ __all__ = [
     "KnowledgeBaseType",
     "KnowledgeBaseVersion",
     "KnowledgeBaseVersionFinalizeStatus",
+    "KnowledgeBaseVersionRequest",
     "KnowledgeBaseVersionStatus",
     "KnowledgeBaseVersionType",
+    "KnowledgeBaseVersionsListResponse",
     "KnowledgeBasesResponse",
+    "KnowledgeDeleteRequest",
     "KnowledgeDocumentContentType",
     "KnowledgeDocumentField",
     "KnowledgeDocumentFilter",

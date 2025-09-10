@@ -45,6 +45,21 @@ class BotResponse_ActionForm(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class BotResponse_OauthButton(UniversalBaseModel):
+    type: typing.Literal["oauthButton"] = "oauthButton"
+    button_name: typing_extensions.Annotated[str, FieldMetadata(alias="buttonName")]
+    url: str
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 class BotResponse_Chart(UniversalBaseModel):
     type: typing.Literal["chart"] = "chart"
     label: str
@@ -76,4 +91,6 @@ class BotResponse_Object(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-BotResponse = typing.Union[BotResponse_Text, BotResponse_ActionForm, BotResponse_Chart, BotResponse_Object]
+BotResponse = typing.Union[
+    BotResponse_Text, BotResponse_ActionForm, BotResponse_OauthButton, BotResponse_Chart, BotResponse_Object
+]

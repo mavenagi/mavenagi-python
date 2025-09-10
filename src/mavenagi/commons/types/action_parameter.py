@@ -7,6 +7,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .action_enum_option import ActionEnumOption
+from .action_o_auth_configuration import ActionOAuthConfiguration
 from .action_parameter_type import ActionParameterType
 
 
@@ -31,6 +32,11 @@ class ActionParameter(UniversalBaseModel):
     Whether the field is required for action execution.
     """
 
+    hidden: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    When user interaction is required, whether this parameter should be excluded from forms. Hidden parameters are not displayed to users but their values are still populated by the LLM and sent to actions. Defaults to false.
+    """
+
     type: typing.Optional[ActionParameterType] = pydantic.Field(default=None)
     """
     The parameter type. Values provided to `executeAction` will conform to this type. Defaults to `STRING`.
@@ -48,6 +54,13 @@ class ActionParameter(UniversalBaseModel):
     )
     """
     JSON schema for validating the parameter value. Only valid when type is `SCHEMA`.
+    """
+
+    oauth_configuration: typing_extensions.Annotated[
+        typing.Optional[ActionOAuthConfiguration], FieldMetadata(alias="oauthConfiguration")
+    ] = pydantic.Field(default=None)
+    """
+    OAuth configuration required to start an OAuth authorization flow when this parameter's type is `OAUTH`.
     """
 
     if IS_PYDANTIC_V2:

@@ -42,6 +42,7 @@ class ConversationChartRequest_PieChart(UniversalBaseModel):
     conversation_filter: typing_extensions.Annotated[
         typing.Optional[ConversationFilter], FieldMetadata(alias="conversationFilter")
     ] = None
+    timezone: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -82,6 +83,7 @@ class ConversationChartRequest_DateHistogram(UniversalBaseModel):
     conversation_filter: typing_extensions.Annotated[
         typing.Optional[ConversationFilter], FieldMetadata(alias="conversationFilter")
     ] = None
+    timezone: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -124,6 +126,7 @@ class ConversationChartRequest_BarChart(UniversalBaseModel):
     conversation_filter: typing_extensions.Annotated[
         typing.Optional[ConversationFilter], FieldMetadata(alias="conversationFilter")
     ] = None
+    timezone: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

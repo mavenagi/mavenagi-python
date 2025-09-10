@@ -26,8 +26,8 @@ from .types.knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequenc
 from .types.knowledge_base_response import KnowledgeBaseResponse
 from .types.knowledge_base_version import KnowledgeBaseVersion
 from .types.knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
-from .types.knowledge_base_version_status import KnowledgeBaseVersionStatus
 from .types.knowledge_base_version_type import KnowledgeBaseVersionType
+from .types.knowledge_base_versions_list_response import KnowledgeBaseVersionsListResponse
 from .types.knowledge_bases_response import KnowledgeBasesResponse
 from .types.knowledge_document_content_type import KnowledgeDocumentContentType
 from .types.knowledge_document_field import KnowledgeDocumentField
@@ -327,6 +327,8 @@ class RawKnowledgeClient:
         name: typing.Optional[str] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        precondition: typing.Optional[Precondition] = OMIT,
+        segment_id: typing.Optional[EntityId] = OMIT,
         refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[KnowledgeBaseResponse]:
@@ -353,6 +355,16 @@ class RawKnowledgeClient:
         llm_inclusion_status : typing.Optional[LlmInclusionStatus]
             Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
 
+        precondition : typing.Optional[Precondition]
+            The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+
+        segment_id : typing.Optional[EntityId]
+            The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+            A null value will remove the segment from the knowledge base, it will be available on all conversations.
+
+            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
+
         refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
             How often the knowledge base should be refreshed.
 
@@ -371,7 +383,16 @@ class RawKnowledgeClient:
                 "name": name,
                 "tags": tags,
                 "llmInclusionStatus": llm_inclusion_status,
+                "precondition": convert_and_respect_annotation_metadata(
+                    object_=precondition, annotation=typing.Optional[Precondition], direction="write"
+                ),
+                "segmentId": convert_and_respect_annotation_metadata(
+                    object_=segment_id, annotation=typing.Optional[EntityId], direction="write"
+                ),
                 "refreshFrequency": refresh_frequency,
+            },
+            headers={
+                "content-type": "application/merge-patch+json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -428,10 +449,7 @@ class RawKnowledgeClient:
         self,
         knowledge_base_reference_id: str,
         *,
-        version_id: EntityId,
         type: KnowledgeBaseVersionType,
-        status: KnowledgeBaseVersionStatus,
-        error_message: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[KnowledgeBaseVersion]:
         """
@@ -444,17 +462,8 @@ class RawKnowledgeClient:
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to create a version for. All other entity ID fields are inferred from the request.
 
-        version_id : EntityId
-            The unique ID of the knowledge base version.
-
         type : KnowledgeBaseVersionType
             Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
-
-        status : KnowledgeBaseVersionStatus
-            The status of the knowledge base version
-
-        error_message : typing.Optional[str]
-            A user-facing error message that provides more details about a version failure.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -467,12 +476,7 @@ class RawKnowledgeClient:
             f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/version",
             method="POST",
             json={
-                "versionId": convert_and_respect_annotation_metadata(
-                    object_=version_id, annotation=EntityId, direction="write"
-                ),
                 "type": type,
-                "status": status,
-                "errorMessage": error_message,
             },
             request_options=request_options,
             omit=OMIT,
@@ -577,6 +581,87 @@ class RawKnowledgeClient:
                     KnowledgeBaseVersion,
                     parse_obj_as(
                         type_=KnowledgeBaseVersion,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def list_knowledge_base_versions(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[KnowledgeBaseVersionsListResponse]:
+        """
+        List all active versions for a knowledge base. Returns the most recent versions first.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to list versions for. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[KnowledgeBaseVersionsListResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/versions",
+            method="GET",
+            params={
+                "appId": app_id,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeBaseVersionsListResponse,
+                    parse_obj_as(
+                        type_=KnowledgeBaseVersionsListResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -735,10 +820,11 @@ class RawKnowledgeClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[KnowledgeDocumentResponse]:
         """
-        Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+        Create or update a knowledge document. Requires an existing knowledge base with an in progress version.
+        Will throw an exception if the latest version is not in progress.
 
         <Tip>
-        This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields
+        This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields
         have changed, a new document version will not be created. The existing version will be reused.
         </Tip>
 
@@ -857,103 +943,50 @@ class RawKnowledgeClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def update_knowledge_document(
+    def delete_knowledge_document(
         self,
         knowledge_base_reference_id: str,
+        knowledge_document_reference_id: str,
         *,
-        knowledge_document_id: EntityIdBase,
-        content_type: KnowledgeDocumentContentType,
-        content: str,
-        title: str,
-        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        url: typing.Optional[str] = OMIT,
-        language: typing.Optional[str] = OMIT,
-        created_at: typing.Optional[dt.datetime] = OMIT,
-        updated_at: typing.Optional[dt.datetime] = OMIT,
-        author: typing.Optional[str] = OMIT,
+        version_id: EntityIdWithoutAgent,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[KnowledgeDocumentResponse]:
+    ) -> HttpResponse[None]:
         """
-        Not yet implemented. Update knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+        Delete knowledge document from a specific version.
+        Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
 
         Parameters
         ----------
         knowledge_base_reference_id : str
-            The reference ID of the knowledge base that contains the document to update. All other entity ID fields are inferred from the request.
+            The reference ID of the knowledge base that contains the document to delete. All other entity ID fields are inferred from the request
 
-        knowledge_document_id : EntityIdBase
-            ID that uniquely identifies this knowledge document within its knowledge base
+        knowledge_document_reference_id : str
+            The reference ID of the knowledge document to delete. All other entity ID fields are inferred from the request.
 
-        content_type : KnowledgeDocumentContentType
-
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
-        title : str
-            The title of the document. Will be shown as part of answers.
-
-        version_id : typing.Optional[EntityIdWithoutAgent]
-            ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
-
-        metadata : typing.Optional[typing.Dict[str, str]]
-            Metadata for the knowledge document.
-
-        url : typing.Optional[str]
-            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-
-        language : typing.Optional[str]
-            The document language. Must be a valid ISO 639-1 language code.
-
-        created_at : typing.Optional[dt.datetime]
-            The time at which this document was created.
-
-        updated_at : typing.Optional[dt.datetime]
-            The time at which this document was last modified.
-
-        author : typing.Optional[str]
-            The name of the author who created this document.
+        version_id : EntityIdWithoutAgent
+            ID that uniquely identifies which knowledge base version to delete the document from.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[KnowledgeDocumentResponse]
+        HttpResponse[None]
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/document",
-            method="PUT",
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/{jsonable_encoder(knowledge_document_reference_id)}/document",
+            method="DELETE",
             json={
-                "knowledgeDocumentId": convert_and_respect_annotation_metadata(
-                    object_=knowledge_document_id, annotation=EntityIdBase, direction="write"
-                ),
                 "versionId": convert_and_respect_annotation_metadata(
                     object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
-                "contentType": content_type,
-                "content": content,
-                "metadata": metadata,
-                "title": title,
-                "url": url,
-                "language": language,
-                "createdAt": created_at,
-                "updatedAt": updated_at,
-                "author": author,
             },
             request_options=request_options,
             omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    KnowledgeDocumentResponse,
-                    parse_obj_as(
-                        type_=KnowledgeDocumentResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
+                return HttpResponse(response=_response, data=None)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),
@@ -992,39 +1025,53 @@ class RawKnowledgeClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def delete_knowledge_document(
+    def get_knowledge_document(
         self,
-        knowledge_base_reference_id: str,
+        knowledge_base_version_reference_id: str,
         knowledge_document_reference_id: str,
         *,
+        knowledge_base_version_app_id: str,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[None]:
+    ) -> HttpResponse[KnowledgeDocumentResponse]:
         """
-        Not yet implemented. Delete knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+        Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
 
         Parameters
         ----------
-        knowledge_base_reference_id : str
-            The reference ID of the knowledge base that contains the document to delete. All other entity ID fields are inferred from the request
+        knowledge_base_version_reference_id : str
+            The reference ID of the knowledge base version that contains the document. All other entity ID fields are inferred from the request.
 
         knowledge_document_reference_id : str
-            The reference ID of the knowledge document to delete. All other entity ID fields are inferred from the request.
+            The reference ID of the knowledge document to get. All other entity ID fields are inferred from the request.
+
+        knowledge_base_version_app_id : str
+            The App ID of the knowledge base version.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[None]
+        HttpResponse[KnowledgeDocumentResponse]
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/{jsonable_encoder(knowledge_document_reference_id)}/document",
-            method="DELETE",
+            f"v1/knowledge/versions/{jsonable_encoder(knowledge_base_version_reference_id)}/documents/{jsonable_encoder(knowledge_document_reference_id)}",
+            method="GET",
+            params={
+                "knowledgeBaseVersionAppId": knowledge_base_version_app_id,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
-                return HttpResponse(response=_response, data=None)
+                _data = typing.cast(
+                    KnowledgeDocumentResponse,
+                    parse_obj_as(
+                        type_=KnowledgeDocumentResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),
@@ -1352,6 +1399,8 @@ class AsyncRawKnowledgeClient:
         name: typing.Optional[str] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        precondition: typing.Optional[Precondition] = OMIT,
+        segment_id: typing.Optional[EntityId] = OMIT,
         refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[KnowledgeBaseResponse]:
@@ -1378,6 +1427,16 @@ class AsyncRawKnowledgeClient:
         llm_inclusion_status : typing.Optional[LlmInclusionStatus]
             Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
 
+        precondition : typing.Optional[Precondition]
+            The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+
+        segment_id : typing.Optional[EntityId]
+            The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+            A null value will remove the segment from the knowledge base, it will be available on all conversations.
+
+            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
+
         refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
             How often the knowledge base should be refreshed.
 
@@ -1396,7 +1455,16 @@ class AsyncRawKnowledgeClient:
                 "name": name,
                 "tags": tags,
                 "llmInclusionStatus": llm_inclusion_status,
+                "precondition": convert_and_respect_annotation_metadata(
+                    object_=precondition, annotation=typing.Optional[Precondition], direction="write"
+                ),
+                "segmentId": convert_and_respect_annotation_metadata(
+                    object_=segment_id, annotation=typing.Optional[EntityId], direction="write"
+                ),
                 "refreshFrequency": refresh_frequency,
+            },
+            headers={
+                "content-type": "application/merge-patch+json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -1453,10 +1521,7 @@ class AsyncRawKnowledgeClient:
         self,
         knowledge_base_reference_id: str,
         *,
-        version_id: EntityId,
         type: KnowledgeBaseVersionType,
-        status: KnowledgeBaseVersionStatus,
-        error_message: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[KnowledgeBaseVersion]:
         """
@@ -1469,17 +1534,8 @@ class AsyncRawKnowledgeClient:
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to create a version for. All other entity ID fields are inferred from the request.
 
-        version_id : EntityId
-            The unique ID of the knowledge base version.
-
         type : KnowledgeBaseVersionType
             Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
-
-        status : KnowledgeBaseVersionStatus
-            The status of the knowledge base version
-
-        error_message : typing.Optional[str]
-            A user-facing error message that provides more details about a version failure.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1492,12 +1548,7 @@ class AsyncRawKnowledgeClient:
             f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/version",
             method="POST",
             json={
-                "versionId": convert_and_respect_annotation_metadata(
-                    object_=version_id, annotation=EntityId, direction="write"
-                ),
                 "type": type,
-                "status": status,
-                "errorMessage": error_message,
             },
             request_options=request_options,
             omit=OMIT,
@@ -1602,6 +1653,87 @@ class AsyncRawKnowledgeClient:
                     KnowledgeBaseVersion,
                     parse_obj_as(
                         type_=KnowledgeBaseVersion,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_knowledge_base_versions(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[KnowledgeBaseVersionsListResponse]:
+        """
+        List all active versions for a knowledge base. Returns the most recent versions first.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to list versions for. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[KnowledgeBaseVersionsListResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/versions",
+            method="GET",
+            params={
+                "appId": app_id,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeBaseVersionsListResponse,
+                    parse_obj_as(
+                        type_=KnowledgeBaseVersionsListResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1760,10 +1892,11 @@ class AsyncRawKnowledgeClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[KnowledgeDocumentResponse]:
         """
-        Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+        Create or update a knowledge document. Requires an existing knowledge base with an in progress version.
+        Will throw an exception if the latest version is not in progress.
 
         <Tip>
-        This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields
+        This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields
         have changed, a new document version will not be created. The existing version will be reused.
         </Tip>
 
@@ -1882,103 +2015,50 @@ class AsyncRawKnowledgeClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def update_knowledge_document(
+    async def delete_knowledge_document(
         self,
         knowledge_base_reference_id: str,
+        knowledge_document_reference_id: str,
         *,
-        knowledge_document_id: EntityIdBase,
-        content_type: KnowledgeDocumentContentType,
-        content: str,
-        title: str,
-        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        url: typing.Optional[str] = OMIT,
-        language: typing.Optional[str] = OMIT,
-        created_at: typing.Optional[dt.datetime] = OMIT,
-        updated_at: typing.Optional[dt.datetime] = OMIT,
-        author: typing.Optional[str] = OMIT,
+        version_id: EntityIdWithoutAgent,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[KnowledgeDocumentResponse]:
+    ) -> AsyncHttpResponse[None]:
         """
-        Not yet implemented. Update knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+        Delete knowledge document from a specific version.
+        Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
 
         Parameters
         ----------
         knowledge_base_reference_id : str
-            The reference ID of the knowledge base that contains the document to update. All other entity ID fields are inferred from the request.
+            The reference ID of the knowledge base that contains the document to delete. All other entity ID fields are inferred from the request
 
-        knowledge_document_id : EntityIdBase
-            ID that uniquely identifies this knowledge document within its knowledge base
+        knowledge_document_reference_id : str
+            The reference ID of the knowledge document to delete. All other entity ID fields are inferred from the request.
 
-        content_type : KnowledgeDocumentContentType
-
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
-        title : str
-            The title of the document. Will be shown as part of answers.
-
-        version_id : typing.Optional[EntityIdWithoutAgent]
-            ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
-
-        metadata : typing.Optional[typing.Dict[str, str]]
-            Metadata for the knowledge document.
-
-        url : typing.Optional[str]
-            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-
-        language : typing.Optional[str]
-            The document language. Must be a valid ISO 639-1 language code.
-
-        created_at : typing.Optional[dt.datetime]
-            The time at which this document was created.
-
-        updated_at : typing.Optional[dt.datetime]
-            The time at which this document was last modified.
-
-        author : typing.Optional[str]
-            The name of the author who created this document.
+        version_id : EntityIdWithoutAgent
+            ID that uniquely identifies which knowledge base version to delete the document from.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[KnowledgeDocumentResponse]
+        AsyncHttpResponse[None]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/document",
-            method="PUT",
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/{jsonable_encoder(knowledge_document_reference_id)}/document",
+            method="DELETE",
             json={
-                "knowledgeDocumentId": convert_and_respect_annotation_metadata(
-                    object_=knowledge_document_id, annotation=EntityIdBase, direction="write"
-                ),
                 "versionId": convert_and_respect_annotation_metadata(
                     object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
-                "contentType": content_type,
-                "content": content,
-                "metadata": metadata,
-                "title": title,
-                "url": url,
-                "language": language,
-                "createdAt": created_at,
-                "updatedAt": updated_at,
-                "author": author,
             },
             request_options=request_options,
             omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    KnowledgeDocumentResponse,
-                    parse_obj_as(
-                        type_=KnowledgeDocumentResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
+                return AsyncHttpResponse(response=_response, data=None)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),
@@ -2017,39 +2097,53 @@ class AsyncRawKnowledgeClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def delete_knowledge_document(
+    async def get_knowledge_document(
         self,
-        knowledge_base_reference_id: str,
+        knowledge_base_version_reference_id: str,
         knowledge_document_reference_id: str,
         *,
+        knowledge_base_version_app_id: str,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[None]:
+    ) -> AsyncHttpResponse[KnowledgeDocumentResponse]:
         """
-        Not yet implemented. Delete knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+        Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
 
         Parameters
         ----------
-        knowledge_base_reference_id : str
-            The reference ID of the knowledge base that contains the document to delete. All other entity ID fields are inferred from the request
+        knowledge_base_version_reference_id : str
+            The reference ID of the knowledge base version that contains the document. All other entity ID fields are inferred from the request.
 
         knowledge_document_reference_id : str
-            The reference ID of the knowledge document to delete. All other entity ID fields are inferred from the request.
+            The reference ID of the knowledge document to get. All other entity ID fields are inferred from the request.
+
+        knowledge_base_version_app_id : str
+            The App ID of the knowledge base version.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[None]
+        AsyncHttpResponse[KnowledgeDocumentResponse]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/{jsonable_encoder(knowledge_document_reference_id)}/document",
-            method="DELETE",
+            f"v1/knowledge/versions/{jsonable_encoder(knowledge_base_version_reference_id)}/documents/{jsonable_encoder(knowledge_document_reference_id)}",
+            method="GET",
+            params={
+                "knowledgeBaseVersionAppId": knowledge_base_version_app_id,
+            },
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
-                return AsyncHttpResponse(response=_response, data=None)
+                _data = typing.cast(
+                    KnowledgeDocumentResponse,
+                    parse_obj_as(
+                        type_=KnowledgeDocumentResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),

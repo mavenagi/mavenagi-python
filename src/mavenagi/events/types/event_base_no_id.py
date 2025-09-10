@@ -5,17 +5,17 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .context_info import ContextInfo
+from .scoped_entity import ScopedEntity
 from .session_info import SessionInfo
 from .source_info import SourceInfo
 
 
 class EventBaseNoId(UniversalBaseModel):
     timestamp: typing.Optional[dt.datetime] = None
-    references: typing.Optional[typing.List[EntityId]] = None
+    references: typing.Optional[typing.List[ScopedEntity]] = None
     source_info: typing_extensions.Annotated[typing.Optional[SourceInfo], FieldMetadata(alias="sourceInfo")] = None
     session_info: typing_extensions.Annotated[typing.Optional[SessionInfo], FieldMetadata(alias="sessionInfo")] = None
     context_info: typing_extensions.Annotated[typing.Optional[ContextInfo], FieldMetadata(alias="contextInfo")] = None

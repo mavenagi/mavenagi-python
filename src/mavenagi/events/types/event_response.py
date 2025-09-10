@@ -13,6 +13,7 @@ from ...core.serialization import FieldMetadata
 from .context_info import ContextInfo
 from .feedback_info import FeedbackInfo
 from .page_info import PageInfo
+from .scoped_entity import ScopedEntity
 from .session_info import SessionInfo
 from .source_info import SourceInfo
 from .system_event_name import SystemEventName
@@ -30,7 +31,7 @@ class EventResponse_UserEvent(UniversalBaseModel):
     ] = None
     page_info: typing_extensions.Annotated[typing.Optional[PageInfo], FieldMetadata(alias="pageInfo")] = None
     timestamp: typing.Optional[dt.datetime] = None
-    references: typing.Optional[typing.List[EntityId]] = None
+    references: typing.Optional[typing.List[ScopedEntity]] = None
     source_info: typing_extensions.Annotated[typing.Optional[SourceInfo], FieldMetadata(alias="sourceInfo")] = None
     session_info: typing_extensions.Annotated[typing.Optional[SessionInfo], FieldMetadata(alias="sessionInfo")] = None
     context_info: typing_extensions.Annotated[typing.Optional[ContextInfo], FieldMetadata(alias="contextInfo")] = None
@@ -52,7 +53,7 @@ class EventResponse_SystemEvent(UniversalBaseModel):
     id: EntityId
     event_name: typing_extensions.Annotated[SystemEventName, FieldMetadata(alias="eventName")]
     timestamp: typing.Optional[dt.datetime] = None
-    references: typing.Optional[typing.List[EntityId]] = None
+    references: typing.Optional[typing.List[ScopedEntity]] = None
     source_info: typing_extensions.Annotated[typing.Optional[SourceInfo], FieldMetadata(alias="sourceInfo")] = None
     session_info: typing_extensions.Annotated[typing.Optional[SessionInfo], FieldMetadata(alias="sessionInfo")] = None
     context_info: typing_extensions.Annotated[typing.Optional[ContextInfo], FieldMetadata(alias="contextInfo")] = None

@@ -5,6 +5,7 @@ import typing
 
 import httpx
 from .actions.client import ActionsClient, AsyncActionsClient
+from .agent_capabilities.client import AgentCapabilitiesClient, AsyncAgentCapabilitiesClient
 from .agents.client import AgentsClient, AsyncAgentsClient
 from .analytics.client import AnalyticsClient, AsyncAnalyticsClient
 from .app_settings.client import AppSettingsClient, AsyncAppSettingsClient
@@ -100,6 +101,7 @@ class MavenAGI:
             timeout=_defaulted_timeout,
         )
         self.actions = ActionsClient(client_wrapper=self._client_wrapper)
+        self.agent_capabilities = AgentCapabilitiesClient(client_wrapper=self._client_wrapper)
         self.agents = AgentsClient(client_wrapper=self._client_wrapper)
         self.analytics = AnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AppSettingsClient(client_wrapper=self._client_wrapper)
@@ -193,6 +195,7 @@ class AsyncMavenAGI:
             timeout=_defaulted_timeout,
         )
         self.actions = AsyncActionsClient(client_wrapper=self._client_wrapper)
+        self.agent_capabilities = AsyncAgentCapabilitiesClient(client_wrapper=self._client_wrapper)
         self.agents = AsyncAgentsClient(client_wrapper=self._client_wrapper)
         self.analytics = AsyncAnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AsyncAppSettingsClient(client_wrapper=self._client_wrapper)
