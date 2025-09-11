@@ -3,15 +3,15 @@
 import typing
 
 import pydantic
-from ...commons.types.base_paginated_request import BasePaginatedRequest
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
-from .event_field import EventField
-from .event_filter import EventFilter
+from .entity_id_filter import EntityIdFilter
 
 
-class EventsSearchRequest(BasePaginatedRequest):
-    sort: typing.Optional[EventField] = None
-    filter: typing.Optional[EventFilter] = None
+class EntityResult(EntityIdFilter):
+    name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Human-readable name for the referenced entity (e.g., action name or document title).
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

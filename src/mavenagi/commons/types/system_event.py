@@ -3,12 +3,16 @@
 import typing
 
 import pydantic
-from ...commons.types.entity_id_base import EntityIdBase
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from .entity_id import EntityId
+from .novel_system_event_no_id import NovelSystemEventNoId
 
 
-class UserInfoBase(UniversalBaseModel):
-    id: EntityIdBase
+class SystemEvent(NovelSystemEventNoId):
+    id: EntityId = pydantic.Field()
+    """
+    The unique ID of the event
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

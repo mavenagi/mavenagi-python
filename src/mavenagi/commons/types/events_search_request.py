@@ -3,16 +3,15 @@
 import typing
 
 import pydantic
-from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
-from .novel_system_event_no_id import NovelSystemEventNoId
+from .base_paginated_request import BasePaginatedRequest
+from .event_field import EventField
+from .event_filter import EventFilter
 
 
-class SystemEvent(NovelSystemEventNoId):
-    id: EntityId = pydantic.Field()
-    """
-    The unique ID of the event
-    """
+class EventsSearchRequest(BasePaginatedRequest):
+    sort: typing.Optional[EventField] = None
+    filter: typing.Optional[EventFilter] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

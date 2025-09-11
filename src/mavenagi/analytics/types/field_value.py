@@ -93,6 +93,7 @@ class FieldValue_Boolean(UniversalBaseModel):
 
 class FieldValue_EntityId(UniversalBaseModel):
     type: typing.Literal["entityId"] = "entityId"
+    name: typing.Optional[str] = None
     reference_id: typing_extensions.Annotated[str, FieldMetadata(alias="referenceId")]
     app_id: typing_extensions.Annotated[str, FieldMetadata(alias="appId")]
 

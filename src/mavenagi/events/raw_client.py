@@ -7,17 +7,17 @@ from ..commons.errors.bad_request_error import BadRequestError
 from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.server_error import ServerError
 from ..commons.types.error_message import ErrorMessage
+from ..commons.types.event_field import EventField
+from ..commons.types.event_filter import EventFilter
+from ..commons.types.event_request import EventRequest
+from ..commons.types.event_response import EventResponse
+from ..commons.types.events_search_response import EventsSearchResponse
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
-from .types.event_field import EventField
-from .types.event_filter import EventFilter
-from .types.event_request import EventRequest
-from .types.event_response import EventResponse
-from .types.events_search_response import EventsSearchResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)

@@ -3,12 +3,16 @@
 import typing
 
 import pydantic
-from ...commons.types.entity_id import EntityId
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from .event_response import EventResponse
+from .page import Page
 
 
-class UserInfo(UniversalBaseModel):
-    id: typing.Optional[EntityId] = None
+class EventsSearchResponse(Page):
+    events: typing.List[EventResponse] = pydantic.Field()
+    """
+    The list of events
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

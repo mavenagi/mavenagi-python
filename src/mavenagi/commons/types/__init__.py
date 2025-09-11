@@ -61,8 +61,11 @@ from .bot_response import (
 )
 from .bot_response_metadata import BotResponseMetadata
 from .bot_text_response import BotTextResponse
+from .browser_info import BrowserInfo
+from .browser_type import BrowserType
 from .capability import Capability
 from .chart_spec_schema import ChartSpecSchema
+from .context_info import ContextInfo
 from .conversation_analysis import ConversationAnalysis
 from .conversation_executed_action_precondition import ConversationExecutedActionPrecondition
 from .conversation_information import ConversationInformation
@@ -83,16 +86,31 @@ from .conversation_precondition import (
 from .conversation_preview import ConversationPreview
 from .conversation_response import ConversationResponse
 from .conversation_summary import ConversationSummary
+from .device_info import DeviceInfo
+from .device_type import DeviceType
 from .document_information import DocumentInformation
 from .entity_id import EntityId
 from .entity_id_base import EntityIdBase
 from .entity_id_filter import EntityIdFilter
 from .entity_id_without_agent import EntityIdWithoutAgent
+from .entity_result import EntityResult
 from .entity_type import EntityType
 from .error_message import ErrorMessage
+from .event_base_no_id import EventBaseNoId
+from .event_field import EventField
+from .event_filter import EventFilter
+from .event_request import EventRequest, EventRequest_SystemEvent, EventRequest_UserEvent
+from .event_response import EventResponse, EventResponse_SystemEvent, EventResponse_UserEvent
+from .event_type import EventType
+from .event_user_info import EventUserInfo
+from .event_user_info_base import EventUserInfoBase
+from .events_search_request import EventsSearchRequest
+from .events_search_response import EventsSearchResponse
 from .feedback import Feedback
 from .feedback_base import FeedbackBase
+from .feedback_info import FeedbackInfo
 from .feedback_type import FeedbackType
+from .geo_info import GeoInfo
 from .inbox_item import InboxItem, InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge
 from .inbox_item_base import InboxItemBase
 from .inbox_item_duplicate_documents import InboxItemDuplicateDocuments
@@ -104,11 +122,19 @@ from .inbox_item_missing_knowledge import InboxItemMissingKnowledge
 from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
 from .inbox_item_type import InboxItemType
+from .ip_info import IpInfo
+from .language_info import LanguageInfo
 from .llm_inclusion_status import LlmInclusionStatus
 from .message_status import MessageStatus
 from .metadata_precondition import MetadataPrecondition
+from .novel_system_event import NovelSystemEvent
+from .novel_system_event_no_id import NovelSystemEventNoId
+from .novel_user_event import NovelUserEvent
 from .number_range import NumberRange
+from .os_info import OsInfo
+from .os_type import OsType
 from .page import Page
+from .page_info import PageInfo
 from .precondition import Precondition, Precondition_Conversation, Precondition_Group, Precondition_User
 from .precondition_base import PreconditionBase
 from .precondition_group import PreconditionGroup
@@ -119,11 +145,20 @@ from .quality_reason import QualityReason
 from .response_config import ResponseConfig
 from .response_config_precondition import ResponseConfigPrecondition
 from .response_length import ResponseLength
+from .scoped_entity import ScopedEntity
 from .sentiment import Sentiment
+from .session_info import SessionInfo
 from .source import Source
+from .source_info import SourceInfo
+from .source_type import SourceType
+from .survey_info import SurveyInfo
+from .system_event import SystemEvent
+from .system_event_name import SystemEventName
 from .tags_precondition import TagsPrecondition
 from .user_conversation_message_type import UserConversationMessageType
 from .user_data import UserData
+from .user_event import UserEvent
+from .user_event_name import UserEventName
 from .user_message import UserMessage
 from .user_message_base import UserMessageBase
 from .user_message_response_state import UserMessageResponseState
@@ -183,8 +218,11 @@ __all__ = [
     "BotResponse_Object",
     "BotResponse_Text",
     "BotTextResponse",
+    "BrowserInfo",
+    "BrowserType",
     "Capability",
     "ChartSpecSchema",
+    "ContextInfo",
     "ConversationAnalysis",
     "ConversationExecutedActionPrecondition",
     "ConversationInformation",
@@ -201,16 +239,35 @@ __all__ = [
     "ConversationPreview",
     "ConversationResponse",
     "ConversationSummary",
+    "DeviceInfo",
+    "DeviceType",
     "DocumentInformation",
     "EntityId",
     "EntityIdBase",
     "EntityIdFilter",
     "EntityIdWithoutAgent",
+    "EntityResult",
     "EntityType",
     "ErrorMessage",
+    "EventBaseNoId",
+    "EventField",
+    "EventFilter",
+    "EventRequest",
+    "EventRequest_SystemEvent",
+    "EventRequest_UserEvent",
+    "EventResponse",
+    "EventResponse_SystemEvent",
+    "EventResponse_UserEvent",
+    "EventType",
+    "EventUserInfo",
+    "EventUserInfoBase",
+    "EventsSearchRequest",
+    "EventsSearchResponse",
     "Feedback",
     "FeedbackBase",
+    "FeedbackInfo",
     "FeedbackType",
+    "GeoInfo",
     "InboxItem",
     "InboxItemBase",
     "InboxItemDuplicateDocuments",
@@ -226,11 +283,19 @@ __all__ = [
     "InboxItemType",
     "InboxItem_DuplicateDocuments",
     "InboxItem_MissingKnowledge",
+    "IpInfo",
+    "LanguageInfo",
     "LlmInclusionStatus",
     "MessageStatus",
     "MetadataPrecondition",
+    "NovelSystemEvent",
+    "NovelSystemEventNoId",
+    "NovelUserEvent",
     "NumberRange",
+    "OsInfo",
+    "OsType",
     "Page",
+    "PageInfo",
     "Precondition",
     "PreconditionBase",
     "PreconditionGroup",
@@ -244,11 +309,20 @@ __all__ = [
     "ResponseConfig",
     "ResponseConfigPrecondition",
     "ResponseLength",
+    "ScopedEntity",
     "Sentiment",
+    "SessionInfo",
     "Source",
+    "SourceInfo",
+    "SourceType",
+    "SurveyInfo",
+    "SystemEvent",
+    "SystemEventName",
     "TagsPrecondition",
     "UserConversationMessageType",
     "UserData",
+    "UserEvent",
+    "UserEventName",
     "UserMessage",
     "UserMessageBase",
     "UserMessageResponseState",

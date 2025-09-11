@@ -4,18 +4,18 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...commons.types.entity_id_base import EntityIdBase
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .entity_id import EntityId
 from .event_base_no_id import EventBaseNoId
+from .event_user_info import EventUserInfo
 from .feedback_info import FeedbackInfo
 from .page_info import PageInfo
 from .user_event_name import UserEventName
-from .user_info_base import UserInfoBase
 
 
-class NovelUserEvent(EventBaseNoId):
-    id: EntityIdBase = pydantic.Field()
+class UserEvent(EventBaseNoId):
+    id: EntityId = pydantic.Field()
     """
     The unique ID of the event
     """
@@ -25,7 +25,7 @@ class NovelUserEvent(EventBaseNoId):
     The name of the event
     """
 
-    user_info: typing_extensions.Annotated[UserInfoBase, FieldMetadata(alias="userInfo")] = pydantic.Field()
+    user_info: typing_extensions.Annotated[EventUserInfo, FieldMetadata(alias="userInfo")] = pydantic.Field()
     """
     Information about the user who triggered the event
     """

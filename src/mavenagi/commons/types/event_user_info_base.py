@@ -3,15 +3,12 @@
 import typing
 
 import pydantic
-import typing_extensions
-from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from ...core.serialization import FieldMetadata
+from .entity_id_base import EntityIdBase
 
 
-class ScopedEntity(UniversalBaseModel):
-    entity_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="entityId")]
-    scope_entity_id: typing_extensions.Annotated[typing.Optional[EntityId], FieldMetadata(alias="scopeEntityId")] = None
+class EventUserInfoBase(UniversalBaseModel):
+    id: EntityIdBase
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

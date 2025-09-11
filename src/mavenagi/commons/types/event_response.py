@@ -7,10 +7,11 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .context_info import ContextInfo
+from .entity_id import EntityId
+from .event_user_info import EventUserInfo
 from .feedback_info import FeedbackInfo
 from .page_info import PageInfo
 from .scoped_entity import ScopedEntity
@@ -18,14 +19,13 @@ from .session_info import SessionInfo
 from .source_info import SourceInfo
 from .system_event_name import SystemEventName
 from .user_event_name import UserEventName
-from .user_info import UserInfo
 
 
 class EventResponse_UserEvent(UniversalBaseModel):
     event_type: typing_extensions.Annotated[typing.Literal["userEvent"], FieldMetadata(alias="eventType")] = "userEvent"
     id: EntityId
     event_name: typing_extensions.Annotated[UserEventName, FieldMetadata(alias="eventName")]
-    user_info: typing_extensions.Annotated[UserInfo, FieldMetadata(alias="userInfo")]
+    user_info: typing_extensions.Annotated[EventUserInfo, FieldMetadata(alias="userInfo")]
     feedback_info: typing_extensions.Annotated[
         typing.Optional[typing.List[FeedbackInfo]], FieldMetadata(alias="feedbackInfo")
     ] = None

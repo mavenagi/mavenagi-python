@@ -3,7 +3,9 @@
 import typing
 
 import pydantic
+import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.serialization import FieldMetadata
 
 
 class AgentUserFilter(UniversalBaseModel):
@@ -16,6 +18,14 @@ class AgentUserFilter(UniversalBaseModel):
     identifiers: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
     Filter by identifiers
+    """
+
+    is_anonymous: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="isAnonymous")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Filter by anonymous users. When true, only anonymous users are returned.
+    When false, only non-anonymous users are returned. An anonymous user is one without any identifiers or name data.
     """
 
     if IS_PYDANTIC_V2:

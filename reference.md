@@ -3997,8 +3997,11 @@ Create a new event
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-from mavenagi.events import EventRequest_UserEvent, UserInfoBase
+from mavenagi.commons import (
+    EntityIdBase,
+    EventRequest_UserEvent,
+    EventUserInfoBase,
+)
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -4012,7 +4015,7 @@ client.events.create(
             reference_id="referenceId",
         ),
         event_name="BUTTON_CLICKED",
-        user_info=UserInfoBase(
+        user_info=EventUserInfoBase(
             id=EntityIdBase(
                 reference_id="referenceId",
             ),

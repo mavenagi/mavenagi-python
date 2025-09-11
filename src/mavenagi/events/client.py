@@ -2,14 +2,14 @@
 
 import typing
 
+from ..commons.types.event_field import EventField
+from ..commons.types.event_filter import EventFilter
+from ..commons.types.event_request import EventRequest
+from ..commons.types.event_response import EventResponse
+from ..commons.types.events_search_response import EventsSearchResponse
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawEventsClient, RawEventsClient
-from .types.event_field import EventField
-from .types.event_filter import EventFilter
-from .types.event_request import EventRequest
-from .types.event_response import EventResponse
-from .types.events_search_response import EventsSearchResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -51,8 +51,11 @@ class EventsClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase
-        from mavenagi.events import EventRequest_UserEvent, UserInfoBase
+        from mavenagi.commons import (
+            EntityIdBase,
+            EventRequest_UserEvent,
+            EventUserInfoBase,
+        )
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -66,7 +69,7 @@ class EventsClient:
                     reference_id="referenceId",
                 ),
                 event_name="BUTTON_CLICKED",
-                user_info=UserInfoBase(
+                user_info=EventUserInfoBase(
                     id=EntityIdBase(
                         reference_id="referenceId",
                     ),
@@ -168,8 +171,11 @@ class AsyncEventsClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase
-        from mavenagi.events import EventRequest_UserEvent, UserInfoBase
+        from mavenagi.commons import (
+            EntityIdBase,
+            EventRequest_UserEvent,
+            EventUserInfoBase,
+        )
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -186,7 +192,7 @@ class AsyncEventsClient:
                         reference_id="referenceId",
                     ),
                     event_name="BUTTON_CLICKED",
-                    user_info=UserInfoBase(
+                    user_info=EventUserInfoBase(
                         id=EntityIdBase(
                             reference_id="referenceId",
                         ),

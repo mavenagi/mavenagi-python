@@ -29,6 +29,9 @@ class EventFilter(UniversalBaseModel):
     system_event_names: typing_extensions.Annotated[
         typing.Optional[typing.List[SystemEventName]], FieldMetadata(alias="systemEventNames")
     ] = None
+    agent_user_ids: typing_extensions.Annotated[
+        typing.Optional[typing.List[str]], FieldMetadata(alias="agentUserIds")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

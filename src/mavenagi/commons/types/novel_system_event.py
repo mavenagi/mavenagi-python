@@ -3,15 +3,15 @@
 import typing
 
 import pydantic
-from ...commons.types.page import Page
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
-from .event_response import EventResponse
+from .entity_id_base import EntityIdBase
+from .novel_system_event_no_id import NovelSystemEventNoId
 
 
-class EventsSearchResponse(Page):
-    events: typing.List[EventResponse] = pydantic.Field()
+class NovelSystemEvent(NovelSystemEventNoId):
+    id: EntityIdBase = pydantic.Field()
     """
-    The list of events
+    The unique ID of the event
     """
 
     if IS_PYDANTIC_V2:
