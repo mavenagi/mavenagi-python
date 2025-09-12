@@ -6,7 +6,10 @@ from ..conversation.types.conversation_filter import ConversationFilter
 from ..conversation.types.feedback_filter import FeedbackFilter
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
+from ..users.types.agent_user_filter import AgentUserFilter
 from .raw_client import AsyncRawAnalyticsClient, RawAnalyticsClient
+from .types.agent_user_column_definition import AgentUserColumnDefinition
+from .types.agent_user_table_response import AgentUserTableResponse
 from .types.chart_response import ChartResponse
 from .types.conversation_chart_request import ConversationChartRequest
 from .types.conversation_column_definition import ConversationColumnDefinition
@@ -268,6 +271,76 @@ class AnalyticsClient:
             column_definitions=column_definitions,
             time_grouping=time_grouping,
             feedback_filter=feedback_filter,
+            timezone=timezone,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def get_agent_user_table(
+        self,
+        *,
+        column_definitions: typing.Sequence[AgentUserColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        agent_user_filter: typing.Optional[AgentUserFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AgentUserTableResponse:
+        """
+        Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+
+        Parameters
+        ----------
+        column_definitions : typing.Sequence[AgentUserColumnDefinition]
+            Specifies the metrics to be displayed as columns.
+            Only the `count` metric is supported for agent user tables, so each table will have a single column definition using `count`.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+             Example: If set to "DAY," data will be aggregated by day.
+
+        agent_user_filter : typing.Optional[AgentUserFilter]
+            Optional filter applied to refine the agent user data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AgentUserTableResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.analytics import AgentUserColumnDefinition, AgentUserMetric_Count
+        from mavenagi.users import AgentUserFilter
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.analytics.get_agent_user_table(
+            agent_user_filter=AgentUserFilter(
+                search="john",
+            ),
+            column_definitions=[
+                AgentUserColumnDefinition(
+                    header="user_count",
+                    metric=AgentUserMetric_Count(),
+                )
+            ],
+        )
+        """
+        _response = self._raw_client.get_agent_user_table(
+            column_definitions=column_definitions,
+            time_grouping=time_grouping,
+            agent_user_filter=agent_user_filter,
             timezone=timezone,
             request_options=request_options,
         )
@@ -545,6 +618,84 @@ class AsyncAnalyticsClient:
             column_definitions=column_definitions,
             time_grouping=time_grouping,
             feedback_filter=feedback_filter,
+            timezone=timezone,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def get_agent_user_table(
+        self,
+        *,
+        column_definitions: typing.Sequence[AgentUserColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        agent_user_filter: typing.Optional[AgentUserFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AgentUserTableResponse:
+        """
+        Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+
+        Parameters
+        ----------
+        column_definitions : typing.Sequence[AgentUserColumnDefinition]
+            Specifies the metrics to be displayed as columns.
+            Only the `count` metric is supported for agent user tables, so each table will have a single column definition using `count`.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+             Example: If set to "DAY," data will be aggregated by day.
+
+        agent_user_filter : typing.Optional[AgentUserFilter]
+            Optional filter applied to refine the agent user data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AgentUserTableResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.analytics import AgentUserColumnDefinition, AgentUserMetric_Count
+        from mavenagi.users import AgentUserFilter
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.analytics.get_agent_user_table(
+                agent_user_filter=AgentUserFilter(
+                    search="john",
+                ),
+                column_definitions=[
+                    AgentUserColumnDefinition(
+                        header="user_count",
+                        metric=AgentUserMetric_Count(),
+                    )
+                ],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_agent_user_table(
+            column_definitions=column_definitions,
+            time_grouping=time_grouping,
+            agent_user_filter=agent_user_filter,
             timezone=timezone,
             request_options=request_options,
         )

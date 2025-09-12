@@ -2,6 +2,13 @@
 
 # isort: skip_file
 
+from .agent_user_analytics_request import AgentUserAnalyticsRequest
+from .agent_user_column_definition import AgentUserColumnDefinition
+from .agent_user_count import AgentUserCount
+from .agent_user_metric import AgentUserMetric, AgentUserMetric_Count
+from .agent_user_row import AgentUserRow
+from .agent_user_table_request import AgentUserTableRequest
+from .agent_user_table_response import AgentUserTableResponse
 from .bar_chart_response import BarChartResponse
 from .cell_data import CellData, CellData_Double, CellData_Long, CellData_Millisecond, CellData_String
 from .chart_response import ChartResponse, ChartResponse_BarChart, ChartResponse_DateHistogram, ChartResponse_PieChart
@@ -74,6 +81,14 @@ from .time_interval import TimeInterval
 from .time_series import TimeSeries
 
 __all__ = [
+    "AgentUserAnalyticsRequest",
+    "AgentUserColumnDefinition",
+    "AgentUserCount",
+    "AgentUserMetric",
+    "AgentUserMetric_Count",
+    "AgentUserRow",
+    "AgentUserTableRequest",
+    "AgentUserTableResponse",
     "BarChartResponse",
     "CellData",
     "CellData_Double",

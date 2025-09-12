@@ -7,7 +7,7 @@ from .action_enum_option import ActionEnumOption
 from .action_execution_param_value import (
     ActionExecutionParamValue,
     ActionExecutionParamValue_Attachment,
-    ActionExecutionParamValue_Raw,
+    ActionExecutionParamValue_Primitive,
 )
 from .action_form_field import ActionFormField
 from .action_o_auth_configuration import ActionOAuthConfiguration
@@ -169,7 +169,7 @@ __all__ = [
     "ActionEnumOption",
     "ActionExecutionParamValue",
     "ActionExecutionParamValue_Attachment",
-    "ActionExecutionParamValue_Raw",
+    "ActionExecutionParamValue_Primitive",
     "ActionFormField",
     "ActionOAuthConfiguration",
     "ActionParameter",

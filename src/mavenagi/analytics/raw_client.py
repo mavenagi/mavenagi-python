@@ -15,6 +15,9 @@ from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
+from ..users.types.agent_user_filter import AgentUserFilter
+from .types.agent_user_column_definition import AgentUserColumnDefinition
+from .types.agent_user_table_response import AgentUserTableResponse
 from .types.chart_response import ChartResponse
 from .types.conversation_chart_request import ConversationChartRequest
 from .types.conversation_column_definition import ConversationColumnDefinition
@@ -330,6 +333,107 @@ class RawAnalyticsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def get_agent_user_table(
+        self,
+        *,
+        column_definitions: typing.Sequence[AgentUserColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        agent_user_filter: typing.Optional[AgentUserFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[AgentUserTableResponse]:
+        """
+        Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+
+        Parameters
+        ----------
+        column_definitions : typing.Sequence[AgentUserColumnDefinition]
+            Specifies the metrics to be displayed as columns.
+            Only the `count` metric is supported for agent user tables, so each table will have a single column definition using `count`.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+             Example: If set to "DAY," data will be aggregated by day.
+
+        agent_user_filter : typing.Optional[AgentUserFilter]
+            Optional filter applied to refine the agent user data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[AgentUserTableResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/tables/agent-users",
+            method="POST",
+            json={
+                "timeGrouping": time_grouping,
+                "columnDefinitions": convert_and_respect_annotation_metadata(
+                    object_=column_definitions, annotation=typing.Sequence[AgentUserColumnDefinition], direction="write"
+                ),
+                "agentUserFilter": convert_and_respect_annotation_metadata(
+                    object_=agent_user_filter, annotation=AgentUserFilter, direction="write"
+                ),
+                "timezone": timezone,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    AgentUserTableResponse,
+                    parse_obj_as(
+                        type_=AgentUserTableResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawAnalyticsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -590,6 +694,107 @@ class AsyncRawAnalyticsClient:
                     FeedbackTableResponse,
                     parse_obj_as(
                         type_=FeedbackTableResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_agent_user_table(
+        self,
+        *,
+        column_definitions: typing.Sequence[AgentUserColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        agent_user_filter: typing.Optional[AgentUserFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[AgentUserTableResponse]:
+        """
+        Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+
+        Parameters
+        ----------
+        column_definitions : typing.Sequence[AgentUserColumnDefinition]
+            Specifies the metrics to be displayed as columns.
+            Only the `count` metric is supported for agent user tables, so each table will have a single column definition using `count`.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+             Example: If set to "DAY," data will be aggregated by day.
+
+        agent_user_filter : typing.Optional[AgentUserFilter]
+            Optional filter applied to refine the agent user data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[AgentUserTableResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/tables/agent-users",
+            method="POST",
+            json={
+                "timeGrouping": time_grouping,
+                "columnDefinitions": convert_and_respect_annotation_metadata(
+                    object_=column_definitions, annotation=typing.Sequence[AgentUserColumnDefinition], direction="write"
+                ),
+                "agentUserFilter": convert_and_respect_annotation_metadata(
+                    object_=agent_user_filter, annotation=AgentUserFilter, direction="write"
+                ),
+                "timezone": timezone,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    AgentUserTableResponse,
+                    parse_obj_as(
+                        type_=AgentUserTableResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

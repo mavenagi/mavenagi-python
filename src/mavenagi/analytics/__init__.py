@@ -3,6 +3,14 @@
 # isort: skip_file
 
 from .types import (
+    AgentUserAnalyticsRequest,
+    AgentUserColumnDefinition,
+    AgentUserCount,
+    AgentUserMetric,
+    AgentUserMetric_Count,
+    AgentUserRow,
+    AgentUserTableRequest,
+    AgentUserTableResponse,
     BarChartResponse,
     CellData,
     CellData_Double,
@@ -79,6 +87,14 @@ from .types import (
 )
 
 __all__ = [
+    "AgentUserAnalyticsRequest",
+    "AgentUserColumnDefinition",
+    "AgentUserCount",
+    "AgentUserMetric",
+    "AgentUserMetric_Count",
+    "AgentUserRow",
+    "AgentUserTableRequest",
+    "AgentUserTableResponse",
     "BarChartResponse",
     "CellData",
     "CellData_Double",

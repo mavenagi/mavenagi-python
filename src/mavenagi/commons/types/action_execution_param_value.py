@@ -11,9 +11,9 @@ from ...core.serialization import FieldMetadata
 from .attachment_status import AttachmentStatus
 
 
-class ActionExecutionParamValue_Raw(UniversalBaseModel):
+class ActionExecutionParamValue_Primitive(UniversalBaseModel):
     value: typing.Optional[typing.Any] = None
-    value_type: typing_extensions.Annotated[typing.Literal["raw"], FieldMetadata(alias="valueType")] = "raw"
+    value_type: typing_extensions.Annotated[typing.Literal["primitive"], FieldMetadata(alias="valueType")] = "primitive"
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(frozen=True)  # type: ignore # Pydantic v2
@@ -44,4 +44,4 @@ class ActionExecutionParamValue_Attachment(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-ActionExecutionParamValue = typing.Union[ActionExecutionParamValue_Raw, ActionExecutionParamValue_Attachment]
+ActionExecutionParamValue = typing.Union[ActionExecutionParamValue_Primitive, ActionExecutionParamValue_Attachment]

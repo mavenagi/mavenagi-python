@@ -1761,6 +1761,123 @@ otherwise UTC is used.
 </dl>
 </details>
 
+<details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_agent_user_table</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import AgentUserColumnDefinition, AgentUserMetric_Count
+from mavenagi.users import AgentUserFilter
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.analytics.get_agent_user_table(
+    agent_user_filter=AgentUserFilter(
+        search="john",
+    ),
+    column_definitions=[
+        AgentUserColumnDefinition(
+            header="user_count",
+            metric=AgentUserMetric_Count(),
+        )
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**column_definitions:** `typing.Sequence[AgentUserColumnDefinition]` 
+
+Specifies the metrics to be displayed as columns.
+Only the `count` metric is supported for agent user tables, so each table will have a single column definition using `count`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**time_grouping:** `typing.Optional[TimeInterval]` 
+
+Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+ Example: If set to "DAY," data will be aggregated by day.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agent_user_filter:** `typing.Optional[AgentUserFilter]` — Optional filter applied to refine the agent user data before processing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` 
+
+IANA timezone identifier (e.g., "America/Los_Angeles").
+When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+otherwise UTC is used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## AppSettings
 <details><summary><code>client.app_settings.<a href="src/mavenagi/app_settings/client.py">search</a>(...)</code></summary>
 <dl>
