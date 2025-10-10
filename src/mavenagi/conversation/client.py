@@ -9,6 +9,7 @@ from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.feedback import Feedback
 from ..commons.types.feedback_type import FeedbackType
 from ..commons.types.response_config import ResponseConfig
+from ..commons.types.simulation_context import SimulationContext
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawConversationClient, RawConversationClient
@@ -48,6 +49,7 @@ class ConversationClient:
         *,
         conversation_id: EntityIdBase,
         messages: typing.Sequence[ConversationMessageRequest],
+        simulation_context: typing.Optional[SimulationContext] = OMIT,
         response_config: typing.Optional[ResponseConfig] = OMIT,
         subject: typing.Optional[str] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -74,6 +76,11 @@ class ConversationClient:
 
         messages : typing.Sequence[ConversationMessageRequest]
             The messages in the conversation
+
+        simulation_context : typing.Optional[SimulationContext]
+            Additional context used for simulation runs. When provided, this conversation will be treated as a simulation and
+            may only be created by apps with the appropriate permission. Simulation conversations are excluded from normal
+            search results unless explicitly included via the `simulationFilter` field.
 
         response_config : typing.Optional[ResponseConfig]
             Optional configurations for responses to this conversation
@@ -147,6 +154,7 @@ class ConversationClient:
         _response = self._raw_client.initialize(
             conversation_id=conversation_id,
             messages=messages,
+            simulation_context=simulation_context,
             response_config=response_config,
             subject=subject,
             url=url,
@@ -283,6 +291,9 @@ class ConversationClient:
         Wipes a conversation of all user data.
         The conversation ID will still exist and non-user specific data will still be retained.
         Attempts to modify or add messages to the conversation will throw an error.
+
+        Simulation conversations will no longer be visible in search results nor metrics.
+        Non-simulation conversations will remain visible - they can not be fully removed from the system.
 
         <Warning>This is a destructive operation and cannot be undone. <br/><br/>
         The exact fields cleared include: the conversation subject, userRequest, agentResponse.
@@ -592,60 +603,6 @@ class ConversationClient:
             request_options=request_options,
         ) as r:
             yield from r.data
-
-    def generate_maven_suggestions(
-        self,
-        conversation_id: str,
-        *,
-        conversation_message_ids: typing.Sequence[EntityIdBase],
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> ConversationResponse:
-        """
-        This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
-
-        Parameters
-        ----------
-        conversation_id : str
-            The ID of a conversation the messages belong to
-
-        conversation_message_ids : typing.Sequence[EntityIdBase]
-            The message ids to generate a suggested response for. One suggestion will be generated for each message id.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        ConversationResponse
-            Updated Conversation with new BOT_SUGGESTION messages as requested
-
-        Examples
-        --------
-        from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase
-
-        client = MavenAGI(
-            organization_id="YOUR_ORGANIZATION_ID",
-            agent_id="YOUR_AGENT_ID",
-            app_id="YOUR_APP_ID",
-            app_secret="YOUR_APP_SECRET",
-        )
-        client.conversation.generate_maven_suggestions(
-            conversation_id="conversationId",
-            conversation_message_ids=[
-                EntityIdBase(
-                    reference_id="referenceId",
-                ),
-                EntityIdBase(
-                    reference_id="referenceId",
-                ),
-            ],
-        )
-        """
-        _response = self._raw_client.generate_maven_suggestions(
-            conversation_id, conversation_message_ids=conversation_message_ids, request_options=request_options
-        )
-        return _response.data
 
     def ask_object_stream(
         self,
@@ -1157,6 +1114,7 @@ class AsyncConversationClient:
         *,
         conversation_id: EntityIdBase,
         messages: typing.Sequence[ConversationMessageRequest],
+        simulation_context: typing.Optional[SimulationContext] = OMIT,
         response_config: typing.Optional[ResponseConfig] = OMIT,
         subject: typing.Optional[str] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -1183,6 +1141,11 @@ class AsyncConversationClient:
 
         messages : typing.Sequence[ConversationMessageRequest]
             The messages in the conversation
+
+        simulation_context : typing.Optional[SimulationContext]
+            Additional context used for simulation runs. When provided, this conversation will be treated as a simulation and
+            may only be created by apps with the appropriate permission. Simulation conversations are excluded from normal
+            search results unless explicitly included via the `simulationFilter` field.
 
         response_config : typing.Optional[ResponseConfig]
             Optional configurations for responses to this conversation
@@ -1264,6 +1227,7 @@ class AsyncConversationClient:
         _response = await self._raw_client.initialize(
             conversation_id=conversation_id,
             messages=messages,
+            simulation_context=simulation_context,
             response_config=response_config,
             subject=subject,
             url=url,
@@ -1416,6 +1380,9 @@ class AsyncConversationClient:
         Wipes a conversation of all user data.
         The conversation ID will still exist and non-user specific data will still be retained.
         Attempts to modify or add messages to the conversation will throw an error.
+
+        Simulation conversations will no longer be visible in search results nor metrics.
+        Non-simulation conversations will remain visible - they can not be fully removed from the system.
 
         <Warning>This is a destructive operation and cannot be undone. <br/><br/>
         The exact fields cleared include: the conversation subject, userRequest, agentResponse.
@@ -1758,68 +1725,6 @@ class AsyncConversationClient:
         ) as r:
             async for _chunk in r.data:
                 yield _chunk
-
-    async def generate_maven_suggestions(
-        self,
-        conversation_id: str,
-        *,
-        conversation_message_ids: typing.Sequence[EntityIdBase],
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> ConversationResponse:
-        """
-        This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
-
-        Parameters
-        ----------
-        conversation_id : str
-            The ID of a conversation the messages belong to
-
-        conversation_message_ids : typing.Sequence[EntityIdBase]
-            The message ids to generate a suggested response for. One suggestion will be generated for each message id.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        ConversationResponse
-            Updated Conversation with new BOT_SUGGESTION messages as requested
-
-        Examples
-        --------
-        import asyncio
-
-        from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase
-
-        client = AsyncMavenAGI(
-            organization_id="YOUR_ORGANIZATION_ID",
-            agent_id="YOUR_AGENT_ID",
-            app_id="YOUR_APP_ID",
-            app_secret="YOUR_APP_SECRET",
-        )
-
-
-        async def main() -> None:
-            await client.conversation.generate_maven_suggestions(
-                conversation_id="conversationId",
-                conversation_message_ids=[
-                    EntityIdBase(
-                        reference_id="referenceId",
-                    ),
-                    EntityIdBase(
-                        reference_id="referenceId",
-                    ),
-                ],
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.generate_maven_suggestions(
-            conversation_id, conversation_message_ids=conversation_message_ids, request_options=request_options
-        )
-        return _response.data
 
     async def ask_object_stream(
         self,

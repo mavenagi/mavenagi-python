@@ -32,6 +32,7 @@ class RawInboxClient:
         self,
         *,
         filter: typing.Optional[InboxFilter] = OMIT,
+        sort_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -43,6 +44,9 @@ class RawInboxClient:
         Parameters
         ----------
         filter : typing.Optional[InboxFilter]
+
+        sort_id : typing.Optional[str]
+            The field to sort by, defaults to created timestamp
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -67,6 +71,7 @@ class RawInboxClient:
                 "filter": convert_and_respect_annotation_metadata(
                     object_=filter, annotation=InboxFilter, direction="write"
                 ),
+                "sortId": sort_id,
                 "page": page,
                 "size": size,
                 "sortDesc": sort_desc,
@@ -444,6 +449,7 @@ class AsyncRawInboxClient:
         self,
         *,
         filter: typing.Optional[InboxFilter] = OMIT,
+        sort_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -455,6 +461,9 @@ class AsyncRawInboxClient:
         Parameters
         ----------
         filter : typing.Optional[InboxFilter]
+
+        sort_id : typing.Optional[str]
+            The field to sort by, defaults to created timestamp
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -479,6 +488,7 @@ class AsyncRawInboxClient:
                 "filter": convert_and_respect_annotation_metadata(
                     object_=filter, annotation=InboxFilter, direction="write"
                 ),
+                "sortId": sort_id,
                 "page": page,
                 "size": size,
                 "sortDesc": sort_desc,

@@ -3,12 +3,12 @@
 import typing
 
 import pydantic
-from ...commons.types.base_paginated_request import BasePaginatedRequest
+from ...commons.types.base_search_request import BaseSearchRequest
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from .inbox_filter import InboxFilter
 
 
-class InboxSearchRequest(BasePaginatedRequest):
+class InboxSearchRequest(BaseSearchRequest):
     filter: typing.Optional[InboxFilter] = None
 
     if IS_PYDANTIC_V2:

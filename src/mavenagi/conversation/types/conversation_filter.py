@@ -15,6 +15,7 @@ from ...commons.types.sentiment import Sentiment
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .resolution_status import ResolutionStatus
+from .simulation_filter import SimulationFilter
 
 
 class ConversationFilter(UniversalBaseModel):
@@ -79,7 +80,9 @@ class ConversationFilter(UniversalBaseModel):
 
     feedback: typing.Optional[typing.List[FeedbackType]] = pydantic.Field(default=None)
     """
-    Filter by user feedback types received in the conversation
+    Filter by feedback types received in the conversation. 
+    This is a legacy field that maps to Events saved in the system for `ThumbsUp`, `ThumbsDown`, and `Insert`. 
+    The `Handoff` filter will pass if any bot responses on the conversation returned the system fallback message; there are no corresponding handoff events.
     """
 
     human_agents: typing_extensions.Annotated[typing.Optional[typing.List[str]], FieldMetadata(alias="humanAgents")] = (
@@ -170,6 +173,20 @@ class ConversationFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Filter by the segments that any message on a conversation matched.
+    """
+
+    inbox_item_ids: typing_extensions.Annotated[
+        typing.Optional[typing.List[EntityIdFilter]], FieldMetadata(alias="inboxItemIds")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by inbox item IDs associated with the conversation
+    """
+
+    simulation_filter: typing_extensions.Annotated[
+        typing.Optional[SimulationFilter], FieldMetadata(alias="simulationFilter")
+    ] = pydantic.Field(default=None)
+    """
+    Whether to include simulation conversations in search results. Defaults to only non-simulation conversations.
     """
 
     if IS_PYDANTIC_V2:

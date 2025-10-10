@@ -17,6 +17,7 @@ from ..commons.types.error_message import ErrorMessage
 from ..commons.types.feedback import Feedback
 from ..commons.types.feedback_type import FeedbackType
 from ..commons.types.response_config import ResponseConfig
+from ..commons.types.simulation_context import SimulationContext
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
@@ -49,6 +50,7 @@ class RawConversationClient:
         *,
         conversation_id: EntityIdBase,
         messages: typing.Sequence[ConversationMessageRequest],
+        simulation_context: typing.Optional[SimulationContext] = OMIT,
         response_config: typing.Optional[ResponseConfig] = OMIT,
         subject: typing.Optional[str] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -75,6 +77,11 @@ class RawConversationClient:
 
         messages : typing.Sequence[ConversationMessageRequest]
             The messages in the conversation
+
+        simulation_context : typing.Optional[SimulationContext]
+            Additional context used for simulation runs. When provided, this conversation will be treated as a simulation and
+            may only be created by apps with the appropriate permission. Simulation conversations are excluded from normal
+            search results unless explicitly included via the `simulationFilter` field.
 
         response_config : typing.Optional[ResponseConfig]
             Optional configurations for responses to this conversation
@@ -111,6 +118,9 @@ class RawConversationClient:
             json={
                 "conversationId": convert_and_respect_annotation_metadata(
                     object_=conversation_id, annotation=EntityIdBase, direction="write"
+                ),
+                "simulationContext": convert_and_respect_annotation_metadata(
+                    object_=simulation_context, annotation=SimulationContext, direction="write"
                 ),
                 "responseConfig": convert_and_respect_annotation_metadata(
                     object_=response_config, annotation=ResponseConfig, direction="write"
@@ -376,6 +386,9 @@ class RawConversationClient:
         Wipes a conversation of all user data.
         The conversation ID will still exist and non-user specific data will still be retained.
         Attempts to modify or add messages to the conversation will throw an error.
+
+        Simulation conversations will no longer be visible in search results nor metrics.
+        Non-simulation conversations will remain visible - they can not be fully removed from the system.
 
         <Warning>This is a destructive operation and cannot be undone. <br/><br/>
         The exact fields cleared include: the conversation subject, userRequest, agentResponse.
@@ -798,91 +811,6 @@ class RawConversationClient:
                 raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
             yield _stream()
-
-    def generate_maven_suggestions(
-        self,
-        conversation_id: str,
-        *,
-        conversation_message_ids: typing.Sequence[EntityIdBase],
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[ConversationResponse]:
-        """
-        This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
-
-        Parameters
-        ----------
-        conversation_id : str
-            The ID of a conversation the messages belong to
-
-        conversation_message_ids : typing.Sequence[EntityIdBase]
-            The message ids to generate a suggested response for. One suggestion will be generated for each message id.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[ConversationResponse]
-            Updated Conversation with new BOT_SUGGESTION messages as requested
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"v1/conversations/{jsonable_encoder(conversation_id)}/generate_maven_suggestions",
-            method="POST",
-            json={
-                "conversationMessageIds": convert_and_respect_annotation_metadata(
-                    object_=conversation_message_ids, annotation=typing.Sequence[EntityIdBase], direction="write"
-                ),
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    ConversationResponse,
-                    parse_obj_as(
-                        type_=ConversationResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise ServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     @contextlib.contextmanager
     def ask_object_stream(
@@ -1673,6 +1601,7 @@ class AsyncRawConversationClient:
         *,
         conversation_id: EntityIdBase,
         messages: typing.Sequence[ConversationMessageRequest],
+        simulation_context: typing.Optional[SimulationContext] = OMIT,
         response_config: typing.Optional[ResponseConfig] = OMIT,
         subject: typing.Optional[str] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -1699,6 +1628,11 @@ class AsyncRawConversationClient:
 
         messages : typing.Sequence[ConversationMessageRequest]
             The messages in the conversation
+
+        simulation_context : typing.Optional[SimulationContext]
+            Additional context used for simulation runs. When provided, this conversation will be treated as a simulation and
+            may only be created by apps with the appropriate permission. Simulation conversations are excluded from normal
+            search results unless explicitly included via the `simulationFilter` field.
 
         response_config : typing.Optional[ResponseConfig]
             Optional configurations for responses to this conversation
@@ -1735,6 +1669,9 @@ class AsyncRawConversationClient:
             json={
                 "conversationId": convert_and_respect_annotation_metadata(
                     object_=conversation_id, annotation=EntityIdBase, direction="write"
+                ),
+                "simulationContext": convert_and_respect_annotation_metadata(
+                    object_=simulation_context, annotation=SimulationContext, direction="write"
                 ),
                 "responseConfig": convert_and_respect_annotation_metadata(
                     object_=response_config, annotation=ResponseConfig, direction="write"
@@ -2000,6 +1937,9 @@ class AsyncRawConversationClient:
         Wipes a conversation of all user data.
         The conversation ID will still exist and non-user specific data will still be retained.
         Attempts to modify or add messages to the conversation will throw an error.
+
+        Simulation conversations will no longer be visible in search results nor metrics.
+        Non-simulation conversations will remain visible - they can not be fully removed from the system.
 
         <Warning>This is a destructive operation and cannot be undone. <br/><br/>
         The exact fields cleared include: the conversation subject, userRequest, agentResponse.
@@ -2422,91 +2362,6 @@ class AsyncRawConversationClient:
                 raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
             yield await _stream()
-
-    async def generate_maven_suggestions(
-        self,
-        conversation_id: str,
-        *,
-        conversation_message_ids: typing.Sequence[EntityIdBase],
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[ConversationResponse]:
-        """
-        This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
-
-        Parameters
-        ----------
-        conversation_id : str
-            The ID of a conversation the messages belong to
-
-        conversation_message_ids : typing.Sequence[EntityIdBase]
-            The message ids to generate a suggested response for. One suggestion will be generated for each message id.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[ConversationResponse]
-            Updated Conversation with new BOT_SUGGESTION messages as requested
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"v1/conversations/{jsonable_encoder(conversation_id)}/generate_maven_suggestions",
-            method="POST",
-            json={
-                "conversationMessageIds": convert_and_respect_annotation_metadata(
-                    object_=conversation_message_ids, annotation=typing.Sequence[EntityIdBase], direction="write"
-                ),
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    ConversationResponse,
-                    parse_obj_as(
-                        type_=ConversationResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise ServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     @contextlib.asynccontextmanager
     async def ask_object_stream(

@@ -8,6 +8,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .event_type import EventType
+from .feedback_type import FeedbackType
 from .scoped_entity import ScopedEntity
 from .system_event_name import SystemEventName
 from .user_event_name import UserEventName
@@ -32,6 +33,10 @@ class EventFilter(UniversalBaseModel):
     agent_user_ids: typing_extensions.Annotated[
         typing.Optional[typing.List[str]], FieldMetadata(alias="agentUserIds")
     ] = None
+    legacy_feedback_types: typing_extensions.Annotated[
+        typing.Optional[typing.List[FeedbackType]], FieldMetadata(alias="legacyFeedbackTypes")
+    ] = None
+    has_event_text: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="hasEventText")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

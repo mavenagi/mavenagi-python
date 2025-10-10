@@ -11,7 +11,7 @@ from ...core.serialization import FieldMetadata
 class AgentUserFilter(UniversalBaseModel):
     search: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Full-text search query for matching agent users by content. 
+    Full-text search query for matching agent users by content.
     When you search with this parameter, you're performing a full-text search across the user identifiers.
     """
 

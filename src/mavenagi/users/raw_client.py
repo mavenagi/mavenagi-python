@@ -132,7 +132,7 @@ class RawUsersClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get_agent_user(
-        self, user_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, agent_user_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[AgentUser]:
         """
         Get an agent user by its supplied ID.
@@ -141,7 +141,7 @@ class RawUsersClient:
 
         Parameters
         ----------
-        user_id : str
+        agent_user_id : str
             The ID of the agent user to get.
 
         request_options : typing.Optional[RequestOptions]
@@ -152,7 +152,7 @@ class RawUsersClient:
         HttpResponse[AgentUser]
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"v1/agentusers/{jsonable_encoder(user_id)}",
+            f"v1/agentusers/{jsonable_encoder(agent_user_id)}",
             method="GET",
             request_options=request_options,
         )
@@ -563,7 +563,7 @@ class AsyncRawUsersClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get_agent_user(
-        self, user_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, agent_user_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[AgentUser]:
         """
         Get an agent user by its supplied ID.
@@ -572,7 +572,7 @@ class AsyncRawUsersClient:
 
         Parameters
         ----------
-        user_id : str
+        agent_user_id : str
             The ID of the agent user to get.
 
         request_options : typing.Optional[RequestOptions]
@@ -583,7 +583,7 @@ class AsyncRawUsersClient:
         AsyncHttpResponse[AgentUser]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"v1/agentusers/{jsonable_encoder(user_id)}",
+            f"v1/agentusers/{jsonable_encoder(agent_user_id)}",
             method="GET",
             request_options=request_options,
         )

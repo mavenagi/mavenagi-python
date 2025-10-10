@@ -7,6 +7,7 @@ import pydantic
 import typing_extensions
 from ...commons.types.entity_id_base import EntityIdBase
 from ...commons.types.response_config import ResponseConfig
+from ...commons.types.simulation_context import SimulationContext
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .conversation_message_request import ConversationMessageRequest
@@ -16,6 +17,15 @@ class ConversationRequest(UniversalBaseModel):
     conversation_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="conversationId")] = pydantic.Field()
     """
     An externally supplied ID to uniquely identify this conversation
+    """
+
+    simulation_context: typing_extensions.Annotated[
+        typing.Optional[SimulationContext], FieldMetadata(alias="simulationContext")
+    ] = pydantic.Field(default=None)
+    """
+    Additional context used for simulation runs. When provided, this conversation will be treated as a simulation and
+    may only be created by apps with the appropriate permission. Simulation conversations are excluded from normal
+    search results unless explicitly included via the `simulationFilter` field.
     """
 
     response_config: typing_extensions.Annotated[

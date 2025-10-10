@@ -8,6 +8,8 @@ from .agent_capability_base import AgentCapabilityBase
 from .agent_capability_field import AgentCapabilityField
 from .agent_capability_list_request import AgentCapabilityListRequest
 from .agent_capability_type import AgentCapabilityType
+from .execute_capability_request import ExecuteCapabilityRequest
+from .execute_capability_response import ExecuteCapabilityResponse
 from .list_agent_capabilities_response import ListAgentCapabilitiesResponse
 from .patch_agent_capability_request import PatchAgentCapabilityRequest
 from .trigger_capability import TriggerCapability
@@ -22,6 +24,8 @@ __all__ = [
     "AgentCapabilityType",
     "AgentCapability_Action",
     "AgentCapability_Trigger",
+    "ExecuteCapabilityRequest",
+    "ExecuteCapabilityResponse",
     "ListAgentCapabilitiesResponse",
     "PatchAgentCapabilityRequest",
     "TriggerCapability",

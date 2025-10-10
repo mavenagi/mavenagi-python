@@ -15,6 +15,11 @@ class ActionFilter(UniversalBaseModel):
     Filter by instructions
     """
 
+    name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Filter by action name
+    """
+
     llm_inclusion_statuses: typing_extensions.Annotated[
         typing.Optional[typing.List[LlmInclusionStatus]], FieldMetadata(alias="llmInclusionStatuses")
     ] = pydantic.Field(default=None)

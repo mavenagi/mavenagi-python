@@ -29,6 +29,7 @@ class AppUserResponse(AppUser):
             agent_id="support",
             type="USER_PROFILE",
         ),
+        agent_user_id="aus_1234567890",
         identifiers=[
             AppUserIdentifier(
                 value="joe@myapp.com",
@@ -49,6 +50,11 @@ class AppUserResponse(AppUser):
     user_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="userId")] = pydantic.Field()
     """
     ID that uniquely identifies this user
+    """
+
+    agent_user_id: typing_extensions.Annotated[str, FieldMetadata(alias="agentUserId")] = pydantic.Field()
+    """
+    The ID of the agent user (merged view) that this app user is associated with
     """
 
     all_user_data: typing_extensions.Annotated[

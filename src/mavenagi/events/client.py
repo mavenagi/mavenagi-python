@@ -132,6 +132,46 @@ class EventsClient:
         )
         return _response.data
 
+    def get(
+        self, event_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> EventResponse:
+        """
+        Retrieve details of a specific Event item by its ID.
+
+        Parameters
+        ----------
+        event_id : str
+            The ID of the Event to get.
+
+        app_id : str
+            The App ID of the Event to retrieve
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventResponse
+            Details of the specified Event
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.events.get(
+            event_id="eventId",
+            app_id="appId",
+        )
+        """
+        _response = self._raw_client.get(event_id, app_id=app_id, request_options=request_options)
+        return _response.data
+
 
 class AsyncEventsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -264,4 +304,52 @@ class AsyncEventsClient:
         _response = await self._raw_client.search(
             sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
+        return _response.data
+
+    async def get(
+        self, event_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> EventResponse:
+        """
+        Retrieve details of a specific Event item by its ID.
+
+        Parameters
+        ----------
+        event_id : str
+            The ID of the Event to get.
+
+        app_id : str
+            The App ID of the Event to retrieve
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventResponse
+            Details of the specified Event
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.events.get(
+                event_id="eventId",
+                app_id="appId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get(event_id, app_id=app_id, request_options=request_options)
         return _response.data

@@ -3,14 +3,14 @@
 import typing
 
 import pydantic
-import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from ...core.serialization import FieldMetadata
 
 
-class SurveyInfo(UniversalBaseModel):
-    survey_question: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="surveyQuestion")] = None
-    survey_answer: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="surveyAnswer")] = None
+class ExecuteCapabilityRequest(UniversalBaseModel):
+    parameters: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = pydantic.Field(default=None)
+    """
+    Parameters to pass to the action execution
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

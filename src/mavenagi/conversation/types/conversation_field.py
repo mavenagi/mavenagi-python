@@ -30,6 +30,7 @@ ConversationField = typing.Union[
         "PredictedNPS",
         "OrganizationId",
         "AgentId",
+        "InboxItems",
     ],
     typing.Any,
 ]

@@ -12,6 +12,61 @@ from .app_user_summary import AppUserSummary
 
 
 class AgentUser(UniversalBaseModel):
+    """
+    Examples
+    --------
+    import datetime
+
+    from mavenagi.commons import AppUserIdentifier, EntityId
+    from mavenagi.users import AgentUser, AppUserSummary
+
+    AgentUser(
+        id="aus_1234567890",
+        created_at=datetime.datetime.fromisoformat(
+            "2021-01-01 00:00:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2021-01-01 00:00:00+00:00",
+        ),
+        identifiers=[
+            AppUserIdentifier(
+                value="joe@myapp.com",
+                type="EMAIL",
+            )
+        ],
+        default_name="Joe",
+        users=[
+            AppUserSummary(
+                user_id=EntityId(
+                    type="USER_PROFILE",
+                    app_id="myapp",
+                    organization_id="acme",
+                    agent_id="support",
+                    reference_id="user-0",
+                ),
+                identifiers=[],
+                visible_data={"name": "Joe"},
+            ),
+            AppUserSummary(
+                user_id=EntityId(
+                    type="USER_PROFILE",
+                    app_id="myapp2",
+                    organization_id="acme",
+                    agent_id="support",
+                    reference_id="user-abc",
+                ),
+                identifiers=[
+                    AppUserIdentifier(
+                        value="joe@myapp2.com",
+                        type="EMAIL",
+                    )
+                ],
+                visible_data={"name": "Joe Doe"},
+            ),
+        ],
+    )
+    """
+
     id: str = pydantic.Field()
     """
     The ID of the agent user.
@@ -36,7 +91,7 @@ class AgentUser(UniversalBaseModel):
         pydantic.Field(default=None)
     )
     """
-    A name for the agent user, if one can be determined. 
+    A name for the agent user, if one can be determined.
     The value is derived from the user data provided by individual apps - specifically data fields keyed by `name`, `first_name` or `firstName`.
     """
 

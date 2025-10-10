@@ -9,7 +9,7 @@ from ...core.serialization import FieldMetadata
 
 
 class PageInfo(UniversalBaseModel):
-    page_name: typing_extensions.Annotated[str, FieldMetadata(alias="pageName")]
+    page_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="pageName")] = None
     page_url: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="pageUrl")] = None
     page_title: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="pageTitle")] = None
     link_url: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="linkUrl")] = None

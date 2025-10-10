@@ -809,6 +809,96 @@ client.agent_capabilities.patch(
 </dl>
 </details>
 
+<details><summary><code>client.agent_capabilities.<a href="src/mavenagi/agent_capabilities/client.py">execute</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Execute an action capability.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.agent_capabilities.execute(
+    integration_id="integrationId",
+    capability_id="capabilityId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**integration_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**capability_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parameters:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Parameters to pass to the action execution
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Agents
 <details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">search</a>(...)</code></summary>
 <dl>
@@ -2389,6 +2479,18 @@ client.conversation.initialize(
 <dl>
 <dd>
 
+**simulation_context:** `typing.Optional[SimulationContext]` 
+
+Additional context used for simulation runs. When provided, this conversation will be treated as a simulation and
+may only be created by apps with the appropriate permission. Simulation conversations are excluded from normal
+search results unless explicitly included via the `simulationFilter` field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **response_config:** `typing.Optional[ResponseConfig]` — Optional configurations for responses to this conversation
     
 </dd>
@@ -2670,6 +2772,9 @@ client.conversation.get(
 Wipes a conversation of all user data. 
 The conversation ID will still exist and non-user specific data will still be retained. 
 Attempts to modify or add messages to the conversation will throw an error. 
+
+Simulation conversations will no longer be visible in search results nor metrics. 
+Non-simulation conversations will remain visible - they can not be fully removed from the system.
 
 <Warning>This is a destructive operation and cannot be undone. <br/><br/>
 The exact fields cleared include: the conversation subject, userRequest, agentResponse. 
@@ -3139,96 +3244,6 @@ Non-image attachments can be stored and downloaded from the API but will not be 
 <dd>
 
 **timezone:** `typing.Optional[str]` — IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">generate_maven_suggestions</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.conversation.generate_maven_suggestions(
-    conversation_id="conversationId",
-    conversation_message_ids=[
-        EntityIdBase(
-            reference_id="referenceId",
-        ),
-        EntityIdBase(
-            reference_id="referenceId",
-        ),
-    ],
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**conversation_id:** `str` — The ID of a conversation the messages belong to
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**conversation_message_ids:** `typing.Sequence[EntityIdBase]` — The message ids to generate a suggested response for. One suggestion will be generated for each message id.
     
 </dd>
 </dl>
@@ -4277,6 +4292,88 @@ client.events.search()
 </dl>
 </details>
 
+<details><summary><code>client.events.<a href="src/mavenagi/events/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve details of a specific Event item by its ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.events.get(
+    event_id="eventId",
+    app_id="appId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**event_id:** `str` — The ID of the Event to get.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `str` — The App ID of the Event to retrieve
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Inbox
 <details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">search</a>(...)</code></summary>
 <dl>
@@ -4330,6 +4427,14 @@ client.inbox.search()
 <dd>
 
 **filter:** `typing.Optional[InboxFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_id:** `typing.Optional[str]` — The field to sort by, defaults to created timestamp
     
 </dd>
 </dl>
@@ -7491,7 +7596,7 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.users.get_agent_user(
-    user_id="userId",
+    agent_user_id="aus_1234567890",
 )
 
 ```
@@ -7508,7 +7613,7 @@ client.users.get_agent_user(
 <dl>
 <dd>
 
-**user_id:** `str` — The ID of the agent user to get.
+**agent_user_id:** `str` — The ID of the agent user to get.
     
 </dd>
 </dl>
@@ -7725,7 +7830,7 @@ client.users.get(
 <dl>
 <dd>
 
-Deletes all identifiers and user data saved by the specified app. 
+Deletes all identifiers and user data saved by the specified app.
 Does not modify data or identifiers saved by other apps.
 
 If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.

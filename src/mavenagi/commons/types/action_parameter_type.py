@@ -2,4 +2,9 @@
 
 import typing
 
-ActionParameterType = typing.Union[typing.Literal["STRING", "BOOLEAN", "NUMBER", "SCHEMA", "FILE", "OAUTH"], typing.Any]
+ActionParameterType = typing.Union[
+    typing.Literal[
+        "STRING", "MULTILINE", "BOOLEAN", "NUMBER", "DATETIME", "DATE", "TIME", "EMAIL", "SCHEMA", "FILE", "OAUTH"
+    ],
+    typing.Any,
+]

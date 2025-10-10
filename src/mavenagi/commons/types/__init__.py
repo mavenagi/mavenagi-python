@@ -26,6 +26,7 @@ from .attachment_status import AttachmentStatus
 from .base_attachment import BaseAttachment
 from .base_conversation_response import BaseConversationResponse
 from .base_paginated_request import BasePaginatedRequest
+from .base_search_request import BaseSearchRequest
 from .bot_action_form_response import BotActionFormResponse
 from .bot_chart_response import BotChartResponse
 from .bot_conversation_message_type import BotConversationMessageType
@@ -125,6 +126,7 @@ from .inbox_item_type import InboxItemType
 from .ip_info import IpInfo
 from .language_info import LanguageInfo
 from .llm_inclusion_status import LlmInclusionStatus
+from .llm_persona import LlmPersona
 from .message_status import MessageStatus
 from .metadata_precondition import MetadataPrecondition
 from .novel_system_event import NovelSystemEvent
@@ -148,6 +150,7 @@ from .response_length import ResponseLength
 from .scoped_entity import ScopedEntity
 from .sentiment import Sentiment
 from .session_info import SessionInfo
+from .simulation_context import SimulationContext
 from .source import Source
 from .source_info import SourceInfo
 from .source_type import SourceType
@@ -187,6 +190,7 @@ __all__ = [
     "BaseAttachment",
     "BaseConversationResponse",
     "BasePaginatedRequest",
+    "BaseSearchRequest",
     "BotActionFormResponse",
     "BotChartResponse",
     "BotConversationMessageType",
@@ -286,6 +290,7 @@ __all__ = [
     "IpInfo",
     "LanguageInfo",
     "LlmInclusionStatus",
+    "LlmPersona",
     "MessageStatus",
     "MetadataPrecondition",
     "NovelSystemEvent",
@@ -312,6 +317,7 @@ __all__ = [
     "ScopedEntity",
     "Sentiment",
     "SessionInfo",
+    "SimulationContext",
     "Source",
     "SourceInfo",
     "SourceType",

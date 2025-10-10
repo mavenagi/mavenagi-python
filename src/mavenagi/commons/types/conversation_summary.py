@@ -39,6 +39,11 @@ class ConversationSummary(UniversalBaseModel):
     The number of thumbs down events on messages in the conversation.
     """
 
+    handoff_count: typing_extensions.Annotated[int, FieldMetadata(alias="handoffCount")] = pydantic.Field()
+    """
+    The number of bot response messages that failed and returned the Agent's system fallback message.
+    """
+
     user_message_count: typing_extensions.Annotated[int, FieldMetadata(alias="userMessageCount")] = pydantic.Field()
     """
     The number of messages of type `USER` in the conversation.
@@ -48,7 +53,7 @@ class ConversationSummary(UniversalBaseModel):
         default=None
     )
     """
-    The total time in milliseconds that the user spent interacting with the conversation. 
+    The total time in milliseconds that the user spent interacting with the conversation.
     Calculated by taking the timestamp of the last message in the conversation minus the timestamp of the first message.
     """
 
@@ -57,7 +62,7 @@ class ConversationSummary(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     The time in milliseconds that elapsed before a human agent responded to the conversation.
-    Calculated by taking the timestamp of the first message of type `HUMAN_AGENT` 
+    Calculated by taking the timestamp of the first message of type `HUMAN_AGENT`
     minus the timestamp of the first message in the conversation.
     
     Will not be provided if the conversation does not have a message of type `HUMAN_AGENT`.

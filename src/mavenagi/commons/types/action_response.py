@@ -80,7 +80,7 @@ class ActionResponse(ActionBase):
         pydantic.Field(default=None)
     )
     """
-    The IDs of the segment that must be matched for the action to be relevant to a conversation. 
+    The IDs of the segment that must be matched for the action to be relevant to a conversation.
     Segments are replacing inline preconditions - an Action may not have both an inline precondition and a segment.
     Inline precondition support will be removed in a future release.
     """

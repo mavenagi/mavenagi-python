@@ -34,6 +34,7 @@ class InboxClient:
         self,
         *,
         filter: typing.Optional[InboxFilter] = OMIT,
+        sort_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -45,6 +46,9 @@ class InboxClient:
         Parameters
         ----------
         filter : typing.Optional[InboxFilter]
+
+        sort_id : typing.Optional[str]
+            The field to sort by, defaults to created timestamp
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -75,7 +79,7 @@ class InboxClient:
         client.inbox.search()
         """
         _response = self._raw_client.search(
-            filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+            filter=filter, sort_id=sort_id, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
         return _response.data
 
@@ -276,6 +280,7 @@ class AsyncInboxClient:
         self,
         *,
         filter: typing.Optional[InboxFilter] = OMIT,
+        sort_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -287,6 +292,9 @@ class AsyncInboxClient:
         Parameters
         ----------
         filter : typing.Optional[InboxFilter]
+
+        sort_id : typing.Optional[str]
+            The field to sort by, defaults to created timestamp
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -325,7 +333,7 @@ class AsyncInboxClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.search(
-            filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+            filter=filter, sort_id=sort_id, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
         return _response.data
 

@@ -87,7 +87,9 @@ class UsersClient:
         )
         return _response.data
 
-    def get_agent_user(self, user_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> AgentUser:
+    def get_agent_user(
+        self, agent_user_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AgentUser:
         """
         Get an agent user by its supplied ID.
 
@@ -95,7 +97,7 @@ class UsersClient:
 
         Parameters
         ----------
-        user_id : str
+        agent_user_id : str
             The ID of the agent user to get.
 
         request_options : typing.Optional[RequestOptions]
@@ -116,10 +118,10 @@ class UsersClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.users.get_agent_user(
-            user_id="userId",
+            agent_user_id="aus_1234567890",
         )
         """
-        _response = self._raw_client.get_agent_user(user_id, request_options=request_options)
+        _response = self._raw_client.get_agent_user(agent_user_id, request_options=request_options)
         return _response.data
 
     def create_or_update(
@@ -352,7 +354,7 @@ class AsyncUsersClient:
         return _response.data
 
     async def get_agent_user(
-        self, user_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, agent_user_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AgentUser:
         """
         Get an agent user by its supplied ID.
@@ -361,7 +363,7 @@ class AsyncUsersClient:
 
         Parameters
         ----------
-        user_id : str
+        agent_user_id : str
             The ID of the agent user to get.
 
         request_options : typing.Optional[RequestOptions]
@@ -387,13 +389,13 @@ class AsyncUsersClient:
 
         async def main() -> None:
             await client.users.get_agent_user(
-                user_id="userId",
+                agent_user_id="aus_1234567890",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_agent_user(user_id, request_options=request_options)
+        _response = await self._raw_client.get_agent_user(agent_user_id, request_options=request_options)
         return _response.data
 
     async def create_or_update(

@@ -34,7 +34,6 @@ from .delivery_status import DeliveryStatus
 from .feedback_field import FeedbackField
 from .feedback_filter import FeedbackFilter
 from .feedback_request import FeedbackRequest
-from .generate_maven_suggestions_request import GenerateMavenSuggestionsRequest
 from .numeric_conversation_field import NumericConversationField
 from .object_stream_response import (
     ObjectStreamResponse,
@@ -43,6 +42,7 @@ from .object_stream_response import (
     ObjectStreamResponse_Text,
 )
 from .resolution_status import ResolutionStatus
+from .simulation_filter import SimulationFilter
 from .stream_response import (
     StreamResponse,
     StreamResponse_Action,
@@ -87,13 +87,13 @@ __all__ = [
     "FeedbackField",
     "FeedbackFilter",
     "FeedbackRequest",
-    "GenerateMavenSuggestionsRequest",
     "NumericConversationField",
     "ObjectStreamResponse",
     "ObjectStreamResponse_End",
     "ObjectStreamResponse_Start",
     "ObjectStreamResponse_Text",
     "ResolutionStatus",
+    "SimulationFilter",
     "StreamResponse",
     "StreamResponse_Action",
     "StreamResponse_Chart",

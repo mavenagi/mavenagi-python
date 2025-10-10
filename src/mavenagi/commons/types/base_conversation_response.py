@@ -11,6 +11,7 @@ from .conversation_analysis import ConversationAnalysis
 from .conversation_summary import ConversationSummary
 from .entity_id import EntityId
 from .response_config import ResponseConfig
+from .simulation_context import SimulationContext
 
 
 class BaseConversationResponse(UniversalBaseModel):
@@ -84,15 +85,23 @@ class BaseConversationResponse(UniversalBaseModel):
 
     open: bool = pydantic.Field()
     """
-    Whether the conversation is able to receive asynchronous messages. 
+    Whether the conversation is able to receive asynchronous messages.
     Only applicable if a conversation is initialized with the `ASYNC` capability. Defaults to true. Can be closed using the `PATCH` API.
     """
 
     llm_enabled: typing_extensions.Annotated[bool, FieldMetadata(alias="llmEnabled")] = pydantic.Field()
     """
-    Whether the LLM is enabled for this conversation. 
-    If true, `USER` messages sent via the ask API will be sent to the LLM and a `BOT_RESPONSE` or `BOT_SUGGESTION` message will be generated. 
+    Whether the LLM is enabled for this conversation.
+    If true, `USER` messages sent via the ask API will be sent to the LLM and a `BOT_RESPONSE` or `BOT_SUGGESTION` message will be generated.
     If false, `USER` messages will not be sent to the LLM.
+    """
+
+    simulation_context: typing_extensions.Annotated[
+        typing.Optional[SimulationContext], FieldMetadata(alias="simulationContext")
+    ] = pydantic.Field(default=None)
+    """
+    Additional context used for simulation runs. When present, this conversation is treated as a simulation. 
+    Simulation conversations are excluded from normal search results unless explicitly included via the `simulationFilter` field.
     """
 
     if IS_PYDANTIC_V2:

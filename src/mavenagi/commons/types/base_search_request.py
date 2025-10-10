@@ -4,17 +4,17 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...commons.types.entity_id_base import EntityIdBase
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .base_paginated_request import BasePaginatedRequest
 
 
-class GenerateMavenSuggestionsRequest(UniversalBaseModel):
-    conversation_message_ids: typing_extensions.Annotated[
-        typing.List[EntityIdBase], FieldMetadata(alias="conversationMessageIds")
-    ] = pydantic.Field()
+class BaseSearchRequest(BasePaginatedRequest):
+    sort_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="sortId")] = pydantic.Field(
+        default=None
+    )
     """
-    The message ids to generate a suggested response for. One suggestion will be generated for each message id.
+    The field to sort by, defaults to created timestamp
     """
 
     if IS_PYDANTIC_V2:

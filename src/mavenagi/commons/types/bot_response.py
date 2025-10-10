@@ -48,7 +48,7 @@ class BotResponse_ActionForm(UniversalBaseModel):
 class BotResponse_OauthButton(UniversalBaseModel):
     type: typing.Literal["oauthButton"] = "oauthButton"
     button_name: typing_extensions.Annotated[str, FieldMetadata(alias="buttonName")]
-    url: str
+    url: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

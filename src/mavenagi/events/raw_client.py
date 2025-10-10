@@ -15,6 +15,7 @@ from ..commons.types.events_search_response import EventsSearchResponse
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
+from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
@@ -198,6 +199,84 @@ class RawEventsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def get(
+        self, event_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[EventResponse]:
+        """
+        Retrieve details of a specific Event item by its ID.
+
+        Parameters
+        ----------
+        event_id : str
+            The ID of the Event to get.
+
+        app_id : str
+            The App ID of the Event to retrieve
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[EventResponse]
+            Details of the specified Event
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/events/{jsonable_encoder(event_id)}",
+            method="GET",
+            params={
+                "appId": app_id,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    EventResponse,
+                    parse_obj_as(
+                        type_=EventResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawEventsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -332,6 +411,84 @@ class AsyncRawEventsClient:
                     EventsSearchResponse,
                     parse_obj_as(
                         type_=EventsSearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get(
+        self, event_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[EventResponse]:
+        """
+        Retrieve details of a specific Event item by its ID.
+
+        Parameters
+        ----------
+        event_id : str
+            The ID of the Event to get.
+
+        app_id : str
+            The App ID of the Event to retrieve
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[EventResponse]
+            Details of the specified Event
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/events/{jsonable_encoder(event_id)}",
+            method="GET",
+            params={
+                "appId": app_id,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    EventResponse,
+                    parse_obj_as(
+                        type_=EventResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -18,9 +18,9 @@ class BotOAuthButtonResponse(UniversalBaseModel):
     Text that should be displayed to the user on the button.
     """
 
-    url: str = pydantic.Field()
+    url: typing.Optional[str] = pydantic.Field(default=None)
     """
-    The OAuth authorization URL to open when the button is clicked.
+    The OAuth authorization URL to open when the button is clicked. Will only be provided on ask responses.
     """
 
     if IS_PYDANTIC_V2:

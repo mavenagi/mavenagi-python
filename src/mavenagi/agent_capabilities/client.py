@@ -8,6 +8,7 @@ from .raw_client import AsyncRawAgentCapabilitiesClient, RawAgentCapabilitiesCli
 from .types.agent_capability import AgentCapability
 from .types.agent_capability_field import AgentCapabilityField
 from .types.agent_capability_type import AgentCapabilityType
+from .types.execute_capability_response import ExecuteCapabilityResponse
 from .types.list_agent_capabilities_response import ListAgentCapabilitiesResponse
 
 # this is used as the default value for optional parameters
@@ -197,6 +198,53 @@ class AgentCapabilitiesClient:
             description_override=description_override,
             pinned=pinned,
             request_options=request_options,
+        )
+        return _response.data
+
+    def execute(
+        self,
+        integration_id: str,
+        capability_id: str,
+        *,
+        parameters: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ExecuteCapabilityResponse:
+        """
+        Execute an action capability.
+
+        Parameters
+        ----------
+        integration_id : str
+
+        capability_id : str
+
+        parameters : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Parameters to pass to the action execution
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ExecuteCapabilityResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.agent_capabilities.execute(
+            integration_id="integrationId",
+            capability_id="capabilityId",
+        )
+        """
+        _response = self._raw_client.execute(
+            integration_id, capability_id, parameters=parameters, request_options=request_options
         )
         return _response.data
 
@@ -408,5 +456,60 @@ class AsyncAgentCapabilitiesClient:
             description_override=description_override,
             pinned=pinned,
             request_options=request_options,
+        )
+        return _response.data
+
+    async def execute(
+        self,
+        integration_id: str,
+        capability_id: str,
+        *,
+        parameters: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ExecuteCapabilityResponse:
+        """
+        Execute an action capability.
+
+        Parameters
+        ----------
+        integration_id : str
+
+        capability_id : str
+
+        parameters : typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]
+            Parameters to pass to the action execution
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ExecuteCapabilityResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.agent_capabilities.execute(
+                integration_id="integrationId",
+                capability_id="capabilityId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.execute(
+            integration_id, capability_id, parameters=parameters, request_options=request_options
         )
         return _response.data
