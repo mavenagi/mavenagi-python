@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import typing
 
 import pydantic
@@ -13,16 +14,25 @@ from ...core.serialization import FieldMetadata
 from .knowledge_base_properties import KnowledgeBaseProperties
 from .knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .knowledge_base_type import KnowledgeBaseType
+from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 
 
 class KnowledgeBaseResponse(KnowledgeBaseProperties):
     """
     Examples
     --------
+    import datetime
+
     from mavenagi.commons import EntityId
     from mavenagi.knowledge import KnowledgeBaseResponse
 
     KnowledgeBaseResponse(
+        created_at=datetime.datetime.fromisoformat(
+            "2025-01-01 00:00:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2025-02-02 00:00:00+00:00",
+        ),
         knowledge_base_id=EntityId(
             reference_id="help-center",
             app_id="readme",
@@ -30,12 +40,38 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
             agent_id="support",
             type="KNOWLEDGE_BASE",
         ),
+        active_version_id=EntityId(
+            reference_id="version-1",
+            app_id="readme",
+            organization_id="acme",
+            agent_id="support",
+            type="KNOWLEDGE_BASE_VERSION",
+        ),
+        most_recent_version_status="SUCCEEDED",
+        llm_inclusion_status="WHEN_RELEVANT",
         name="Help center",
         type="API",
         metadata={"key": "value"},
         tags={"tag1", "tag2"},
         refresh_frequency="DAILY",
+        segment_id=EntityId(
+            reference_id="premium-users",
+            app_id="readme",
+            organization_id="acme",
+            agent_id="support",
+            type="SEGMENT",
+        ),
     )
+    """
+
+    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")] = pydantic.Field()
+    """
+    The date and time when the knowledge base was created.
+    """
+
+    updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")] = pydantic.Field()
+    """
+    The date and time when the knowledge base was last updated.
     """
 
     knowledge_base_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="knowledgeBaseId")] = pydantic.Field()
@@ -48,6 +84,15 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     ] = pydantic.Field(default=None)
     """
     ID of the knowledge base version that is currently active. Documents can be fetched using this version ID.
+    """
+
+    most_recent_version_status: typing_extensions.Annotated[
+        KnowledgeBaseVersionStatus, FieldMetadata(alias="mostRecentVersionStatus")
+    ] = pydantic.Field()
+    """
+    The status of the most recent version of the knowledge base.
+    The `activeVersionId` will only be populated if this status is `SUCCEEDED`.
+    Use the `listKnowledgeBaseVersions` endpoint to get the full list of versions.
     """
 
     type: KnowledgeBaseType = pydantic.Field()

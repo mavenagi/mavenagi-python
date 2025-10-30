@@ -15,6 +15,16 @@ class ConversationPieChartRequest(ConversationAnalyticsRequest):
     group_by: typing_extensions.Annotated[ConversationGroupBy, FieldMetadata(alias="groupBy")] = pydantic.Field()
     """
     Field used to group data into slices for the pie chart.
+    
+    **Series Name Formats by Field:**
+    - `Sources`: Document title (e.g., "Product Documentation")
+    - `Actions`: "Action Name - App Name" (e.g., "Create Ticket - Freshdesk")
+    - `IncompleteActions`: "Action Name - App Name" (e.g., "Search Documents - Zendesk")
+    - `Users`: User identifier value (e.g., "user@example.com")
+    - `InboxItems`: Inbox item title
+    - `HumanAgents`: Human agent display name
+    - `HumanAgentsWithInserts`: Human agent display name (for agents who made inserts)
+    - Other fields: Field value as stored (e.g., "GOOD", "NEEDS_IMPROVEMENT" for Quality)
     """
 
     metric: ConversationMetric = pydantic.Field()

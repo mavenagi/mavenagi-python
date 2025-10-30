@@ -8,6 +8,7 @@ from .knowledge_base_field import KnowledgeBaseField
 from .knowledge_base_filter import KnowledgeBaseFilter
 from .knowledge_base_properties import KnowledgeBaseProperties
 from .knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
+from .knowledge_base_refresh_request import KnowledgeBaseRefreshRequest
 from .knowledge_base_request import KnowledgeBaseRequest
 from .knowledge_base_response import KnowledgeBaseResponse
 from .knowledge_base_search_request import KnowledgeBaseSearchRequest
@@ -36,6 +37,7 @@ __all__ = [
     "KnowledgeBaseFilter",
     "KnowledgeBaseProperties",
     "KnowledgeBaseRefreshFrequency",
+    "KnowledgeBaseRefreshRequest",
     "KnowledgeBaseRequest",
     "KnowledgeBaseResponse",
     "KnowledgeBaseSearchRequest",

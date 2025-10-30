@@ -2,4 +2,4 @@
 
 import typing
 
-KnowledgeBaseType = typing.Union[typing.Literal["API"], typing.Any]
+KnowledgeBaseType = typing.Union[typing.Literal["API", "URL", "MANUAL", "RSS", "LEGACY"], typing.Any]

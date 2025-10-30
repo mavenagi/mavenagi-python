@@ -2,6 +2,7 @@
 
 import typing
 
+from ..commons.types.llm_persona import LlmPersona
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawAgentsClient, RawAgentsClient
@@ -239,6 +240,12 @@ class AgentsClient:
         environment: typing.Optional[AgentEnvironment] = OMIT,
         default_timezone: typing.Optional[str] = OMIT,
         enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
+        system_fallback_message: typing.Optional[str] = OMIT,
+        persona: typing.Optional[LlmPersona] = OMIT,
+        additional_prompt_text: typing.Optional[str] = OMIT,
+        category_generation_prompt_text: typing.Optional[str] = OMIT,
+        content_safety_violation_response_prompt_text: typing.Optional[str] = OMIT,
+        reject_questions_without_knowledge: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Agent:
         """
@@ -269,6 +276,24 @@ class AgentsClient:
         enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
             The PII categories that are enabled for the agent.
 
+        system_fallback_message : typing.Optional[str]
+            The system fallback message.
+
+        persona : typing.Optional[LlmPersona]
+            The overall persona of the agent.
+
+        additional_prompt_text : typing.Optional[str]
+            Additional text directly appended to the prompt.
+
+        category_generation_prompt_text : typing.Optional[str]
+            LLM prompt for category generation.
+
+        content_safety_violation_response_prompt_text : typing.Optional[str]
+            LLM prompt for generating a response when the user's question has been detected as unsafe.
+
+        reject_questions_without_knowledge : typing.Optional[bool]
+            Return the system fallback message on all questions that have no relevant knowledge bases or actions.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -298,6 +323,12 @@ class AgentsClient:
             environment=environment,
             default_timezone=default_timezone,
             enabled_pii_categories=enabled_pii_categories,
+            system_fallback_message=system_fallback_message,
+            persona=persona,
+            additional_prompt_text=additional_prompt_text,
+            category_generation_prompt_text=category_generation_prompt_text,
+            content_safety_violation_response_prompt_text=content_safety_violation_response_prompt_text,
+            reject_questions_without_knowledge=reject_questions_without_knowledge,
             request_options=request_options,
         )
         return _response.data
@@ -609,6 +640,12 @@ class AsyncAgentsClient:
         environment: typing.Optional[AgentEnvironment] = OMIT,
         default_timezone: typing.Optional[str] = OMIT,
         enabled_pii_categories: typing.Optional[typing.Set[PiiCategory]] = OMIT,
+        system_fallback_message: typing.Optional[str] = OMIT,
+        persona: typing.Optional[LlmPersona] = OMIT,
+        additional_prompt_text: typing.Optional[str] = OMIT,
+        category_generation_prompt_text: typing.Optional[str] = OMIT,
+        content_safety_violation_response_prompt_text: typing.Optional[str] = OMIT,
+        reject_questions_without_knowledge: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Agent:
         """
@@ -638,6 +675,24 @@ class AsyncAgentsClient:
 
         enabled_pii_categories : typing.Optional[typing.Set[PiiCategory]]
             The PII categories that are enabled for the agent.
+
+        system_fallback_message : typing.Optional[str]
+            The system fallback message.
+
+        persona : typing.Optional[LlmPersona]
+            The overall persona of the agent.
+
+        additional_prompt_text : typing.Optional[str]
+            Additional text directly appended to the prompt.
+
+        category_generation_prompt_text : typing.Optional[str]
+            LLM prompt for category generation.
+
+        content_safety_violation_response_prompt_text : typing.Optional[str]
+            LLM prompt for generating a response when the user's question has been detected as unsafe.
+
+        reject_questions_without_knowledge : typing.Optional[bool]
+            Return the system fallback message on all questions that have no relevant knowledge bases or actions.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -676,6 +731,12 @@ class AsyncAgentsClient:
             environment=environment,
             default_timezone=default_timezone,
             enabled_pii_categories=enabled_pii_categories,
+            system_fallback_message=system_fallback_message,
+            persona=persona,
+            additional_prompt_text=additional_prompt_text,
+            category_generation_prompt_text=category_generation_prompt_text,
+            content_safety_violation_response_prompt_text=content_safety_violation_response_prompt_text,
+            reject_questions_without_knowledge=reject_questions_without_knowledge,
             request_options=request_options,
         )
         return _response.data

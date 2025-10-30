@@ -5,8 +5,10 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.llm_inclusion_status import LlmInclusionStatus
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 
 
 class KnowledgeBaseFilter(UniversalBaseModel):
@@ -50,6 +52,20 @@ class KnowledgeBaseFilter(UniversalBaseModel):
     )
     """
     Filter by app IDs
+    """
+
+    most_recent_version_status: typing_extensions.Annotated[
+        typing.Optional[typing.List[KnowledgeBaseVersionStatus]], FieldMetadata(alias="mostRecentVersionStatus")
+    ] = pydantic.Field(default=None)
+    """
+    Filter knowledge bases by the most recent version status
+    """
+
+    llm_inclusion_status: typing_extensions.Annotated[
+        typing.Optional[LlmInclusionStatus], FieldMetadata(alias="llmInclusionStatus")
+    ] = pydantic.Field(default=None)
+    """
+    Filter knowledge bases by the LLM inclusion status
     """
 
     if IS_PYDANTIC_V2:

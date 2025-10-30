@@ -319,6 +319,84 @@ class RawKnowledgeClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def refresh_knowledge_base(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[None]:
+        """
+        Request that a knowledge base refresh itself.
+
+        Knowledge bases refresh on a schedule determined by the `refreshFrequency` field.
+        They can also be refreshed on demand by calling this endpoint.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to refresh. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to refresh. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[None]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/refresh",
+            method="POST",
+            json={
+                "appId": app_id,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return HttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def patch_knowledge_base(
         self,
         knowledge_base_reference_id: str,
@@ -808,8 +886,8 @@ class RawKnowledgeClient:
         *,
         knowledge_document_id: EntityIdBase,
         content_type: KnowledgeDocumentContentType,
-        content: str,
         title: str,
+        content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -838,11 +916,11 @@ class RawKnowledgeClient:
 
         content_type : KnowledgeDocumentContentType
 
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
         title : str
             The title of the document. Will be shown as part of answers.
+
+        content : str
+            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
 
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
@@ -883,9 +961,9 @@ class RawKnowledgeClient:
                     object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "contentType": content_type,
+                "title": title,
                 "content": content,
                 "metadata": metadata,
-                "title": title,
                 "url": url,
                 "language": language,
                 "createdAt": created_at,
@@ -1353,6 +1431,84 @@ class AsyncRawKnowledgeClient:
                     ),
                 )
                 return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def refresh_knowledge_base(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[None]:
+        """
+        Request that a knowledge base refresh itself.
+
+        Knowledge bases refresh on a schedule determined by the `refreshFrequency` field.
+        They can also be refreshed on demand by calling this endpoint.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to refresh. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to refresh. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[None]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/refresh",
+            method="POST",
+            json={
+                "appId": app_id,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return AsyncHttpResponse(response=_response, data=None)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),
@@ -1880,8 +2036,8 @@ class AsyncRawKnowledgeClient:
         *,
         knowledge_document_id: EntityIdBase,
         content_type: KnowledgeDocumentContentType,
-        content: str,
         title: str,
+        content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -1910,11 +2066,11 @@ class AsyncRawKnowledgeClient:
 
         content_type : KnowledgeDocumentContentType
 
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
         title : str
             The title of the document. Will be shown as part of answers.
+
+        content : str
+            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
 
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
@@ -1955,9 +2111,9 @@ class AsyncRawKnowledgeClient:
                     object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "contentType": content_type,
+                "title": title,
                 "content": content,
                 "metadata": metadata,
-                "title": title,
                 "url": url,
                 "language": language,
                 "createdAt": created_at,

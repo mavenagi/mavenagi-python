@@ -49,6 +49,13 @@ class ActionResponse(ActionBase):
                 ),
             ],
         ),
+        segment_id=EntityId(
+            reference_id="premium-users",
+            app_id="my-billing-system",
+            organization_id="acme",
+            agent_id="support",
+            type="SEGMENT",
+        ),
         language="en",
         deleted=False,
     )

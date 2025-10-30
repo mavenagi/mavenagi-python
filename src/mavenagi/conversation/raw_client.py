@@ -1155,7 +1155,11 @@ class RawConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ConversationResponse]:
         """
-        Submit a filled out action form
+        Submit a filled out action form.
+        Action forms can not be submitted more than once, attempting to do so will result in an error.
+
+        Additionally, form submission is only allowed when the form is the last message in the conversation.
+        Forms should be disabled in surface UI if a conversation continues and they remain unsubmitted.
 
         Parameters
         ----------
@@ -1511,6 +1515,114 @@ class RawConversationClient:
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    @contextlib.contextmanager
+    def export(
+        self,
+        *,
+        sort: typing.Optional[ConversationField] = OMIT,
+        filter: typing.Optional[ConversationFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.Iterator[HttpResponse[typing.Iterator[bytes]]]:
+        """
+        Export conversations to a CSV file.
+
+        This will output a summary of each conversation that matches the supplied filter. A maximum of 10,000 conversations can be exported at a time.
+
+        For most use cases it is recommended to use the `search` API instead and convert the JSON response to your desired format.
+        The CSV format may change over time and should not be relied upon by code consumers.
+
+        Parameters
+        ----------
+        sort : typing.Optional[ConversationField]
+
+        filter : typing.Optional[ConversationFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.Iterator[HttpResponse[typing.Iterator[bytes]]]
+            A CSV containing one conversation per row
+        """
+        with self._client_wrapper.httpx_client.stream(
+            "v1/conversations/export",
+            method="POST",
+            json={
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=ConversationFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        ) as _response:
+
+            def _stream() -> HttpResponse[typing.Iterator[bytes]]:
+                try:
+                    if 200 <= _response.status_code < 300:
+                        _chunk_size = request_options.get("chunk_size", None) if request_options is not None else None
+                        return HttpResponse(
+                            response=_response, data=(_chunk for _chunk in _response.iter_bytes(chunk_size=_chunk_size))
+                        )
+                    _response.read()
+                    if _response.status_code == 404:
+                        raise NotFoundError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 400:
+                        raise BadRequestError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 500:
+                        raise ServerError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    _response_json = _response.json()
+                except JSONDecodeError:
+                    raise ApiError(
+                        status_code=_response.status_code, headers=dict(_response.headers), body=_response.text
+                    )
+                raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+            yield _stream()
 
     def deliver_message(
         self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None
@@ -2706,7 +2818,11 @@ class AsyncRawConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ConversationResponse]:
         """
-        Submit a filled out action form
+        Submit a filled out action form.
+        Action forms can not be submitted more than once, attempting to do so will result in an error.
+
+        Additionally, form submission is only allowed when the form is the last message in the conversation.
+        Forms should be disabled in surface UI if a conversation continues and they remain unsubmitted.
 
         Parameters
         ----------
@@ -3062,6 +3178,115 @@ class AsyncRawConversationClient:
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    @contextlib.asynccontextmanager
+    async def export(
+        self,
+        *,
+        sort: typing.Optional[ConversationField] = OMIT,
+        filter: typing.Optional[ConversationFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.AsyncIterator[AsyncHttpResponse[typing.AsyncIterator[bytes]]]:
+        """
+        Export conversations to a CSV file.
+
+        This will output a summary of each conversation that matches the supplied filter. A maximum of 10,000 conversations can be exported at a time.
+
+        For most use cases it is recommended to use the `search` API instead and convert the JSON response to your desired format.
+        The CSV format may change over time and should not be relied upon by code consumers.
+
+        Parameters
+        ----------
+        sort : typing.Optional[ConversationField]
+
+        filter : typing.Optional[ConversationFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.AsyncIterator[AsyncHttpResponse[typing.AsyncIterator[bytes]]]
+            A CSV containing one conversation per row
+        """
+        async with self._client_wrapper.httpx_client.stream(
+            "v1/conversations/export",
+            method="POST",
+            json={
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=ConversationFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        ) as _response:
+
+            async def _stream() -> AsyncHttpResponse[typing.AsyncIterator[bytes]]:
+                try:
+                    if 200 <= _response.status_code < 300:
+                        _chunk_size = request_options.get("chunk_size", None) if request_options is not None else None
+                        return AsyncHttpResponse(
+                            response=_response,
+                            data=(_chunk async for _chunk in _response.aiter_bytes(chunk_size=_chunk_size)),
+                        )
+                    await _response.aread()
+                    if _response.status_code == 404:
+                        raise NotFoundError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 400:
+                        raise BadRequestError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    if _response.status_code == 500:
+                        raise ServerError(
+                            headers=dict(_response.headers),
+                            body=typing.cast(
+                                ErrorMessage,
+                                parse_obj_as(
+                                    type_=ErrorMessage,  # type: ignore
+                                    object_=_response.json(),
+                                ),
+                            ),
+                        )
+                    _response_json = _response.json()
+                except JSONDecodeError:
+                    raise ApiError(
+                        status_code=_response.status_code, headers=dict(_response.headers), body=_response.text
+                    )
+                raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+            yield await _stream()
 
     async def deliver_message(
         self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None

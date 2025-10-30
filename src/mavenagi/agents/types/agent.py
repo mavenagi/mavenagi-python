@@ -9,6 +9,7 @@ from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .agent_environment import AgentEnvironment
+from .agent_prompting import AgentPrompting
 from .pii_category import PiiCategory
 
 
@@ -49,6 +50,20 @@ class Agent(UniversalBaseModel):
     Defaults to `AbaRoutingNumber`, `CreditCardNumber`, `IpAddress`, `PhoneNumber`, `SwiftCode`, 
     `UsBankAccountNumber`, `UsDriversLicenseNumber`, `UsIndividualTaxpayerIdentification`,
     `UsUkPassportNumber`, `UsSocialSecurityNumber`.
+    """
+
+    system_fallback_message: typing_extensions.Annotated[
+        typing.Optional[str], FieldMetadata(alias="systemFallbackMessage")
+    ] = pydantic.Field(default=None)
+    """
+    Text shown to end users when the system encounters an error while generating a bot response message.
+    
+    This text is also used when a content safety violation is detected, unless `contentSafetyViolationPromptText` is set.
+    """
+
+    prompting: AgentPrompting = pydantic.Field()
+    """
+    Agent prompting settings.
     """
 
     if IS_PYDANTIC_V2:

@@ -830,7 +830,11 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Submit a filled out action form
+        Submit a filled out action form.
+        Action forms can not be submitted more than once, attempting to do so will result in an error.
+
+        Additionally, form submission is only allowed when the form is the last message in the conversation.
+        Forms should be disabled in surface UI if a conversation continues and they remain unsubmitted.
 
         Parameters
         ----------
@@ -1032,6 +1036,64 @@ class ConversationClient:
             sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
         return _response.data
+
+    def export(
+        self,
+        *,
+        sort: typing.Optional[ConversationField] = OMIT,
+        filter: typing.Optional[ConversationFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.Iterator[bytes]:
+        """
+        Export conversations to a CSV file.
+
+        This will output a summary of each conversation that matches the supplied filter. A maximum of 10,000 conversations can be exported at a time.
+
+        For most use cases it is recommended to use the `search` API instead and convert the JSON response to your desired format.
+        The CSV format may change over time and should not be relied upon by code consumers.
+
+        Parameters
+        ----------
+        sort : typing.Optional[ConversationField]
+
+        filter : typing.Optional[ConversationFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.Iterator[bytes]
+            A CSV containing one conversation per row
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.conversation.export()
+        """
+        with self._raw_client.export(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        ) as r:
+            yield from r.data
 
     def deliver_message(
         self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None
@@ -1977,7 +2039,11 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
-        Submit a filled out action form
+        Submit a filled out action form.
+        Action forms can not be submitted more than once, attempting to do so will result in an error.
+
+        Additionally, form submission is only allowed when the form is the last message in the conversation.
+        Forms should be disabled in surface UI if a conversation continues and they remain unsubmitted.
 
         Parameters
         ----------
@@ -2211,6 +2277,73 @@ class AsyncConversationClient:
             sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
         return _response.data
+
+    async def export(
+        self,
+        *,
+        sort: typing.Optional[ConversationField] = OMIT,
+        filter: typing.Optional[ConversationFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.AsyncIterator[bytes]:
+        """
+        Export conversations to a CSV file.
+
+        This will output a summary of each conversation that matches the supplied filter. A maximum of 10,000 conversations can be exported at a time.
+
+        For most use cases it is recommended to use the `search` API instead and convert the JSON response to your desired format.
+        The CSV format may change over time and should not be relied upon by code consumers.
+
+        Parameters
+        ----------
+        sort : typing.Optional[ConversationField]
+
+        filter : typing.Optional[ConversationFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.AsyncIterator[bytes]
+            A CSV containing one conversation per row
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.conversation.export()
+
+
+        asyncio.run(main())
+        """
+        async with self._raw_client.export(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        ) as r:
+            async for _chunk in r.data:
+                yield _chunk
 
     async def deliver_message(
         self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None

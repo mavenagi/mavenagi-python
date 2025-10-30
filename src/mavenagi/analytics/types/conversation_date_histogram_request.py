@@ -23,6 +23,16 @@ class ConversationDateHistogramRequest(ConversationAnalyticsRequest):
     )
     """
     Groups data before applying calculations, forming a separate time series for each group.
+    
+    **Series Name Formats by Field:**
+    - `Sources`: Document title (e.g., "Product Documentation")
+    - `Actions`: "Action Name - App Name" (e.g., "Create Ticket - Freshdesk")
+    - `IncompleteActions`: "Action Name - App Name" (e.g., "Search Documents - Zendesk")
+    - `Users`: User identifier value (e.g., "user@example.com")
+    - `InboxItems`: Inbox item title
+    - `HumanAgents`: Human agent display name
+    - `HumanAgentsWithInserts`: Human agent display name (for agents who made inserts)
+    - Other fields: Field value as stored (e.g., "GOOD", "NEEDS_IMPROVEMENT" for Quality)
     """
 
     metric: ConversationMetric = pydantic.Field()

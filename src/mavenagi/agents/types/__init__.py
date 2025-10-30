@@ -6,7 +6,7 @@ from .agent import Agent
 from .agent_environment import AgentEnvironment
 from .agent_field import AgentField
 from .agent_filter import AgentFilter
-from .agent_patch_request import AgentPatchRequest
+from .agent_prompting import AgentPrompting
 from .agents_search_request import AgentsSearchRequest
 from .agents_search_response import AgentsSearchResponse
 from .create_agent_request import CreateAgentRequest
@@ -17,7 +17,7 @@ __all__ = [
     "AgentEnvironment",
     "AgentField",
     "AgentFilter",
-    "AgentPatchRequest",
+    "AgentPrompting",
     "AgentsSearchRequest",
     "AgentsSearchResponse",
     "CreateAgentRequest",

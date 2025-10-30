@@ -349,6 +349,7 @@ All other fields will overwrite the existing value on the action only if provide
 
 ```python
 from mavenagi import MavenAGI
+from mavenagi.commons import EntityId
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -357,7 +358,16 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.actions.patch(
-    action_reference_id="actionReferenceId",
+    action_reference_id="get-balance",
+    instructions="Use this action when the user asks about their account balance or remaining credits.",
+    llm_inclusion_status="WHEN_RELEVANT",
+    segment_id=EntityId(
+        reference_id="premium-users",
+        app_id="my-billing-system",
+        organization_id="acme",
+        agent_id="support",
+        type="SEGMENT",
+    ),
 )
 
 ```
@@ -1366,6 +1376,54 @@ client.agents.patch(
 <dd>
 
 **enabled_pii_categories:** `typing.Optional[typing.Set[PiiCategory]]` — The PII categories that are enabled for the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**system_fallback_message:** `typing.Optional[str]` — The system fallback message.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**persona:** `typing.Optional[LlmPersona]` — The overall persona of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**additional_prompt_text:** `typing.Optional[str]` — Additional text directly appended to the prompt.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**category_generation_prompt_text:** `typing.Optional[str]` — LLM prompt for category generation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content_safety_violation_response_prompt_text:** `typing.Optional[str]` — LLM prompt for generating a response when the user's question has been detected as unsafe.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**reject_questions_without_knowledge:** `typing.Optional[bool]` — Return the system fallback message on all questions that have no relevant knowledge bases or actions.
     
 </dd>
 </dl>
@@ -3630,7 +3688,11 @@ client.conversation.create_feedback(
 <dl>
 <dd>
 
-Submit a filled out action form
+Submit a filled out action form. 
+Action forms can not be submitted more than once, attempting to do so will result in an error.
+
+Additionally, form submission is only allowed when the form is the last message in the conversation. 
+Forms should be disabled in surface UI if a conversation continues and they remain unsubmitted.
 </dd>
 </dl>
 </dd>
@@ -3990,6 +4052,114 @@ client.conversation.search()
 <dd>
 
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">export</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Export conversations to a CSV file. 
+
+This will output a summary of each conversation that matches the supplied filter. A maximum of 10,000 conversations can be exported at a time.
+
+For most use cases it is recommended to use the `search` API instead and convert the JSON response to your desired format. 
+The CSV format may change over time and should not be relied upon by code consumers.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation.export()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[ConversationField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[ConversationFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
     
 </dd>
 </dl>
@@ -4363,6 +4533,111 @@ client.events.get(
 <dd>
 
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.events.<a href="src/mavenagi/events/client.py">export</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Export events to a CSV file.
+
+This will output a summary of each event that matches the supplied filter. A maximum of 10,000 events can be exported at a time. For most use cases it is recommended to use the search API instead and convert the JSON response to your desired format. The CSV format may change over time and should not be relied upon by code consumers.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.events.export()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[EventField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[EventFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
     
 </dd>
 </dl>
@@ -5109,6 +5384,91 @@ client.knowledge.get_knowledge_base(
 </dl>
 </details>
 
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">refresh_knowledge_base</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Request that a knowledge base refresh itself.
+
+Knowledge bases refresh on a schedule determined by the `refreshFrequency` field.
+They can also be refreshed on demand by calling this endpoint.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.refresh_knowledge_base(
+    knowledge_base_reference_id="help-center",
+    app_id="readme",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to refresh. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the knowledge base to refresh. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">patch_knowledge_base</a>(...)</code></summary>
 <dl>
 <dd>
@@ -5140,6 +5500,7 @@ All other fields will overwrite the existing value on the knowledge base only if
 
 ```python
 from mavenagi import MavenAGI
+from mavenagi.commons import EntityId
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -5148,7 +5509,16 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.knowledge.patch_knowledge_base(
-    knowledge_base_reference_id="knowledgeBaseReferenceId",
+    knowledge_base_reference_id="help-center",
+    name="Updated Help Center",
+    tags={"tag1", "tag2", "tag3"},
+    segment_id=EntityId(
+        reference_id="premium-users",
+        app_id="readme",
+        organization_id="acme",
+        agent_id="support",
+        type="SEGMENT",
+    ),
 )
 
 ```
@@ -5715,7 +6085,7 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**content:** `str` — The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
+**title:** `str` — The title of the document. Will be shown as part of answers.
     
 </dd>
 </dl>
@@ -5723,7 +6093,7 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**title:** `str` — The title of the document. Will be shown as part of answers.
+**content:** `str` — The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
     
 </dd>
 </dl>

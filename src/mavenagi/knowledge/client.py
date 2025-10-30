@@ -201,6 +201,54 @@ class KnowledgeClient:
         )
         return _response.data
 
+    def refresh_knowledge_base(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        Request that a knowledge base refresh itself.
+
+        Knowledge bases refresh on a schedule determined by the `refreshFrequency` field.
+        They can also be refreshed on demand by calling this endpoint.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to refresh. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to refresh. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.refresh_knowledge_base(
+            knowledge_base_reference_id="help-center",
+            app_id="readme",
+        )
+        """
+        _response = self._raw_client.refresh_knowledge_base(
+            knowledge_base_reference_id, app_id=app_id, request_options=request_options
+        )
+        return _response.data
+
     def patch_knowledge_base(
         self,
         knowledge_base_reference_id: str,
@@ -260,6 +308,7 @@ class KnowledgeClient:
         Examples
         --------
         from mavenagi import MavenAGI
+        from mavenagi.commons import EntityId
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -268,7 +317,16 @@ class KnowledgeClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.knowledge.patch_knowledge_base(
-            knowledge_base_reference_id="knowledgeBaseReferenceId",
+            knowledge_base_reference_id="help-center",
+            name="Updated Help Center",
+            tags={"tag1", "tag2", "tag3"},
+            segment_id=EntityId(
+                reference_id="premium-users",
+                app_id="readme",
+                organization_id="acme",
+                agent_id="support",
+                type="SEGMENT",
+            ),
         )
         """
         _response = self._raw_client.patch_knowledge_base(
@@ -496,8 +554,8 @@ class KnowledgeClient:
         *,
         knowledge_document_id: EntityIdBase,
         content_type: KnowledgeDocumentContentType,
-        content: str,
         title: str,
+        content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -526,11 +584,11 @@ class KnowledgeClient:
 
         content_type : KnowledgeDocumentContentType
 
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
         title : str
             The title of the document. Will be shown as part of answers.
+
+        content : str
+            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
 
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
@@ -591,8 +649,8 @@ class KnowledgeClient:
             knowledge_base_reference_id,
             knowledge_document_id=knowledge_document_id,
             content_type=content_type,
-            content=content,
             title=title,
+            content=content,
             version_id=version_id,
             metadata=metadata,
             url=url,
@@ -912,6 +970,62 @@ class AsyncKnowledgeClient:
         )
         return _response.data
 
+    async def refresh_knowledge_base(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        Request that a knowledge base refresh itself.
+
+        Knowledge bases refresh on a schedule determined by the `refreshFrequency` field.
+        They can also be refreshed on demand by calling this endpoint.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to refresh. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to refresh. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.refresh_knowledge_base(
+                knowledge_base_reference_id="help-center",
+                app_id="readme",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.refresh_knowledge_base(
+            knowledge_base_reference_id, app_id=app_id, request_options=request_options
+        )
+        return _response.data
+
     async def patch_knowledge_base(
         self,
         knowledge_base_reference_id: str,
@@ -973,6 +1087,7 @@ class AsyncKnowledgeClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityId
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -984,7 +1099,16 @@ class AsyncKnowledgeClient:
 
         async def main() -> None:
             await client.knowledge.patch_knowledge_base(
-                knowledge_base_reference_id="knowledgeBaseReferenceId",
+                knowledge_base_reference_id="help-center",
+                name="Updated Help Center",
+                tags={"tag1", "tag2", "tag3"},
+                segment_id=EntityId(
+                    reference_id="premium-users",
+                    app_id="readme",
+                    organization_id="acme",
+                    agent_id="support",
+                    type="SEGMENT",
+                ),
             )
 
 
@@ -1247,8 +1371,8 @@ class AsyncKnowledgeClient:
         *,
         knowledge_document_id: EntityIdBase,
         content_type: KnowledgeDocumentContentType,
-        content: str,
         title: str,
+        content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         url: typing.Optional[str] = OMIT,
@@ -1277,11 +1401,11 @@ class AsyncKnowledgeClient:
 
         content_type : KnowledgeDocumentContentType
 
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
         title : str
             The title of the document. Will be shown as part of answers.
+
+        content : str
+            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
 
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
@@ -1350,8 +1474,8 @@ class AsyncKnowledgeClient:
             knowledge_base_reference_id,
             knowledge_document_id=knowledge_document_id,
             content_type=content_type,
-            content=content,
             title=title,
+            content=content,
             version_id=version_id,
             metadata=metadata,
             url=url,

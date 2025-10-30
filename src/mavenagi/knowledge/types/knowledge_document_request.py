@@ -50,6 +50,11 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
     """
 
     content_type: typing_extensions.Annotated[KnowledgeDocumentContentType, FieldMetadata(alias="contentType")]
+    title: str = pydantic.Field()
+    """
+    The title of the document. Will be shown as part of answers.
+    """
+
     content: str = pydantic.Field()
     """
     The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.

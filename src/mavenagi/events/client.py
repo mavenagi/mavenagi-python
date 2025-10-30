@@ -172,6 +172,61 @@ class EventsClient:
         _response = self._raw_client.get(event_id, app_id=app_id, request_options=request_options)
         return _response.data
 
+    def export(
+        self,
+        *,
+        sort: typing.Optional[EventField] = OMIT,
+        filter: typing.Optional[EventFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.Iterator[bytes]:
+        """
+        Export events to a CSV file.
+
+        This will output a summary of each event that matches the supplied filter. A maximum of 10,000 events can be exported at a time. For most use cases it is recommended to use the search API instead and convert the JSON response to your desired format. The CSV format may change over time and should not be relied upon by code consumers.
+
+        Parameters
+        ----------
+        sort : typing.Optional[EventField]
+
+        filter : typing.Optional[EventFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.Iterator[bytes]
+            A CSV containing one event per row
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.events.export()
+        """
+        with self._raw_client.export(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        ) as r:
+            yield from r.data
+
 
 class AsyncEventsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -353,3 +408,67 @@ class AsyncEventsClient:
         """
         _response = await self._raw_client.get(event_id, app_id=app_id, request_options=request_options)
         return _response.data
+
+    async def export(
+        self,
+        *,
+        sort: typing.Optional[EventField] = OMIT,
+        filter: typing.Optional[EventFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.AsyncIterator[bytes]:
+        """
+        Export events to a CSV file.
+
+        This will output a summary of each event that matches the supplied filter. A maximum of 10,000 events can be exported at a time. For most use cases it is recommended to use the search API instead and convert the JSON response to your desired format. The CSV format may change over time and should not be relied upon by code consumers.
+
+        Parameters
+        ----------
+        sort : typing.Optional[EventField]
+
+        filter : typing.Optional[EventFilter]
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.AsyncIterator[bytes]
+            A CSV containing one event per row
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.events.export()
+
+
+        asyncio.run(main())
+        """
+        async with self._raw_client.export(
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        ) as r:
+            async for _chunk in r.data:
+                yield _chunk

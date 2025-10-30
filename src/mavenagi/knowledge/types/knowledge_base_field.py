@@ -2,4 +2,4 @@
 
 import typing
 
-KnowledgeBaseField = typing.Union[typing.Literal["Title", "UpdatedAt"], typing.Any]
+KnowledgeBaseField = typing.Union[typing.Literal["Title", "CreatedAt", "UpdatedAt"], typing.Any]

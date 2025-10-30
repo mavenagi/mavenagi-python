@@ -10,11 +10,6 @@ from ...core.serialization import FieldMetadata
 
 
 class BaseKnowledgeDocument(UniversalBaseModel):
-    title: str = pydantic.Field()
-    """
-    The title of the document. Will be shown as part of answers.
-    """
-
     url: typing.Optional[str] = pydantic.Field(default=None)
     """
     The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.

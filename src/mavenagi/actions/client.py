@@ -268,6 +268,7 @@ class ActionsClient:
         Examples
         --------
         from mavenagi import MavenAGI
+        from mavenagi.commons import EntityId
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -276,7 +277,16 @@ class ActionsClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.actions.patch(
-            action_reference_id="actionReferenceId",
+            action_reference_id="get-balance",
+            instructions="Use this action when the user asks about their account balance or remaining credits.",
+            llm_inclusion_status="WHEN_RELEVANT",
+            segment_id=EntityId(
+                reference_id="premium-users",
+                app_id="my-billing-system",
+                organization_id="acme",
+                agent_id="support",
+                type="SEGMENT",
+            ),
         )
         """
         _response = self._raw_client.patch(
@@ -598,6 +608,7 @@ class AsyncActionsClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityId
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -609,7 +620,16 @@ class AsyncActionsClient:
 
         async def main() -> None:
             await client.actions.patch(
-                action_reference_id="actionReferenceId",
+                action_reference_id="get-balance",
+                instructions="Use this action when the user asks about their account balance or remaining credits.",
+                llm_inclusion_status="WHEN_RELEVANT",
+                segment_id=EntityId(
+                    reference_id="premium-users",
+                    app_id="my-billing-system",
+                    organization_id="acme",
+                    agent_id="support",
+                    type="SEGMENT",
+                ),
             )
 
 
