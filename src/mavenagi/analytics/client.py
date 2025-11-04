@@ -188,6 +188,97 @@ class AnalyticsClient:
         _response = self._raw_client.get_conversation_chart(request=request, request_options=request_options)
         return _response.data
 
+    def export_conversation_table(
+        self,
+        *,
+        field_groupings: typing.Sequence[ConversationGroupBy],
+        column_definitions: typing.Sequence[ConversationColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        conversation_filter: typing.Optional[ConversationFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.Iterator[bytes]:
+        """
+        Export the conversation analytics table to a CSV file.
+
+        This outputs the current table view defined by the request. For most programmatic use cases, prefer `getConversationTable` and format client-side. The CSV format may change and should not be relied upon by code consumers. A maximum of 10,000 rows can be exported at a time.
+
+        Parameters
+        ----------
+        field_groupings : typing.Sequence[ConversationGroupBy]
+            Specifies the fields by which data should be grouped. Each unique combination forms a row.
+            If multiple fields are provided, the result is grouped by their unique value combinations.
+            If empty, all data is aggregated into a single row. |
+            Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+
+        column_definitions : typing.Sequence[ConversationColumnDefinition]
+            Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
+
+        conversation_filter : typing.Optional[ConversationFilter]
+            Optional filter applied to refine the conversation data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.Iterator[bytes]
+            A CSV containing one aggregated row per result
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.analytics import (
+            ConversationColumnDefinition,
+            ConversationGroupBy,
+            ConversationMetric_Count,
+        )
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.analytics.export_conversation_table(
+            field_groupings=[
+                ConversationGroupBy(
+                    field="Category",
+                ),
+                ConversationGroupBy(
+                    field="Category",
+                ),
+            ],
+            column_definitions=[
+                ConversationColumnDefinition(
+                    metric=ConversationMetric_Count(),
+                    header="header",
+                ),
+                ConversationColumnDefinition(
+                    metric=ConversationMetric_Count(),
+                    header="header",
+                ),
+            ],
+        )
+        """
+        with self._raw_client.export_conversation_table(
+            field_groupings=field_groupings,
+            column_definitions=column_definitions,
+            time_grouping=time_grouping,
+            conversation_filter=conversation_filter,
+            timezone=timezone,
+            request_options=request_options,
+        ) as r:
+            yield from r.data
+
     def get_feedback_table(
         self,
         *,
@@ -526,6 +617,106 @@ class AsyncAnalyticsClient:
         """
         _response = await self._raw_client.get_conversation_chart(request=request, request_options=request_options)
         return _response.data
+
+    async def export_conversation_table(
+        self,
+        *,
+        field_groupings: typing.Sequence[ConversationGroupBy],
+        column_definitions: typing.Sequence[ConversationColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        conversation_filter: typing.Optional[ConversationFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> typing.AsyncIterator[bytes]:
+        """
+        Export the conversation analytics table to a CSV file.
+
+        This outputs the current table view defined by the request. For most programmatic use cases, prefer `getConversationTable` and format client-side. The CSV format may change and should not be relied upon by code consumers. A maximum of 10,000 rows can be exported at a time.
+
+        Parameters
+        ----------
+        field_groupings : typing.Sequence[ConversationGroupBy]
+            Specifies the fields by which data should be grouped. Each unique combination forms a row.
+            If multiple fields are provided, the result is grouped by their unique value combinations.
+            If empty, all data is aggregated into a single row. |
+            Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+
+        column_definitions : typing.Sequence[ConversationColumnDefinition]
+            Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
+
+        conversation_filter : typing.Optional[ConversationFilter]
+            Optional filter applied to refine the conversation data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+
+        Returns
+        -------
+        typing.AsyncIterator[bytes]
+            A CSV containing one aggregated row per result
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.analytics import (
+            ConversationColumnDefinition,
+            ConversationGroupBy,
+            ConversationMetric_Count,
+        )
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.analytics.export_conversation_table(
+                field_groupings=[
+                    ConversationGroupBy(
+                        field="Category",
+                    ),
+                    ConversationGroupBy(
+                        field="Category",
+                    ),
+                ],
+                column_definitions=[
+                    ConversationColumnDefinition(
+                        metric=ConversationMetric_Count(),
+                        header="header",
+                    ),
+                    ConversationColumnDefinition(
+                        metric=ConversationMetric_Count(),
+                        header="header",
+                    ),
+                ],
+            )
+
+
+        asyncio.run(main())
+        """
+        async with self._raw_client.export_conversation_table(
+            field_groupings=field_groupings,
+            column_definitions=column_definitions,
+            time_grouping=time_grouping,
+            conversation_filter=conversation_filter,
+            timezone=timezone,
+            request_options=request_options,
+        ) as r:
+            async for _chunk in r.data:
+                yield _chunk
 
     async def get_feedback_table(
         self,

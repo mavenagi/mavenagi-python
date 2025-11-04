@@ -1769,6 +1769,144 @@ client.analytics.get_conversation_chart(
 </dl>
 </details>
 
+<details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">export_conversation_table</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Export the conversation analytics table to a CSV file.
+
+This outputs the current table view defined by the request. For most programmatic use cases, prefer `getConversationTable` and format client-side. The CSV format may change and should not be relied upon by code consumers. A maximum of 10,000 rows can be exported at a time.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import (
+    ConversationColumnDefinition,
+    ConversationGroupBy,
+    ConversationMetric_Count,
+)
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.analytics.export_conversation_table(
+    field_groupings=[
+        ConversationGroupBy(
+            field="Category",
+        ),
+        ConversationGroupBy(
+            field="Category",
+        ),
+    ],
+    column_definitions=[
+        ConversationColumnDefinition(
+            metric=ConversationMetric_Count(),
+            header="header",
+        ),
+        ConversationColumnDefinition(
+            metric=ConversationMetric_Count(),
+            header="header",
+        ),
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_groupings:** `typing.Sequence[ConversationGroupBy]` 
+
+Specifies the fields by which data should be grouped. Each unique combination forms a row.
+If multiple fields are provided, the result is grouped by their unique value combinations.
+If empty, all data is aggregated into a single row. |
+Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**column_definitions:** `typing.Sequence[ConversationColumnDefinition]` — Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**time_grouping:** `typing.Optional[TimeInterval]` — Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**conversation_filter:** `typing.Optional[ConversationFilter]` — Optional filter applied to refine the conversation data before processing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` 
+
+IANA timezone identifier (e.g., "America/Los_Angeles").
+When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+otherwise UTC is used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration. You can pass in configuration such as `chunk_size`, and more to customize the request and response.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_feedback_table</a>(...)</code></summary>
 <dl>
 <dd>

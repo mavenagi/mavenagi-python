@@ -85,6 +85,20 @@ class ConversationSummary(UniversalBaseModel):
     The names of all users that have a message of type `USER` on the conversation.
     """
 
+    last_user_message: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="lastUserMessage")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The text of the last user message in the conversation.
+    """
+
+    last_bot_message: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="lastBotMessage")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The text of the last bot message in the conversation.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

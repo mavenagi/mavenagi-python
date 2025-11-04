@@ -8,6 +8,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .app_user import AppUser
 from .entity_id import EntityId
+from .user_data_with_reference import UserDataWithReference
 
 
 class AppUserResponse(AppUser):
@@ -18,7 +19,9 @@ class AppUserResponse(AppUser):
         AppUserIdentifier,
         AppUserResponse,
         EntityId,
+        EntityIdFilter,
         UserData,
+        UserDataWithReference,
     )
 
     AppUserResponse(
@@ -44,6 +47,18 @@ class AppUserResponse(AppUser):
         },
         all_user_data={"myapp": {"name": "Joe"}},
         default_user_data={"name": "Joe"},
+        agent_user_data={
+            "name": [
+                UserDataWithReference(
+                    value="Joe",
+                    visibility="VISIBLE",
+                    user_id=EntityIdFilter(
+                        app_id="myapp",
+                        reference_id="user0",
+                    ),
+                )
+            ]
+        },
     )
     """
 
@@ -69,6 +84,13 @@ class AppUserResponse(AppUser):
     )
     """
     Default data for this user
+    """
+
+    agent_user_data: typing_extensions.Annotated[
+        typing.Dict[str, typing.List[UserDataWithReference]], FieldMetadata(alias="agentUserData")
+    ] = pydantic.Field()
+    """
+    All user data for this user, including reverse indexable user data
     """
 
     if IS_PYDANTIC_V2:

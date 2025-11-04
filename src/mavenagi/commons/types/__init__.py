@@ -160,6 +160,7 @@ from .system_event_name import SystemEventName
 from .tags_precondition import TagsPrecondition
 from .user_conversation_message_type import UserConversationMessageType
 from .user_data import UserData
+from .user_data_with_reference import UserDataWithReference
 from .user_event import UserEvent
 from .user_event_name import UserEventName
 from .user_message import UserMessage
@@ -327,6 +328,7 @@ __all__ = [
     "TagsPrecondition",
     "UserConversationMessageType",
     "UserData",
+    "UserDataWithReference",
     "UserEvent",
     "UserEventName",
     "UserMessage",
