@@ -53,6 +53,7 @@ class ConversationResponse(BaseConversationResponse):
             human_agents=[],
             human_agents_with_inserts=[],
             users=[],
+            user_identifiers=[],
         ),
         metadata={},
         all_metadata={},

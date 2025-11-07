@@ -3,6 +3,7 @@
 import datetime as dt
 import typing
 
+from .. import core
 from ..commons.types.attachment_request import AttachmentRequest
 from ..commons.types.conversation_response import ConversationResponse
 from ..commons.types.entity_id_base import EntityIdBase
@@ -1094,6 +1095,42 @@ class ConversationClient:
             sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         ) as r:
             yield from r.data
+
+    def import_simulations(
+        self,
+        *,
+        file: core.File,
+        response_config: typing.Optional[ResponseConfig] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        Import simulation conversations from a CSV file.
+
+        This CSV format is very simple and only allows for one column: `question`. A header containing this column is required.
+        Each row will generate one simulation conversation, using the provided response config, if present.
+
+        This API is offered for backwards compatibility.
+        Most API callers should create simulations programmatically to allow for more flexibility.
+
+        Parameters
+        ----------
+        file : core.File
+            See core.File for more documentation
+
+        response_config : typing.Optional[ResponseConfig]
+            The response config to use for all of the created simulations.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+        """
+        _response = self._raw_client.import_simulations(
+            file=file, response_config=response_config, request_options=request_options
+        )
+        return _response.data
 
     def deliver_message(
         self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None
@@ -2344,6 +2381,42 @@ class AsyncConversationClient:
         ) as r:
             async for _chunk in r.data:
                 yield _chunk
+
+    async def import_simulations(
+        self,
+        *,
+        file: core.File,
+        response_config: typing.Optional[ResponseConfig] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        Import simulation conversations from a CSV file.
+
+        This CSV format is very simple and only allows for one column: `question`. A header containing this column is required.
+        Each row will generate one simulation conversation, using the provided response config, if present.
+
+        This API is offered for backwards compatibility.
+        Most API callers should create simulations programmatically to allow for more flexibility.
+
+        Parameters
+        ----------
+        file : core.File
+            See core.File for more documentation
+
+        response_config : typing.Optional[ResponseConfig]
+            The response config to use for all of the created simulations.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+        """
+        _response = await self._raw_client.import_simulations(
+            file=file, response_config=response_config, request_options=request_options
+        )
+        return _response.data
 
     async def deliver_message(
         self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None

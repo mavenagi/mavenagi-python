@@ -7,6 +7,7 @@ import typing
 from json.decoder import JSONDecodeError
 
 import httpx_sse
+from .. import core
 from ..commons.errors.bad_request_error import BadRequestError
 from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.server_error import ServerError
@@ -1623,6 +1624,91 @@ class RawConversationClient:
                 raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
             yield _stream()
+
+    def import_simulations(
+        self,
+        *,
+        file: core.File,
+        response_config: typing.Optional[ResponseConfig] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[None]:
+        """
+        Import simulation conversations from a CSV file.
+
+        This CSV format is very simple and only allows for one column: `question`. A header containing this column is required.
+        Each row will generate one simulation conversation, using the provided response config, if present.
+
+        This API is offered for backwards compatibility.
+        Most API callers should create simulations programmatically to allow for more flexibility.
+
+        Parameters
+        ----------
+        file : core.File
+            See core.File for more documentation
+
+        response_config : typing.Optional[ResponseConfig]
+            The response config to use for all of the created simulations.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[None]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/conversations/import_simulations",
+            method="POST",
+            data={
+                "responseConfig": response_config,
+            },
+            files={
+                "file": file,
+            },
+            request_options=request_options,
+            omit=OMIT,
+            force_multipart=True,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return HttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def deliver_message(
         self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None
@@ -3287,6 +3373,91 @@ class AsyncRawConversationClient:
                 raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
             yield await _stream()
+
+    async def import_simulations(
+        self,
+        *,
+        file: core.File,
+        response_config: typing.Optional[ResponseConfig] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[None]:
+        """
+        Import simulation conversations from a CSV file.
+
+        This CSV format is very simple and only allows for one column: `question`. A header containing this column is required.
+        Each row will generate one simulation conversation, using the provided response config, if present.
+
+        This API is offered for backwards compatibility.
+        Most API callers should create simulations programmatically to allow for more flexibility.
+
+        Parameters
+        ----------
+        file : core.File
+            See core.File for more documentation
+
+        response_config : typing.Optional[ResponseConfig]
+            The response config to use for all of the created simulations.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[None]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/conversations/import_simulations",
+            method="POST",
+            data={
+                "responseConfig": response_config,
+            },
+            files={
+                "file": file,
+            },
+            request_options=request_options,
+            omit=OMIT,
+            force_multipart=True,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return AsyncHttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def deliver_message(
         self, *, request: DeliverMessageRequest, request_options: typing.Optional[RequestOptions] = None

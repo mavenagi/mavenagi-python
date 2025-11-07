@@ -890,10 +890,10 @@ class RawKnowledgeClient:
         content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        url: typing.Optional[str] = OMIT,
-        language: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
+        url: typing.Optional[str] = OMIT,
+        language: typing.Optional[str] = OMIT,
         author: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[KnowledgeDocumentResponse]:
@@ -928,17 +928,17 @@ class RawKnowledgeClient:
         metadata : typing.Optional[typing.Dict[str, str]]
             Metadata for the knowledge document.
 
-        url : typing.Optional[str]
-            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-
-        language : typing.Optional[str]
-            The document language. Must be a valid ISO 639-1 language code.
-
         created_at : typing.Optional[dt.datetime]
             The time at which this document was created.
 
         updated_at : typing.Optional[dt.datetime]
             The time at which this document was last modified.
+
+        url : typing.Optional[str]
+            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
+
+        language : typing.Optional[str]
+            The document language. Must be a valid ISO 639-1 language code.
 
         author : typing.Optional[str]
             The name of the author who created this document.
@@ -964,10 +964,10 @@ class RawKnowledgeClient:
                 "title": title,
                 "content": content,
                 "metadata": metadata,
-                "url": url,
-                "language": language,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
+                "url": url,
+                "language": language,
                 "author": author,
             },
             request_options=request_options,
@@ -1139,6 +1139,105 @@ class RawKnowledgeClient:
                 "knowledgeBaseVersionAppId": knowledge_base_version_app_id,
             },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeDocumentResponse,
+                    parse_obj_as(
+                        type_=KnowledgeDocumentResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def patch_knowledge_document(
+        self,
+        knowledge_base_reference_id: str,
+        knowledge_document_reference_id: str,
+        *,
+        knowledge_base_app_id: typing.Optional[str] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[KnowledgeDocumentResponse]:
+        """
+        Update mutable knowledge document fields that can be set independently of a knowledge base version.
+
+        For any changes in document content see the `createKnowledgeBaseVersion` and `createKnowledgeDocument` endpoints.
+
+        The `knowledgeBaseAppId` field can be provided to update a knowledge document in a knowledge base owned by a different app.
+        All other fields will overwrite the existing value on the knowledge document only if provided.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to patch.
+
+        knowledge_document_reference_id : str
+            The reference ID of the knowledge document to patch.
+
+        knowledge_base_app_id : typing.Optional[str]
+            The App ID of the knowledge base that contains the knowledge document to patch. If not provided the ID of the calling app will be used.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether this document is sent to the LLM as part of a conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[KnowledgeDocumentResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/{jsonable_encoder(knowledge_document_reference_id)}/document",
+            method="PATCH",
+            json={
+                "knowledgeBaseAppId": knowledge_base_app_id,
+                "llmInclusionStatus": llm_inclusion_status,
+            },
+            headers={
+                "content-type": "application/merge-patch+json",
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
@@ -2040,10 +2139,10 @@ class AsyncRawKnowledgeClient:
         content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        url: typing.Optional[str] = OMIT,
-        language: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
+        url: typing.Optional[str] = OMIT,
+        language: typing.Optional[str] = OMIT,
         author: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[KnowledgeDocumentResponse]:
@@ -2078,17 +2177,17 @@ class AsyncRawKnowledgeClient:
         metadata : typing.Optional[typing.Dict[str, str]]
             Metadata for the knowledge document.
 
-        url : typing.Optional[str]
-            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-
-        language : typing.Optional[str]
-            The document language. Must be a valid ISO 639-1 language code.
-
         created_at : typing.Optional[dt.datetime]
             The time at which this document was created.
 
         updated_at : typing.Optional[dt.datetime]
             The time at which this document was last modified.
+
+        url : typing.Optional[str]
+            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
+
+        language : typing.Optional[str]
+            The document language. Must be a valid ISO 639-1 language code.
 
         author : typing.Optional[str]
             The name of the author who created this document.
@@ -2114,10 +2213,10 @@ class AsyncRawKnowledgeClient:
                 "title": title,
                 "content": content,
                 "metadata": metadata,
-                "url": url,
-                "language": language,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
+                "url": url,
+                "language": language,
                 "author": author,
             },
             request_options=request_options,
@@ -2289,6 +2388,105 @@ class AsyncRawKnowledgeClient:
                 "knowledgeBaseVersionAppId": knowledge_base_version_app_id,
             },
             request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeDocumentResponse,
+                    parse_obj_as(
+                        type_=KnowledgeDocumentResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def patch_knowledge_document(
+        self,
+        knowledge_base_reference_id: str,
+        knowledge_document_reference_id: str,
+        *,
+        knowledge_base_app_id: typing.Optional[str] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[KnowledgeDocumentResponse]:
+        """
+        Update mutable knowledge document fields that can be set independently of a knowledge base version.
+
+        For any changes in document content see the `createKnowledgeBaseVersion` and `createKnowledgeDocument` endpoints.
+
+        The `knowledgeBaseAppId` field can be provided to update a knowledge document in a knowledge base owned by a different app.
+        All other fields will overwrite the existing value on the knowledge document only if provided.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to patch.
+
+        knowledge_document_reference_id : str
+            The reference ID of the knowledge document to patch.
+
+        knowledge_base_app_id : typing.Optional[str]
+            The App ID of the knowledge base that contains the knowledge document to patch. If not provided the ID of the calling app will be used.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether this document is sent to the LLM as part of a conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[KnowledgeDocumentResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/{jsonable_encoder(knowledge_document_reference_id)}/document",
+            method="PATCH",
+            json={
+                "knowledgeBaseAppId": knowledge_base_app_id,
+                "llmInclusionStatus": llm_inclusion_status,
+            },
+            headers={
+                "content-type": "application/merge-patch+json",
+            },
+            request_options=request_options,
+            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:

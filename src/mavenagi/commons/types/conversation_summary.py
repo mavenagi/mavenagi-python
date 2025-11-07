@@ -85,6 +85,13 @@ class ConversationSummary(UniversalBaseModel):
     The names of all users that have a message of type `USER` on the conversation.
     """
 
+    user_identifiers: typing_extensions.Annotated[typing.List[str], FieldMetadata(alias="userIdentifiers")] = (
+        pydantic.Field()
+    )
+    """
+    The user identifiers (typically email addresses or phone numbers) of all users that have a message of type `USER` on the conversation.
+    """
+
     last_user_message: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="lastUserMessage")] = (
         pydantic.Field(default=None)
     )

@@ -6,6 +6,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
+from ...commons.types.llm_inclusion_status import LlmInclusionStatus
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 
@@ -30,6 +31,11 @@ class KnowledgeDocumentFilter(UniversalBaseModel):
     title: typing.Optional[str] = pydantic.Field(default=None)
     """
     Filter by title
+    """
+
+    url: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Filter by url
     """
 
     created_after: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAfter")] = (
@@ -59,6 +65,13 @@ class KnowledgeDocumentFilter(UniversalBaseModel):
     """
     Filter documents within the specified knowledge base version. 
     If not provided all active knowledge base versions within the agent will be searched.
+    """
+
+    llm_inclusion_status: typing_extensions.Annotated[
+        typing.Optional[typing.List[LlmInclusionStatus]], FieldMetadata(alias="llmInclusionStatus")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by the LLM inclusion status
     """
 
     if IS_PYDANTIC_V2:

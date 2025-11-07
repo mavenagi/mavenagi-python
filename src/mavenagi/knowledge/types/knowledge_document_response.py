@@ -11,6 +11,8 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
     """
     Examples
     --------
+    import datetime
+
     from mavenagi.commons import EntityId
     from mavenagi.knowledge import KnowledgeDocumentResponse
 
@@ -32,6 +34,13 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
         content="## Getting started This is a getting started guide for the help center.",
         title="Getting started",
         metadata={"category": "getting-started"},
+        created_at=datetime.datetime.fromisoformat(
+            "2024-01-01 00:00:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2024-02-02 00:00:00+00:00",
+        ),
+        llm_inclusion_status="WHEN_RELEVANT",
     )
     """
 

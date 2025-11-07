@@ -515,400 +515,6 @@ client.actions.delete(
 </dl>
 </details>
 
-## AgentCapabilities
-<details><summary><code>client.agent_capabilities.<a href="src/mavenagi/agent_capabilities/client.py">list</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-List all capabilities for an agent.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.agent_capabilities.list()
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**capability_type:** `typing.Optional[AgentCapabilityType]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pinned:** `typing.Optional[bool]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**enabled:** `typing.Optional[bool]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**integration_ids:** `typing.Optional[typing.Sequence[str]]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**user_interaction_required:** `typing.Optional[bool]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sort_id:** `typing.Optional[AgentCapabilityField]` — The field to sort by, defaults to created timestamp
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**page:** `typing.Optional[int]` — Page number to return, defaults to 0
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.agent_capabilities.<a href="src/mavenagi/agent_capabilities/client.py">get</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.agent_capabilities.get(
-    integration_id="integrationId",
-    capability_id="capabilityId",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**integration_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**capability_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.agent_capabilities.<a href="src/mavenagi/agent_capabilities/client.py">patch</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.agent_capabilities.patch(
-    integration_id="integrationId",
-    capability_id="capabilityId",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**integration_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**capability_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**enabled:** `typing.Optional[bool]` — Whether this capability is enabled or disabled
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description_override:** `typing.Optional[str]` — Override description for action capabilities. Only applies to actions, ignored for triggers.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**pinned:** `typing.Optional[bool]` — Whether this action capability is pinned. Only applies to actions, ignored for triggers.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.agent_capabilities.<a href="src/mavenagi/agent_capabilities/client.py">execute</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Execute an action capability.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.agent_capabilities.execute(
-    integration_id="integrationId",
-    capability_id="capabilityId",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**integration_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**capability_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**parameters:** `typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]]` — Parameters to pass to the action execution
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 ## Agents
 <details><summary><code>client.agents.<a href="src/mavenagi/agents/client.py">search</a>(...)</code></summary>
 <dl>
@@ -6255,22 +5861,6 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**url:** `typing.Optional[str]` — The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**language:** `typing.Optional[str]` — The document language. Must be a valid ISO 639-1 language code.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **created_at:** `typing.Optional[dt.datetime]` — The time at which this document was created.
     
 </dd>
@@ -6280,6 +5870,22 @@ client.knowledge.create_knowledge_document(
 <dd>
 
 **updated_at:** `typing.Optional[dt.datetime]` — The time at which this document was last modified.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**url:** `typing.Optional[str]` — The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**language:** `typing.Optional[str]` — The document language. Must be a valid ISO 639-1 language code.
     
 </dd>
 </dl>
@@ -6476,6 +6082,110 @@ client.knowledge.get_knowledge_document(
 <dd>
 
 **knowledge_base_version_app_id:** `str` — The App ID of the knowledge base version.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">patch_knowledge_document</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable knowledge document fields that can be set independently of a knowledge base version.
+
+For any changes in document content see the `createKnowledgeBaseVersion` and `createKnowledgeDocument` endpoints.
+
+The `knowledgeBaseAppId` field can be provided to update a knowledge document in a knowledge base owned by a different app. 
+All other fields will overwrite the existing value on the knowledge document only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.patch_knowledge_document(
+    knowledge_base_reference_id="help-center",
+    knowledge_document_reference_id="how-it-works",
+    llm_inclusion_status="ALWAYS",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to patch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**knowledge_document_reference_id:** `str` — The reference ID of the knowledge document to patch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**knowledge_base_app_id:** `typing.Optional[str]` — The App ID of the knowledge base that contains the knowledge document to patch. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**llm_inclusion_status:** `typing.Optional[LlmInclusionStatus]` — Determines whether this document is sent to the LLM as part of a conversation.
     
 </dd>
 </dl>

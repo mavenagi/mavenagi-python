@@ -110,9 +110,9 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     The tags of the knowledge base.
     """
 
-    llm_inclusion_status: typing_extensions.Annotated[
-        typing.Optional[LlmInclusionStatus], FieldMetadata(alias="llmInclusionStatus")
-    ] = pydantic.Field(default=None)
+    llm_inclusion_status: typing_extensions.Annotated[LlmInclusionStatus, FieldMetadata(alias="llmInclusionStatus")] = (
+        pydantic.Field()
+    )
     """
     Determines whether documents in the knowledge base are sent to the LLM as part of a conversation.
     """

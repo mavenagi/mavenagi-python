@@ -558,10 +558,10 @@ class KnowledgeClient:
         content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        url: typing.Optional[str] = OMIT,
-        language: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
+        url: typing.Optional[str] = OMIT,
+        language: typing.Optional[str] = OMIT,
         author: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeDocumentResponse:
@@ -596,17 +596,17 @@ class KnowledgeClient:
         metadata : typing.Optional[typing.Dict[str, str]]
             Metadata for the knowledge document.
 
-        url : typing.Optional[str]
-            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-
-        language : typing.Optional[str]
-            The document language. Must be a valid ISO 639-1 language code.
-
         created_at : typing.Optional[dt.datetime]
             The time at which this document was created.
 
         updated_at : typing.Optional[dt.datetime]
             The time at which this document was last modified.
+
+        url : typing.Optional[str]
+            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
+
+        language : typing.Optional[str]
+            The document language. Must be a valid ISO 639-1 language code.
 
         author : typing.Optional[str]
             The name of the author who created this document.
@@ -653,10 +653,10 @@ class KnowledgeClient:
             content=content,
             version_id=version_id,
             metadata=metadata,
-            url=url,
-            language=language,
             created_at=created_at,
             updated_at=updated_at,
+            url=url,
+            language=language,
             author=author,
             request_options=request_options,
         )
@@ -770,6 +770,69 @@ class KnowledgeClient:
             knowledge_base_version_reference_id,
             knowledge_document_reference_id,
             knowledge_base_version_app_id=knowledge_base_version_app_id,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def patch_knowledge_document(
+        self,
+        knowledge_base_reference_id: str,
+        knowledge_document_reference_id: str,
+        *,
+        knowledge_base_app_id: typing.Optional[str] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeDocumentResponse:
+        """
+        Update mutable knowledge document fields that can be set independently of a knowledge base version.
+
+        For any changes in document content see the `createKnowledgeBaseVersion` and `createKnowledgeDocument` endpoints.
+
+        The `knowledgeBaseAppId` field can be provided to update a knowledge document in a knowledge base owned by a different app.
+        All other fields will overwrite the existing value on the knowledge document only if provided.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to patch.
+
+        knowledge_document_reference_id : str
+            The reference ID of the knowledge document to patch.
+
+        knowledge_base_app_id : typing.Optional[str]
+            The App ID of the knowledge base that contains the knowledge document to patch. If not provided the ID of the calling app will be used.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether this document is sent to the LLM as part of a conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeDocumentResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.patch_knowledge_document(
+            knowledge_base_reference_id="help-center",
+            knowledge_document_reference_id="how-it-works",
+            llm_inclusion_status="ALWAYS",
+        )
+        """
+        _response = self._raw_client.patch_knowledge_document(
+            knowledge_base_reference_id,
+            knowledge_document_reference_id,
+            knowledge_base_app_id=knowledge_base_app_id,
+            llm_inclusion_status=llm_inclusion_status,
             request_options=request_options,
         )
         return _response.data
@@ -1375,10 +1438,10 @@ class AsyncKnowledgeClient:
         content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        url: typing.Optional[str] = OMIT,
-        language: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
+        url: typing.Optional[str] = OMIT,
+        language: typing.Optional[str] = OMIT,
         author: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeDocumentResponse:
@@ -1413,17 +1476,17 @@ class AsyncKnowledgeClient:
         metadata : typing.Optional[typing.Dict[str, str]]
             Metadata for the knowledge document.
 
-        url : typing.Optional[str]
-            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
-
-        language : typing.Optional[str]
-            The document language. Must be a valid ISO 639-1 language code.
-
         created_at : typing.Optional[dt.datetime]
             The time at which this document was created.
 
         updated_at : typing.Optional[dt.datetime]
             The time at which this document was last modified.
+
+        url : typing.Optional[str]
+            The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
+
+        language : typing.Optional[str]
+            The document language. Must be a valid ISO 639-1 language code.
 
         author : typing.Optional[str]
             The name of the author who created this document.
@@ -1478,10 +1541,10 @@ class AsyncKnowledgeClient:
             content=content,
             version_id=version_id,
             metadata=metadata,
-            url=url,
-            language=language,
             created_at=created_at,
             updated_at=updated_at,
+            url=url,
+            language=language,
             author=author,
             request_options=request_options,
         )
@@ -1611,6 +1674,77 @@ class AsyncKnowledgeClient:
             knowledge_base_version_reference_id,
             knowledge_document_reference_id,
             knowledge_base_version_app_id=knowledge_base_version_app_id,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def patch_knowledge_document(
+        self,
+        knowledge_base_reference_id: str,
+        knowledge_document_reference_id: str,
+        *,
+        knowledge_base_app_id: typing.Optional[str] = OMIT,
+        llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeDocumentResponse:
+        """
+        Update mutable knowledge document fields that can be set independently of a knowledge base version.
+
+        For any changes in document content see the `createKnowledgeBaseVersion` and `createKnowledgeDocument` endpoints.
+
+        The `knowledgeBaseAppId` field can be provided to update a knowledge document in a knowledge base owned by a different app.
+        All other fields will overwrite the existing value on the knowledge document only if provided.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to patch.
+
+        knowledge_document_reference_id : str
+            The reference ID of the knowledge document to patch.
+
+        knowledge_base_app_id : typing.Optional[str]
+            The App ID of the knowledge base that contains the knowledge document to patch. If not provided the ID of the calling app will be used.
+
+        llm_inclusion_status : typing.Optional[LlmInclusionStatus]
+            Determines whether this document is sent to the LLM as part of a conversation.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeDocumentResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.patch_knowledge_document(
+                knowledge_base_reference_id="help-center",
+                knowledge_document_reference_id="how-it-works",
+                llm_inclusion_status="ALWAYS",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.patch_knowledge_document(
+            knowledge_base_reference_id,
+            knowledge_document_reference_id,
+            knowledge_base_app_id=knowledge_base_app_id,
+            llm_inclusion_status=llm_inclusion_status,
             request_options=request_options,
         )
         return _response.data
