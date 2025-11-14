@@ -126,25 +126,25 @@ class ConversationClient:
         )
         client.conversation.initialize(
             conversation_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             messages=[
                 ConversationMessageRequest(
                     conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     user_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     text="text",
                     user_message_type="USER",
                 ),
                 ConversationMessageRequest(
                     conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     user_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     text="text",
                     user_message_type="USER",
@@ -380,20 +380,20 @@ class ConversationClient:
             request=[
                 ConversationMessageRequest(
                     conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     user_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     text="text",
                     user_message_type="USER",
                 ),
                 ConversationMessageRequest(
                     conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     user_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     text="text",
                     user_message_type="USER",
@@ -682,10 +682,10 @@ class ConversationClient:
             conversation_id="conversationId",
             schema="schema",
             conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             user_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             text="text",
         )
@@ -1174,14 +1174,14 @@ class ConversationClient:
                 user_id=EntityIdWithoutAgent(
                     type="AGENT",
                     app_id="appId",
-                    reference_id="referenceId",
+                    reference_id="x",
                 ),
                 message=ConversationMessageRequest(
                     conversation_message_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     user_id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     text="text",
                     user_message_type="USER",
@@ -1294,25 +1294,25 @@ class AsyncConversationClient:
         async def main() -> None:
             await client.conversation.initialize(
                 conversation_id=EntityIdBase(
-                    reference_id="referenceId",
+                    reference_id="x",
                 ),
                 messages=[
                     ConversationMessageRequest(
                         conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         user_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         text="text",
                         user_message_type="USER",
                     ),
                     ConversationMessageRequest(
                         conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         user_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         text="text",
                         user_message_type="USER",
@@ -1580,20 +1580,20 @@ class AsyncConversationClient:
                 request=[
                     ConversationMessageRequest(
                         conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         user_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         text="text",
                         user_message_type="USER",
                     ),
                     ConversationMessageRequest(
                         conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         user_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         text="text",
                         user_message_type="USER",
@@ -1907,10 +1907,10 @@ class AsyncConversationClient:
                 conversation_id="conversationId",
                 schema="schema",
                 conversation_message_id=EntityIdBase(
-                    reference_id="referenceId",
+                    reference_id="x",
                 ),
                 user_id=EntityIdBase(
-                    reference_id="referenceId",
+                    reference_id="x",
                 ),
                 text="text",
             )
@@ -2465,14 +2465,14 @@ class AsyncConversationClient:
                     user_id=EntityIdWithoutAgent(
                         type="AGENT",
                         app_id="appId",
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     message=ConversationMessageRequest(
                         conversation_message_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         user_id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                         text="text",
                         user_message_type="USER",

@@ -29,6 +29,7 @@ from .types import (
     KnowledgeDocumentResponse,
     KnowledgeDocumentSearchRequest,
     KnowledgeDocumentSearchResponse,
+    KnowledgeDocumentStatus,
     KnowledgeDocumentsResponse,
 )
 
@@ -59,5 +60,6 @@ __all__ = [
     "KnowledgeDocumentResponse",
     "KnowledgeDocumentSearchRequest",
     "KnowledgeDocumentSearchResponse",
+    "KnowledgeDocumentStatus",
     "KnowledgeDocumentsResponse",
 ]

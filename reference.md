@@ -2225,25 +2225,25 @@ client = MavenAGI(
 )
 client.conversation.initialize(
     conversation_id=EntityIdBase(
-        reference_id="referenceId",
+        reference_id="x",
     ),
     messages=[
         ConversationMessageRequest(
             conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             user_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             text="text",
             user_message_type="USER",
         ),
         ConversationMessageRequest(
             conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             user_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             text="text",
             user_message_type="USER",
@@ -2700,20 +2700,20 @@ client.conversation.append_new_messages(
     request=[
         ConversationMessageRequest(
             conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             user_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             text="text",
             user_message_type="USER",
         ),
         ConversationMessageRequest(
             conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             user_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             text="text",
             user_message_type="USER",
@@ -3117,10 +3117,10 @@ response = client.conversation.ask_object_stream(
     conversation_id="conversationId",
     schema="schema",
     conversation_message_id=EntityIdBase(
-        reference_id="referenceId",
+        reference_id="x",
     ),
     user_id=EntityIdBase(
-        reference_id="referenceId",
+        reference_id="x",
     ),
     text="text",
 )
@@ -3965,14 +3965,14 @@ client.conversation.deliver_message(
         user_id=EntityIdWithoutAgent(
             type="AGENT",
             app_id="appId",
-            reference_id="referenceId",
+            reference_id="x",
         ),
         message=ConversationMessageRequest(
             conversation_message_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             user_id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
             text="text",
             user_message_type="USER",
@@ -4058,12 +4058,12 @@ client = MavenAGI(
 client.events.create(
     request=EventRequest_UserEvent(
         id=EntityIdBase(
-            reference_id="referenceId",
+            reference_id="x",
         ),
         event_name="BUTTON_CLICKED",
         user_info=EventUserInfoBase(
             id=EntityIdBase(
-                reference_id="referenceId",
+                reference_id="x",
             ),
         ),
     ),
@@ -5821,7 +5821,7 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**content_type:** `KnowledgeDocumentContentType` 
+**content_type:** `KnowledgeDocumentContentType` — Type of knowledge document content, if content is provided. This does not need to be set if content is not provided
     
 </dd>
 </dl>
@@ -5837,7 +5837,7 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**content:** `str` — The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
+**version_id:** `typing.Optional[EntityIdWithoutAgent]` — ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
     
 </dd>
 </dl>
@@ -5845,7 +5845,15 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**version_id:** `typing.Optional[EntityIdWithoutAgent]` — ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+**asset_id:** `typing.Optional[EntityIdBase]` — ID of the asset associated with this document. Either this or content is required, but not both
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content:** `typing.Optional[str]` — The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
     
 </dd>
 </dl>

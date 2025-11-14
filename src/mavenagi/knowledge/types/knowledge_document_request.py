@@ -50,15 +50,28 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
     ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
     """
 
-    content_type: typing_extensions.Annotated[KnowledgeDocumentContentType, FieldMetadata(alias="contentType")]
+    content_type: typing_extensions.Annotated[KnowledgeDocumentContentType, FieldMetadata(alias="contentType")] = (
+        pydantic.Field()
+    )
+    """
+    Type of knowledge document content, if content is provided. This does not need to be set if content is not provided
+    """
+
     title: str = pydantic.Field()
     """
     The title of the document. Will be shown as part of answers.
     """
 
-    content: str = pydantic.Field()
+    asset_id: typing_extensions.Annotated[typing.Optional[EntityIdBase], FieldMetadata(alias="assetId")] = (
+        pydantic.Field(default=None)
+    )
     """
-    The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
+    ID of the asset associated with this document. Either this or content is required, but not both
+    """
+
+    content: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
     """
 
     metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)

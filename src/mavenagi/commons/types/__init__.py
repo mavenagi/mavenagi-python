@@ -112,8 +112,9 @@ from .feedback_base import FeedbackBase
 from .feedback_info import FeedbackInfo
 from .feedback_type import FeedbackType
 from .geo_info import GeoInfo
-from .inbox_item import InboxItem, InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge
+from .inbox_item import InboxItem, InboxItem_Custom, InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge
 from .inbox_item_base import InboxItemBase
+from .inbox_item_custom import InboxItemCustom
 from .inbox_item_duplicate_documents import InboxItemDuplicateDocuments
 from .inbox_item_fix import InboxItemFix, InboxItemFix_AddDocument, InboxItemFix_DeactivateDocument
 from .inbox_item_fix_add_document import InboxItemFixAddDocument
@@ -275,6 +276,7 @@ __all__ = [
     "GeoInfo",
     "InboxItem",
     "InboxItemBase",
+    "InboxItemCustom",
     "InboxItemDuplicateDocuments",
     "InboxItemFix",
     "InboxItemFixAddDocument",
@@ -286,6 +288,7 @@ __all__ = [
     "InboxItemSeverity",
     "InboxItemStatus",
     "InboxItemType",
+    "InboxItem_Custom",
     "InboxItem_DuplicateDocuments",
     "InboxItem_MissingKnowledge",
     "IpInfo",

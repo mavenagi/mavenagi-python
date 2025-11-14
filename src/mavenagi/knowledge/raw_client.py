@@ -887,8 +887,9 @@ class RawKnowledgeClient:
         knowledge_document_id: EntityIdBase,
         content_type: KnowledgeDocumentContentType,
         title: str,
-        content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        asset_id: typing.Optional[EntityIdBase] = OMIT,
+        content: typing.Optional[str] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
@@ -915,15 +916,19 @@ class RawKnowledgeClient:
             ID that uniquely identifies this knowledge document within its knowledge base
 
         content_type : KnowledgeDocumentContentType
+            Type of knowledge document content, if content is provided. This does not need to be set if content is not provided
 
         title : str
             The title of the document. Will be shown as part of answers.
 
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+
+        asset_id : typing.Optional[EntityIdBase]
+            ID of the asset associated with this document. Either this or content is required, but not both
+
+        content : typing.Optional[str]
+            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
 
         metadata : typing.Optional[typing.Dict[str, str]]
             Metadata for the knowledge document.
@@ -962,6 +967,9 @@ class RawKnowledgeClient:
                 ),
                 "contentType": content_type,
                 "title": title,
+                "assetId": convert_and_respect_annotation_metadata(
+                    object_=asset_id, annotation=EntityIdBase, direction="write"
+                ),
                 "content": content,
                 "metadata": metadata,
                 "createdAt": created_at,
@@ -2136,8 +2144,9 @@ class AsyncRawKnowledgeClient:
         knowledge_document_id: EntityIdBase,
         content_type: KnowledgeDocumentContentType,
         title: str,
-        content: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        asset_id: typing.Optional[EntityIdBase] = OMIT,
+        content: typing.Optional[str] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
@@ -2164,15 +2173,19 @@ class AsyncRawKnowledgeClient:
             ID that uniquely identifies this knowledge document within its knowledge base
 
         content_type : KnowledgeDocumentContentType
+            Type of knowledge document content, if content is provided. This does not need to be set if content is not provided
 
         title : str
             The title of the document. Will be shown as part of answers.
 
-        content : str
-            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored.
-
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+
+        asset_id : typing.Optional[EntityIdBase]
+            ID of the asset associated with this document. Either this or content is required, but not both
+
+        content : typing.Optional[str]
+            The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
 
         metadata : typing.Optional[typing.Dict[str, str]]
             Metadata for the knowledge document.
@@ -2211,6 +2224,9 @@ class AsyncRawKnowledgeClient:
                 ),
                 "contentType": content_type,
                 "title": title,
+                "assetId": convert_and_respect_annotation_metadata(
+                    object_=asset_id, annotation=EntityIdBase, direction="write"
+                ),
                 "content": content,
                 "metadata": metadata,
                 "createdAt": created_at,

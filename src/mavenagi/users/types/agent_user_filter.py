@@ -20,6 +20,14 @@ class AgentUserFilter(UniversalBaseModel):
     Filter by identifiers
     """
 
+    display_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="displayName")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Full-text search query for matching agent users by display name.
+    When you search with this parameter, you're performing a full-text search across the user display names.
+    """
+
     is_anonymous: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="isAnonymous")] = (
         pydantic.Field(default=None)
     )

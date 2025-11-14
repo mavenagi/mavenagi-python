@@ -19,6 +19,33 @@ from .inbox_item_status import InboxItemStatus
 
 
 class InboxItem_DuplicateDocuments(UniversalBaseModel):
+    """
+    Examples
+    --------
+    import datetime
+
+    from mavenagi.commons import EntityId, InboxItem_Custom
+
+    InboxItem_Custom(
+        id=EntityId(
+            reference_id="todo-item-1",
+            app_id="myapp",
+            organization_id="acme",
+            agent_id="support",
+            type="INBOX_ITEM",
+        ),
+        status="OPEN",
+        severity="HIGH",
+        created_at=datetime.datetime.fromisoformat(
+            "2025-01-01 00:00:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2025-02-01 00:00:00+00:00",
+        ),
+        metadata={"key": "value"},
+    )
+    """
+
     type: typing.Literal["duplicateDocuments"] = "duplicateDocuments"
     recommended_fixes: typing_extensions.Annotated[
         typing.List[InboxItemFixDeactivateDocument], FieldMetadata(alias="recommendedFixes")
@@ -45,6 +72,33 @@ class InboxItem_DuplicateDocuments(UniversalBaseModel):
 
 
 class InboxItem_MissingKnowledge(UniversalBaseModel):
+    """
+    Examples
+    --------
+    import datetime
+
+    from mavenagi.commons import EntityId, InboxItem_Custom
+
+    InboxItem_Custom(
+        id=EntityId(
+            reference_id="todo-item-1",
+            app_id="myapp",
+            organization_id="acme",
+            agent_id="support",
+            type="INBOX_ITEM",
+        ),
+        status="OPEN",
+        severity="HIGH",
+        created_at=datetime.datetime.fromisoformat(
+            "2025-01-01 00:00:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2025-02-01 00:00:00+00:00",
+        ),
+        metadata={"key": "value"},
+    )
+    """
+
     type: typing.Literal["missingKnowledge"] = "missingKnowledge"
     fix: InboxItemFixAddDocument
     conversations: typing.List[ConversationInformation]
@@ -64,4 +118,74 @@ class InboxItem_MissingKnowledge(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-InboxItem = typing.Union[InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge]
+class InboxItem_Custom(UniversalBaseModel):
+    """
+    Examples
+    --------
+    import datetime
+
+    from mavenagi.commons import EntityId, InboxItem_Custom
+
+    InboxItem_Custom(
+        id=EntityId(
+            reference_id="todo-item-1",
+            app_id="myapp",
+            organization_id="acme",
+            agent_id="support",
+            type="INBOX_ITEM",
+        ),
+        status="OPEN",
+        severity="HIGH",
+        created_at=datetime.datetime.fromisoformat(
+            "2025-01-01 00:00:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2025-02-01 00:00:00+00:00",
+        ),
+        metadata={"key": "value"},
+    )
+    """
+
+    type: typing.Literal["custom"] = "custom"
+    metadata: typing.Dict[str, str]
+    id: EntityId
+    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
+    updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]
+    status: InboxItemStatus
+    severity: InboxItemSeverity
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+"""
+import datetime
+
+from mavenagi.commons import EntityId, InboxItem_Custom
+
+InboxItem_Custom(
+    id=EntityId(
+        reference_id="todo-item-1",
+        app_id="myapp",
+        organization_id="acme",
+        agent_id="support",
+        type="INBOX_ITEM",
+    ),
+    status="OPEN",
+    severity="HIGH",
+    created_at=datetime.datetime.fromisoformat(
+        "2025-01-01 00:00:00+00:00",
+    ),
+    updated_at=datetime.datetime.fromisoformat(
+        "2025-02-01 00:00:00+00:00",
+    ),
+    metadata={"key": "value"},
+)
+"""
+InboxItem = typing.Union[InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge, InboxItem_Custom]

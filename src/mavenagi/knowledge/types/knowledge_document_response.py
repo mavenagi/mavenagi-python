@@ -3,8 +3,12 @@
 import typing
 
 import pydantic
+import typing_extensions
+from ...commons.types.attachment_response import AttachmentResponse
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from ...core.serialization import FieldMetadata
 from .knowledge_document_search_response import KnowledgeDocumentSearchResponse
+from .knowledge_document_status import KnowledgeDocumentStatus
 
 
 class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
@@ -44,9 +48,21 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
     )
     """
 
+    processing_status: typing_extensions.Annotated[
+        typing.Optional[KnowledgeDocumentStatus], FieldMetadata(alias="processingStatus")
+    ] = pydantic.Field(default=None)
+    """
+    The current processing status of the knowledge document
+    """
+
     content: str = pydantic.Field()
     """
     The content of the document in markdown format. Not shown directly to users.
+    """
+
+    asset: typing.Optional[AttachmentResponse] = pydantic.Field(default=None)
+    """
+    If the document is associated with an asset, this will contain the asset metadata
     """
 
     metadata: typing.Dict[str, str] = pydantic.Field()

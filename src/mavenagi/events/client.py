@@ -66,12 +66,12 @@ class EventsClient:
         client.events.create(
             request=EventRequest_UserEvent(
                 id=EntityIdBase(
-                    reference_id="referenceId",
+                    reference_id="x",
                 ),
                 event_name="BUTTON_CLICKED",
                 user_info=EventUserInfoBase(
                     id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                 ),
             ),
@@ -284,12 +284,12 @@ class AsyncEventsClient:
             await client.events.create(
                 request=EventRequest_UserEvent(
                     id=EntityIdBase(
-                        reference_id="referenceId",
+                        reference_id="x",
                     ),
                     event_name="BUTTON_CLICKED",
                     user_info=EventUserInfoBase(
                         id=EntityIdBase(
-                            reference_id="referenceId",
+                            reference_id="x",
                         ),
                     ),
                 ),

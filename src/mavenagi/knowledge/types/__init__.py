@@ -28,6 +28,7 @@ from .knowledge_document_request import KnowledgeDocumentRequest
 from .knowledge_document_response import KnowledgeDocumentResponse
 from .knowledge_document_search_request import KnowledgeDocumentSearchRequest
 from .knowledge_document_search_response import KnowledgeDocumentSearchResponse
+from .knowledge_document_status import KnowledgeDocumentStatus
 from .knowledge_documents_response import KnowledgeDocumentsResponse
 
 __all__ = [
@@ -57,5 +58,6 @@ __all__ = [
     "KnowledgeDocumentResponse",
     "KnowledgeDocumentSearchRequest",
     "KnowledgeDocumentSearchResponse",
+    "KnowledgeDocumentStatus",
     "KnowledgeDocumentsResponse",
 ]
