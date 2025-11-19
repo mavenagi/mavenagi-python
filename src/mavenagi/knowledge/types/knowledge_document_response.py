@@ -35,6 +35,13 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
             agent_id="support",
             type="KNOWLEDGE_BASE_VERSION",
         ),
+        knowledge_base_id=EntityId(
+            reference_id="help-docs",
+            app_id="help-center",
+            organization_id="acme",
+            agent_id="support",
+            type="KNOWLEDGE_BASE",
+        ),
         content="## Getting started This is a getting started guide for the help center.",
         title="Getting started",
         metadata={"category": "getting-started"},
@@ -45,6 +52,7 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
             "2024-02-02 00:00:00+00:00",
         ),
         llm_inclusion_status="WHEN_RELEVANT",
+        knowledge_base_llm_inclusion_status="WHEN_RELEVANT",
     )
     """
 

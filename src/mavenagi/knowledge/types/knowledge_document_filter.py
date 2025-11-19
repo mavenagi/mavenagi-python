@@ -14,10 +14,10 @@ from ...core.serialization import FieldMetadata
 class KnowledgeDocumentFilter(UniversalBaseModel):
     search: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Full-text search query for matching knowledge documents by content. 
+    Full-text search query for matching knowledge documents by content.
     When you search with this parameter, you're performing a full-text search across the knowledge document title and metadata.
     
-    This field also supports a syntax for advanced filtering the `metadata` field.           
+    This field also supports a syntax for advanced filtering the `metadata` field.
     
     Metadata examples:
     - `metadata:myvalue` - matches knowledge documents with any metadata field set to `myvalue`
@@ -63,7 +63,7 @@ class KnowledgeDocumentFilter(UniversalBaseModel):
         typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="knowledgeBaseVersionId")
     ] = pydantic.Field(default=None)
     """
-    Filter documents within the specified knowledge base version. 
+    Filter documents within the specified knowledge base version.
     If not provided all active knowledge base versions within the agent will be searched.
     """
 

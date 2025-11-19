@@ -36,8 +36,16 @@ class KnowledgeDocumentSearchResponse(BaseKnowledgeDocument):
             agent_id="support",
             type="KNOWLEDGE_BASE_VERSION",
         ),
+        knowledge_base_id=EntityId(
+            reference_id="help-docs",
+            app_id="help-center",
+            organization_id="acme",
+            agent_id="support",
+            type="KNOWLEDGE_BASE",
+        ),
         title="How it works",
         llm_inclusion_status="WHEN_RELEVANT",
+        knowledge_base_llm_inclusion_status="NEVER",
         url="https://help-center.acme.com/how-it-works",
         created_at=datetime.datetime.fromisoformat(
             "2024-01-01 00:00:00+00:00",
@@ -63,6 +71,11 @@ class KnowledgeDocumentSearchResponse(BaseKnowledgeDocument):
     This may be missing on legacy documents.
     """
 
+    knowledge_base_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="knowledgeBaseId")] = pydantic.Field()
+    """
+    ID that uniquely identifies the knowledge base that contains this document.
+    """
+
     title: typing.Optional[str] = pydantic.Field(default=None)
     """
     The title of the document. Will be shown as part of answers. May be missing on legacy documents.
@@ -73,6 +86,13 @@ class KnowledgeDocumentSearchResponse(BaseKnowledgeDocument):
     )
     """
     Whether the document is included in the agent's knowledge.
+    """
+
+    knowledge_base_llm_inclusion_status: typing_extensions.Annotated[
+        LlmInclusionStatus, FieldMetadata(alias="knowledgeBaseLlmInclusionStatus")
+    ] = pydantic.Field()
+    """
+    Whether the knowledge base is included in the agent's knowledge.
     """
 
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")] = pydantic.Field()

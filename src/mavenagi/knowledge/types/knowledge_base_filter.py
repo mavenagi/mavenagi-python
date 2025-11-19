@@ -14,10 +14,10 @@ from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 class KnowledgeBaseFilter(UniversalBaseModel):
     search: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Full-text search query for matching knowledge bases by content. 
+    Full-text search query for matching knowledge bases by content.
     When you search with this parameter, you're performing a full-text search across the knowledge title, tags and metadata.
     
-    This field also supports a syntax for advanced filtering the `metadata` field.           
+    This field also supports a syntax for advanced filtering the `metadata` field.
     
     Metadata examples:
     - `metadata:myvalue` - matches knowledge bases with any metadata field set to `myvalue`

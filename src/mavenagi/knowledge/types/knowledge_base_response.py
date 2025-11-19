@@ -128,7 +128,7 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
         pydantic.Field(default=None)
     )
     """
-    The IDs of the segment that must be matched for the knowledge base to be relevant to a conversation. 
+    The IDs of the segment that must be matched for the knowledge base to be relevant to a conversation.
     Segments are replacing inline preconditions - a Knowledge Base may not have both an inline precondition and a segment.
     Inline precondition support will be removed in a future release.
     """

@@ -66,7 +66,7 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
         pydantic.Field(default=None)
     )
     """
-    ID of the asset associated with this document. Either this or content is required, but not both
+    ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both
     """
 
     content: typing.Optional[str] = pydantic.Field(default=None)
