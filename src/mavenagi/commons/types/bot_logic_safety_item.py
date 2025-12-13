@@ -6,10 +6,15 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .safety_check_report import SafetyCheckReport
 
 
 class BotLogicSafetyItem(UniversalBaseModel):
     safety_check_passed: typing_extensions.Annotated[bool, FieldMetadata(alias="safetyCheckPassed")]
+    report: typing.Optional[SafetyCheckReport] = pydantic.Field(default=None)
+    """
+    If the safety check failed, this contains more details about the failure.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

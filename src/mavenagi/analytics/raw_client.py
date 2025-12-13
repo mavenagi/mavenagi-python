@@ -8,6 +8,7 @@ from ..commons.errors.bad_request_error import BadRequestError
 from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.server_error import ServerError
 from ..commons.types.error_message import ErrorMessage
+from ..commons.types.event_filter import EventFilter
 from ..conversation.types.conversation_filter import ConversationFilter
 from ..conversation.types.feedback_filter import FeedbackFilter
 from ..core.api_error import ApiError
@@ -24,6 +25,10 @@ from .types.conversation_chart_request import ConversationChartRequest
 from .types.conversation_column_definition import ConversationColumnDefinition
 from .types.conversation_group_by import ConversationGroupBy
 from .types.conversation_table_response import ConversationTableResponse
+from .types.event_chart_request import EventChartRequest
+from .types.event_column_definition import EventColumnDefinition
+from .types.event_group_by import EventGroupBy
+from .types.event_table_response import EventTableResponse
 from .types.feedback_column_definition import FeedbackColumnDefinition
 from .types.feedback_group_by import FeedbackGroupBy
 from .types.feedback_table_response import FeedbackTableResponse
@@ -553,6 +558,192 @@ class RawAnalyticsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def get_event_table(
+        self,
+        *,
+        field_groupings: typing.Sequence[EventGroupBy],
+        column_definitions: typing.Sequence[EventColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        event_filter: typing.Optional[EventFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[EventTableResponse]:
+        """
+        Retrieves structured event data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+
+        Parameters
+        ----------
+        field_groupings : typing.Sequence[EventGroupBy]
+            Specifies the fields by which data should be grouped. Each unique combination forms a row.
+            If multiple fields are provided, the result is grouped by their unique value combinations.
+            If empty, all data is aggregated into a single row.
+            Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
+
+        column_definitions : typing.Sequence[EventColumnDefinition]
+            Specifies the metrics to be displayed as columns.
+            Column headers act as keys, with computed metric values as their mapped values.
+            There needs to be at least one column definition in the table request.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+             Example: If set to "DAY," data will be aggregated by day.
+
+        event_filter : typing.Optional[EventFilter]
+            Optional filter applied to refine the event data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[EventTableResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/tables/events",
+            method="POST",
+            json={
+                "timeGrouping": time_grouping,
+                "fieldGroupings": convert_and_respect_annotation_metadata(
+                    object_=field_groupings, annotation=typing.Sequence[EventGroupBy], direction="write"
+                ),
+                "columnDefinitions": convert_and_respect_annotation_metadata(
+                    object_=column_definitions, annotation=typing.Sequence[EventColumnDefinition], direction="write"
+                ),
+                "eventFilter": convert_and_respect_annotation_metadata(
+                    object_=event_filter, annotation=EventFilter, direction="write"
+                ),
+                "timezone": timezone,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    EventTableResponse,
+                    parse_obj_as(
+                        type_=EventTableResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get_event_chart(
+        self, *, request: EventChartRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[ChartResponse]:
+        """
+        Fetches event data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+
+        Parameters
+        ----------
+        request : EventChartRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ChartResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/charts/events",
+            method="POST",
+            json=convert_and_respect_annotation_metadata(
+                object_=request, annotation=EventChartRequest, direction="write"
+            ),
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ChartResponse,
+                    parse_obj_as(
+                        type_=ChartResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawAnalyticsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -1033,6 +1224,192 @@ class AsyncRawAnalyticsClient:
                     AgentUserTableResponse,
                     parse_obj_as(
                         type_=AgentUserTableResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_event_table(
+        self,
+        *,
+        field_groupings: typing.Sequence[EventGroupBy],
+        column_definitions: typing.Sequence[EventColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        event_filter: typing.Optional[EventFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[EventTableResponse]:
+        """
+        Retrieves structured event data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+
+        Parameters
+        ----------
+        field_groupings : typing.Sequence[EventGroupBy]
+            Specifies the fields by which data should be grouped. Each unique combination forms a row.
+            If multiple fields are provided, the result is grouped by their unique value combinations.
+            If empty, all data is aggregated into a single row.
+            Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
+
+        column_definitions : typing.Sequence[EventColumnDefinition]
+            Specifies the metrics to be displayed as columns.
+            Column headers act as keys, with computed metric values as their mapped values.
+            There needs to be at least one column definition in the table request.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+             Example: If set to "DAY," data will be aggregated by day.
+
+        event_filter : typing.Optional[EventFilter]
+            Optional filter applied to refine the event data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[EventTableResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/tables/events",
+            method="POST",
+            json={
+                "timeGrouping": time_grouping,
+                "fieldGroupings": convert_and_respect_annotation_metadata(
+                    object_=field_groupings, annotation=typing.Sequence[EventGroupBy], direction="write"
+                ),
+                "columnDefinitions": convert_and_respect_annotation_metadata(
+                    object_=column_definitions, annotation=typing.Sequence[EventColumnDefinition], direction="write"
+                ),
+                "eventFilter": convert_and_respect_annotation_metadata(
+                    object_=event_filter, annotation=EventFilter, direction="write"
+                ),
+                "timezone": timezone,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    EventTableResponse,
+                    parse_obj_as(
+                        type_=EventTableResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_event_chart(
+        self, *, request: EventChartRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[ChartResponse]:
+        """
+        Fetches event data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+
+        Parameters
+        ----------
+        request : EventChartRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ChartResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/charts/events",
+            method="POST",
+            json=convert_and_respect_annotation_metadata(
+                object_=request, annotation=EventChartRequest, direction="write"
+            ),
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ChartResponse,
+                    parse_obj_as(
+                        type_=ChartResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

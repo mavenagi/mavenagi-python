@@ -6,11 +6,11 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id import EntityId
+from ...commons.types.pii_category import PiiCategory
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .agent_environment import AgentEnvironment
 from .agent_prompting import AgentPrompting
-from .pii_category import PiiCategory
 
 
 class Agent(UniversalBaseModel):

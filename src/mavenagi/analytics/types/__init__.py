@@ -50,6 +50,24 @@ from .conversation_sum import ConversationSum
 from .conversation_table_request import ConversationTableRequest
 from .conversation_table_response import ConversationTableResponse
 from .date_histogram_response import DateHistogramResponse
+from .event_analytics_request import EventAnalyticsRequest
+from .event_bar_chart_request import EventBarChartRequest
+from .event_chart_request import (
+    EventChartRequest,
+    EventChartRequest_BarChart,
+    EventChartRequest_DateHistogram,
+    EventChartRequest_PieChart,
+)
+from .event_column_definition import EventColumnDefinition
+from .event_count import EventCount
+from .event_date_histogram_request import EventDateHistogramRequest
+from .event_distinct_count import EventDistinctCount
+from .event_group_by import EventGroupBy
+from .event_metric import EventMetric, EventMetric_Count, EventMetric_DistinctCount
+from .event_pie_chart_request import EventPieChartRequest
+from .event_row import EventRow
+from .event_table_request import EventTableRequest
+from .event_table_response import EventTableResponse
 from .feedback_analytics_request import FeedbackAnalyticsRequest
 from .feedback_column_definition import FeedbackColumnDefinition
 from .feedback_count import FeedbackCount
@@ -133,6 +151,24 @@ __all__ = [
     "ConversationTableRequest",
     "ConversationTableResponse",
     "DateHistogramResponse",
+    "EventAnalyticsRequest",
+    "EventBarChartRequest",
+    "EventChartRequest",
+    "EventChartRequest_BarChart",
+    "EventChartRequest_DateHistogram",
+    "EventChartRequest_PieChart",
+    "EventColumnDefinition",
+    "EventCount",
+    "EventDateHistogramRequest",
+    "EventDistinctCount",
+    "EventGroupBy",
+    "EventMetric",
+    "EventMetric_Count",
+    "EventMetric_DistinctCount",
+    "EventPieChartRequest",
+    "EventRow",
+    "EventTableRequest",
+    "EventTableResponse",
     "FeedbackAnalyticsRequest",
     "FeedbackColumnDefinition",
     "FeedbackCount",

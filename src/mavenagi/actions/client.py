@@ -136,7 +136,7 @@ class ActionsClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+        from mavenagi.commons import EntityIdBase, Precondition_Group
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -155,12 +155,8 @@ class ActionsClient:
             precondition=Precondition_Group(
                 operator="AND",
                 preconditions=[
-                    Precondition_User(
-                        key="userKey",
-                    ),
-                    Precondition_User(
-                        key="userKey2",
-                    ),
+                    {"preconditionType": "user", "key": "userKey"},
+                    {"preconditionType": "user", "key": "userKey2"},
                 ],
             ),
             language="en",
@@ -460,7 +456,7 @@ class AsyncActionsClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+        from mavenagi.commons import EntityIdBase, Precondition_Group
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -482,12 +478,8 @@ class AsyncActionsClient:
                 precondition=Precondition_Group(
                     operator="AND",
                     preconditions=[
-                        Precondition_User(
-                            key="userKey",
-                        ),
-                        Precondition_User(
-                            key="userKey2",
-                        ),
+                        {"preconditionType": "user", "key": "userKey"},
+                        {"preconditionType": "user", "key": "userKey2"},
                     ],
                 ),
                 language="en",

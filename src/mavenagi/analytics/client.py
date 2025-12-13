@@ -2,6 +2,7 @@
 
 import typing
 
+from ..commons.types.event_filter import EventFilter
 from ..conversation.types.conversation_filter import ConversationFilter
 from ..conversation.types.feedback_filter import FeedbackFilter
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -15,6 +16,10 @@ from .types.conversation_chart_request import ConversationChartRequest
 from .types.conversation_column_definition import ConversationColumnDefinition
 from .types.conversation_group_by import ConversationGroupBy
 from .types.conversation_table_response import ConversationTableResponse
+from .types.event_chart_request import EventChartRequest
+from .types.event_column_definition import EventColumnDefinition
+from .types.event_group_by import EventGroupBy
+from .types.event_table_response import EventTableResponse
 from .types.feedback_column_definition import FeedbackColumnDefinition
 from .types.feedback_group_by import FeedbackGroupBy
 from .types.feedback_table_response import FeedbackTableResponse
@@ -435,6 +440,142 @@ class AnalyticsClient:
             timezone=timezone,
             request_options=request_options,
         )
+        return _response.data
+
+    def get_event_table(
+        self,
+        *,
+        field_groupings: typing.Sequence[EventGroupBy],
+        column_definitions: typing.Sequence[EventColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        event_filter: typing.Optional[EventFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EventTableResponse:
+        """
+        Retrieves structured event data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+
+        Parameters
+        ----------
+        field_groupings : typing.Sequence[EventGroupBy]
+            Specifies the fields by which data should be grouped. Each unique combination forms a row.
+            If multiple fields are provided, the result is grouped by their unique value combinations.
+            If empty, all data is aggregated into a single row.
+            Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
+
+        column_definitions : typing.Sequence[EventColumnDefinition]
+            Specifies the metrics to be displayed as columns.
+            Column headers act as keys, with computed metric values as their mapped values.
+            There needs to be at least one column definition in the table request.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+             Example: If set to "DAY," data will be aggregated by day.
+
+        event_filter : typing.Optional[EventFilter]
+            Optional filter applied to refine the event data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventTableResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.analytics import (
+            EventColumnDefinition,
+            EventGroupBy,
+            EventMetric_Count,
+        )
+        from mavenagi.commons import EventFilter
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.analytics.get_event_table(
+            event_filter=EventFilter(
+                event_types=["USER"],
+            ),
+            field_groupings=[
+                EventGroupBy(
+                    field="EVENT_NAME",
+                )
+            ],
+            column_definitions=[
+                EventColumnDefinition(
+                    header="event_count",
+                    metric=EventMetric_Count(),
+                )
+            ],
+        )
+        """
+        _response = self._raw_client.get_event_table(
+            field_groupings=field_groupings,
+            column_definitions=column_definitions,
+            time_grouping=time_grouping,
+            event_filter=event_filter,
+            timezone=timezone,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def get_event_chart(
+        self, *, request: EventChartRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> ChartResponse:
+        """
+        Fetches event data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+
+        Parameters
+        ----------
+        request : EventChartRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ChartResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.analytics import (
+            EventChartRequest_PieChart,
+            EventGroupBy,
+            EventMetric_Count,
+        )
+        from mavenagi.commons import EventFilter
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.analytics.get_event_chart(
+            request=EventChartRequest_PieChart(
+                event_filter=EventFilter(
+                    event_types=["USER"],
+                ),
+                group_by=EventGroupBy(
+                    field="EVENT_NAME",
+                ),
+                metric=EventMetric_Count(),
+            ),
+        )
+        """
+        _response = self._raw_client.get_event_chart(request=request, request_options=request_options)
         return _response.data
 
 
@@ -890,4 +1031,156 @@ class AsyncAnalyticsClient:
             timezone=timezone,
             request_options=request_options,
         )
+        return _response.data
+
+    async def get_event_table(
+        self,
+        *,
+        field_groupings: typing.Sequence[EventGroupBy],
+        column_definitions: typing.Sequence[EventColumnDefinition],
+        time_grouping: typing.Optional[TimeInterval] = OMIT,
+        event_filter: typing.Optional[EventFilter] = OMIT,
+        timezone: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> EventTableResponse:
+        """
+        Retrieves structured event data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+
+        Parameters
+        ----------
+        field_groupings : typing.Sequence[EventGroupBy]
+            Specifies the fields by which data should be grouped. Each unique combination forms a row.
+            If multiple fields are provided, the result is grouped by their unique value combinations.
+            If empty, all data is aggregated into a single row.
+            Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
+
+        column_definitions : typing.Sequence[EventColumnDefinition]
+            Specifies the metrics to be displayed as columns.
+            Column headers act as keys, with computed metric values as their mapped values.
+            There needs to be at least one column definition in the table request.
+
+        time_grouping : typing.Optional[TimeInterval]
+            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+             Example: If set to "DAY," data will be aggregated by day.
+
+        event_filter : typing.Optional[EventFilter]
+            Optional filter applied to refine the event data before processing.
+
+        timezone : typing.Optional[str]
+            IANA timezone identifier (e.g., "America/Los_Angeles").
+            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+            otherwise UTC is used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        EventTableResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.analytics import (
+            EventColumnDefinition,
+            EventGroupBy,
+            EventMetric_Count,
+        )
+        from mavenagi.commons import EventFilter
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.analytics.get_event_table(
+                event_filter=EventFilter(
+                    event_types=["USER"],
+                ),
+                field_groupings=[
+                    EventGroupBy(
+                        field="EVENT_NAME",
+                    )
+                ],
+                column_definitions=[
+                    EventColumnDefinition(
+                        header="event_count",
+                        metric=EventMetric_Count(),
+                    )
+                ],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_event_table(
+            field_groupings=field_groupings,
+            column_definitions=column_definitions,
+            time_grouping=time_grouping,
+            event_filter=event_filter,
+            timezone=timezone,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def get_event_chart(
+        self, *, request: EventChartRequest, request_options: typing.Optional[RequestOptions] = None
+    ) -> ChartResponse:
+        """
+        Fetches event data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+
+        Parameters
+        ----------
+        request : EventChartRequest
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ChartResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.analytics import (
+            EventChartRequest_PieChart,
+            EventGroupBy,
+            EventMetric_Count,
+        )
+        from mavenagi.commons import EventFilter
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.analytics.get_event_chart(
+                request=EventChartRequest_PieChart(
+                    event_filter=EventFilter(
+                        event_types=["USER"],
+                    ),
+                    group_by=EventGroupBy(
+                        field="EVENT_NAME",
+                    ),
+                    metric=EventMetric_Count(),
+                ),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_event_chart(request=request, request_options=request_options)
         return _response.data

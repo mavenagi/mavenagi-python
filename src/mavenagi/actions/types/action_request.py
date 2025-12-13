@@ -17,7 +17,7 @@ class ActionRequest(ActionBase):
     Examples
     --------
     from mavenagi.actions import ActionRequest
-    from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+    from mavenagi.commons import EntityIdBase, Precondition_Group
 
     ActionRequest(
         action_id=EntityIdBase(
@@ -30,12 +30,8 @@ class ActionRequest(ActionBase):
         precondition=Precondition_Group(
             operator="AND",
             preconditions=[
-                Precondition_User(
-                    key="userKey",
-                ),
-                Precondition_User(
-                    key="userKey2",
-                ),
+                {"preconditionType": "user", "key": "userKey"},
+                {"preconditionType": "user", "key": "userKey2"},
             ],
         ),
         language="en",

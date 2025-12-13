@@ -11,7 +11,6 @@ from .types import (
     AgentsSearchRequest,
     AgentsSearchResponse,
     CreateAgentRequest,
-    PiiCategory,
 )
 
 __all__ = [
@@ -23,5 +22,4 @@ __all__ = [
     "AgentsSearchRequest",
     "AgentsSearchResponse",
     "CreateAgentRequest",
-    "PiiCategory",
 ]

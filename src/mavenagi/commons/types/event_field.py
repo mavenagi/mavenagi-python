@@ -2,4 +2,24 @@
 
 import typing
 
-EventField = typing.Union[typing.Literal["CREATED_AT"], typing.Any]
+EventField = typing.Union[
+    typing.Literal[
+        "CREATED_AT",
+        "EVENT_NAME",
+        "EVENT_TYPE",
+        "APP",
+        "SESSION_ID",
+        "SOURCE_TYPE",
+        "SOURCE_LANGUAGE_CODE",
+        "SOURCE_DEVICE_TYPE",
+        "SOURCE_DEVICE_NAME",
+        "SOURCE_BROWSER_TYPE",
+        "SOURCE_BROWSER_NAME",
+        "SOURCE_GEO_CITY",
+        "SOURCE_GEO_STATE",
+        "SOURCE_GEO_COUNTRY",
+        "USER_REFERENCE_ID",
+        "AGENT_USER_ID",
+    ],
+    typing.Any,
+]

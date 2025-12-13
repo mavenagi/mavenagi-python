@@ -10,7 +10,6 @@ from .agent_prompting import AgentPrompting
 from .agents_search_request import AgentsSearchRequest
 from .agents_search_response import AgentsSearchResponse
 from .create_agent_request import CreateAgentRequest
-from .pii_category import PiiCategory
 
 __all__ = [
     "Agent",
@@ -21,5 +20,4 @@ __all__ = [
     "AgentsSearchRequest",
     "AgentsSearchResponse",
     "CreateAgentRequest",
-    "PiiCategory",
 ]

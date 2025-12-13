@@ -117,7 +117,7 @@ Update an action or create it if it doesn't exist
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+from mavenagi.commons import EntityIdBase, Precondition_Group
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -136,12 +136,8 @@ client.actions.create_or_update(
     precondition=Precondition_Group(
         operator="AND",
         preconditions=[
-            Precondition_User(
-                key="userKey",
-            ),
-            Precondition_User(
-                key="userKey2",
-            ),
+            {"preconditionType": "user", "key": "userKey"},
+            {"preconditionType": "user", "key": "userKey2"},
         ],
     ),
     language="en",
@@ -1751,6 +1747,236 @@ Defines the time interval for grouping data. If specified, data is grouped accor
 IANA timezone identifier (e.g., "America/Los_Angeles").
 When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
 otherwise UTC is used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_event_table</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves structured event data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import (
+    EventColumnDefinition,
+    EventGroupBy,
+    EventMetric_Count,
+)
+from mavenagi.commons import EventFilter
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.analytics.get_event_table(
+    event_filter=EventFilter(
+        event_types=["USER"],
+    ),
+    field_groupings=[
+        EventGroupBy(
+            field="EVENT_NAME",
+        )
+    ],
+    column_definitions=[
+        EventColumnDefinition(
+            header="event_count",
+            metric=EventMetric_Count(),
+        )
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_groupings:** `typing.Sequence[EventGroupBy]` 
+
+Specifies the fields by which data should be grouped. Each unique combination forms a row. 
+If multiple fields are provided, the result is grouped by their unique value combinations. 
+If empty, all data is aggregated into a single row. 
+Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**column_definitions:** `typing.Sequence[EventColumnDefinition]` 
+
+Specifies the metrics to be displayed as columns.
+Column headers act as keys, with computed metric values as their mapped values.
+There needs to be at least one column definition in the table request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**time_grouping:** `typing.Optional[TimeInterval]` 
+
+Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+ Example: If set to "DAY," data will be aggregated by day.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**event_filter:** `typing.Optional[EventFilter]` — Optional filter applied to refine the event data before processing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**timezone:** `typing.Optional[str]` 
+
+IANA timezone identifier (e.g., "America/Los_Angeles").
+When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+otherwise UTC is used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_event_chart</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetches event data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.analytics import (
+    EventChartRequest_BarChart,
+    EventGroupBy,
+    EventMetric_Count,
+)
+from mavenagi.commons import EventFilter
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.analytics.get_event_chart(
+    request=EventChartRequest_BarChart(
+        event_filter=EventFilter(
+            event_types=["USER"],
+        ),
+        bar_definition=EventGroupBy(
+            field="EVENT_NAME",
+        ),
+        metric=EventMetric_Count(),
+        vertical_grouping=EventGroupBy(
+            field="EVENT_TYPE",
+        ),
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `EventChartRequest` 
     
 </dd>
 </dl>
@@ -4014,6 +4240,398 @@ client.conversation.deliver_message(
 </dl>
 </details>
 
+## Customers
+<details><summary><code>client.customers.<a href="src/mavenagi/customers/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.customers.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[CustomerField]` — The field to sort by, defaults to created timestamp
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[CustomerFilter]` — The filter to apply to the customers.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.customers.<a href="src/mavenagi/customers/client.py">create_or_update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a customer of an agent or create it if it doesn't exist. In case of an update, fields not provided (e.g., description, status) will be preserved.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdBase
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.customers.create_or_update(
+    customer_id=EntityIdBase(
+        reference_id="acme",
+    ),
+    name="Acme Corporation",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**customer_id:** `EntityIdBase` — ID that uniquely identifies this customer
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.customers.<a href="src/mavenagi/customers/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a customer by its supplied ID
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.customers.get(
+    customer_reference_id="acme",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**customer_reference_id:** `str` — The reference ID of the customer to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the customer to get. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.customers.<a href="src/mavenagi/customers/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable customer fields
+
+The `appId` field can be provided to update a customer owned by a different app.
+All other fields will overwrite the existing value on the customer only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.customers.patch(
+    customer_reference_id="customerReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**customer_reference_id:** `str` — The reference ID of the customer to update. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the customer to update. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — The name of the customer.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — The description of the customer.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[CustomerStatus]` 
+
+Whether or not the customer is in active use.
+
+Only active customers will be available for agent interactions.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**metadata:** `typing.Optional[typing.Dict[str, str]]` — Metadata associated with the customer. If not provided, the existing metadata will be preserved.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**assignees:** `typing.Optional[typing.Set[str]]` — Set of agent user IDs to assign to this customer. If provided, replaces all existing assignees.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**members:** `typing.Optional[typing.Set[str]]` — Set of agent user IDs who are members of this customer. If provided, replaces all existing members.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Events
 <details><summary><code>client.events.<a href="src/mavenagi/events/client.py">create</a>(...)</code></summary>
 <dl>
@@ -5885,6 +6503,14 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
+**relevant_entities:** `typing.Optional[typing.Sequence[ScopedEntity]]` — Scoped entities this document is associated with for context-based filtering. By default, the document is associated with the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **url:** `typing.Optional[str]` — The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
     
 </dd>
@@ -6912,7 +7538,7 @@ Update a segment or create it if it doesn't exist.
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+from mavenagi.commons import EntityIdBase, Precondition_Group
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -6928,12 +7554,8 @@ client.segments.create_or_update(
     precondition=Precondition_Group(
         operator="AND",
         preconditions=[
-            Precondition_User(
-                key="userKey",
-            ),
-            Precondition_User(
-                key="userKey2",
-            ),
+            {"preconditionType": "user", "key": "userKey"},
+            {"preconditionType": "user", "key": "userKey2"},
         ],
     ),
 )

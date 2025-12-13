@@ -3,6 +3,7 @@
 import typing
 
 from ..commons.types.llm_persona import LlmPersona
+from ..commons.types.pii_category import PiiCategory
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawAgentsClient, RawAgentsClient
@@ -11,7 +12,6 @@ from .types.agent_environment import AgentEnvironment
 from .types.agent_field import AgentField
 from .types.agent_filter import AgentFilter
 from .types.agents_search_response import AgentsSearchResponse
-from .types.pii_category import PiiCategory
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)

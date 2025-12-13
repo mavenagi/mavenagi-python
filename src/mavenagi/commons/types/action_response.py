@@ -17,12 +17,7 @@ class ActionResponse(ActionBase):
     """
     Examples
     --------
-    from mavenagi.commons import (
-        ActionResponse,
-        EntityId,
-        Precondition_Group,
-        Precondition_User,
-    )
+    from mavenagi.commons import ActionResponse, EntityId, Precondition_Group
 
     ActionResponse(
         action_id=EntityId(
@@ -41,12 +36,8 @@ class ActionResponse(ActionBase):
         precondition=Precondition_Group(
             operator="AND",
             preconditions=[
-                Precondition_User(
-                    key="userKey",
-                ),
-                Precondition_User(
-                    key="userKey2",
-                ),
+                {"preconditionType": "user", "key": "userKey"},
+                {"preconditionType": "user", "key": "userKey2"},
             ],
         ),
         segment_id=EntityId(

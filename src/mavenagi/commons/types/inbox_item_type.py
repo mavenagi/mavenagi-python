@@ -2,4 +2,4 @@
 
 import typing
 
-InboxItemType = typing.Union[typing.Literal["DUPLICATE_DOCUMENT", "MISSING_KNOWLEDGE"], typing.Any]
+InboxItemType = typing.Union[typing.Literal["DUPLICATE_DOCUMENT", "MISSING_KNOWLEDGE", "CUSTOM"], typing.Any]

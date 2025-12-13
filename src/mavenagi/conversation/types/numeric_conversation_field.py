@@ -8,6 +8,7 @@ NumericConversationField = typing.Union[
         "ThumbsDownCount",
         "InsertCount",
         "UserMessageCount",
+        "BotMessageCount",
         "HandleTime",
         "FirstResponseTime",
         "PredictedNPS",

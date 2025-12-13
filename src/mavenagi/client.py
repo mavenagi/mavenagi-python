@@ -11,6 +11,7 @@ from .app_settings.client import AppSettingsClient, AsyncAppSettingsClient
 from .assets.client import AssetsClient, AsyncAssetsClient
 from .conversation.client import AsyncConversationClient, ConversationClient
 from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
+from .customers.client import AsyncCustomersClient, CustomersClient
 from .environment import MavenAGIEnvironment
 from .events.client import AsyncEventsClient, EventsClient
 from .inbox.client import AsyncInboxClient, InboxClient
@@ -105,6 +106,7 @@ class MavenAGI:
         self.app_settings = AppSettingsClient(client_wrapper=self._client_wrapper)
         self.assets = AssetsClient(client_wrapper=self._client_wrapper)
         self.conversation = ConversationClient(client_wrapper=self._client_wrapper)
+        self.customers = CustomersClient(client_wrapper=self._client_wrapper)
         self.events = EventsClient(client_wrapper=self._client_wrapper)
         self.inbox = InboxClient(client_wrapper=self._client_wrapper)
         self.knowledge = KnowledgeClient(client_wrapper=self._client_wrapper)
@@ -198,6 +200,7 @@ class AsyncMavenAGI:
         self.app_settings = AsyncAppSettingsClient(client_wrapper=self._client_wrapper)
         self.assets = AsyncAssetsClient(client_wrapper=self._client_wrapper)
         self.conversation = AsyncConversationClient(client_wrapper=self._client_wrapper)
+        self.customers = AsyncCustomersClient(client_wrapper=self._client_wrapper)
         self.events = AsyncEventsClient(client_wrapper=self._client_wrapper)
         self.inbox = AsyncInboxClient(client_wrapper=self._client_wrapper)
         self.knowledge = AsyncKnowledgeClient(client_wrapper=self._client_wrapper)

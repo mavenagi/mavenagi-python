@@ -112,6 +112,7 @@ from .feedback_base import FeedbackBase
 from .feedback_info import FeedbackInfo
 from .feedback_type import FeedbackType
 from .geo_info import GeoInfo
+from .harmful_content_analysis import HarmfulContentAnalysis
 from .inbox_item import InboxItem, InboxItem_Custom, InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge
 from .inbox_item_base import InboxItemBase
 from .inbox_item_custom import InboxItemCustom
@@ -125,6 +126,13 @@ from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
 from .inbox_item_type import InboxItemType
 from .ip_info import IpInfo
+from .knowledge_context_by_entities import KnowledgeContextByEntities
+from .knowledge_context_by_entity_types import KnowledgeContextByEntityTypes
+from .knowledge_context_filter import (
+    KnowledgeContextFilter,
+    KnowledgeContextFilter_ByEntities,
+    KnowledgeContextFilter_ByEntityTypes,
+)
 from .language_info import LanguageInfo
 from .llm_inclusion_status import LlmInclusionStatus
 from .llm_persona import LlmPersona
@@ -138,6 +146,7 @@ from .os_info import OsInfo
 from .os_type import OsType
 from .page import Page
 from .page_info import PageInfo
+from .pii_category import PiiCategory
 from .precondition import Precondition, Precondition_Conversation, Precondition_Group, Precondition_User
 from .precondition_base import PreconditionBase
 from .precondition_group import PreconditionGroup
@@ -148,6 +157,7 @@ from .quality_reason import QualityReason
 from .response_config import ResponseConfig
 from .response_config_precondition import ResponseConfigPrecondition
 from .response_length import ResponseLength
+from .safety_check_report import SafetyCheckReport
 from .scoped_entity import ScopedEntity
 from .sentiment import Sentiment
 from .session_info import SessionInfo
@@ -274,6 +284,7 @@ __all__ = [
     "FeedbackInfo",
     "FeedbackType",
     "GeoInfo",
+    "HarmfulContentAnalysis",
     "InboxItem",
     "InboxItemBase",
     "InboxItemCustom",
@@ -292,6 +303,11 @@ __all__ = [
     "InboxItem_DuplicateDocuments",
     "InboxItem_MissingKnowledge",
     "IpInfo",
+    "KnowledgeContextByEntities",
+    "KnowledgeContextByEntityTypes",
+    "KnowledgeContextFilter",
+    "KnowledgeContextFilter_ByEntities",
+    "KnowledgeContextFilter_ByEntityTypes",
     "LanguageInfo",
     "LlmInclusionStatus",
     "LlmPersona",
@@ -305,6 +321,7 @@ __all__ = [
     "OsType",
     "Page",
     "PageInfo",
+    "PiiCategory",
     "Precondition",
     "PreconditionBase",
     "PreconditionGroup",
@@ -318,6 +335,7 @@ __all__ = [
     "ResponseConfig",
     "ResponseConfigPrecondition",
     "ResponseLength",
+    "SafetyCheckReport",
     "ScopedEntity",
     "Sentiment",
     "SessionInfo",

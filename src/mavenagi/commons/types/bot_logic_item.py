@@ -14,6 +14,7 @@ from .bot_logic_action_reviewed_detail import BotLogicActionReviewedDetail
 from .bot_logic_knowledge_detail import BotLogicKnowledgeDetail
 from .entity_id import EntityId
 from .entity_id_without_agent import EntityIdWithoutAgent
+from .safety_check_report import SafetyCheckReport
 
 
 class BotLogicItem_Knowledge(UniversalBaseModel):
@@ -77,6 +78,7 @@ class BotLogicItem_Form(UniversalBaseModel):
 class BotLogicItem_Safety(UniversalBaseModel):
     type: typing.Literal["safety"] = "safety"
     safety_check_passed: typing_extensions.Annotated[bool, FieldMetadata(alias="safetyCheckPassed")]
+    report: typing.Optional[SafetyCheckReport] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

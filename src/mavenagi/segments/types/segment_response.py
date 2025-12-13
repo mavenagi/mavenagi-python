@@ -17,7 +17,7 @@ class SegmentResponse(SegmentBase):
     """
     Examples
     --------
-    from mavenagi.commons import EntityId, Precondition_Group, Precondition_User
+    from mavenagi.commons import EntityId, Precondition_Group
     from mavenagi.segments import SegmentResponse
 
     SegmentResponse(
@@ -33,12 +33,8 @@ class SegmentResponse(SegmentBase):
         precondition=Precondition_Group(
             operator="AND",
             preconditions=[
-                Precondition_User(
-                    key="userKey",
-                ),
-                Precondition_User(
-                    key="userKey2",
-                ),
+                {"preconditionType": "user", "key": "userKey"},
+                {"preconditionType": "user", "key": "userKey2"},
             ],
         ),
     )

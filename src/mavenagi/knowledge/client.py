@@ -8,6 +8,7 @@ from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.llm_inclusion_status import LlmInclusionStatus
 from ..commons.types.precondition import Precondition
+from ..commons.types.scoped_entity import ScopedEntity
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawKnowledgeClient, RawKnowledgeClient
@@ -561,6 +562,7 @@ class KnowledgeClient:
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
+        relevant_entities: typing.Optional[typing.Sequence[ScopedEntity]] = OMIT,
         url: typing.Optional[str] = OMIT,
         language: typing.Optional[str] = OMIT,
         author: typing.Optional[str] = OMIT,
@@ -606,6 +608,9 @@ class KnowledgeClient:
 
         updated_at : typing.Optional[dt.datetime]
             The time at which this document was last modified.
+
+        relevant_entities : typing.Optional[typing.Sequence[ScopedEntity]]
+            Scoped entities this document is associated with for context-based filtering. By default, the document is associated with the agent.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
@@ -661,6 +666,7 @@ class KnowledgeClient:
             metadata=metadata,
             created_at=created_at,
             updated_at=updated_at,
+            relevant_entities=relevant_entities,
             url=url,
             language=language,
             author=author,
@@ -1447,6 +1453,7 @@ class AsyncKnowledgeClient:
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
+        relevant_entities: typing.Optional[typing.Sequence[ScopedEntity]] = OMIT,
         url: typing.Optional[str] = OMIT,
         language: typing.Optional[str] = OMIT,
         author: typing.Optional[str] = OMIT,
@@ -1492,6 +1499,9 @@ class AsyncKnowledgeClient:
 
         updated_at : typing.Optional[dt.datetime]
             The time at which this document was last modified.
+
+        relevant_entities : typing.Optional[typing.Sequence[ScopedEntity]]
+            Scoped entities this document is associated with for context-based filtering. By default, the document is associated with the agent.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
@@ -1555,6 +1565,7 @@ class AsyncKnowledgeClient:
             metadata=metadata,
             created_at=created_at,
             updated_at=updated_at,
+            relevant_entities=relevant_entities,
             url=url,
             language=language,
             author=author,

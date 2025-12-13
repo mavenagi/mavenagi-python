@@ -5,6 +5,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.attachment_response import AttachmentResponse
+from ...commons.types.scoped_entity import ScopedEntity
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .knowledge_document_search_response import KnowledgeDocumentSearchResponse
@@ -17,7 +18,7 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
     --------
     import datetime
 
-    from mavenagi.commons import EntityId
+    from mavenagi.commons import EntityId, ScopedEntity
     from mavenagi.knowledge import KnowledgeDocumentResponse
 
     KnowledgeDocumentResponse(
@@ -52,6 +53,24 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
             "2024-02-02 00:00:00+00:00",
         ),
         llm_inclusion_status="WHEN_RELEVANT",
+        relevant_entities=[
+            ScopedEntity(
+                entity_id=EntityId(
+                    type="CUSTOMER",
+                    app_id="crm",
+                    organization_id="acme",
+                    agent_id="support",
+                    reference_id="customer-42",
+                ),
+                scope_entity_id=EntityId(
+                    type="AGENT",
+                    app_id="maven",
+                    organization_id="acme",
+                    agent_id="support",
+                    reference_id="support",
+                ),
+            )
+        ],
         knowledge_base_llm_inclusion_status="WHEN_RELEVANT",
     )
     """
@@ -76,6 +95,13 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
     metadata: typing.Dict[str, str] = pydantic.Field()
     """
     Metadata for the knowledge document.
+    """
+
+    relevant_entities: typing_extensions.Annotated[
+        typing.List[ScopedEntity], FieldMetadata(alias="relevantEntities")
+    ] = pydantic.Field()
+    """
+    Scoped entities this document is associated with for context-based filtering.
     """
 
     if IS_PYDANTIC_V2:

@@ -49,6 +49,11 @@ class ConversationSummary(UniversalBaseModel):
     The number of messages of type `USER` in the conversation.
     """
 
+    bot_message_count: typing_extensions.Annotated[int, FieldMetadata(alias="botMessageCount")] = pydantic.Field()
+    """
+    The number of bot answer messages in the conversation.
+    """
+
     handle_time: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="handleTime")] = pydantic.Field(
         default=None
     )
@@ -104,6 +109,17 @@ class ConversationSummary(UniversalBaseModel):
     )
     """
     The text of the last bot message in the conversation.
+    """
+
+    involved_app_ids: typing_extensions.Annotated[typing.Set[str], FieldMetadata(alias="involvedAppIds")] = (
+        pydantic.Field()
+    )
+    """
+    The set of app IDs that are involved in this conversation. This includes:
+    - The app ID that created the conversation
+    - The app IDs of all messages created in the conversation
+    - The app IDs of all actions selected by the LLM in the conversation (including unsubmitted forms)
+    - The app IDs of all documents referenced by LLM responses in the conversation (does not include document search results not utilized by the LLM)
     """
 
     if IS_PYDANTIC_V2:

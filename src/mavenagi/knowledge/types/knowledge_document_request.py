@@ -7,6 +7,7 @@ import pydantic
 import typing_extensions
 from ...commons.types.entity_id_base import EntityIdBase
 from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
+from ...commons.types.scoped_entity import ScopedEntity
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .base_knowledge_document import BaseKnowledgeDocument
@@ -91,6 +92,13 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
     )
     """
     The time at which this document was last modified.
+    """
+
+    relevant_entities: typing_extensions.Annotated[
+        typing.Optional[typing.List[ScopedEntity]], FieldMetadata(alias="relevantEntities")
+    ] = pydantic.Field(default=None)
+    """
+    Scoped entities this document is associated with for context-based filtering. By default, the document is associated with the agent.
     """
 
     if IS_PYDANTIC_V2:

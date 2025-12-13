@@ -111,7 +111,7 @@ class SegmentsClient:
         Examples
         --------
         from mavenagi import MavenAGI
-        from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+        from mavenagi.commons import EntityIdBase, Precondition_Group
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -127,12 +127,8 @@ class SegmentsClient:
             precondition=Precondition_Group(
                 operator="AND",
                 preconditions=[
-                    Precondition_User(
-                        key="userKey",
-                    ),
-                    Precondition_User(
-                        key="userKey2",
-                    ),
+                    {"preconditionType": "user", "key": "userKey"},
+                    {"preconditionType": "user", "key": "userKey2"},
                 ],
             ),
         )
@@ -355,7 +351,7 @@ class AsyncSegmentsClient:
         import asyncio
 
         from mavenagi import AsyncMavenAGI
-        from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+        from mavenagi.commons import EntityIdBase, Precondition_Group
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
@@ -374,12 +370,8 @@ class AsyncSegmentsClient:
                 precondition=Precondition_Group(
                     operator="AND",
                     preconditions=[
-                        Precondition_User(
-                            key="userKey",
-                        ),
-                        Precondition_User(
-                            key="userKey2",
-                        ),
+                        {"preconditionType": "user", "key": "userKey"},
+                        {"preconditionType": "user", "key": "userKey2"},
                     ],
                 ),
             )

@@ -22,6 +22,7 @@ ConversationField = typing.Union[
         "InsertCount",
         "Tags",
         "UserMessageCount",
+        "BotMessageCount",
         "Languages",
         "Actions",
         "IncompleteActions",
@@ -31,6 +32,7 @@ ConversationField = typing.Union[
         "OrganizationId",
         "AgentId",
         "InboxItems",
+        "InvolvedApps",
     ],
     typing.Any,
 ]

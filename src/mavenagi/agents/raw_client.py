@@ -8,6 +8,7 @@ from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.server_error import ServerError
 from ..commons.types.error_message import ErrorMessage
 from ..commons.types.llm_persona import LlmPersona
+from ..commons.types.pii_category import PiiCategory
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
@@ -20,7 +21,6 @@ from .types.agent_environment import AgentEnvironment
 from .types.agent_field import AgentField
 from .types.agent_filter import AgentFilter
 from .types.agents_search_response import AgentsSearchResponse
-from .types.pii_category import PiiCategory
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)

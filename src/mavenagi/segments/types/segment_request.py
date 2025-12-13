@@ -16,7 +16,7 @@ class SegmentRequest(SegmentBase):
     """
     Examples
     --------
-    from mavenagi.commons import EntityIdBase, Precondition_Group, Precondition_User
+    from mavenagi.commons import EntityIdBase, Precondition_Group
     from mavenagi.segments import SegmentRequest
 
     SegmentRequest(
@@ -27,12 +27,8 @@ class SegmentRequest(SegmentBase):
         precondition=Precondition_Group(
             operator="AND",
             preconditions=[
-                Precondition_User(
-                    key="userKey",
-                ),
-                Precondition_User(
-                    key="userKey2",
-                ),
+                {"preconditionType": "user", "key": "userKey"},
+                {"preconditionType": "user", "key": "userKey2"},
             ],
         ),
     )

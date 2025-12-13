@@ -7,6 +7,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .capability import Capability
+from .knowledge_context_filter import KnowledgeContextFilter
 from .response_length import ResponseLength
 
 
@@ -33,6 +34,15 @@ class ResponseConfig(UniversalBaseModel):
     )
     """
     The desired response length. Defaults to ResponseLength.MEDIUM.
+    """
+
+    context_filter: typing_extensions.Annotated[
+        typing.Optional[KnowledgeContextFilter], FieldMetadata(alias="contextFilter")
+    ] = pydantic.Field(default=None)
+    """
+    Filters that restrict the knowledge retrieval candidate pool.
+    - entities: specific entities to scope by
+    - entityTypes: entity types to scope by (e.g., AGENT, CUSTOMER)
     """
 
     if IS_PYDANTIC_V2:
