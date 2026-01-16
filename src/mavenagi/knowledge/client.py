@@ -557,7 +557,7 @@ class KnowledgeClient:
         content_type: KnowledgeDocumentContentType,
         title: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        asset_id: typing.Optional[EntityIdBase] = OMIT,
+        asset_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         content: typing.Optional[str] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
@@ -594,7 +594,7 @@ class KnowledgeClient:
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
 
-        asset_id : typing.Optional[EntityIdBase]
+        asset_id : typing.Optional[EntityIdWithoutAgent]
             ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both
 
         content : typing.Optional[str]
@@ -1448,7 +1448,7 @@ class AsyncKnowledgeClient:
         content_type: KnowledgeDocumentContentType,
         title: str,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        asset_id: typing.Optional[EntityIdBase] = OMIT,
+        asset_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         content: typing.Optional[str] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
@@ -1485,7 +1485,7 @@ class AsyncKnowledgeClient:
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
 
-        asset_id : typing.Optional[EntityIdBase]
+        asset_id : typing.Optional[EntityIdWithoutAgent]
             ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both
 
         content : typing.Optional[str]

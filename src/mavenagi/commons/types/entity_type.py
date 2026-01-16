@@ -20,6 +20,7 @@ EntityType = typing.Union[
         "INBOX_ITEM_FIX",
         "SEGMENT",
         "CUSTOMER",
+        "INTELLIGENT_FIELD",
     ],
     typing.Any,
 ]

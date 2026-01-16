@@ -20,6 +20,7 @@ EventField = typing.Union[
         "SOURCE_GEO_COUNTRY",
         "USER_REFERENCE_ID",
         "AGENT_USER_ID",
+        "TIMESTAMP",
     ],
     typing.Any,
 ]

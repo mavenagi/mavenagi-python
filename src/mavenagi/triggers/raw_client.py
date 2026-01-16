@@ -8,6 +8,7 @@ from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.server_error import ServerError
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
+from ..commons.types.event_trigger_type import EventTriggerType
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
@@ -16,7 +17,6 @@ from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from .types.event_trigger_response import EventTriggerResponse
-from .types.event_trigger_type import EventTriggerType
 from .types.event_triggers_search_response import EventTriggersSearchResponse
 from .types.trigger_field import TriggerField
 

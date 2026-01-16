@@ -3,11 +3,11 @@
 import typing
 
 from ..commons.types.entity_id_base import EntityIdBase
+from ..commons.types.event_trigger_type import EventTriggerType
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawTriggersClient, RawTriggersClient
 from .types.event_trigger_response import EventTriggerResponse
-from .types.event_trigger_type import EventTriggerType
 from .types.event_triggers_search_response import EventTriggersSearchResponse
 from .types.trigger_field import TriggerField
 

@@ -6463,7 +6463,7 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**asset_id:** `typing.Optional[EntityIdBase]` — ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both
+**asset_id:** `typing.Optional[EntityIdWithoutAgent]` — ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both
     
 </dd>
 </dl>

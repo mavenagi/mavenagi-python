@@ -13,7 +13,9 @@ from .action_form_field import ActionFormField
 from .action_o_auth_configuration import ActionOAuthConfiguration
 from .action_parameter import ActionParameter
 from .action_parameter_type import ActionParameterType
+from .action_properties import ActionProperties
 from .action_response import ActionResponse
+from .action_user import ActionUser
 from .app_precondition import AppPrecondition
 from .app_user import AppUser
 from .app_user_identifier import AppUserIdentifier
@@ -102,6 +104,7 @@ from .event_field import EventField
 from .event_filter import EventFilter
 from .event_request import EventRequest, EventRequest_SystemEvent, EventRequest_UserEvent
 from .event_response import EventResponse, EventResponse_SystemEvent, EventResponse_UserEvent
+from .event_trigger_type import EventTriggerType
 from .event_type import EventType
 from .event_user_info import EventUserInfo
 from .event_user_info_base import EventUserInfoBase
@@ -189,7 +192,9 @@ __all__ = [
     "ActionOAuthConfiguration",
     "ActionParameter",
     "ActionParameterType",
+    "ActionProperties",
     "ActionResponse",
+    "ActionUser",
     "AppPrecondition",
     "AppUser",
     "AppUserIdentifier",
@@ -274,6 +279,7 @@ __all__ = [
     "EventResponse",
     "EventResponse_SystemEvent",
     "EventResponse_UserEvent",
+    "EventTriggerType",
     "EventType",
     "EventUserInfo",
     "EventUserInfoBase",

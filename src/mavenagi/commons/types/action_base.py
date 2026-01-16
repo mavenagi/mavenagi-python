@@ -5,13 +5,11 @@ from __future__ import annotations
 import typing
 
 import pydantic
-import typing_extensions
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
-from ...core.serialization import FieldMetadata
-from .action_parameter import ActionParameter
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from .action_properties import ActionProperties
 
 
-class ActionBase(UniversalBaseModel):
+class ActionBase(ActionProperties):
     name: str = pydantic.Field()
     """
     The name of the action. This is displayed to the end user as part of forms when user interaction is required. It is also used to help Maven decide if the action is relevant to a conversation.
@@ -20,37 +18,6 @@ class ActionBase(UniversalBaseModel):
     description: str = pydantic.Field()
     """
     The description of the action. Must be less than 1024 characters. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user. Descriptions are used by the LLM.
-    """
-
-    user_interaction_required: typing_extensions.Annotated[bool, FieldMetadata(alias="userInteractionRequired")] = (
-        pydantic.Field()
-    )
-    """
-    Whether the action requires user interaction to execute. If false, and all of the required action parameters are known, the LLM may call the action automatically. If true, an conversations ask call will return a BotActionFormResponse which must be submitted by an API caller. API callers must display a button with the buttonName label to confirm the user's intent.
-    """
-
-    button_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="buttonName")] = pydantic.Field(
-        default=None
-    )
-    """
-    When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action. Defaults to "Submit" if not supplied.
-    """
-
-    precondition: typing.Optional["Precondition"] = pydantic.Field(default=None)
-    """
-    The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
-    """
-
-    user_form_parameters: typing_extensions.Annotated[
-        typing.List[ActionParameter], FieldMetadata(alias="userFormParameters")
-    ] = pydantic.Field()
-    """
-    The parameters that the action uses as input. An action will only be executed when all of the required parameters are provided. During execution, actions all have access to the full Conversation and User objects. Parameter values may be inferred from the user's conversation by the LLM.
-    """
-
-    language: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
     """
 
     if IS_PYDANTIC_V2:
@@ -64,6 +31,3 @@ class ActionBase(UniversalBaseModel):
 
 
 from .precondition_group import PreconditionGroup  # noqa: E402, F401, I001
-from .precondition import Precondition  # noqa: E402, F401, I001
-
-update_forward_refs(ActionBase)

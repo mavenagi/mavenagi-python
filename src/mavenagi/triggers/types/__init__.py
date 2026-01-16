@@ -5,7 +5,6 @@
 from .event_trigger_base import EventTriggerBase
 from .event_trigger_request import EventTriggerRequest
 from .event_trigger_response import EventTriggerResponse
-from .event_trigger_type import EventTriggerType
 from .event_triggers_search_request import EventTriggersSearchRequest
 from .event_triggers_search_response import EventTriggersSearchResponse
 from .trigger_field import TriggerField
@@ -15,7 +14,6 @@ __all__ = [
     "EventTriggerBase",
     "EventTriggerRequest",
     "EventTriggerResponse",
-    "EventTriggerType",
     "EventTriggersSearchRequest",
     "EventTriggersSearchResponse",
     "TriggerField",

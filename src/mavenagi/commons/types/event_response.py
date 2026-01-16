@@ -24,6 +24,7 @@ from .user_event_name import UserEventName
 class EventResponse_UserEvent(UniversalBaseModel):
     event_type: typing_extensions.Annotated[typing.Literal["userEvent"], FieldMetadata(alias="eventType")] = "userEvent"
     id: EntityId
+    created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = None
     event_name: typing_extensions.Annotated[UserEventName, FieldMetadata(alias="eventName")]
     user_info: typing_extensions.Annotated[EventUserInfo, FieldMetadata(alias="userInfo")]
     feedback_info: typing_extensions.Annotated[

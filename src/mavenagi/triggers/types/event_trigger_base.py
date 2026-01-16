@@ -3,8 +3,8 @@
 import typing
 
 import pydantic
+from ...commons.types.event_trigger_type import EventTriggerType
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .event_trigger_type import EventTriggerType
 
 
 class EventTriggerBase(UniversalBaseModel):

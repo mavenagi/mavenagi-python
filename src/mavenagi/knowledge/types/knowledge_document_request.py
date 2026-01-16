@@ -63,7 +63,7 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
     The title of the document. Will be shown as part of answers.
     """
 
-    asset_id: typing_extensions.Annotated[typing.Optional[EntityIdBase], FieldMetadata(alias="assetId")] = (
+    asset_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="assetId")] = (
         pydantic.Field(default=None)
     )
     """
