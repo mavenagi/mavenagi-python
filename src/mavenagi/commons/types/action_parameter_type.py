@@ -4,7 +4,18 @@ import typing
 
 ActionParameterType = typing.Union[
     typing.Literal[
-        "STRING", "MULTILINE", "BOOLEAN", "NUMBER", "DATETIME", "DATE", "TIME", "EMAIL", "SCHEMA", "FILE", "OAUTH"
+        "STRING",
+        "MULTILINE",
+        "BOOLEAN",
+        "NUMBER",
+        "DATETIME",
+        "DATE",
+        "TIME",
+        "EMAIL",
+        "PHONE",
+        "SCHEMA",
+        "FILE",
+        "OAUTH",
     ],
     typing.Any,
 ]

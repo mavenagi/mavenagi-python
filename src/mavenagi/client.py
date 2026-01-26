@@ -9,6 +9,7 @@ from .agents.client import AgentsClient, AsyncAgentsClient
 from .analytics.client import AnalyticsClient, AsyncAnalyticsClient
 from .app_settings.client import AppSettingsClient, AsyncAppSettingsClient
 from .assets.client import AssetsClient, AsyncAssetsClient
+from .auth.client import AsyncAuthClient, AuthClient
 from .conversation.client import AsyncConversationClient, ConversationClient
 from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .customers.client import AsyncCustomersClient, CustomersClient
@@ -105,6 +106,7 @@ class MavenAGI:
         self.analytics = AnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AppSettingsClient(client_wrapper=self._client_wrapper)
         self.assets = AssetsClient(client_wrapper=self._client_wrapper)
+        self.auth = AuthClient(client_wrapper=self._client_wrapper)
         self.conversation = ConversationClient(client_wrapper=self._client_wrapper)
         self.customers = CustomersClient(client_wrapper=self._client_wrapper)
         self.events = EventsClient(client_wrapper=self._client_wrapper)
@@ -199,6 +201,7 @@ class AsyncMavenAGI:
         self.analytics = AsyncAnalyticsClient(client_wrapper=self._client_wrapper)
         self.app_settings = AsyncAppSettingsClient(client_wrapper=self._client_wrapper)
         self.assets = AsyncAssetsClient(client_wrapper=self._client_wrapper)
+        self.auth = AsyncAuthClient(client_wrapper=self._client_wrapper)
         self.conversation = AsyncConversationClient(client_wrapper=self._client_wrapper)
         self.customers = AsyncCustomersClient(client_wrapper=self._client_wrapper)
         self.events = AsyncEventsClient(client_wrapper=self._client_wrapper)

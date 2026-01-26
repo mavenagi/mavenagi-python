@@ -8,6 +8,7 @@ from . import (
     analytics,
     app_settings,
     assets,
+    auth,
     commons,
     conversation,
     customers,
@@ -19,6 +20,7 @@ from . import (
     translations,
     triggers,
     users,
+    websockets,
 )
 from .actions import ActionField, ActionFilter, ActionRequest, ActionsResponse, ActionsSearchRequest
 from .agents import (
@@ -134,6 +136,7 @@ from .analytics import (
 )
 from .app_settings import AppSettings, SearchAppSettingsResponse
 from .assets import CommitAssetUploadRequest, InitiateAssetUploadRequest, InitiateAssetUploadResponse
+from .auth import SessionTokenRequest, SessionTokenResponse
 from .client import AsyncMavenAGI, MavenAGI
 from .commons import (
     ActionBase,
@@ -441,6 +444,20 @@ from .users import (
     AppUserSummary,
 )
 from .version import __version__
+from .websockets import (
+    AgentAudioChunk,
+    AgentTranscript,
+    AudioFormat,
+    Config,
+    ConversationEnded,
+    ConversationReady,
+    Error,
+    ServerEventBase,
+    UserAudioChunk,
+    UserFinishedSpeaking,
+    UserStartedSpeaking,
+    UserTranscript,
+)
 
 __all__ = [
     "ActionBase",
@@ -464,10 +481,12 @@ __all__ = [
     "ActionsSearchRequest",
     "AddDocumentFixRequest",
     "Agent",
+    "AgentAudioChunk",
     "AgentEnvironment",
     "AgentField",
     "AgentFilter",
     "AgentPrompting",
+    "AgentTranscript",
     "AgentUser",
     "AgentUserAnalyticsRequest",
     "AgentUserColumnDefinition",
@@ -505,6 +524,7 @@ __all__ = [
     "AttachmentRequest",
     "AttachmentResponse",
     "AttachmentStatus",
+    "AudioFormat",
     "BadRequestError",
     "BarChartResponse",
     "BaseAttachment",
@@ -560,6 +580,7 @@ __all__ = [
     "ChartSpecSchema",
     "ColumnDefinitionBase",
     "CommitAssetUploadRequest",
+    "Config",
     "ContextInfo",
     "ConversationAnalysis",
     "ConversationAnalyticsRequest",
@@ -574,6 +595,7 @@ __all__ = [
     "ConversationCount",
     "ConversationDateHistogramRequest",
     "ConversationDistinctCount",
+    "ConversationEnded",
     "ConversationExecutedActionPrecondition",
     "ConversationField",
     "ConversationFilter",
@@ -608,6 +630,7 @@ __all__ = [
     "ConversationPrecondition_ResponseConfig",
     "ConversationPrecondition_Tags",
     "ConversationPreview",
+    "ConversationReady",
     "ConversationRequest",
     "ConversationResponse",
     "ConversationRow",
@@ -645,6 +668,7 @@ __all__ = [
     "EntityIdWithoutAgent",
     "EntityResult",
     "EntityType",
+    "Error",
     "ErrorMessage",
     "EventAnalyticsRequest",
     "EventBarChartRequest",
@@ -824,7 +848,10 @@ __all__ = [
     "Sentiment",
     "Series",
     "ServerError",
+    "ServerEventBase",
     "SessionInfo",
+    "SessionTokenRequest",
+    "SessionTokenResponse",
     "SimulationContext",
     "SimulationFilter",
     "Source",
@@ -852,14 +879,18 @@ __all__ = [
     "TriggerField",
     "TriggerPartialUpdate",
     "UpdateMetadataRequest",
+    "UserAudioChunk",
     "UserConversationMessageType",
     "UserData",
     "UserDataWithReference",
     "UserEvent",
     "UserEventName",
+    "UserFinishedSpeaking",
     "UserMessage",
     "UserMessageBase",
     "UserMessageResponseState",
+    "UserStartedSpeaking",
+    "UserTranscript",
     "VisibilityType",
     "__version__",
     "actions",
@@ -867,6 +898,7 @@ __all__ = [
     "analytics",
     "app_settings",
     "assets",
+    "auth",
     "commons",
     "conversation",
     "customers",
@@ -878,4 +910,5 @@ __all__ = [
     "translations",
     "triggers",
     "users",
+    "websockets",
 ]
