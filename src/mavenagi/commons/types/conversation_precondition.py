@@ -35,6 +35,7 @@ class ConversationPrecondition_Metadata(UniversalBaseModel):
     ] = "metadata"
     key: str
     value: typing.Optional[str] = None
+    values: typing.Optional[typing.List[str]] = None
     operator: typing.Optional[PreconditionOperator] = None
 
     if IS_PYDANTIC_V2:

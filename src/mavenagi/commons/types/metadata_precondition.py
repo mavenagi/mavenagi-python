@@ -15,7 +15,12 @@ class MetadataPrecondition(PreconditionBase):
 
     value: typing.Optional[str] = pydantic.Field(default=None)
     """
-    If set, the value must match the metadata value for the given key
+    Single value for CONTAINS operator or exact match
+    """
+
+    values: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Multiple values for CONTAINS_ANY and CONTAINS_ALL operators
     """
 
     if IS_PYDANTIC_V2:

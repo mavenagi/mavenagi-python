@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import typing
 
 import pydantic
@@ -17,6 +18,8 @@ class SegmentResponse(SegmentBase):
     """
     Examples
     --------
+    import datetime
+
     from mavenagi.commons import EntityId, Precondition_Group
     from mavenagi.segments import SegmentResponse
 
@@ -29,6 +32,12 @@ class SegmentResponse(SegmentBase):
             type="SEGMENT",
         ),
         name="Admin users",
+        created_at=datetime.datetime.fromisoformat(
+            "2025-01-01 00:00:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2025-01-15 12:30:00+00:00",
+        ),
         status="ACTIVE",
         precondition=Precondition_Group(
             operator="AND",
@@ -43,6 +52,16 @@ class SegmentResponse(SegmentBase):
     segment_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="segmentId")] = pydantic.Field()
     """
     ID that uniquely identifies this segment
+    """
+
+    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")] = pydantic.Field()
+    """
+    The date and time when the segment was created.
+    """
+
+    updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")] = pydantic.Field()
+    """
+    The date and time when the segment was last updated.
     """
 
     status: SegmentStatus = pydantic.Field()

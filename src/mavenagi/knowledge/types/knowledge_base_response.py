@@ -133,6 +133,11 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     Inline precondition support will be removed in a future release.
     """
 
+    url: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The source URL of URL and RSS knowledge bases that was used for crawl.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
