@@ -10,6 +10,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .context_info import ContextInfo
+from .csat_info import CsatInfo
 from .entity_id_base import EntityIdBase
 from .event_user_info_base import EventUserInfoBase
 from .feedback_info import FeedbackInfo
@@ -26,6 +27,7 @@ class EventRequest_UserEvent(UniversalBaseModel):
     id: EntityIdBase
     event_name: typing_extensions.Annotated[UserEventName, FieldMetadata(alias="eventName")]
     user_info: typing_extensions.Annotated[EventUserInfoBase, FieldMetadata(alias="userInfo")]
+    csat_info: typing_extensions.Annotated[typing.Optional[CsatInfo], FieldMetadata(alias="csatInfo")] = None
     feedback_info: typing_extensions.Annotated[
         typing.Optional[typing.List[FeedbackInfo]], FieldMetadata(alias="feedbackInfo")
     ] = None

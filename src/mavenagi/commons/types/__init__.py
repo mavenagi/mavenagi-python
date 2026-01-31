@@ -89,6 +89,7 @@ from .conversation_precondition import (
 from .conversation_preview import ConversationPreview
 from .conversation_response import ConversationResponse
 from .conversation_summary import ConversationSummary
+from .csat_info import CsatInfo
 from .device_info import DeviceInfo
 from .device_type import DeviceType
 from .document_information import DocumentInformation
@@ -260,6 +261,7 @@ __all__ = [
     "ConversationPreview",
     "ConversationResponse",
     "ConversationSummary",
+    "CsatInfo",
     "DeviceInfo",
     "DeviceType",
     "DocumentInformation",

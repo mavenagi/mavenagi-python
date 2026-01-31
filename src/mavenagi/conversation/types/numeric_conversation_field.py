@@ -12,6 +12,7 @@ NumericConversationField = typing.Union[
         "HandleTime",
         "FirstResponseTime",
         "PredictedNPS",
+        "Csat",
     ],
     typing.Any,
 ]

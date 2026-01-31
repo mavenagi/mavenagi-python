@@ -29,6 +29,7 @@ ConversationField = typing.Union[
         "Sources",
         "CreatedAt",
         "PredictedNPS",
+        "Csat",
         "OrganizationId",
         "AgentId",
         "InboxItems",

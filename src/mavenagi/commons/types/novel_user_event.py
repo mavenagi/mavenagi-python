@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .csat_info import CsatInfo
 from .entity_id_base import EntityIdBase
 from .event_base_no_id import EventBaseNoId
 from .event_user_info_base import EventUserInfoBase
@@ -28,6 +29,13 @@ class NovelUserEvent(EventBaseNoId):
     user_info: typing_extensions.Annotated[EventUserInfoBase, FieldMetadata(alias="userInfo")] = pydantic.Field()
     """
     Information about the user who triggered the event
+    """
+
+    csat_info: typing_extensions.Annotated[typing.Optional[CsatInfo], FieldMetadata(alias="csatInfo")] = pydantic.Field(
+        default=None
+    )
+    """
+    Information about any CSAT associated with the event
     """
 
     feedback_info: typing_extensions.Annotated[
