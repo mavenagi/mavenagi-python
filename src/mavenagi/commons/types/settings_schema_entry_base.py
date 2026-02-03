@@ -6,19 +6,17 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .visibility_type import VisibilityType
 
 
-class CsatInfo(UniversalBaseModel):
-    rating: typing.Optional[float] = pydantic.Field(default=None)
+class SettingsSchemaEntryBase(UniversalBaseModel):
+    key: str
+    display_name: typing_extensions.Annotated[str, FieldMetadata(alias="displayName")]
+    description: typing.Optional[str] = None
+    visibility: typing.Optional[VisibilityType] = None
+    required: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    The rating of the CSAT rating (0.0, 5.0]
-    """
-
-    max_rating: typing_extensions.Annotated[typing.Optional[float], FieldMetadata(alias="maxRating")] = pydantic.Field(
-        default=None
-    )
-    """
-    The max rating of the CSAT value (default 5)
+    Whether the setting must have a value upon install. Defaults to false.
     """
 
     if IS_PYDANTIC_V2:

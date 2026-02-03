@@ -8,17 +8,15 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 
 
-class CsatInfo(UniversalBaseModel):
-    rating: typing.Optional[float] = pydantic.Field(default=None)
+class SettingsSchemaValidation(UniversalBaseModel):
+    pattern: str = pydantic.Field()
     """
-    The rating of the CSAT rating (0.0, 5.0]
+    Regular expression pattern for validation
     """
 
-    max_rating: typing_extensions.Annotated[typing.Optional[float], FieldMetadata(alias="maxRating")] = pydantic.Field(
-        default=None
-    )
+    error_message: typing_extensions.Annotated[str, FieldMetadata(alias="errorMessage")] = pydantic.Field()
     """
-    The max rating of the CSAT value (default 5)
+    Custom error message shown when validation fails
     """
 
     if IS_PYDANTIC_V2:

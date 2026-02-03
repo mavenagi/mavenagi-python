@@ -5536,6 +5536,225 @@ client.inbox.ignore(
 </dl>
 </details>
 
+## Integrations
+<details><summary><code>client.integrations.<a href="src/mavenagi/integrations/client.py">update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update an integration.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.integrations.update(
+    organization_id="organizationId",
+    integration_id="integrationId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organization_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**integration_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**settings_schema:** `typing.Optional[SettingsSchema]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**github_repository:** `typing.Optional[GithubRepository]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**github_branch:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**visibility:** `typing.Optional[AppVisibility]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**developer_organization_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**short_description:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**installation_instructions:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**instructions:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**preview_url:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**links:** `typing.Optional[typing.Sequence[Link]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**categories:** `typing.Optional[typing.Sequence[AppCategory]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**capabilities:** `typing.Optional[typing.Sequence[AppCapability]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**preinstalled:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**whitelisted_organizations:** `typing.Optional[typing.Sequence[str]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requested_permissions:** `typing.Optional[typing.Sequence[str]]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Knowledge
 <details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">search_knowledge_bases</a>(...)</code></summary>
 <dl>

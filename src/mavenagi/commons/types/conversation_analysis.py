@@ -76,6 +76,11 @@ class ConversationAnalysis(UniversalBaseModel):
     The predicted NPS of the conversation.
     """
 
+    csat: typing.Optional[float] = pydantic.Field(default=None)
+    """
+    The CSAT of the conversation.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

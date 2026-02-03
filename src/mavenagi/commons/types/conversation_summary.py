@@ -54,6 +54,11 @@ class ConversationSummary(UniversalBaseModel):
     The number of bot answer messages in the conversation.
     """
 
+    csat: typing.Optional[float] = pydantic.Field(default=None)
+    """
+    The CSAT score for the conversation
+    """
+
     handle_time: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="handleTime")] = pydantic.Field(
         default=None
     )

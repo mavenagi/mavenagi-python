@@ -4,22 +4,13 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .settings_schema_entry_base import SettingsSchemaEntryBase
 
 
-class CsatInfo(UniversalBaseModel):
-    rating: typing.Optional[float] = pydantic.Field(default=None)
-    """
-    The rating of the CSAT rating (0.0, 5.0]
-    """
-
-    max_rating: typing_extensions.Annotated[typing.Optional[float], FieldMetadata(alias="maxRating")] = pydantic.Field(
-        default=None
-    )
-    """
-    The max rating of the CSAT value (default 5)
-    """
+class ImageSettingsSchemaEntry(SettingsSchemaEntryBase):
+    default_value: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="defaultValue")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

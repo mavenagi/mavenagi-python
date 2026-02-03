@@ -22,6 +22,7 @@ from .app_user_identifier import AppUserIdentifier
 from .app_user_identifying_property_type import AppUserIdentifyingPropertyType
 from .app_user_request import AppUserRequest
 from .app_user_response import AppUserResponse
+from .array_settings_schema_entry import ArraySettingsSchemaEntry
 from .attachment_request import AttachmentRequest
 from .attachment_response import AttachmentResponse
 from .attachment_status import AttachmentStatus
@@ -68,6 +69,9 @@ from .browser_info import BrowserInfo
 from .browser_type import BrowserType
 from .capability import Capability
 from .chart_spec_schema import ChartSpecSchema
+from .checkbox_settings_schema_entry import CheckboxSettingsSchemaEntry
+from .color_settings_schema_entry import ColorSettingsSchemaEntry
+from .complex_array_settings_schema_entry import ComplexArraySettingsSchemaEntry
 from .context_info import ContextInfo
 from .conversation_analysis import ConversationAnalysis
 from .conversation_executed_action_precondition import ConversationExecutedActionPrecondition
@@ -93,6 +97,7 @@ from .csat_info import CsatInfo
 from .device_info import DeviceInfo
 from .device_type import DeviceType
 from .document_information import DocumentInformation
+from .dropdown_settings_schema_entry import DropdownSettingsSchemaEntry
 from .entity_id import EntityId
 from .entity_id_base import EntityIdBase
 from .entity_id_filter import EntityIdFilter
@@ -117,6 +122,7 @@ from .feedback_info import FeedbackInfo
 from .feedback_type import FeedbackType
 from .geo_info import GeoInfo
 from .harmful_content_analysis import HarmfulContentAnalysis
+from .image_settings_schema_entry import ImageSettingsSchemaEntry
 from .inbox_item import InboxItem, InboxItem_Custom, InboxItem_DuplicateDocuments, InboxItem_MissingKnowledge
 from .inbox_item_base import InboxItemBase
 from .inbox_item_custom import InboxItemCustom
@@ -142,10 +148,15 @@ from .llm_inclusion_status import LlmInclusionStatus
 from .llm_persona import LlmPersona
 from .message_status import MessageStatus
 from .metadata_precondition import MetadataPrecondition
+from .multiline_settings_schema_entry import MultilineSettingsSchemaEntry
 from .novel_system_event import NovelSystemEvent
 from .novel_system_event_no_id import NovelSystemEventNoId
 from .novel_user_event import NovelUserEvent
 from .number_range import NumberRange
+from .number_settings_schema_entry import NumberSettingsSchemaEntry
+from .o_auth_authentication_method import OAuthAuthenticationMethod
+from .o_auth_settings_schema_entry import OAuthSettingsSchemaEntry
+from .one_of_settings_schema_entry import OneOfSettingsSchemaEntry
 from .os_info import OsInfo
 from .os_type import OsType
 from .page import Page
@@ -163,8 +174,29 @@ from .response_config_precondition import ResponseConfigPrecondition
 from .response_length import ResponseLength
 from .safety_check_report import SafetyCheckReport
 from .scoped_entity import ScopedEntity
+from .section_settings_schema_entry import SectionSettingsSchemaEntry
 from .sentiment import Sentiment
 from .session_info import SessionInfo
+from .settings_schema import SettingsSchema
+from .settings_schema_discriminated_union_option import SettingsSchemaDiscriminatedUnionOption
+from .settings_schema_discriminated_union_options import SettingsSchemaDiscriminatedUnionOptions
+from .settings_schema_entry import (
+    SettingsSchemaEntry,
+    SettingsSchemaEntry_Array,
+    SettingsSchemaEntry_Checkbox,
+    SettingsSchemaEntry_Color,
+    SettingsSchemaEntry_Complexarray,
+    SettingsSchemaEntry_Dropdown,
+    SettingsSchemaEntry_Image,
+    SettingsSchemaEntry_Multiline,
+    SettingsSchemaEntry_Number,
+    SettingsSchemaEntry_Oauth,
+    SettingsSchemaEntry_OneOf,
+    SettingsSchemaEntry_Section,
+    SettingsSchemaEntry_Text,
+)
+from .settings_schema_entry_base import SettingsSchemaEntryBase
+from .settings_schema_validation import SettingsSchemaValidation
 from .simulation_context import SimulationContext
 from .source import Source
 from .source_info import SourceInfo
@@ -173,6 +205,7 @@ from .survey_info import SurveyInfo
 from .system_event import SystemEvent
 from .system_event_name import SystemEventName
 from .tags_precondition import TagsPrecondition
+from .text_settings_schema_entry import TextSettingsSchemaEntry
 from .user_conversation_message_type import UserConversationMessageType
 from .user_data import UserData
 from .user_data_with_reference import UserDataWithReference
@@ -202,6 +235,7 @@ __all__ = [
     "AppUserIdentifyingPropertyType",
     "AppUserRequest",
     "AppUserResponse",
+    "ArraySettingsSchemaEntry",
     "AttachmentRequest",
     "AttachmentResponse",
     "AttachmentStatus",
@@ -244,6 +278,9 @@ __all__ = [
     "BrowserType",
     "Capability",
     "ChartSpecSchema",
+    "CheckboxSettingsSchemaEntry",
+    "ColorSettingsSchemaEntry",
+    "ComplexArraySettingsSchemaEntry",
     "ContextInfo",
     "ConversationAnalysis",
     "ConversationExecutedActionPrecondition",
@@ -265,6 +302,7 @@ __all__ = [
     "DeviceInfo",
     "DeviceType",
     "DocumentInformation",
+    "DropdownSettingsSchemaEntry",
     "EntityId",
     "EntityIdBase",
     "EntityIdFilter",
@@ -293,6 +331,7 @@ __all__ = [
     "FeedbackType",
     "GeoInfo",
     "HarmfulContentAnalysis",
+    "ImageSettingsSchemaEntry",
     "InboxItem",
     "InboxItemBase",
     "InboxItemCustom",
@@ -321,10 +360,15 @@ __all__ = [
     "LlmPersona",
     "MessageStatus",
     "MetadataPrecondition",
+    "MultilineSettingsSchemaEntry",
     "NovelSystemEvent",
     "NovelSystemEventNoId",
     "NovelUserEvent",
     "NumberRange",
+    "NumberSettingsSchemaEntry",
+    "OAuthAuthenticationMethod",
+    "OAuthSettingsSchemaEntry",
+    "OneOfSettingsSchemaEntry",
     "OsInfo",
     "OsType",
     "Page",
@@ -345,8 +389,27 @@ __all__ = [
     "ResponseLength",
     "SafetyCheckReport",
     "ScopedEntity",
+    "SectionSettingsSchemaEntry",
     "Sentiment",
     "SessionInfo",
+    "SettingsSchema",
+    "SettingsSchemaDiscriminatedUnionOption",
+    "SettingsSchemaDiscriminatedUnionOptions",
+    "SettingsSchemaEntry",
+    "SettingsSchemaEntryBase",
+    "SettingsSchemaEntry_Array",
+    "SettingsSchemaEntry_Checkbox",
+    "SettingsSchemaEntry_Color",
+    "SettingsSchemaEntry_Complexarray",
+    "SettingsSchemaEntry_Dropdown",
+    "SettingsSchemaEntry_Image",
+    "SettingsSchemaEntry_Multiline",
+    "SettingsSchemaEntry_Number",
+    "SettingsSchemaEntry_Oauth",
+    "SettingsSchemaEntry_OneOf",
+    "SettingsSchemaEntry_Section",
+    "SettingsSchemaEntry_Text",
+    "SettingsSchemaValidation",
     "SimulationContext",
     "Source",
     "SourceInfo",
@@ -355,6 +418,7 @@ __all__ = [
     "SystemEvent",
     "SystemEventName",
     "TagsPrecondition",
+    "TextSettingsSchemaEntry",
     "UserConversationMessageType",
     "UserData",
     "UserDataWithReference",
