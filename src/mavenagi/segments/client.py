@@ -245,6 +245,52 @@ class SegmentsClient:
         )
         return _response.data
 
+    def delete(
+        self,
+        segment_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SegmentResponse:
+        """
+        Soft delete a segment. Only INACTIVE segments can be deleted.
+
+        Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a new segment with the same referenceId as a deleted segment will overwrite the deleted segment and restore it to ACTIVE status.
+
+        Deleted segments cannot be modified.
+
+        Parameters
+        ----------
+        segment_reference_id : str
+            The reference ID of the segment to delete. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SegmentResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.segments.delete(
+            segment_reference_id="segmentReferenceId",
+        )
+        """
+        _response = self._raw_client.delete(segment_reference_id, app_id=app_id, request_options=request_options)
+        return _response.data
+
 
 class AsyncSegmentsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -505,4 +551,58 @@ class AsyncSegmentsClient:
             status=status,
             request_options=request_options,
         )
+        return _response.data
+
+    async def delete(
+        self,
+        segment_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SegmentResponse:
+        """
+        Soft delete a segment. Only INACTIVE segments can be deleted.
+
+        Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a new segment with the same referenceId as a deleted segment will overwrite the deleted segment and restore it to ACTIVE status.
+
+        Deleted segments cannot be modified.
+
+        Parameters
+        ----------
+        segment_reference_id : str
+            The reference ID of the segment to delete. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SegmentResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.segments.delete(
+                segment_reference_id="segmentReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.delete(segment_reference_id, app_id=app_id, request_options=request_options)
         return _response.data

@@ -6758,7 +6758,7 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**asset_id:** `typing.Optional[EntityIdWithoutAgent]` — ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both
+**asset_id:** `typing.Optional[EntityIdWithoutAgent]` — (Currently in BETA. Use at your own risk, and may not work in some circumstances) ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both.
     
 </dd>
 </dl>
@@ -8000,7 +8000,7 @@ client.segments.get(
 
 Update mutable segment fields
 
-The `appId` field can be provided to update a segment owned by a different app. 
+The `appId` field can be provided to update a segment owned by a different app.
 All other fields will overwrite the existing value on the segment only if provided.
 </dd>
 </dl>
@@ -8075,6 +8075,91 @@ client.segments.patch(
 <dd>
 
 **status:** `typing.Optional[SegmentStatus]` — The status of the segment. Segments can only be deactivated if they are not set on any actions or active knowledge bases.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.segments.<a href="src/mavenagi/segments/client.py">delete</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Soft delete a segment. Only INACTIVE segments can be deleted.
+
+Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a new segment with the same referenceId as a deleted segment will overwrite the deleted segment and restore it to ACTIVE status.
+
+Deleted segments cannot be modified.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.segments.delete(
+    segment_reference_id="segmentReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**segment_reference_id:** `str` — The reference ID of the segment to delete. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
     
 </dd>
 </dl>

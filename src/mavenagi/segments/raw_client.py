@@ -399,6 +399,91 @@ class RawSegmentsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def delete(
+        self,
+        segment_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[SegmentResponse]:
+        """
+        Soft delete a segment. Only INACTIVE segments can be deleted.
+
+        Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a new segment with the same referenceId as a deleted segment will overwrite the deleted segment and restore it to ACTIVE status.
+
+        Deleted segments cannot be modified.
+
+        Parameters
+        ----------
+        segment_reference_id : str
+            The reference ID of the segment to delete. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[SegmentResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/segments/{jsonable_encoder(segment_reference_id)}",
+            method="DELETE",
+            params={
+                "appId": app_id,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SegmentResponse,
+                    parse_obj_as(
+                        type_=SegmentResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawSegmentsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -725,6 +810,91 @@ class AsyncRawSegmentsClient:
             },
             request_options=request_options,
             omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SegmentResponse,
+                    parse_obj_as(
+                        type_=SegmentResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def delete(
+        self,
+        segment_reference_id: str,
+        *,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[SegmentResponse]:
+        """
+        Soft delete a segment. Only INACTIVE segments can be deleted.
+
+        Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a new segment with the same referenceId as a deleted segment will overwrite the deleted segment and restore it to ACTIVE status.
+
+        Deleted segments cannot be modified.
+
+        Parameters
+        ----------
+        segment_reference_id : str
+            The reference ID of the segment to delete. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[SegmentResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/segments/{jsonable_encoder(segment_reference_id)}",
+            method="DELETE",
+            params={
+                "appId": app_id,
+            },
+            request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:

@@ -2,4 +2,4 @@
 
 import typing
 
-SegmentStatus = typing.Union[typing.Literal["ACTIVE", "INACTIVE"], typing.Any]
+SegmentStatus = typing.Union[typing.Literal["ACTIVE", "INACTIVE", "DELETED"], typing.Any]

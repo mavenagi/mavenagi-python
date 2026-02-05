@@ -11,7 +11,7 @@ from ...core.serialization import FieldMetadata
 class CsatInfo(UniversalBaseModel):
     rating: typing.Optional[float] = pydantic.Field(default=None)
     """
-    The rating of the CSAT rating (0.0, 5.0]
+    The rating of the CSAT rating
     """
 
     max_rating: typing_extensions.Annotated[typing.Optional[float], FieldMetadata(alias="maxRating")] = pydantic.Field(

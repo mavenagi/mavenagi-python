@@ -66,9 +66,11 @@ class SegmentResponse(SegmentBase):
 
     status: SegmentStatus = pydantic.Field()
     """
-    Whether or not the segment is in active use. To preserve historical data, segments can not be deleted.
+    The status of the segment.
     
-    Only active segments will be evaluated for matching user questions.
+    - ACTIVE: Segment is in use and will be evaluated for matching user questions.
+    - INACTIVE: Segment is not in use but can be reactivated.
+    - DELETED: Segment has been soft deleted. Excluded from searches and cannot be modified.
     """
 
     if IS_PYDANTIC_V2:
