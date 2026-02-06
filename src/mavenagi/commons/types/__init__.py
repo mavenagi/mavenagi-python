@@ -30,6 +30,7 @@ from .base_attachment import BaseAttachment
 from .base_conversation_response import BaseConversationResponse
 from .base_paginated_request import BasePaginatedRequest
 from .base_search_request import BaseSearchRequest
+from .boolean_condition import BooleanCondition
 from .bot_action_form_response import BotActionFormResponse
 from .bot_chart_response import BotChartResponse
 from .bot_conversation_message_type import BotConversationMessageType
@@ -86,6 +87,7 @@ from .conversation_precondition import (
     ConversationPrecondition,
     ConversationPrecondition_ActionExecuted,
     ConversationPrecondition_App,
+    ConversationPrecondition_IntelligentField,
     ConversationPrecondition_Metadata,
     ConversationPrecondition_ResponseConfig,
     ConversationPrecondition_Tags,
@@ -135,6 +137,14 @@ from .inbox_item_missing_knowledge import InboxItemMissingKnowledge
 from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
 from .inbox_item_type import InboxItemType
+from .intelligent_field_condition import (
+    IntelligentFieldCondition,
+    IntelligentFieldCondition_Boolean,
+    IntelligentFieldCondition_Numeric,
+    IntelligentFieldCondition_Set,
+    IntelligentFieldCondition_String,
+)
+from .intelligent_field_precondition import IntelligentFieldPrecondition
 from .ip_info import IpInfo
 from .knowledge_context_by_entities import KnowledgeContextByEntities
 from .knowledge_context_by_entity_types import KnowledgeContextByEntityTypes
@@ -154,6 +164,11 @@ from .novel_system_event_no_id import NovelSystemEventNoId
 from .novel_user_event import NovelUserEvent
 from .number_range import NumberRange
 from .number_settings_schema_entry import NumberSettingsSchemaEntry
+from .numeric_comparison_condition import NumericComparisonCondition
+from .numeric_comparison_operator import NumericComparisonOperator
+from .numeric_condition import NumericCondition, NumericCondition_Comparison, NumericCondition_Membership
+from .numeric_membership_condition import NumericMembershipCondition
+from .numeric_membership_operator import NumericMembershipOperator
 from .o_auth_authentication_method import OAuthAuthenticationMethod
 from .o_auth_settings_schema_entry import OAuthSettingsSchemaEntry
 from .one_of_settings_schema_entry import OneOfSettingsSchemaEntry
@@ -177,6 +192,11 @@ from .scoped_entity import ScopedEntity
 from .section_settings_schema_entry import SectionSettingsSchemaEntry
 from .sentiment import Sentiment
 from .session_info import SessionInfo
+from .set_condition import SetCondition, SetCondition_Element, SetCondition_Relation
+from .set_element_condition import SetElementCondition
+from .set_element_operator import SetElementOperator
+from .set_relation_condition import SetRelationCondition
+from .set_relation_operator import SetRelationOperator
 from .settings_schema import SettingsSchema
 from .settings_schema_discriminated_union_option import SettingsSchemaDiscriminatedUnionOption
 from .settings_schema_discriminated_union_options import SettingsSchemaDiscriminatedUnionOptions
@@ -201,6 +221,11 @@ from .simulation_context import SimulationContext
 from .source import Source
 from .source_info import SourceInfo
 from .source_type import SourceType
+from .string_comparison_condition import StringComparisonCondition
+from .string_comparison_operator import StringComparisonOperator
+from .string_condition import StringCondition, StringCondition_Comparison, StringCondition_Membership
+from .string_membership_condition import StringMembershipCondition
+from .string_membership_operator import StringMembershipOperator
 from .survey_info import SurveyInfo
 from .system_event import SystemEvent
 from .system_event_name import SystemEventName
@@ -243,6 +268,7 @@ __all__ = [
     "BaseConversationResponse",
     "BasePaginatedRequest",
     "BaseSearchRequest",
+    "BooleanCondition",
     "BotActionFormResponse",
     "BotChartResponse",
     "BotConversationMessageType",
@@ -292,6 +318,7 @@ __all__ = [
     "ConversationPrecondition",
     "ConversationPrecondition_ActionExecuted",
     "ConversationPrecondition_App",
+    "ConversationPrecondition_IntelligentField",
     "ConversationPrecondition_Metadata",
     "ConversationPrecondition_ResponseConfig",
     "ConversationPrecondition_Tags",
@@ -349,6 +376,12 @@ __all__ = [
     "InboxItem_Custom",
     "InboxItem_DuplicateDocuments",
     "InboxItem_MissingKnowledge",
+    "IntelligentFieldCondition",
+    "IntelligentFieldCondition_Boolean",
+    "IntelligentFieldCondition_Numeric",
+    "IntelligentFieldCondition_Set",
+    "IntelligentFieldCondition_String",
+    "IntelligentFieldPrecondition",
     "IpInfo",
     "KnowledgeContextByEntities",
     "KnowledgeContextByEntityTypes",
@@ -366,6 +399,13 @@ __all__ = [
     "NovelUserEvent",
     "NumberRange",
     "NumberSettingsSchemaEntry",
+    "NumericComparisonCondition",
+    "NumericComparisonOperator",
+    "NumericCondition",
+    "NumericCondition_Comparison",
+    "NumericCondition_Membership",
+    "NumericMembershipCondition",
+    "NumericMembershipOperator",
     "OAuthAuthenticationMethod",
     "OAuthSettingsSchemaEntry",
     "OneOfSettingsSchemaEntry",
@@ -392,6 +432,13 @@ __all__ = [
     "SectionSettingsSchemaEntry",
     "Sentiment",
     "SessionInfo",
+    "SetCondition",
+    "SetCondition_Element",
+    "SetCondition_Relation",
+    "SetElementCondition",
+    "SetElementOperator",
+    "SetRelationCondition",
+    "SetRelationOperator",
     "SettingsSchema",
     "SettingsSchemaDiscriminatedUnionOption",
     "SettingsSchemaDiscriminatedUnionOptions",
@@ -414,6 +461,13 @@ __all__ = [
     "Source",
     "SourceInfo",
     "SourceType",
+    "StringComparisonCondition",
+    "StringComparisonOperator",
+    "StringCondition",
+    "StringCondition_Comparison",
+    "StringCondition_Membership",
+    "StringMembershipCondition",
+    "StringMembershipOperator",
     "SurveyInfo",
     "SystemEvent",
     "SystemEventName",

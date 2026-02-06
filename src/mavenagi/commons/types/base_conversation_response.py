@@ -100,7 +100,7 @@ class BaseConversationResponse(UniversalBaseModel):
         typing.Optional[SimulationContext], FieldMetadata(alias="simulationContext")
     ] = pydantic.Field(default=None)
     """
-    Additional context used for simulation runs. When present, this conversation is treated as a simulation. 
+    Additional context used for simulation runs. When present, this conversation is treated as a simulation.
     Simulation conversations are excluded from normal search results unless explicitly included via the `simulationFilter` field.
     """
 
