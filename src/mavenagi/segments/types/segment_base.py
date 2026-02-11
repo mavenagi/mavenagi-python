@@ -14,6 +14,11 @@ class SegmentBase(UniversalBaseModel):
     The name of the segment.
     """
 
+    description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    A plain text description of the segment.
+    """
+
     precondition: "Precondition" = pydantic.Field()
     """
     The precondition that must be met for a conversation message to be included in the segment.

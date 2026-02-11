@@ -126,6 +126,7 @@ class RawSegmentsClient:
         segment_id: EntityIdBase,
         name: str,
         precondition: Precondition,
+        description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SegmentResponse]:
         """
@@ -142,6 +143,9 @@ class RawSegmentsClient:
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
 
+        description : typing.Optional[str]
+            A plain text description of the segment.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -157,6 +161,7 @@ class RawSegmentsClient:
                     object_=segment_id, annotation=EntityIdBase, direction="write"
                 ),
                 "name": name,
+                "description": description,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
                 ),
@@ -299,6 +304,7 @@ class RawSegmentsClient:
         *,
         app_id: typing.Optional[str] = OMIT,
         name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -320,6 +326,9 @@ class RawSegmentsClient:
         name : typing.Optional[str]
             The name of the segment.
 
+        description : typing.Optional[str]
+            A plain text description of the segment.
+
         precondition : typing.Optional[Precondition]
             The precondition that must be met for a conversation message to be included in the segment.
 
@@ -340,6 +349,7 @@ class RawSegmentsClient:
             json={
                 "appId": app_id,
                 "name": name,
+                "description": description,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
                 ),
@@ -586,6 +596,7 @@ class AsyncRawSegmentsClient:
         segment_id: EntityIdBase,
         name: str,
         precondition: Precondition,
+        description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SegmentResponse]:
         """
@@ -602,6 +613,9 @@ class AsyncRawSegmentsClient:
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
 
+        description : typing.Optional[str]
+            A plain text description of the segment.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -617,6 +631,7 @@ class AsyncRawSegmentsClient:
                     object_=segment_id, annotation=EntityIdBase, direction="write"
                 ),
                 "name": name,
+                "description": description,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
                 ),
@@ -759,6 +774,7 @@ class AsyncRawSegmentsClient:
         *,
         app_id: typing.Optional[str] = OMIT,
         name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -780,6 +796,9 @@ class AsyncRawSegmentsClient:
         name : typing.Optional[str]
             The name of the segment.
 
+        description : typing.Optional[str]
+            A plain text description of the segment.
+
         precondition : typing.Optional[Precondition]
             The precondition that must be met for a conversation message to be included in the segment.
 
@@ -800,6 +819,7 @@ class AsyncRawSegmentsClient:
             json={
                 "appId": app_id,
                 "name": name,
+                "description": description,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
                 ),

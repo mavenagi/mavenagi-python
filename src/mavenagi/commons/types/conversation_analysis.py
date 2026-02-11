@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .intelligent_field_value_response import IntelligentFieldValueResponse
 from .quality import Quality
 from .quality_reason import QualityReason
 from .sentiment import Sentiment
@@ -79,6 +80,13 @@ class ConversationAnalysis(UniversalBaseModel):
     csat: typing.Optional[float] = pydantic.Field(default=None)
     """
     The CSAT of the conversation.
+    """
+
+    intelligent_field_values: typing_extensions.Annotated[
+        typing.Optional[typing.List[IntelligentFieldValueResponse]], FieldMetadata(alias="intelligentFieldValues")
+    ] = pydantic.Field(default=None)
+    """
+    Latest successful intelligent field values
     """
 
     if IS_PYDANTIC_V2:

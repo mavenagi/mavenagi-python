@@ -260,6 +260,7 @@ class KnowledgeClient:
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         segment_id: typing.Optional[EntityId] = OMIT,
+        segment_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
         refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
@@ -290,9 +291,16 @@ class KnowledgeClient:
             The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
 
         segment_id : typing.Optional[EntityId]
-            The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+            The ID of a segment that must be matched for the knowledge base to be relevant to a conversation.
             A null value will remove the segment from the knowledge base, it will be available on all conversations.
 
+            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
+
+        segment_ids : typing.Optional[typing.Sequence[EntityId]]
+            The IDs of segment that should be matched (under an OR clause) for the knowledge base to be relevant to a
+            conversation. An empty list will remove segments from the knowledge base, it will be available on all
+            conversations.
             Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
             Inline precondition support will be removed in a future release.
 
@@ -338,6 +346,7 @@ class KnowledgeClient:
             llm_inclusion_status=llm_inclusion_status,
             precondition=precondition,
             segment_id=segment_id,
+            segment_ids=segment_ids,
             refresh_frequency=refresh_frequency,
             request_options=request_options,
         )
@@ -1111,6 +1120,7 @@ class AsyncKnowledgeClient:
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         segment_id: typing.Optional[EntityId] = OMIT,
+        segment_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
         refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> KnowledgeBaseResponse:
@@ -1141,9 +1151,16 @@ class AsyncKnowledgeClient:
             The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
 
         segment_id : typing.Optional[EntityId]
-            The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+            The ID of a segment that must be matched for the knowledge base to be relevant to a conversation.
             A null value will remove the segment from the knowledge base, it will be available on all conversations.
 
+            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
+
+        segment_ids : typing.Optional[typing.Sequence[EntityId]]
+            The IDs of segment that should be matched (under an OR clause) for the knowledge base to be relevant to a
+            conversation. An empty list will remove segments from the knowledge base, it will be available on all
+            conversations.
             Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
             Inline precondition support will be removed in a future release.
 
@@ -1197,6 +1214,7 @@ class AsyncKnowledgeClient:
             llm_inclusion_status=llm_inclusion_status,
             precondition=precondition,
             segment_id=segment_id,
+            segment_ids=segment_ids,
             refresh_frequency=refresh_frequency,
             request_options=request_options,
         )

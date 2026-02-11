@@ -68,6 +68,13 @@ class KnowledgeBaseFilter(UniversalBaseModel):
     Filter knowledge bases by the LLM inclusion status
     """
 
+    segment_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="segmentId")] = pydantic.Field(
+        default=None
+    )
+    """
+    Filter knowledge bases by the segment they are assigned to.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

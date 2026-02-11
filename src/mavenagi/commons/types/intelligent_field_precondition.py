@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .entity_id_without_agent import EntityIdWithoutAgent
 from .intelligent_field_condition import IntelligentFieldCondition
 
 
@@ -13,21 +14,21 @@ class IntelligentFieldPrecondition(UniversalBaseModel):
     """
     A precondition based on the computed value of an intelligent field on the conversation.
 
+    The structure of this precondition follows `LHS OP RHS`, where the LHS is
+    the ID of the intelligent field (<referenceId, appId>).  Available
+    operators and the corresponding types of the RHS depends on the
+    validationType of the intelligent field.
+
     Note: in early beta, only opt-in apps and organizations/agents can
     specify intelligent field preconditions.  Otherwise, the request will be
     rejected.
     """
 
-    field_reference_id: typing_extensions.Annotated[str, FieldMetadata(alias="fieldReferenceId")] = pydantic.Field()
+    field_id_without_agent: typing_extensions.Annotated[
+        EntityIdWithoutAgent, FieldMetadata(alias="fieldIdWithoutAgent")
+    ] = pydantic.Field()
     """
-    The referenceId of the intelligent field.
-    """
-
-    field_app_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="fieldAppId")] = pydantic.Field(
-        default=None
-    )
-    """
-    The appId of the intelligent field. If not provided, the calling appId will be used.
+    The ID of the intelligent field.
     """
 
     field_condition: typing_extensions.Annotated[IntelligentFieldCondition, FieldMetadata(alias="fieldCondition")] = (

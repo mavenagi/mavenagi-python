@@ -2,4 +2,16 @@
 
 import typing
 
-StringComparisonOperator = typing.Union[typing.Literal["EQ", "NEQ"], typing.Any]
+StringComparisonOperator = typing.Union[
+    typing.Literal[
+        "EQ",
+        "NEQ",
+        "CONTAINS_SUBSTRING",
+        "NOT_CONTAINS_SUBSTRING",
+        "STARTS_WITH",
+        "NOT_STARTS_WITH",
+        "ENDS_WITH",
+        "NOT_ENDS_WITH",
+    ],
+    typing.Any,
+]

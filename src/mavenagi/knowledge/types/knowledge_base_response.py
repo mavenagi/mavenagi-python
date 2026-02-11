@@ -54,13 +54,22 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
         metadata={"key": "value"},
         tags={"tag1", "tag2"},
         refresh_frequency="DAILY",
-        segment_id=EntityId(
-            reference_id="premium-users",
-            app_id="readme",
-            organization_id="acme",
-            agent_id="support",
-            type="SEGMENT",
-        ),
+        segment_ids=[
+            EntityId(
+                reference_id="premium-users1",
+                app_id="readme",
+                organization_id="acme",
+                agent_id="support",
+                type="SEGMENT",
+            ),
+            EntityId(
+                reference_id="premium-users2",
+                app_id="readme",
+                organization_id="acme",
+                agent_id="support",
+                type="SEGMENT",
+            ),
+        ],
     )
     """
 
@@ -129,6 +138,15 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     )
     """
     The IDs of the segment that must be matched for the knowledge base to be relevant to a conversation.
+    Segments are replacing inline preconditions - a Knowledge Base may not have both an inline precondition and a segment.
+    Inline precondition support will be removed in a future release.
+    """
+
+    segment_ids: typing_extensions.Annotated[typing.List[EntityId], FieldMetadata(alias="segmentIds")] = (
+        pydantic.Field()
+    )
+    """
+    The IDs of the segments that should be matched for the knowledge base to be relevant to a conversation.
     Segments are replacing inline preconditions - a Knowledge Base may not have both an inline precondition and a segment.
     Inline precondition support will be removed in a future release.
     """

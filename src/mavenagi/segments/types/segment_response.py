@@ -38,6 +38,8 @@ class SegmentResponse(SegmentBase):
         updated_at=datetime.datetime.fromisoformat(
             "2025-01-15 12:30:00+00:00",
         ),
+        referenced_knowledge_base_count=5,
+        referenced_document_count=34,
         status="ACTIVE",
         precondition=Precondition_Group(
             operator="AND",
@@ -62,6 +64,20 @@ class SegmentResponse(SegmentBase):
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")] = pydantic.Field()
     """
     The date and time when the segment was last updated.
+    """
+
+    referenced_knowledge_base_count: typing_extensions.Annotated[
+        typing.Optional[int], FieldMetadata(alias="referencedKnowledgeBaseCount")
+    ] = pydantic.Field(default=None)
+    """
+    The number of active knowledge bases that reference this segment.
+    """
+
+    referenced_document_count: typing_extensions.Annotated[
+        typing.Optional[int], FieldMetadata(alias="referencedDocumentCount")
+    ] = pydantic.Field(default=None)
+    """
+    The number of active documents that reference this segment.
     """
 
     status: SegmentStatus = pydantic.Field()

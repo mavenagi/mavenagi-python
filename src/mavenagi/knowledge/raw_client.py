@@ -408,6 +408,7 @@ class RawKnowledgeClient:
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         segment_id: typing.Optional[EntityId] = OMIT,
+        segment_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
         refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[KnowledgeBaseResponse]:
@@ -438,9 +439,16 @@ class RawKnowledgeClient:
             The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
 
         segment_id : typing.Optional[EntityId]
-            The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+            The ID of a segment that must be matched for the knowledge base to be relevant to a conversation.
             A null value will remove the segment from the knowledge base, it will be available on all conversations.
 
+            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
+
+        segment_ids : typing.Optional[typing.Sequence[EntityId]]
+            The IDs of segment that should be matched (under an OR clause) for the knowledge base to be relevant to a
+            conversation. An empty list will remove segments from the knowledge base, it will be available on all
+            conversations.
             Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
             Inline precondition support will be removed in a future release.
 
@@ -467,6 +475,9 @@ class RawKnowledgeClient:
                 ),
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=typing.Optional[EntityId], direction="write"
+                ),
+                "segmentIds": convert_and_respect_annotation_metadata(
+                    object_=segment_ids, annotation=typing.Sequence[EntityId], direction="write"
                 ),
                 "refreshFrequency": refresh_frequency,
             },
@@ -1672,6 +1683,7 @@ class AsyncRawKnowledgeClient:
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         segment_id: typing.Optional[EntityId] = OMIT,
+        segment_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
         refresh_frequency: typing.Optional[KnowledgeBaseRefreshFrequency] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[KnowledgeBaseResponse]:
@@ -1702,9 +1714,16 @@ class AsyncRawKnowledgeClient:
             The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
 
         segment_id : typing.Optional[EntityId]
-            The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+            The ID of a segment that must be matched for the knowledge base to be relevant to a conversation.
             A null value will remove the segment from the knowledge base, it will be available on all conversations.
 
+            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+            Inline precondition support will be removed in a future release.
+
+        segment_ids : typing.Optional[typing.Sequence[EntityId]]
+            The IDs of segment that should be matched (under an OR clause) for the knowledge base to be relevant to a
+            conversation. An empty list will remove segments from the knowledge base, it will be available on all
+            conversations.
             Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
             Inline precondition support will be removed in a future release.
 
@@ -1731,6 +1750,9 @@ class AsyncRawKnowledgeClient:
                 ),
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=typing.Optional[EntityId], direction="write"
+                ),
+                "segmentIds": convert_and_respect_annotation_metadata(
+                    object_=segment_ids, annotation=typing.Sequence[EntityId], direction="write"
                 ),
                 "refreshFrequency": refresh_frequency,
             },

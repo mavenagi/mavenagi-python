@@ -85,6 +85,7 @@ class SegmentsClient:
         segment_id: EntityIdBase,
         name: str,
         precondition: Precondition,
+        description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SegmentResponse:
         """
@@ -100,6 +101,9 @@ class SegmentsClient:
 
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        description : typing.Optional[str]
+            A plain text description of the segment.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -134,7 +138,11 @@ class SegmentsClient:
         )
         """
         _response = self._raw_client.create_or_update(
-            segment_id=segment_id, name=name, precondition=precondition, request_options=request_options
+            segment_id=segment_id,
+            name=name,
+            precondition=precondition,
+            description=description,
+            request_options=request_options,
         )
         return _response.data
 
@@ -186,6 +194,7 @@ class SegmentsClient:
         *,
         app_id: typing.Optional[str] = OMIT,
         name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -206,6 +215,9 @@ class SegmentsClient:
 
         name : typing.Optional[str]
             The name of the segment.
+
+        description : typing.Optional[str]
+            A plain text description of the segment.
 
         precondition : typing.Optional[Precondition]
             The precondition that must be met for a conversation message to be included in the segment.
@@ -239,6 +251,7 @@ class SegmentsClient:
             segment_reference_id,
             app_id=app_id,
             name=name,
+            description=description,
             precondition=precondition,
             status=status,
             request_options=request_options,
@@ -369,6 +382,7 @@ class AsyncSegmentsClient:
         segment_id: EntityIdBase,
         name: str,
         precondition: Precondition,
+        description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SegmentResponse:
         """
@@ -384,6 +398,9 @@ class AsyncSegmentsClient:
 
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        description : typing.Optional[str]
+            A plain text description of the segment.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -426,7 +443,11 @@ class AsyncSegmentsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.create_or_update(
-            segment_id=segment_id, name=name, precondition=precondition, request_options=request_options
+            segment_id=segment_id,
+            name=name,
+            precondition=precondition,
+            description=description,
+            request_options=request_options,
         )
         return _response.data
 
@@ -486,6 +507,7 @@ class AsyncSegmentsClient:
         *,
         app_id: typing.Optional[str] = OMIT,
         name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -506,6 +528,9 @@ class AsyncSegmentsClient:
 
         name : typing.Optional[str]
             The name of the segment.
+
+        description : typing.Optional[str]
+            A plain text description of the segment.
 
         precondition : typing.Optional[Precondition]
             The precondition that must be met for a conversation message to be included in the segment.
@@ -547,6 +572,7 @@ class AsyncSegmentsClient:
             segment_reference_id,
             app_id=app_id,
             name=name,
+            description=description,
             precondition=precondition,
             status=status,
             request_options=request_options,

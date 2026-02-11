@@ -4,14 +4,7 @@ import typing
 
 SetRelationOperator = typing.Union[
     typing.Literal[
-        "EQ",
-        "NEQ",
-        "CONTAINS_ANY",
-        "NOT_CONTAINS_ANY",
-        "CONTAINS_ALL",
-        "NOT_CONTAINS_ALL",
-        "SUBSET_OF",
-        "NOT_SUBSET_OF",
+        "EQ", "NEQ", "CONTAINS_ANY", "CONTAINS_NONE", "CONTAINS_ALL", "NOT_CONTAINS_ALL", "SUBSET_OF", "NOT_SUBSET_OF"
     ],
     typing.Any,
 ]

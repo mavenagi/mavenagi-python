@@ -8,6 +8,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .entity_id_without_agent import EntityIdWithoutAgent
 from .intelligent_field_condition import IntelligentFieldCondition
 from .precondition_operator import PreconditionOperator
 from .response_length import ResponseLength
@@ -111,8 +112,9 @@ class ConversationPrecondition_IntelligentField(UniversalBaseModel):
     conversation_precondition_type: typing_extensions.Annotated[
         typing.Literal["intelligentField"], FieldMetadata(alias="conversationPreconditionType")
     ] = "intelligentField"
-    field_reference_id: typing_extensions.Annotated[str, FieldMetadata(alias="fieldReferenceId")]
-    field_app_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="fieldAppId")] = None
+    field_id_without_agent: typing_extensions.Annotated[
+        EntityIdWithoutAgent, FieldMetadata(alias="fieldIdWithoutAgent")
+    ]
     field_condition: typing_extensions.Annotated[IntelligentFieldCondition, FieldMetadata(alias="fieldCondition")]
 
     if IS_PYDANTIC_V2:

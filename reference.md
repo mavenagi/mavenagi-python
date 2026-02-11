@@ -6242,9 +6242,23 @@ client.knowledge.patch_knowledge_base(
 
 **segment_id:** `typing.Optional[EntityId]` 
 
-The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+The ID of a segment that must be matched for the knowledge base to be relevant to a conversation.
 A null value will remove the segment from the knowledge base, it will be available on all conversations.
 
+Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+Inline precondition support will be removed in a future release.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**segment_ids:** `typing.Optional[typing.Sequence[EntityId]]` 
+
+The IDs of segment that should be matched (under an OR clause) for the knowledge base to be relevant to a 
+conversation. An empty list will remove segments from the knowledge base, it will be available on all 
+conversations.
 Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
 Inline precondition support will be removed in a future release.
     
@@ -7893,6 +7907,14 @@ client.segments.create_or_update(
 <dl>
 <dd>
 
+**description:** `typing.Optional[str]` — A plain text description of the segment.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -8059,6 +8081,14 @@ client.segments.patch(
 <dd>
 
 **name:** `typing.Optional[str]` — The name of the segment.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — A plain text description of the segment.
     
 </dd>
 </dl>
