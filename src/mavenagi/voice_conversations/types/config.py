@@ -17,12 +17,12 @@ class Config(UniversalBaseModel):
     type: typing.Literal["config"] = "config"
     input_format: typing_extensions.Annotated[AudioFormat, FieldMetadata(alias="inputFormat")] = pydantic.Field()
     """
-    The user text to send into the conversation.
+    The input audio format from the client.
     """
 
     output_format: typing_extensions.Annotated[AudioFormat, FieldMetadata(alias="outputFormat")] = pydantic.Field()
     """
-    The user text to send into the conversation.
+    The output audio format to send to the client.
     """
 
     conversation_id: typing_extensions.Annotated[str, FieldMetadata(alias="conversationId")] = pydantic.Field()

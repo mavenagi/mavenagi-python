@@ -83,6 +83,55 @@ class InboxClient:
         )
         return _response.data
 
+    def apply_tags(
+        self,
+        inbox_item_id: str,
+        *,
+        tags: typing.Set[str],
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> InboxItem:
+        """
+        Update inbox item tag fields. All tags provided will overwrite the existing tags on the inbox item.
+
+        Parameters
+        ----------
+        inbox_item_id : str
+            The ID of the inbox item to add tags to.
+
+        tags : typing.Set[str]
+            A set of tags associated with the inbox item that are used for filtering.
+
+        app_id : typing.Optional[str]
+            The App ID of a custom inbox item to patch tags for. For server-managed inbox items such as Missing Knowledge and Duplicate Documents, the appId field is not required and will be ignored.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        InboxItem
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.inbox.apply_tags(
+            inbox_item_id="custom-item-1",
+            tags={"tag1", "tag2"},
+        )
+        """
+        _response = self._raw_client.apply_tags(
+            inbox_item_id, tags=tags, app_id=app_id, request_options=request_options
+        )
+        return _response.data
+
     def get(
         self, inbox_item_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
     ) -> InboxItem:
@@ -334,6 +383,63 @@ class AsyncInboxClient:
         """
         _response = await self._raw_client.search(
             filter=filter, sort_id=sort_id, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        )
+        return _response.data
+
+    async def apply_tags(
+        self,
+        inbox_item_id: str,
+        *,
+        tags: typing.Set[str],
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> InboxItem:
+        """
+        Update inbox item tag fields. All tags provided will overwrite the existing tags on the inbox item.
+
+        Parameters
+        ----------
+        inbox_item_id : str
+            The ID of the inbox item to add tags to.
+
+        tags : typing.Set[str]
+            A set of tags associated with the inbox item that are used for filtering.
+
+        app_id : typing.Optional[str]
+            The App ID of a custom inbox item to patch tags for. For server-managed inbox items such as Missing Knowledge and Duplicate Documents, the appId field is not required and will be ignored.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        InboxItem
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.inbox.apply_tags(
+                inbox_item_id="custom-item-1",
+                tags={"tag1", "tag2"},
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.apply_tags(
+            inbox_item_id, tags=tags, app_id=app_id, request_options=request_options
         )
         return _response.data
 

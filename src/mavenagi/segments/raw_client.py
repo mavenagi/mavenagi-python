@@ -17,6 +17,7 @@ from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from .types.segment_field import SegmentField
+from .types.segment_filter import SegmentFilter
 from .types.segment_response import SegmentResponse
 from .types.segment_status import SegmentStatus
 from .types.segments_search_response import SegmentsSearchResponse
@@ -33,6 +34,7 @@ class RawSegmentsClient:
         self,
         *,
         sort: typing.Optional[SegmentField] = OMIT,
+        filter: typing.Optional[SegmentFilter] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -43,6 +45,9 @@ class RawSegmentsClient:
         ----------
         sort : typing.Optional[SegmentField]
             The field to sort by, defaults to created timestamp
+
+        filter : typing.Optional[SegmentFilter]
+            The filter to apply to the segments.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -65,6 +70,9 @@ class RawSegmentsClient:
             method="POST",
             json={
                 "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=SegmentFilter, direction="write"
+                ),
                 "page": page,
                 "size": size,
                 "sortDesc": sort_desc,
@@ -126,6 +134,7 @@ class RawSegmentsClient:
         segment_id: EntityIdBase,
         name: str,
         precondition: Precondition,
+        status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SegmentResponse]:
@@ -142,6 +151,9 @@ class RawSegmentsClient:
 
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        status : typing.Optional[SegmentStatus]
+            Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
 
         description : typing.Optional[str]
             A plain text description of the segment.
@@ -160,6 +172,7 @@ class RawSegmentsClient:
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=EntityIdBase, direction="write"
                 ),
+                "status": status,
                 "name": name,
                 "description": description,
                 "precondition": convert_and_respect_annotation_metadata(
@@ -503,6 +516,7 @@ class AsyncRawSegmentsClient:
         self,
         *,
         sort: typing.Optional[SegmentField] = OMIT,
+        filter: typing.Optional[SegmentFilter] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -513,6 +527,9 @@ class AsyncRawSegmentsClient:
         ----------
         sort : typing.Optional[SegmentField]
             The field to sort by, defaults to created timestamp
+
+        filter : typing.Optional[SegmentFilter]
+            The filter to apply to the segments.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -535,6 +552,9 @@ class AsyncRawSegmentsClient:
             method="POST",
             json={
                 "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=SegmentFilter, direction="write"
+                ),
                 "page": page,
                 "size": size,
                 "sortDesc": sort_desc,
@@ -596,6 +616,7 @@ class AsyncRawSegmentsClient:
         segment_id: EntityIdBase,
         name: str,
         precondition: Precondition,
+        status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SegmentResponse]:
@@ -612,6 +633,9 @@ class AsyncRawSegmentsClient:
 
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        status : typing.Optional[SegmentStatus]
+            Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
 
         description : typing.Optional[str]
             A plain text description of the segment.
@@ -630,6 +654,7 @@ class AsyncRawSegmentsClient:
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=EntityIdBase, direction="write"
                 ),
+                "status": status,
                 "name": name,
                 "description": description,
                 "precondition": convert_and_respect_annotation_metadata(

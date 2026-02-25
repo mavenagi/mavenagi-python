@@ -12,40 +12,63 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
-from .types.session_token_response import SessionTokenResponse
+from .types.voice_session_token_response import VoiceSessionTokenResponse
+from .types.voice_token_type import VoiceTokenType
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class RawAuthClient:
+class RawVoiceClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
     def session_token(
-        self, *, ttl_seconds: int, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[SessionTokenResponse]:
+        self,
+        *,
+        app_user_id: str,
+        type: VoiceTokenType,
+        custom_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[VoiceSessionTokenResponse]:
         """
-        Creates a short-lived session token that can be used to authenticate
-        WebSocket connections. Session tokens are useful for client-side applications where
-        you don’t want to expose your API key.
+        Creates a short-lived session token for authenticating voice connections.
+
+        Supports two token types:
+        - **webrtc**: A Twilio-compatible access token for browser-based WebRTC calls
+        - **websocket**: An RS256 JWT for direct WebSocket connections to /v1/voice/conversations
+
+        Session tokens are required before establishing any voice connection.
 
         Parameters
         ----------
-        ttl_seconds : int
+        app_user_id : str
+            The end user identity for the voice session.
+
+        type : VoiceTokenType
+            The type of session token to generate.
+            Use "webrtc" for browser-based calls via Twilio, or "websocket" for direct WebSocket connections.
+
+        custom_data : typing.Optional[typing.Dict[str, str]]
+            Arbitrary key-value metadata to associate with this session (e.g., conversationId, topic).
+            For WebRTC tokens, this data is stored server-side and referenced by a secure ID
+            encoded in the token identity, ensuring it cannot be tampered with by the client.
+            For WebSocket tokens, clients can also pass data directly in the Config message.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[SessionTokenResponse]
+        HttpResponse[VoiceSessionTokenResponse]
         """
         _response = self._client_wrapper.httpx_client.request(
-            "v1/auth/session-token",
+            "v1/voice/session-token",
             method="POST",
             json={
-                "ttlSeconds": ttl_seconds,
+                "appUserId": app_user_id,
+                "type": type,
+                "customData": custom_data,
             },
             request_options=request_options,
             omit=OMIT,
@@ -53,9 +76,9 @@ class RawAuthClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    SessionTokenResponse,
+                    VoiceSessionTokenResponse,
                     parse_obj_as(
-                        type_=SessionTokenResponse,  # type: ignore
+                        type_=VoiceSessionTokenResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -99,34 +122,56 @@ class RawAuthClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
 
-class AsyncRawAuthClient:
+class AsyncRawVoiceClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
     async def session_token(
-        self, *, ttl_seconds: int, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[SessionTokenResponse]:
+        self,
+        *,
+        app_user_id: str,
+        type: VoiceTokenType,
+        custom_data: typing.Optional[typing.Dict[str, str]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[VoiceSessionTokenResponse]:
         """
-        Creates a short-lived session token that can be used to authenticate
-        WebSocket connections. Session tokens are useful for client-side applications where
-        you don’t want to expose your API key.
+        Creates a short-lived session token for authenticating voice connections.
+
+        Supports two token types:
+        - **webrtc**: A Twilio-compatible access token for browser-based WebRTC calls
+        - **websocket**: An RS256 JWT for direct WebSocket connections to /v1/voice/conversations
+
+        Session tokens are required before establishing any voice connection.
 
         Parameters
         ----------
-        ttl_seconds : int
+        app_user_id : str
+            The end user identity for the voice session.
+
+        type : VoiceTokenType
+            The type of session token to generate.
+            Use "webrtc" for browser-based calls via Twilio, or "websocket" for direct WebSocket connections.
+
+        custom_data : typing.Optional[typing.Dict[str, str]]
+            Arbitrary key-value metadata to associate with this session (e.g., conversationId, topic).
+            For WebRTC tokens, this data is stored server-side and referenced by a secure ID
+            encoded in the token identity, ensuring it cannot be tampered with by the client.
+            For WebSocket tokens, clients can also pass data directly in the Config message.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[SessionTokenResponse]
+        AsyncHttpResponse[VoiceSessionTokenResponse]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/auth/session-token",
+            "v1/voice/session-token",
             method="POST",
             json={
-                "ttlSeconds": ttl_seconds,
+                "appUserId": app_user_id,
+                "type": type,
+                "customData": custom_data,
             },
             request_options=request_options,
             omit=OMIT,
@@ -134,9 +179,9 @@ class AsyncRawAuthClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    SessionTokenResponse,
+                    VoiceSessionTokenResponse,
                     parse_obj_as(
-                        type_=SessionTokenResponse,  # type: ignore
+                        type_=VoiceSessionTokenResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

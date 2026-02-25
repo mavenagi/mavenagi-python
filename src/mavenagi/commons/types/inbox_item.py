@@ -60,6 +60,7 @@ class InboxItem_DuplicateDocuments(UniversalBaseModel):
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]
     status: InboxItemStatus
     severity: InboxItemSeverity
+    tags: typing.Optional[typing.Set[str]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -107,6 +108,7 @@ class InboxItem_MissingKnowledge(UniversalBaseModel):
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]
     status: InboxItemStatus
     severity: InboxItemSeverity
+    tags: typing.Optional[typing.Set[str]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -153,6 +155,7 @@ class InboxItem_Custom(UniversalBaseModel):
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]
     status: InboxItemStatus
     severity: InboxItemSeverity
+    tags: typing.Optional[typing.Set[str]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

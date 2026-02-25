@@ -127,6 +127,93 @@ class RawInboxClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def apply_tags(
+        self,
+        inbox_item_id: str,
+        *,
+        tags: typing.Set[str],
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[InboxItem]:
+        """
+        Update inbox item tag fields. All tags provided will overwrite the existing tags on the inbox item.
+
+        Parameters
+        ----------
+        inbox_item_id : str
+            The ID of the inbox item to add tags to.
+
+        tags : typing.Set[str]
+            A set of tags associated with the inbox item that are used for filtering.
+
+        app_id : typing.Optional[str]
+            The App ID of a custom inbox item to patch tags for. For server-managed inbox items such as Missing Knowledge and Duplicate Documents, the appId field is not required and will be ignored.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[InboxItem]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/inbox/{jsonable_encoder(inbox_item_id)}/tags",
+            method="PATCH",
+            json={
+                "appId": app_id,
+                "tags": tags,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    InboxItem,
+                    parse_obj_as(
+                        type_=InboxItem,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def get(
         self, inbox_item_id: str, *, app_id: str, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[InboxItem]:
@@ -502,6 +589,93 @@ class AsyncRawInboxClient:
                     InboxSearchResponse,
                     parse_obj_as(
                         type_=InboxSearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def apply_tags(
+        self,
+        inbox_item_id: str,
+        *,
+        tags: typing.Set[str],
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[InboxItem]:
+        """
+        Update inbox item tag fields. All tags provided will overwrite the existing tags on the inbox item.
+
+        Parameters
+        ----------
+        inbox_item_id : str
+            The ID of the inbox item to add tags to.
+
+        tags : typing.Set[str]
+            A set of tags associated with the inbox item that are used for filtering.
+
+        app_id : typing.Optional[str]
+            The App ID of a custom inbox item to patch tags for. For server-managed inbox items such as Missing Knowledge and Duplicate Documents, the appId field is not required and will be ignored.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[InboxItem]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/inbox/{jsonable_encoder(inbox_item_id)}/tags",
+            method="PATCH",
+            json={
+                "appId": app_id,
+                "tags": tags,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    InboxItem,
+                    parse_obj_as(
+                        type_=InboxItem,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -3,13 +3,20 @@
 import typing
 
 import pydantic
-import typing_extensions
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from ...core.serialization import FieldMetadata
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from .server_event_base import ServerEventBase
 
 
-class SessionTokenRequest(UniversalBaseModel):
-    ttl_seconds: typing_extensions.Annotated[int, FieldMetadata(alias="ttlSeconds")]
+class AgentAudioChunk(ServerEventBase):
+    """
+    Audio chunk from the agent.
+    """
+
+    type: typing.Literal["agent_audio_chunk"] = "agent_audio_chunk"
+    data: str = pydantic.Field()
+    """
+    Base64-encoded AI audio data
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

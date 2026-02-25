@@ -10,6 +10,7 @@ from ...commons.types.entity_id_base import EntityIdBase
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .segment_base import SegmentBase
+from .segment_status import SegmentStatus
 
 
 class SegmentRequest(SegmentBase):
@@ -37,6 +38,11 @@ class SegmentRequest(SegmentBase):
     segment_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="segmentId")] = pydantic.Field()
     """
     ID that uniquely identifies this segment
+    """
+
+    status: typing.Optional[SegmentStatus] = pydantic.Field(default=None)
+    """
+    Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
     """
 
     if IS_PYDANTIC_V2:

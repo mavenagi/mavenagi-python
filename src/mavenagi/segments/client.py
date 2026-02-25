@@ -8,6 +8,7 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawSegmentsClient, RawSegmentsClient
 from .types.segment_field import SegmentField
+from .types.segment_filter import SegmentFilter
 from .types.segment_response import SegmentResponse
 from .types.segment_status import SegmentStatus
 from .types.segments_search_response import SegmentsSearchResponse
@@ -35,6 +36,7 @@ class SegmentsClient:
         self,
         *,
         sort: typing.Optional[SegmentField] = OMIT,
+        filter: typing.Optional[SegmentFilter] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -45,6 +47,9 @@ class SegmentsClient:
         ----------
         sort : typing.Optional[SegmentField]
             The field to sort by, defaults to created timestamp
+
+        filter : typing.Optional[SegmentFilter]
+            The filter to apply to the segments.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -75,7 +80,7 @@ class SegmentsClient:
         client.segments.search()
         """
         _response = self._raw_client.search(
-            sort=sort, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
         return _response.data
 
@@ -85,6 +90,7 @@ class SegmentsClient:
         segment_id: EntityIdBase,
         name: str,
         precondition: Precondition,
+        status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SegmentResponse:
@@ -101,6 +107,9 @@ class SegmentsClient:
 
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        status : typing.Optional[SegmentStatus]
+            Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
 
         description : typing.Optional[str]
             A plain text description of the segment.
@@ -141,6 +150,7 @@ class SegmentsClient:
             segment_id=segment_id,
             name=name,
             precondition=precondition,
+            status=status,
             description=description,
             request_options=request_options,
         )
@@ -324,6 +334,7 @@ class AsyncSegmentsClient:
         self,
         *,
         sort: typing.Optional[SegmentField] = OMIT,
+        filter: typing.Optional[SegmentFilter] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -334,6 +345,9 @@ class AsyncSegmentsClient:
         ----------
         sort : typing.Optional[SegmentField]
             The field to sort by, defaults to created timestamp
+
+        filter : typing.Optional[SegmentFilter]
+            The filter to apply to the segments.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -372,7 +386,7 @@ class AsyncSegmentsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.search(
-            sort=sort, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+            sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
         )
         return _response.data
 
@@ -382,6 +396,7 @@ class AsyncSegmentsClient:
         segment_id: EntityIdBase,
         name: str,
         precondition: Precondition,
+        status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SegmentResponse:
@@ -398,6 +413,9 @@ class AsyncSegmentsClient:
 
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        status : typing.Optional[SegmentStatus]
+            Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
 
         description : typing.Optional[str]
             A plain text description of the segment.
@@ -446,6 +464,7 @@ class AsyncSegmentsClient:
             segment_id=segment_id,
             name=name,
             precondition=precondition,
+            status=status,
             description=description,
             request_options=request_options,
         )

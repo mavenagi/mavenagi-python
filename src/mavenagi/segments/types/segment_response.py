@@ -40,6 +40,7 @@ class SegmentResponse(SegmentBase):
         ),
         referenced_knowledge_base_count=5,
         referenced_document_count=34,
+        referenced_action_count=3,
         status="ACTIVE",
         precondition=Precondition_Group(
             operator="AND",
@@ -78,6 +79,13 @@ class SegmentResponse(SegmentBase):
     ] = pydantic.Field(default=None)
     """
     The number of active documents that reference this segment.
+    """
+
+    referenced_action_count: typing_extensions.Annotated[
+        typing.Optional[int], FieldMetadata(alias="referencedActionCount")
+    ] = pydantic.Field(default=None)
+    """
+    The number of active actions that reference this segment.
     """
 
     status: SegmentStatus = pydantic.Field()

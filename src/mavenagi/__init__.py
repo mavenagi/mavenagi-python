@@ -8,7 +8,6 @@ from . import (
     analytics,
     app_settings,
     assets,
-    auth,
     commons,
     conversation,
     customers,
@@ -22,7 +21,8 @@ from . import (
     translations,
     triggers,
     users,
-    websockets,
+    voice,
+    voice_conversations,
 )
 from .actions import ActionField, ActionFilter, ActionRequest, ActionsResponse, ActionsSearchRequest
 from .agents import (
@@ -138,7 +138,6 @@ from .analytics import (
 )
 from .app_settings import AppSettings, SearchAppSettingsResponse
 from .assets import CommitAssetUploadRequest, InitiateAssetUploadRequest, InitiateAssetUploadResponse
-from .auth import SessionTokenRequest, SessionTokenResponse
 from .client import AsyncMavenAGI, MavenAGI
 from .commons import (
     ActionBase,
@@ -389,7 +388,6 @@ from .commons import (
 from .conversation import (
     ActionFormAttachment,
     ActionFormRequestParamValue,
-    AskObjectRequest,
     AskRequest,
     AskStreamActionEvent,
     AskStreamChartEvent,
@@ -418,10 +416,6 @@ from .conversation import (
     FeedbackFilter,
     FeedbackRequest,
     NumericConversationField,
-    ObjectStreamResponse,
-    ObjectStreamResponse_End,
-    ObjectStreamResponse_Start,
-    ObjectStreamResponse_Text,
     ResolutionStatus,
     SimulationFilter,
     StreamResponse,
@@ -484,6 +478,7 @@ from .organizations import BaseOrganization, CreateOrganizationRequest, Organiza
 from .segments import (
     SegmentBase,
     SegmentField,
+    SegmentFilter,
     SegmentPatchRequest,
     SegmentRequest,
     SegmentResponse,
@@ -510,7 +505,8 @@ from .users import (
     AppUserSummary,
 )
 from .version import __version__
-from .websockets import (
+from .voice import VoiceSessionTokenRequest, VoiceSessionTokenResponse, VoiceTokenType
+from .voice_conversations import (
     AgentAudioChunk,
     AgentTranscript,
     AudioFormat,
@@ -581,7 +577,6 @@ __all__ = [
     "AppVisibility",
     "ApplyFixesRequest",
     "ArraySettingsSchemaEntry",
-    "AskObjectRequest",
     "AskRequest",
     "AskStreamActionEvent",
     "AskStreamChartEvent",
@@ -904,10 +899,6 @@ __all__ = [
     "NumericMembershipOperator",
     "OAuthAuthenticationMethod",
     "OAuthSettingsSchemaEntry",
-    "ObjectStreamResponse",
-    "ObjectStreamResponse_End",
-    "ObjectStreamResponse_Start",
-    "ObjectStreamResponse_Text",
     "OneOfSettingsSchemaEntry",
     "Organization",
     "OrganizationPatchRequest",
@@ -939,6 +930,7 @@ __all__ = [
     "SectionSettingsSchemaEntry",
     "SegmentBase",
     "SegmentField",
+    "SegmentFilter",
     "SegmentPatchRequest",
     "SegmentRequest",
     "SegmentResponse",
@@ -950,8 +942,6 @@ __all__ = [
     "ServerError",
     "ServerEventBase",
     "SessionInfo",
-    "SessionTokenRequest",
-    "SessionTokenResponse",
     "SetCondition",
     "SetCondition_Element",
     "SetCondition_Relation",
@@ -1026,13 +1016,15 @@ __all__ = [
     "UserStartedSpeaking",
     "UserTranscript",
     "VisibilityType",
+    "VoiceSessionTokenRequest",
+    "VoiceSessionTokenResponse",
+    "VoiceTokenType",
     "__version__",
     "actions",
     "agents",
     "analytics",
     "app_settings",
     "assets",
-    "auth",
     "commons",
     "conversation",
     "customers",
@@ -1046,5 +1038,6 @@ __all__ = [
     "translations",
     "triggers",
     "users",
-    "websockets",
+    "voice",
+    "voice_conversations",
 ]

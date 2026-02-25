@@ -38,6 +38,11 @@ class InboxItemBase(UniversalBaseModel):
     Severity of the inbox item.
     """
 
+    tags: typing.Optional[typing.Set[str]] = pydantic.Field(default=None)
+    """
+    A set of tags associated with the inbox item that are used for filtering.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

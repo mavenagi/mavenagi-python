@@ -22,6 +22,11 @@ class InboxFilter(UniversalBaseModel):
     List of inbox item types to filter by.
     """
 
+    tags: typing.Optional[typing.Set[str]] = pydantic.Field(default=None)
+    """
+    Filter for items that have at least one of these tags.
+    """
+
     created_after: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAfter")] = (
         pydantic.Field(default=None)
     )

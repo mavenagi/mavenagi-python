@@ -6,12 +6,18 @@ import pydantic
 from ...commons.types.base_paginated_request import BasePaginatedRequest
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from .segment_field import SegmentField
+from .segment_filter import SegmentFilter
 
 
 class SegmentsSearchRequest(BasePaginatedRequest):
     sort: typing.Optional[SegmentField] = pydantic.Field(default=None)
     """
     The field to sort by, defaults to created timestamp
+    """
+
+    filter: typing.Optional[SegmentFilter] = pydantic.Field(default=None)
+    """
+    The filter to apply to the segments.
     """
 
     if IS_PYDANTIC_V2:

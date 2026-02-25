@@ -2288,6 +2288,7 @@ The mime-type of the attachment. Supported types are:
 - application/msword
 - application/vnd.ms-excel
 - application/vnd.ms-powerpoint
+- application/x-subrip
 - audio/aac
 - audio/mpeg
 - audio/mp4
@@ -2385,82 +2386,6 @@ client.assets.commit_upload(
 <dd>
 
 **checksum:** `typing.Optional[str]` — Checksum of the uploaded file (optional verification)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-## Auth
-<details><summary><code>client.auth.<a href="src/mavenagi/auth/client.py">session_token</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Creates a short-lived session token that can be used to authenticate 
-WebSocket connections. Session tokens are useful for client-side applications where 
-you don’t want to expose your API key.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.auth.session_token(
-    ttl_seconds=3600,
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**ttl_seconds:** `int` 
     
 </dd>
 </dl>
@@ -3297,161 +3222,6 @@ for chunk in response.data:
 <dd>
 
 **conversation_id:** `str` — The ID of a new or existing conversation to use as context for the question
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**conversation_message_id:** `EntityIdBase` — Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**user_id:** `EntityIdBase` — Externally supplied ID to uniquely identify the user that created this message
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**text:** `str` — The text of the message
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**attachments:** `typing.Optional[typing.Sequence[AttachmentRequest]]` 
-
-The attachments to the message. Image attachments will be sent to the LLM as additional data.
-Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**transient_data:** `typing.Optional[typing.Dict[str, str]]` — Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**timezone:** `typing.Optional[str]` — IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">ask_object_stream</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Generate a structured object response based on a provided schema and user prompt with a streaming response. 
-The response will be sent as a stream of events containing text, start, and end events.
-The text portions of stream responses should be concatenated to form the full response text.
-
-If the user question and object response already exist, they will be reused and not updated.
-
-Concurrency Behavior:
-- If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
-- The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
-
-Known Limitations:
-- Schema enforcement is best-effort and may not guarantee exact conformity.
-- The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-response = client.conversation.ask_object_stream(
-    conversation_id="conversationId",
-    schema="schema",
-    conversation_message_id=EntityIdBase(
-        reference_id="x",
-    ),
-    user_id=EntityIdBase(
-        reference_id="x",
-    ),
-    text="text",
-)
-for chunk in response.data:
-    yield chunk
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**conversation_id:** `str` — The ID of a new or existing conversation to use as context for the object generation request
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**schema:** `str` — JSON schema string defining the expected object shape.
     
 </dd>
 </dl>
@@ -5172,6 +4942,96 @@ client.inbox.search()
 <dd>
 
 **sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">apply_tags</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update inbox item tag fields. All tags provided will overwrite the existing tags on the inbox item.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.inbox.apply_tags(
+    inbox_item_id="custom-item-1",
+    tags={"tag1", "tag2"},
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inbox_item_id:** `str` — The ID of the inbox item to add tags to.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**tags:** `typing.Set[str]` — A set of tags associated with the inbox item that are used for filtering.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of a custom inbox item to patch tags for. For server-managed inbox items such as Missing Knowledge and Duplicate Documents, the appId field is not required and will be ignored.
     
 </dd>
 </dl>
@@ -7783,6 +7643,14 @@ client.segments.search()
 <dl>
 <dd>
 
+**filter:** `typing.Optional[SegmentFilter]` — The filter to apply to the segments.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **page:** `typing.Optional[int]` — Page number to return, defaults to 0
     
 </dd>
@@ -7900,6 +7768,14 @@ client.segments.create_or_update(
 <dd>
 
 **precondition:** `Precondition` — The precondition that must be met for a conversation message to be included in the segment.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[SegmentStatus]` — Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
     
 </dd>
 </dl>
@@ -9143,6 +9019,111 @@ client.users.delete(
 <dd>
 
 **app_id:** `typing.Optional[str]` — The App ID of the app user to delete. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Voice
+<details><summary><code>client.voice.<a href="src/mavenagi/voice/client.py">session_token</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a short-lived session token for authenticating voice connections.
+
+Supports two token types:
+- **webrtc**: A Twilio-compatible access token for browser-based WebRTC calls
+- **websocket**: An RS256 JWT for direct WebSocket connections to /v1/voice/conversations
+
+Session tokens are required before establishing any voice connection.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.voice.session_token(
+    app_user_id="appUserId",
+    type="webrtc",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**app_user_id:** `str` — The end user identity for the voice session.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `VoiceTokenType` 
+
+The type of session token to generate.
+Use "webrtc" for browser-based calls via Twilio, or "websocket" for direct WebSocket connections.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**custom_data:** `typing.Optional[typing.Dict[str, str]]` 
+
+Arbitrary key-value metadata to associate with this session (e.g., conversationId, topic).
+For WebRTC tokens, this data is stored server-side and referenced by a secure ID
+encoded in the token identity, ensuring it cannot be tampered with by the client.
+For WebSocket tokens, clients can also pass data directly in the Config message.
     
 </dd>
 </dl>

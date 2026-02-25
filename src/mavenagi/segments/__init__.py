@@ -5,6 +5,7 @@
 from .types import (
     SegmentBase,
     SegmentField,
+    SegmentFilter,
     SegmentPatchRequest,
     SegmentRequest,
     SegmentResponse,
@@ -16,6 +17,7 @@ from .types import (
 __all__ = [
     "SegmentBase",
     "SegmentField",
+    "SegmentFilter",
     "SegmentPatchRequest",
     "SegmentRequest",
     "SegmentResponse",

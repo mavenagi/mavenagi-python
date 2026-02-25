@@ -4,6 +4,7 @@
 
 from .segment_base import SegmentBase
 from .segment_field import SegmentField
+from .segment_filter import SegmentFilter
 from .segment_patch_request import SegmentPatchRequest
 from .segment_request import SegmentRequest
 from .segment_response import SegmentResponse
@@ -14,6 +15,7 @@ from .segments_search_response import SegmentsSearchResponse
 __all__ = [
     "SegmentBase",
     "SegmentField",
+    "SegmentFilter",
     "SegmentPatchRequest",
     "SegmentRequest",
     "SegmentResponse",
