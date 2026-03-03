@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.entity_id import EntityId
 from ...commons.types.llm_inclusion_status import LlmInclusionStatus
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
@@ -73,6 +74,13 @@ class KnowledgeBaseFilter(UniversalBaseModel):
     )
     """
     Filter knowledge bases by the segment they are assigned to.
+    """
+
+    segment_ids: typing_extensions.Annotated[
+        typing.Optional[typing.List[EntityId]], FieldMetadata(alias="segmentIds")
+    ] = pydantic.Field(default=None)
+    """
+    Filter knowledge bases by the segments they are assigned to. Uses OR semantics — returns knowledge bases assigned to any of the provided segments.
     """
 
     if IS_PYDANTIC_V2:

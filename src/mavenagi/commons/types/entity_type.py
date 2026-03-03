@@ -21,6 +21,7 @@ EntityType = typing.Union[
         "SEGMENT",
         "CUSTOMER",
         "INTELLIGENT_FIELD",
+        "CHARTER",
     ],
     typing.Any,
 ]
