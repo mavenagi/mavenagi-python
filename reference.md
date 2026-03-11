@@ -4961,6 +4961,194 @@ client.inbox.search()
 </dl>
 </details>
 
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">create_or_update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update an inbox item or create it if it doesn't exist.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+import datetime
+
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityId, EntityIdBase, ScopedEntity
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.inbox.create_or_update(
+    inbox_item_id=EntityIdBase(
+        reference_id="todo-item-1",
+    ),
+    status="OPEN",
+    severity="HIGH",
+    title="Todo Item",
+    description="This is the first todo item.",
+    metadata={"key": "value"},
+    external_url="todo.com",
+    deadline=datetime.datetime.fromisoformat(
+        "2026-12-31 23:59:59+00:00",
+    ),
+    snoozed_until=datetime.datetime.fromisoformat(
+        "2026-12-25 23:59:59+00:00",
+    ),
+    references=[
+        ScopedEntity(
+            entity_id=EntityId(
+                type="CONVERSATION_MESSAGE",
+                app_id="app1",
+                reference_id="msgRef1201",
+                organization_id="acme",
+                agent_id="support",
+            ),
+            scope_entity_id=EntityId(
+                type="CONVERSATION",
+                app_id="app1",
+                reference_id="ref1200",
+                organization_id="acme",
+                agent_id="support",
+            ),
+        )
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inbox_item_id:** `EntityIdBase` — ID that uniquely identifies this inbox item
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `InboxItemStatus` — Status of the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**severity:** `InboxItemSeverity` — Severity of the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**metadata:** `typing.Dict[str, str]` — Additional metadata associated with the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**title:** `typing.Optional[str]` — Title of the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — Description of the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**external_url:** `typing.Optional[str]` — An optional URL that can be associated with the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**deadline:** `typing.Optional[dt.datetime]` — An optional deadline for the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**snoozed_until:** `typing.Optional[dt.datetime]` — An optional timestamp until which the inbox item is snoozed.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**assignee:** `typing.Optional[str]` — An optional assignee for the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**references:** `typing.Optional[typing.Sequence[ScopedEntity]]` — An optional list of references to other entities that are related to this inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">apply_tags</a>(...)</code></summary>
 <dl>
 <dd>
@@ -9055,7 +9243,7 @@ Creates a short-lived session token for authenticating voice connections.
 
 Supports two token types:
 - **webrtc**: A Twilio-compatible access token for browser-based WebRTC calls
-- **websocket**: An RS256 JWT for direct WebSocket connections to /v1/voice/conversations
+- **websocket**: An ES256 JWT for direct WebSocket connections to /v1/voice/conversations
 
 Session tokens are required before establishing any voice connection.
 </dd>
@@ -9081,7 +9269,7 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.voice.session_token(
-    app_user_id="appUserId",
+    app_user_id="x",
     type="webrtc",
 )
 
@@ -9099,7 +9287,10 @@ client.voice.session_token(
 <dl>
 <dd>
 
-**app_user_id:** `str` — The end user identity for the voice session.
+**app_user_id:** `str` 
+
+The end user identity for the voice session.
+Must contain only alphanumeric characters, dots, hyphens, or underscores.
     
 </dd>
 </dl>
@@ -9121,6 +9312,10 @@ Use "webrtc" for browser-based calls via Twilio, or "websocket" for direct WebSo
 **custom_data:** `typing.Optional[typing.Dict[str, str]]` 
 
 Arbitrary key-value metadata to associate with this session (e.g., conversationId, topic).
+
+**Constraints**: at most 50 keys, each key up to 256 characters, each value up to 4096 characters.
+Values are stored as-is — for small data, embed the value directly (e.g., `"callerName": "John Doe"`).
+
 For WebRTC tokens, this data is stored server-side and referenced by a secure ID
 encoded in the token identity, ensuring it cannot be tampered with by the client.
 For WebSocket tokens, clients can also pass data directly in the Config message.

@@ -2,6 +2,20 @@
 
 # isort: skip_file
 
-from .types import AddDocumentFixRequest, ApplyFixesRequest, InboxFilter, InboxSearchRequest, InboxSearchResponse
+from .types import (
+    AddDocumentFixRequest,
+    ApplyFixesRequest,
+    InboxFilter,
+    InboxItemCreateRequest,
+    InboxSearchRequest,
+    InboxSearchResponse,
+)
 
-__all__ = ["AddDocumentFixRequest", "ApplyFixesRequest", "InboxFilter", "InboxSearchRequest", "InboxSearchResponse"]
+__all__ = [
+    "AddDocumentFixRequest",
+    "ApplyFixesRequest",
+    "InboxFilter",
+    "InboxItemCreateRequest",
+    "InboxSearchRequest",
+    "InboxSearchResponse",
+]

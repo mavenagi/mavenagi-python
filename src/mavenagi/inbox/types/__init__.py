@@ -5,7 +5,15 @@
 from .add_document_fix_request import AddDocumentFixRequest
 from .apply_fixes_request import ApplyFixesRequest
 from .inbox_filter import InboxFilter
+from .inbox_item_create_request import InboxItemCreateRequest
 from .inbox_search_request import InboxSearchRequest
 from .inbox_search_response import InboxSearchResponse
 
-__all__ = ["AddDocumentFixRequest", "ApplyFixesRequest", "InboxFilter", "InboxSearchRequest", "InboxSearchResponse"]
+__all__ = [
+    "AddDocumentFixRequest",
+    "ApplyFixesRequest",
+    "InboxFilter",
+    "InboxItemCreateRequest",
+    "InboxSearchRequest",
+    "InboxSearchResponse",
+]

@@ -16,6 +16,7 @@ from .inbox_item_fix_add_document import InboxItemFixAddDocument
 from .inbox_item_fix_deactivate_document import InboxItemFixDeactivateDocument
 from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
+from .scoped_entity import ScopedEntity
 
 
 class InboxItem_DuplicateDocuments(UniversalBaseModel):
@@ -150,6 +151,13 @@ class InboxItem_Custom(UniversalBaseModel):
 
     type: typing.Literal["custom"] = "custom"
     metadata: typing.Dict[str, str]
+    title: typing.Optional[str] = None
+    description: typing.Optional[str] = None
+    external_url: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="externalUrl")] = None
+    deadline: typing.Optional[dt.datetime] = None
+    snoozed_until: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="snoozedUntil")] = None
+    assignee: typing.Optional[str] = None
+    references: typing.Optional[typing.List[ScopedEntity]] = None
     id: EntityId
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")]

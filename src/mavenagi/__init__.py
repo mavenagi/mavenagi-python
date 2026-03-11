@@ -442,7 +442,14 @@ from .customers import (
 )
 from .developers_commons import AppCapability, AppCategory, AppVisibility, GithubRepository, Link
 from .environment import MavenAGIEnvironment
-from .inbox import AddDocumentFixRequest, ApplyFixesRequest, InboxFilter, InboxSearchRequest, InboxSearchResponse
+from .inbox import (
+    AddDocumentFixRequest,
+    ApplyFixesRequest,
+    InboxFilter,
+    InboxItemCreateRequest,
+    InboxSearchRequest,
+    InboxSearchResponse,
+)
 from .integrations import UpdateIntegrationRequest
 from .knowledge import (
     BaseKnowledgeDocument,
@@ -815,6 +822,7 @@ __all__ = [
     "InboxFilter",
     "InboxItem",
     "InboxItemBase",
+    "InboxItemCreateRequest",
     "InboxItemCustom",
     "InboxItemDuplicateDocuments",
     "InboxItemFix",
