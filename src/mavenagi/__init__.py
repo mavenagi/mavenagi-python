@@ -453,6 +453,7 @@ from .inbox import (
 from .integrations import UpdateIntegrationRequest
 from .knowledge import (
     BaseKnowledgeDocument,
+    CancelKnowledgeBaseVersionRequest,
     FinalizeKnowledgeBaseVersionRequest,
     KnowledgeBaseField,
     KnowledgeBaseFilter,
@@ -639,6 +640,7 @@ __all__ = [
     "BotTextResponse",
     "BrowserInfo",
     "BrowserType",
+    "CancelKnowledgeBaseVersionRequest",
     "Capability",
     "CategorizationResponse",
     "CellData",

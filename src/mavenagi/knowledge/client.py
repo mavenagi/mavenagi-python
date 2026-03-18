@@ -250,6 +250,53 @@ class KnowledgeClient:
         )
         return _response.data
 
+    def cancel_knowledge_base_version(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        in-progress knowledge base version.
+
+        If the knowledge base has a version that is currently being ingested,
+        this will cancel the ingestion workflow and set the version status to FAILED.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to cancel ingestion for. All other entity ID fields are inferred from the request.
+
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to cancel. If not provided will use the most recent version of the knowledge base.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.cancel_knowledge_base_version(
+            knowledge_base_reference_id="knowledgeBaseReferenceId",
+        )
+        """
+        _response = self._raw_client.cancel_knowledge_base_version(
+            knowledge_base_reference_id, version_id=version_id, request_options=request_options
+        )
+        return _response.data
+
     def patch_knowledge_base(
         self,
         knowledge_base_reference_id: str,
@@ -1107,6 +1154,61 @@ class AsyncKnowledgeClient:
         """
         _response = await self._raw_client.refresh_knowledge_base(
             knowledge_base_reference_id, app_id=app_id, request_options=request_options
+        )
+        return _response.data
+
+    async def cancel_knowledge_base_version(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> None:
+        """
+        in-progress knowledge base version.
+
+        If the knowledge base has a version that is currently being ingested,
+        this will cancel the ingestion workflow and set the version status to FAILED.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to cancel ingestion for. All other entity ID fields are inferred from the request.
+
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to cancel. If not provided will use the most recent version of the knowledge base.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.cancel_knowledge_base_version(
+                knowledge_base_reference_id="knowledgeBaseReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.cancel_knowledge_base_version(
+            knowledge_base_reference_id, version_id=version_id, request_options=request_options
         )
         return _response.data
 

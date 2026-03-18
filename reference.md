@@ -6174,6 +6174,90 @@ client.knowledge.refresh_knowledge_base(
 </dl>
 </details>
 
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">cancel_knowledge_base_version</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+in-progress knowledge base version.
+
+If the knowledge base has a version that is currently being ingested,
+this will cancel the ingestion workflow and set the version status to FAILED.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.cancel_knowledge_base_version(
+    knowledge_base_reference_id="knowledgeBaseReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to cancel ingestion for. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**version_id:** `typing.Optional[EntityIdWithoutAgent]` — ID that uniquely identifies which knowledge base version to cancel. If not provided will use the most recent version of the knowledge base.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">patch_knowledge_base</a>(...)</code></summary>
 <dl>
 <dd>
@@ -8520,6 +8604,14 @@ Conversation triggers fire when a conversation is created, after each additional
 There is a small delay before trigger execution to allow time for conversation analysis to complete.
 
 Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
     
 </dd>
 </dl>

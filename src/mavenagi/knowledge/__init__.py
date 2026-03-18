@@ -4,6 +4,7 @@
 
 from .types import (
     BaseKnowledgeDocument,
+    CancelKnowledgeBaseVersionRequest,
     FinalizeKnowledgeBaseVersionRequest,
     KnowledgeBaseField,
     KnowledgeBaseFilter,
@@ -35,6 +36,7 @@ from .types import (
 
 __all__ = [
     "BaseKnowledgeDocument",
+    "CancelKnowledgeBaseVersionRequest",
     "FinalizeKnowledgeBaseVersionRequest",
     "KnowledgeBaseField",
     "KnowledgeBaseFilter",

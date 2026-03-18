@@ -84,6 +84,7 @@ class TriggersClient:
         trigger_id: EntityIdBase,
         description: str,
         type: EventTriggerType,
+        name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> EventTriggerResponse:
         """
@@ -104,6 +105,9 @@ class TriggersClient:
             There is a small delay before trigger execution to allow time for conversation analysis to complete.
 
             Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
+
+        name : typing.Optional[str]
+            The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -132,7 +136,7 @@ class TriggersClient:
         )
         """
         _response = self._raw_client.create_or_update(
-            trigger_id=trigger_id, description=description, type=type, request_options=request_options
+            trigger_id=trigger_id, description=description, type=type, name=name, request_options=request_options
         )
         return _response.data
 
@@ -331,6 +335,7 @@ class AsyncTriggersClient:
         trigger_id: EntityIdBase,
         description: str,
         type: EventTriggerType,
+        name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> EventTriggerResponse:
         """
@@ -351,6 +356,9 @@ class AsyncTriggersClient:
             There is a small delay before trigger execution to allow time for conversation analysis to complete.
 
             Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
+
+        name : typing.Optional[str]
+            The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -387,7 +395,7 @@ class AsyncTriggersClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.create_or_update(
-            trigger_id=trigger_id, description=description, type=type, request_options=request_options
+            trigger_id=trigger_id, description=description, type=type, name=name, request_options=request_options
         )
         return _response.data
 

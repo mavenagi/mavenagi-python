@@ -125,6 +125,7 @@ class RawTriggersClient:
         trigger_id: EntityIdBase,
         description: str,
         type: EventTriggerType,
+        name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[EventTriggerResponse]:
         """
@@ -146,6 +147,9 @@ class RawTriggersClient:
 
             Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
 
+        name : typing.Optional[str]
+            The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -160,6 +164,7 @@ class RawTriggersClient:
                 "triggerId": convert_and_respect_annotation_metadata(
                     object_=trigger_id, annotation=EntityIdBase, direction="write"
                 ),
+                "name": name,
                 "description": description,
                 "type": type,
             },
@@ -541,6 +546,7 @@ class AsyncRawTriggersClient:
         trigger_id: EntityIdBase,
         description: str,
         type: EventTriggerType,
+        name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[EventTriggerResponse]:
         """
@@ -562,6 +568,9 @@ class AsyncRawTriggersClient:
 
             Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
 
+        name : typing.Optional[str]
+            The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -576,6 +585,7 @@ class AsyncRawTriggersClient:
                 "triggerId": convert_and_respect_annotation_metadata(
                     object_=trigger_id, annotation=EntityIdBase, direction="write"
                 ),
+                "name": name,
                 "description": description,
                 "type": type,
             },

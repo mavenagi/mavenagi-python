@@ -8,6 +8,11 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
 class EventTriggerBase(UniversalBaseModel):
+    name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
+    """
+
     description: str = pydantic.Field()
     """
     The description of what the event trigger does, shown in the Maven Dashboard

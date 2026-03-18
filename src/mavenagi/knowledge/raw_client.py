@@ -398,6 +398,86 @@ class RawKnowledgeClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def cancel_knowledge_base_version(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[None]:
+        """
+        in-progress knowledge base version.
+
+        If the knowledge base has a version that is currently being ingested,
+        this will cancel the ingestion workflow and set the version status to FAILED.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to cancel ingestion for. All other entity ID fields are inferred from the request.
+
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to cancel. If not provided will use the most recent version of the knowledge base.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[None]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/cancel",
+            method="POST",
+            json={
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return HttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def patch_knowledge_base(
         self,
         knowledge_base_reference_id: str,
@@ -1628,6 +1708,86 @@ class AsyncRawKnowledgeClient:
             method="POST",
             json={
                 "appId": app_id,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return AsyncHttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def cancel_knowledge_base_version(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[None]:
+        """
+        in-progress knowledge base version.
+
+        If the knowledge base has a version that is currently being ingested,
+        this will cancel the ingestion workflow and set the version status to FAILED.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to cancel ingestion for. All other entity ID fields are inferred from the request.
+
+        version_id : typing.Optional[EntityIdWithoutAgent]
+            ID that uniquely identifies which knowledge base version to cancel. If not provided will use the most recent version of the knowledge base.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[None]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/cancel",
+            method="POST",
+            json={
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,
