@@ -11,6 +11,8 @@ from ...core.serialization import FieldMetadata
 from .action_execution_param_value import ActionExecutionParamValue
 from .bot_logic_action_executed_detail import BotLogicActionExecutedDetail
 from .bot_logic_action_reviewed_detail import BotLogicActionReviewedDetail
+from .bot_logic_charter_detail import BotLogicCharterDetail
+from .bot_logic_intelligent_field_detail import BotLogicIntelligentFieldDetail
 from .bot_logic_knowledge_detail import BotLogicKnowledgeDetail
 from .entity_id import EntityId
 from .entity_id_without_agent import EntityIdWithoutAgent
@@ -118,6 +120,39 @@ class BotLogicItem_Segments(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class BotLogicItem_IntelligentFields(UniversalBaseModel):
+    type: typing.Literal["intelligentFields"] = "intelligentFields"
+    refreshed_fields: typing_extensions.Annotated[
+        typing.List[BotLogicIntelligentFieldDetail], FieldMetadata(alias="refreshedFields")
+    ]
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class BotLogicItem_Charters(UniversalBaseModel):
+    type: typing.Literal["charters"] = "charters"
+    matched_charters: typing_extensions.Annotated[
+        typing.List[BotLogicCharterDetail], FieldMetadata(alias="matchedCharters")
+    ]
+    evaluation_truncated: typing_extensions.Annotated[bool, FieldMetadata(alias="evaluationTruncated")]
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 BotLogicItem = typing.Union[
     BotLogicItem_Knowledge,
     BotLogicItem_Actions,
@@ -125,4 +160,6 @@ BotLogicItem = typing.Union[
     BotLogicItem_Safety,
     BotLogicItem_User,
     BotLogicItem_Segments,
+    BotLogicItem_IntelligentFields,
+    BotLogicItem_Charters,
 ]

@@ -154,9 +154,7 @@ class InboxItem_Custom(UniversalBaseModel):
     title: typing.Optional[str] = None
     description: typing.Optional[str] = None
     external_url: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="externalUrl")] = None
-    deadline: typing.Optional[dt.datetime] = None
-    snoozed_until: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="snoozedUntil")] = None
-    assignee: typing.Optional[str] = None
+    assignee: typing.Optional[ScopedEntity] = None
     references: typing.Optional[typing.List[ScopedEntity]] = None
     id: EntityId
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]

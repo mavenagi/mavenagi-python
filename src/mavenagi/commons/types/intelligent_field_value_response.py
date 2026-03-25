@@ -28,6 +28,7 @@ class IntelligentFieldValueResponse(UniversalBaseModel):
             agent_id="support",
             type="CONVERSATION",
         ),
+        name="Ticket Priority",
         entity_id=EntityId(
             reference_id="ticket-123",
             app_id="zendesk",
@@ -47,6 +48,11 @@ class IntelligentFieldValueResponse(UniversalBaseModel):
     field_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="fieldId")] = pydantic.Field()
     """
     The intelligent field that this value belongs to
+    """
+
+    name: str = pydantic.Field()
+    """
+    Display name of the intelligent field
     """
 
     entity_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="entityId")] = pydantic.Field()

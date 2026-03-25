@@ -173,7 +173,7 @@ client.actions.create_or_update(
 <dl>
 <dd>
 
-**description:** `str` — The description of the action. Must be less than 1024 characters. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user. Descriptions are used by the LLM.
+**description:** `str` — The description of the action. Must be no more than 4096 characters. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user. Descriptions are used by the LLM.
     
 </dd>
 </dl>
@@ -4988,8 +4988,6 @@ Update an inbox item or create it if it doesn't exist.
 <dd>
 
 ```python
-import datetime
-
 from mavenagi import MavenAGI
 from mavenagi.commons import EntityId, EntityIdBase, ScopedEntity
 
@@ -5009,12 +5007,6 @@ client.inbox.create_or_update(
     description="This is the first todo item.",
     metadata={"key": "value"},
     external_url="todo.com",
-    deadline=datetime.datetime.fromisoformat(
-        "2026-12-31 23:59:59+00:00",
-    ),
-    snoozed_until=datetime.datetime.fromisoformat(
-        "2026-12-25 23:59:59+00:00",
-    ),
     references=[
         ScopedEntity(
             entity_id=EntityId(
@@ -5081,7 +5073,7 @@ client.inbox.create_or_update(
 <dl>
 <dd>
 
-**title:** `typing.Optional[str]` — Title of the inbox item.
+**title:** `str` — Title of the inbox item.
     
 </dd>
 </dl>
@@ -5105,23 +5097,7 @@ client.inbox.create_or_update(
 <dl>
 <dd>
 
-**deadline:** `typing.Optional[dt.datetime]` — An optional deadline for the inbox item.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**snoozed_until:** `typing.Optional[dt.datetime]` — An optional timestamp until which the inbox item is snoozed.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**assignee:** `typing.Optional[str]` — An optional assignee for the inbox item.
+**assignee:** `typing.Optional[ScopedEntity]` — An optional assignee for the inbox item.
     
 </dd>
 </dl>
@@ -5130,6 +5106,116 @@ client.inbox.create_or_update(
 <dd>
 
 **references:** `typing.Optional[typing.Sequence[ScopedEntity]]` — An optional list of references to other entities that are related to this inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.inbox.<a href="src/mavenagi/inbox/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable inbox item fields. Only supported for custom inbox items.
+
+The `appId` field can be provided to update a inbox item owned by a different app.
+All other fields will overwrite the existing value on the inbox item only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.inbox.patch(
+    inbox_item_id="custom-item-1",
+    status="OPEN",
+    metadata={"key": "value"},
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inbox_item_id:** `str` — The ID of the inbox item to patch
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the inbox item to patch. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[InboxItemStatus]` — Status of the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**severity:** `typing.Optional[InboxItemSeverity]` — Severity of the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**metadata:** `typing.Optional[typing.Dict[str, str]]` — Additional metadata associated with the inbox item.
     
 </dd>
 </dl>

@@ -17,7 +17,7 @@ class ActionBase(ActionProperties):
 
     description: str = pydantic.Field()
     """
-    The description of the action. Must be less than 1024 characters. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user. Descriptions are used by the LLM.
+    The description of the action. Must be no more than 4096 characters. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user. Descriptions are used by the LLM.
     """
 
     if IS_PYDANTIC_V2:

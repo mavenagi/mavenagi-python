@@ -38,11 +38,17 @@ from .bot_logic import BotLogic
 from .bot_logic_action_executed_detail import BotLogicActionExecutedDetail
 from .bot_logic_action_item import BotLogicActionItem
 from .bot_logic_action_reviewed_detail import BotLogicActionReviewedDetail
+from .bot_logic_charter_detail import BotLogicCharterDetail
+from .bot_logic_charters_item import BotLogicChartersItem
 from .bot_logic_form_submission_item import BotLogicFormSubmissionItem
+from .bot_logic_intelligent_field_detail import BotLogicIntelligentFieldDetail
+from .bot_logic_intelligent_fields_item import BotLogicIntelligentFieldsItem
 from .bot_logic_item import (
     BotLogicItem,
     BotLogicItem_Actions,
+    BotLogicItem_Charters,
     BotLogicItem_Form,
+    BotLogicItem_IntelligentFields,
     BotLogicItem_Knowledge,
     BotLogicItem_Safety,
     BotLogicItem_Segments,
@@ -277,10 +283,16 @@ __all__ = [
     "BotLogicActionExecutedDetail",
     "BotLogicActionItem",
     "BotLogicActionReviewedDetail",
+    "BotLogicCharterDetail",
+    "BotLogicChartersItem",
     "BotLogicFormSubmissionItem",
+    "BotLogicIntelligentFieldDetail",
+    "BotLogicIntelligentFieldsItem",
     "BotLogicItem",
     "BotLogicItem_Actions",
+    "BotLogicItem_Charters",
     "BotLogicItem_Form",
+    "BotLogicItem_IntelligentFields",
     "BotLogicItem_Knowledge",
     "BotLogicItem_Safety",
     "BotLogicItem_Segments",
