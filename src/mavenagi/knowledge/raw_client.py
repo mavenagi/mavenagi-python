@@ -1018,7 +1018,10 @@ class RawKnowledgeClient:
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
 
         asset_id : typing.Optional[EntityIdWithoutAgent]
-            (Currently in BETA. Use at your own risk, and may not work in some circumstances) ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both.
+            (Beta: under development, endpoint may change.)
+            ID of the asset associated with this document. This asset will be transformed into
+            text and set as the content of the document. Supported MIME types are those accepted by `initiateUpload`.
+            Either this or content is required, but not both. The asset must have a checksum provided at commit time (see `commitUpload`).
 
         content : typing.Optional[str]
             The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
@@ -2373,7 +2376,10 @@ class AsyncRawKnowledgeClient:
             ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
 
         asset_id : typing.Optional[EntityIdWithoutAgent]
-            (Currently in BETA. Use at your own risk, and may not work in some circumstances) ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both.
+            (Beta: under development, endpoint may change.)
+            ID of the asset associated with this document. This asset will be transformed into
+            text and set as the content of the document. Supported MIME types are those accepted by `initiateUpload`.
+            Either this or content is required, but not both. The asset must have a checksum provided at commit time (see `commitUpload`).
 
         content : typing.Optional[str]
             The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both

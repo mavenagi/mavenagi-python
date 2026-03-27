@@ -67,7 +67,10 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
         pydantic.Field(default=None)
     )
     """
-    (Currently in BETA. Use at your own risk, and may not work in some circumstances) ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both.
+    (Beta: under development, endpoint may change.)
+    ID of the asset associated with this document. This asset will be transformed into
+    text and set as the content of the document. Supported MIME types are those accepted by `initiateUpload`.
+    Either this or content is required, but not both. The asset must have a checksum provided at commit time (see `commitUpload`).
     """
 
     content: typing.Optional[str] = pydantic.Field(default=None)

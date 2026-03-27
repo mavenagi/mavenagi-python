@@ -82,9 +82,9 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
     The current processing status of the knowledge document
     """
 
-    content: str = pydantic.Field()
+    content: typing.Optional[str] = pydantic.Field(default=None)
     """
-    The content of the document in markdown format. Not shown directly to users.
+    The content of the document in markdown format. Not shown directly to users. May be absent for asset-backed documents that have not yet been processed.
     """
 
     asset: typing.Optional[AttachmentResponse] = pydantic.Field(default=None)

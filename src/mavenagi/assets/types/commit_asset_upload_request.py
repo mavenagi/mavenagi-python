@@ -9,7 +9,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 class CommitAssetUploadRequest(UniversalBaseModel):
     checksum: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Checksum of the uploaded file (optional verification)
+    MD5 hex digest of the uploaded file. Required for assets attached to knowledge documents. Used to verify blob integrity at ingestion time.
     """
 
     if IS_PYDANTIC_V2:

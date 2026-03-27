@@ -2385,7 +2385,7 @@ client.assets.commit_upload(
 <dl>
 <dd>
 
-**checksum:** `typing.Optional[str]` — Checksum of the uploaded file (optional verification)
+**checksum:** `typing.Optional[str]` — MD5 hex digest of the uploaded file. Required for assets attached to knowledge documents. Used to verify blob integrity at ingestion time.
     
 </dd>
 </dl>
@@ -6990,7 +6990,12 @@ client.knowledge.create_knowledge_document(
 <dl>
 <dd>
 
-**asset_id:** `typing.Optional[EntityIdWithoutAgent]` — (Currently in BETA. Use at your own risk, and may not work in some circumstances) ID of the asset associated with this document. This asset will be transformed into text and set as the content of the document. The following types are supported: `application/pdf`, `text/plain`.  Either this or content is required, but not both.
+**asset_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+(Beta: under development, endpoint may change.)
+ID of the asset associated with this document. This asset will be transformed into
+text and set as the content of the document. Supported MIME types are those accepted by `initiateUpload`.
+Either this or content is required, but not both. The asset must have a checksum provided at commit time (see `commitUpload`).
     
 </dd>
 </dl>

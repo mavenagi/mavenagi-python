@@ -104,7 +104,7 @@ class AssetsClient:
             The reference ID of the asset to commit (provided by the initiate call). All other entity ID fields are inferred from the API request.
 
         checksum : typing.Optional[str]
-            Checksum of the uploaded file (optional verification)
+            MD5 hex digest of the uploaded file. Required for assets attached to knowledge documents. Used to verify blob integrity at ingestion time.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -234,7 +234,7 @@ class AsyncAssetsClient:
             The reference ID of the asset to commit (provided by the initiate call). All other entity ID fields are inferred from the API request.
 
         checksum : typing.Optional[str]
-            Checksum of the uploaded file (optional verification)
+            MD5 hex digest of the uploaded file. Required for assets attached to knowledge documents. Used to verify blob integrity at ingestion time.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
