@@ -3,7 +3,7 @@ name = "mavenagi"
 
 [tool.poetry]
 name = "mavenagi"
-version = "1.2.33"
+version = "1.2.34"
 description = ""
 readme = "README.md"
 authors = []
