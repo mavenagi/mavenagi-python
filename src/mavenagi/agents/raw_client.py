@@ -5,6 +5,7 @@ from json.decoder import JSONDecodeError
 
 from ..commons.errors.bad_request_error import BadRequestError
 from ..commons.errors.not_found_error import NotFoundError
+from ..commons.errors.payload_too_large_error import PayloadTooLargeError
 from ..commons.errors.server_error import ServerError
 from ..commons.types.error_message import ErrorMessage
 from ..commons.types.llm_persona import LlmPersona
@@ -116,6 +117,17 @@ class RawAgentsClient:
                         ),
                     ),
                 )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise ServerError(
                     headers=dict(_response.headers),
@@ -179,6 +191,17 @@ class RawAgentsClient:
                 )
             if _response.status_code == 400:
                 raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,
@@ -284,6 +307,17 @@ class RawAgentsClient:
                         ),
                     ),
                 )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise ServerError(
                     headers=dict(_response.headers),
@@ -353,6 +387,17 @@ class RawAgentsClient:
                 )
             if _response.status_code == 400:
                 raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,
@@ -501,6 +546,17 @@ class RawAgentsClient:
                         ),
                     ),
                 )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise ServerError(
                     headers=dict(_response.headers),
@@ -567,6 +623,17 @@ class RawAgentsClient:
                 )
             if _response.status_code == 400:
                 raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,
@@ -683,6 +750,17 @@ class AsyncRawAgentsClient:
                         ),
                     ),
                 )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise ServerError(
                     headers=dict(_response.headers),
@@ -746,6 +824,17 @@ class AsyncRawAgentsClient:
                 )
             if _response.status_code == 400:
                 raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,
@@ -851,6 +940,17 @@ class AsyncRawAgentsClient:
                         ),
                     ),
                 )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise ServerError(
                     headers=dict(_response.headers),
@@ -920,6 +1020,17 @@ class AsyncRawAgentsClient:
                 )
             if _response.status_code == 400:
                 raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,
@@ -1068,6 +1179,17 @@ class AsyncRawAgentsClient:
                         ),
                     ),
                 )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise ServerError(
                     headers=dict(_response.headers),
@@ -1134,6 +1256,17 @@ class AsyncRawAgentsClient:
                 )
             if _response.status_code == 400:
                 raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,

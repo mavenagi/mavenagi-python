@@ -2385,7 +2385,7 @@ client.assets.commit_upload(
 <dl>
 <dd>
 
-**checksum:** `typing.Optional[str]` — MD5 hex digest of the uploaded file. Required for assets attached to knowledge documents. Used to verify blob integrity at ingestion time.
+**checksum:** `typing.Optional[str]` — MD5 hex digest of the uploaded file. When provided, used to verify blob integrity.
     
 </dd>
 </dl>

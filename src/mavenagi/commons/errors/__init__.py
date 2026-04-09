@@ -4,6 +4,7 @@
 
 from .bad_request_error import BadRequestError
 from .not_found_error import NotFoundError
+from .payload_too_large_error import PayloadTooLargeError
 from .server_error import ServerError
 
-__all__ = ["BadRequestError", "NotFoundError", "ServerError"]
+__all__ = ["BadRequestError", "NotFoundError", "PayloadTooLargeError", "ServerError"]

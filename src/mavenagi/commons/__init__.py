@@ -251,7 +251,7 @@ from .types import (
     UserMessageResponseState,
     VisibilityType,
 )
-from .errors import BadRequestError, NotFoundError, ServerError
+from .errors import BadRequestError, NotFoundError, PayloadTooLargeError, ServerError
 
 __all__ = [
     "ActionBase",
@@ -434,6 +434,7 @@ __all__ = [
     "OsType",
     "Page",
     "PageInfo",
+    "PayloadTooLargeError",
     "PiiCategory",
     "Precondition",
     "PreconditionBase",
