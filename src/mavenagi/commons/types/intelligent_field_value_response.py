@@ -26,7 +26,7 @@ class IntelligentFieldValueResponse(UniversalBaseModel):
             app_id="zendesk",
             organization_id="acme",
             agent_id="support",
-            type="CONVERSATION",
+            type="INTELLIGENT_FIELD",
         ),
         name="Ticket Priority",
         entity_id=EntityId(

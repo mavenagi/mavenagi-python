@@ -23,6 +23,6 @@ class SegmentsSearchResponse(Page):
             extra = pydantic.Extra.allow
 
 
-from ...commons.types.precondition_group import PreconditionGroup  # noqa: E402, F401, I001
+from ...commons.types.precondition_group_response import PreconditionGroupResponse  # noqa: E402, F401, I001
 
 update_forward_refs(SegmentsSearchResponse)

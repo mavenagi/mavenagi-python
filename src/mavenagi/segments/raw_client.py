@@ -144,8 +144,8 @@ class RawSegmentsClient:
         self,
         *,
         segment_id: EntityIdBase,
-        name: str,
         precondition: Precondition,
+        name: str,
         status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -158,11 +158,11 @@ class RawSegmentsClient:
         segment_id : EntityIdBase
             ID that uniquely identifies this segment
 
-        name : str
-            The name of the segment.
-
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        name : str
+            The name of the segment.
 
         status : typing.Optional[SegmentStatus]
             Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -184,12 +184,12 @@ class RawSegmentsClient:
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=EntityIdBase, direction="write"
                 ),
-                "status": status,
-                "name": name,
-                "description": description,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
                 ),
+                "status": status,
+                "name": name,
+                "description": description,
             },
             request_options=request_options,
             omit=OMIT,
@@ -681,8 +681,8 @@ class AsyncRawSegmentsClient:
         self,
         *,
         segment_id: EntityIdBase,
-        name: str,
         precondition: Precondition,
+        name: str,
         status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -695,11 +695,11 @@ class AsyncRawSegmentsClient:
         segment_id : EntityIdBase
             ID that uniquely identifies this segment
 
-        name : str
-            The name of the segment.
-
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        name : str
+            The name of the segment.
 
         status : typing.Optional[SegmentStatus]
             Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -721,12 +721,12 @@ class AsyncRawSegmentsClient:
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=EntityIdBase, direction="write"
                 ),
-                "status": status,
-                "name": name,
-                "description": description,
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
                 ),
+                "status": status,
+                "name": name,
+                "description": description,
             },
             request_options=request_options,
             omit=OMIT,

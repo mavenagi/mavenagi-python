@@ -7,7 +7,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id_base import EntityIdBase
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from ...core.pydantic_utilities import IS_PYDANTIC_V2, update_forward_refs
 from ...core.serialization import FieldMetadata
 from .segment_base import SegmentBase
 from .segment_status import SegmentStatus
@@ -40,6 +40,11 @@ class SegmentRequest(SegmentBase):
     ID that uniquely identifies this segment
     """
 
+    precondition: "Precondition" = pydantic.Field()
+    """
+    The precondition that must be met for a conversation message to be included in the segment.
+    """
+
     status: typing.Optional[SegmentStatus] = pydantic.Field(default=None)
     """
     Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -56,3 +61,6 @@ class SegmentRequest(SegmentBase):
 
 
 from ...commons.types.precondition_group import PreconditionGroup  # noqa: E402, F401, I001
+from ...commons.types.precondition import Precondition  # noqa: E402, F401, I001
+
+update_forward_refs(SegmentRequest)

@@ -8,7 +8,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id import EntityId
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from ...core.pydantic_utilities import IS_PYDANTIC_V2, update_forward_refs
 from ...core.serialization import FieldMetadata
 from .segment_base import SegmentBase
 from .segment_status import SegmentStatus
@@ -20,7 +20,7 @@ class SegmentResponse(SegmentBase):
     --------
     import datetime
 
-    from mavenagi.commons import EntityId, Precondition_Group
+    from mavenagi.commons import EntityId, PreconditionResponse_Group
     from mavenagi.segments import SegmentResponse
 
     SegmentResponse(
@@ -42,7 +42,7 @@ class SegmentResponse(SegmentBase):
         referenced_document_count=34,
         referenced_action_count=3,
         status="ACTIVE",
-        precondition=Precondition_Group(
+        precondition=PreconditionResponse_Group(
             operator="AND",
             preconditions=[
                 {"preconditionType": "user", "key": "userKey"},
@@ -55,6 +55,11 @@ class SegmentResponse(SegmentBase):
     segment_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="segmentId")] = pydantic.Field()
     """
     ID that uniquely identifies this segment
+    """
+
+    precondition: "PreconditionResponse" = pydantic.Field()
+    """
+    The precondition that must be met for a conversation message to be included in the segment.
     """
 
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")] = pydantic.Field()
@@ -107,4 +112,7 @@ class SegmentResponse(SegmentBase):
             extra = pydantic.Extra.allow
 
 
-from ...commons.types.precondition_group import PreconditionGroup  # noqa: E402, F401, I001
+from ...commons.types.precondition_group_response import PreconditionGroupResponse  # noqa: E402, F401, I001
+from ...commons.types.precondition_response import PreconditionResponse  # noqa: E402, F401, I001
+
+update_forward_refs(SegmentResponse)

@@ -88,8 +88,8 @@ class SegmentsClient:
         self,
         *,
         segment_id: EntityIdBase,
-        name: str,
         precondition: Precondition,
+        name: str,
         status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -102,11 +102,11 @@ class SegmentsClient:
         segment_id : EntityIdBase
             ID that uniquely identifies this segment
 
-        name : str
-            The name of the segment.
-
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        name : str
+            The name of the segment.
 
         status : typing.Optional[SegmentStatus]
             Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -148,8 +148,8 @@ class SegmentsClient:
         """
         _response = self._raw_client.create_or_update(
             segment_id=segment_id,
-            name=name,
             precondition=precondition,
+            name=name,
             status=status,
             description=description,
             request_options=request_options,
@@ -394,8 +394,8 @@ class AsyncSegmentsClient:
         self,
         *,
         segment_id: EntityIdBase,
-        name: str,
         precondition: Precondition,
+        name: str,
         status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -408,11 +408,11 @@ class AsyncSegmentsClient:
         segment_id : EntityIdBase
             ID that uniquely identifies this segment
 
-        name : str
-            The name of the segment.
-
         precondition : Precondition
             The precondition that must be met for a conversation message to be included in the segment.
+
+        name : str
+            The name of the segment.
 
         status : typing.Optional[SegmentStatus]
             Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -462,8 +462,8 @@ class AsyncSegmentsClient:
         """
         _response = await self._raw_client.create_or_update(
             segment_id=segment_id,
-            name=name,
             precondition=precondition,
+            name=name,
             status=status,
             description=description,
             request_options=request_options,

@@ -98,6 +98,15 @@ from .conversation_precondition import (
     ConversationPrecondition_ResponseConfig,
     ConversationPrecondition_Tags,
 )
+from .conversation_precondition_response import (
+    ConversationPreconditionResponse,
+    ConversationPreconditionResponse_ActionExecuted,
+    ConversationPreconditionResponse_App,
+    ConversationPreconditionResponse_IntelligentField,
+    ConversationPreconditionResponse_Metadata,
+    ConversationPreconditionResponse_ResponseConfig,
+    ConversationPreconditionResponse_Tags,
+)
 from .conversation_preview import ConversationPreview
 from .conversation_response import ConversationResponse
 from .conversation_summary import ConversationSummary
@@ -151,6 +160,7 @@ from .intelligent_field_condition import (
     IntelligentFieldCondition_String,
 )
 from .intelligent_field_precondition import IntelligentFieldPrecondition
+from .intelligent_field_precondition_response import IntelligentFieldPreconditionResponse
 from .intelligent_field_value_response import IntelligentFieldValueResponse
 from .ip_info import IpInfo
 from .knowledge_context_by_entities import KnowledgeContextByEntities
@@ -188,7 +198,14 @@ from .precondition import Precondition, Precondition_Conversation, Precondition_
 from .precondition_base import PreconditionBase
 from .precondition_group import PreconditionGroup
 from .precondition_group_operator import PreconditionGroupOperator
+from .precondition_group_response import PreconditionGroupResponse
 from .precondition_operator import PreconditionOperator
+from .precondition_response import (
+    PreconditionResponse,
+    PreconditionResponse_Conversation,
+    PreconditionResponse_Group,
+    PreconditionResponse_User,
+)
 from .quality import Quality
 from .quality_reason import QualityReason
 from .response_config import ResponseConfig
@@ -329,6 +346,13 @@ __all__ = [
     "ConversationMessageResponse_Bot",
     "ConversationMessageResponse_User",
     "ConversationPrecondition",
+    "ConversationPreconditionResponse",
+    "ConversationPreconditionResponse_ActionExecuted",
+    "ConversationPreconditionResponse_App",
+    "ConversationPreconditionResponse_IntelligentField",
+    "ConversationPreconditionResponse_Metadata",
+    "ConversationPreconditionResponse_ResponseConfig",
+    "ConversationPreconditionResponse_Tags",
     "ConversationPrecondition_ActionExecuted",
     "ConversationPrecondition_App",
     "ConversationPrecondition_IntelligentField",
@@ -395,6 +419,7 @@ __all__ = [
     "IntelligentFieldCondition_Set",
     "IntelligentFieldCondition_String",
     "IntelligentFieldPrecondition",
+    "IntelligentFieldPreconditionResponse",
     "IntelligentFieldValueResponse",
     "IpInfo",
     "KnowledgeContextByEntities",
@@ -432,7 +457,12 @@ __all__ = [
     "PreconditionBase",
     "PreconditionGroup",
     "PreconditionGroupOperator",
+    "PreconditionGroupResponse",
     "PreconditionOperator",
+    "PreconditionResponse",
+    "PreconditionResponse_Conversation",
+    "PreconditionResponse_Group",
+    "PreconditionResponse_User",
     "Precondition_Conversation",
     "Precondition_Group",
     "Precondition_User",

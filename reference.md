@@ -8122,7 +8122,7 @@ client.segments.create_or_update(
 <dl>
 <dd>
 
-**name:** `str` — The name of the segment.
+**precondition:** `Precondition` — The precondition that must be met for a conversation message to be included in the segment.
     
 </dd>
 </dl>
@@ -8130,7 +8130,7 @@ client.segments.create_or_update(
 <dl>
 <dd>
 
-**precondition:** `Precondition` — The precondition that must be met for a conversation message to be included in the segment.
+**name:** `str` — The name of the segment.
     
 </dd>
 </dl>
