@@ -14,6 +14,7 @@ from ...commons.types.response_length import ResponseLength
 from ...commons.types.sentiment import Sentiment
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .intelligent_field_filter import IntelligentFieldFilter
 from .resolution_status import ResolutionStatus
 from .simulation_filter import SimulationFilter
 
@@ -187,6 +188,13 @@ class ConversationFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Whether to include simulation conversations in search results. Defaults to only non-simulation conversations.
+    """
+
+    intelligent_fields: typing_extensions.Annotated[
+        typing.Optional[IntelligentFieldFilter], FieldMetadata(alias="intelligentFields")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by intelligent field values. All conditions are ANDed together.
     """
 
     if IS_PYDANTIC_V2:

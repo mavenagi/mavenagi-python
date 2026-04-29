@@ -33,6 +33,9 @@ from .delivery_status import DeliveryStatus
 from .feedback_field import FeedbackField
 from .feedback_filter import FeedbackFilter
 from .feedback_request import FeedbackRequest
+from .intelligent_field_filter import IntelligentFieldFilter
+from .intelligent_field_operator import IntelligentFieldOperator
+from .intelligent_field_search_condition import IntelligentFieldSearchCondition
 from .numeric_conversation_field import NumericConversationField
 from .resolution_status import ResolutionStatus
 from .simulation_filter import SimulationFilter
@@ -79,6 +82,9 @@ __all__ = [
     "FeedbackField",
     "FeedbackFilter",
     "FeedbackRequest",
+    "IntelligentFieldFilter",
+    "IntelligentFieldOperator",
+    "IntelligentFieldSearchCondition",
     "NumericConversationField",
     "ResolutionStatus",
     "SimulationFilter",

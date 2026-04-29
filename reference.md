@@ -8022,7 +8022,7 @@ client.segments.search()
 <dl>
 <dd>
 
-**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20. Max 1000.
     
 </dd>
 </dl>

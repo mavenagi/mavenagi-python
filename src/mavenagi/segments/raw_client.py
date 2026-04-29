@@ -54,7 +54,7 @@ class RawSegmentsClient:
             Page number to return, defaults to 0
 
         size : typing.Optional[int]
-            The size of the page to return, defaults to 20
+            The size of the page to return, defaults to 20. Max 1000.
 
         sort_desc : typing.Optional[bool]
             Whether to sort descending, defaults to true
@@ -591,7 +591,7 @@ class AsyncRawSegmentsClient:
             Page number to return, defaults to 0
 
         size : typing.Optional[int]
-            The size of the page to return, defaults to 20
+            The size of the page to return, defaults to 20. Max 1000.
 
         sort_desc : typing.Optional[bool]
             Whether to sort descending, defaults to true

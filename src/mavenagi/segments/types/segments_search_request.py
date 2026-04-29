@@ -3,13 +3,13 @@
 import typing
 
 import pydantic
-from ...commons.types.base_paginated_request import BasePaginatedRequest
+from ...commons.types.base_capped_paginated_request import BaseCappedPaginatedRequest
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from .segment_field import SegmentField
 from .segment_filter import SegmentFilter
 
 
-class SegmentsSearchRequest(BasePaginatedRequest):
+class SegmentsSearchRequest(BaseCappedPaginatedRequest):
     sort: typing.Optional[SegmentField] = pydantic.Field(default=None)
     """
     The field to sort by, defaults to created timestamp

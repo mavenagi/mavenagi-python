@@ -27,6 +27,7 @@ from .attachment_request import AttachmentRequest
 from .attachment_response import AttachmentResponse
 from .attachment_status import AttachmentStatus
 from .base_attachment import BaseAttachment
+from .base_capped_paginated_request import BaseCappedPaginatedRequest
 from .base_conversation_response import BaseConversationResponse
 from .base_paginated_request import BasePaginatedRequest
 from .base_search_request import BaseSearchRequest
@@ -289,6 +290,7 @@ __all__ = [
     "AttachmentResponse",
     "AttachmentStatus",
     "BaseAttachment",
+    "BaseCappedPaginatedRequest",
     "BaseConversationResponse",
     "BasePaginatedRequest",
     "BaseSearchRequest",
