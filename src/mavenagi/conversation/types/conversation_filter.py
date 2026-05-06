@@ -10,12 +10,12 @@ from ...commons.types.feedback_type import FeedbackType
 from ...commons.types.number_range import NumberRange
 from ...commons.types.quality import Quality
 from ...commons.types.quality_reason import QualityReason
+from ...commons.types.resolution_status import ResolutionStatus
 from ...commons.types.response_length import ResponseLength
 from ...commons.types.sentiment import Sentiment
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .intelligent_field_filter import IntelligentFieldFilter
-from .resolution_status import ResolutionStatus
 from .simulation_filter import SimulationFilter
 
 

@@ -37,7 +37,6 @@ from .intelligent_field_filter import IntelligentFieldFilter
 from .intelligent_field_operator import IntelligentFieldOperator
 from .intelligent_field_search_condition import IntelligentFieldSearchCondition
 from .numeric_conversation_field import NumericConversationField
-from .resolution_status import ResolutionStatus
 from .simulation_filter import SimulationFilter
 from .stream_response import (
     StreamResponse,
@@ -86,7 +85,6 @@ __all__ = [
     "IntelligentFieldOperator",
     "IntelligentFieldSearchCondition",
     "NumericConversationField",
-    "ResolutionStatus",
     "SimulationFilter",
     "StreamResponse",
     "StreamResponse_Action",

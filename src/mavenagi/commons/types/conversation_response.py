@@ -38,7 +38,7 @@ class ConversationResponse(BaseConversationResponse):
         open=False,
         llm_enabled=True,
         analysis=ConversationAnalysis(
-            resolution_status="Resolved",
+            resolution_status="RESOLVED",
             sentiment="POSITIVE",
             resolved_by_maven=True,
         ),

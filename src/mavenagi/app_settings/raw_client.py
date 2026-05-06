@@ -7,6 +7,7 @@ from ..commons.errors.bad_request_error import BadRequestError
 from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.payload_too_large_error import PayloadTooLargeError
 from ..commons.errors.server_error import ServerError
+from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.error_message import ErrorMessage
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -96,6 +97,17 @@ class RawAppSettingsClient:
                         ),
                     ),
                 )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise ServerError(
                     headers=dict(_response.headers),
@@ -166,6 +178,17 @@ class RawAppSettingsClient:
                 )
             if _response.status_code == 413:
                 raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,
@@ -258,6 +281,17 @@ class RawAppSettingsClient:
                 )
             if _response.status_code == 413:
                 raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,
@@ -361,6 +395,17 @@ class AsyncRawAppSettingsClient:
                         ),
                     ),
                 )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
             if _response.status_code == 500:
                 raise ServerError(
                     headers=dict(_response.headers),
@@ -431,6 +476,17 @@ class AsyncRawAppSettingsClient:
                 )
             if _response.status_code == 413:
                 raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,
@@ -523,6 +579,17 @@ class AsyncRawAppSettingsClient:
                 )
             if _response.status_code == 413:
                 raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorMessage,

@@ -209,6 +209,7 @@ from .precondition_response import (
 )
 from .quality import Quality
 from .quality_reason import QualityReason
+from .resolution_status import ResolutionStatus
 from .response_config import ResponseConfig
 from .response_config_precondition import ResponseConfigPrecondition
 from .response_length import ResponseLength
@@ -470,6 +471,7 @@ __all__ = [
     "Precondition_User",
     "Quality",
     "QualityReason",
+    "ResolutionStatus",
     "ResponseConfig",
     "ResponseConfigPrecondition",
     "ResponseLength",

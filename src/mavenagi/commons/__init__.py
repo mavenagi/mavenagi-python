@@ -206,6 +206,7 @@ from .types import (
     Precondition_User,
     Quality,
     QualityReason,
+    ResolutionStatus,
     ResponseConfig,
     ResponseConfigPrecondition,
     ResponseLength,
@@ -265,7 +266,7 @@ from .types import (
     UserMessageResponseState,
     VisibilityType,
 )
-from .errors import BadRequestError, NotFoundError, PayloadTooLargeError, ServerError
+from .errors import BadRequestError, NotFoundError, PayloadTooLargeError, ServerError, TooManyRequestsError
 
 __all__ = [
     "ActionBase",
@@ -474,6 +475,7 @@ __all__ = [
     "Precondition_User",
     "Quality",
     "QualityReason",
+    "ResolutionStatus",
     "ResponseConfig",
     "ResponseConfigPrecondition",
     "ResponseLength",
@@ -524,6 +526,7 @@ __all__ = [
     "SystemEventName",
     "TagsPrecondition",
     "TextSettingsSchemaEntry",
+    "TooManyRequestsError",
     "UserConversationMessageType",
     "UserData",
     "UserDataWithReference",

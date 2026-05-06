@@ -7,7 +7,20 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
 class ErrorMessage(UniversalBaseModel):
-    message: typing.Optional[str] = None
+    status: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    HTTP status code returned by the API.
+    """
+
+    error: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    HTTP reason phrase for the status code.
+    """
+
+    message: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Human-readable error details.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

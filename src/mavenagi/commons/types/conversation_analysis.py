@@ -9,6 +9,7 @@ from ...core.serialization import FieldMetadata
 from .intelligent_field_value_response import IntelligentFieldValueResponse
 from .quality import Quality
 from .quality_reason import QualityReason
+from .resolution_status import ResolutionStatus
 from .sentiment import Sentiment
 
 
@@ -27,9 +28,9 @@ class ConversationAnalysis(UniversalBaseModel):
     Generated agent response summary of the conversation
     """
 
-    resolution_status: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="resolutionStatus")] = (
-        pydantic.Field(default=None)
-    )
+    resolution_status: typing_extensions.Annotated[
+        typing.Optional[ResolutionStatus], FieldMetadata(alias="resolutionStatus")
+    ] = pydantic.Field(default=None)
     """
     Generated resolution status of the conversation
     """
