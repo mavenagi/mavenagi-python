@@ -3,6 +3,16 @@
 import typing
 
 ResolutionStatus = typing.Union[
-    typing.Literal["UNKNOWN", "ERROR", "IN_PROGRESS", "RESOLVED", "ESCALATED", "NEGATIVE_FEEDBACK", "INELIGIBLE"],
+    typing.Literal[
+        "UNKNOWN",
+        "ERROR",
+        "IN_PROGRESS",
+        "RESOLVED",
+        "ESCALATED",
+        "NEGATIVE_FEEDBACK",
+        "CONTENT_SAFETY_FLAGGED",
+        "PROMPT_ATTACK_FLAGGED",
+        "INELIGIBLE",
+    ],
     typing.Any,
 ]
