@@ -176,6 +176,23 @@ class ConversationFilter(UniversalBaseModel):
     Filter by the segments that any message on a conversation matched.
     """
 
+    matched_charter_ids: typing_extensions.Annotated[
+        typing.Optional[typing.List[EntityIdFilter]], FieldMetadata(alias="matchedCharterIds")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by the charters that any bot-response message on a conversation matched.
+    References without a matching charter for the calling agent contribute nothing
+    to the filter — they neither error nor warn, they simply produce no matches.
+    """
+
+    any_msg_charter_mode: typing_extensions.Annotated[
+        typing.Optional[bool], FieldMetadata(alias="anyMsgCharterMode")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by whether any bot-response message in the conversation ran in charter mode.
+    Omit to match every conversation regardless of charter state.
+    """
+
     inbox_item_ids: typing_extensions.Annotated[
         typing.Optional[typing.List[EntityIdFilter]], FieldMetadata(alias="inboxItemIds")
     ] = pydantic.Field(default=None)
