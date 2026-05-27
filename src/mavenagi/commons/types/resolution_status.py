@@ -12,6 +12,7 @@ ResolutionStatus = typing.Union[
         "NEGATIVE_FEEDBACK",
         "CONTENT_SAFETY_FLAGGED",
         "PROMPT_ATTACK_FLAGGED",
+        "HANGUP",
         "INELIGIBLE",
     ],
     typing.Any,
