@@ -187,7 +187,12 @@ class RawKnowledgeClient:
             The name of the knowledge base
 
         metadata : typing.Optional[typing.Dict[str, str]]
-            Metadata for the knowledge base.
+            Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+            additional information about the object in a structured format, and querying for objects
+            via API or the dashboard.
+
+            Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+            length of 512 characters.
 
         precondition : typing.Optional[Precondition]
             The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
@@ -1249,7 +1254,12 @@ class RawKnowledgeClient:
             The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
 
         metadata : typing.Optional[typing.Dict[str, str]]
-            Metadata for the knowledge document.
+            Set of 16 key-value pairs that can be attached to the knowledge document. This can be useful
+            for storing additional information about the object in a structured format, and querying for
+            objects via API or the dashboard.
+
+            Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+            length of 512 characters.
 
         created_at : typing.Optional[dt.datetime]
             The time at which this document was created.
@@ -1853,7 +1863,12 @@ class AsyncRawKnowledgeClient:
             The name of the knowledge base
 
         metadata : typing.Optional[typing.Dict[str, str]]
-            Metadata for the knowledge base.
+            Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+            additional information about the object in a structured format, and querying for objects
+            via API or the dashboard.
+
+            Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+            length of 512 characters.
 
         precondition : typing.Optional[Precondition]
             The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
@@ -2915,7 +2930,12 @@ class AsyncRawKnowledgeClient:
             The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
 
         metadata : typing.Optional[typing.Dict[str, str]]
-            Metadata for the knowledge document.
+            Set of 16 key-value pairs that can be attached to the knowledge document. This can be useful
+            for storing additional information about the object in a structured format, and querying for
+            objects via API or the dashboard.
+
+            Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+            length of 512 characters.
 
         created_at : typing.Optional[dt.datetime]
             The time at which this document was created.

@@ -36,7 +36,14 @@ class CustomerPatchRequest(UniversalBaseModel):
 
     metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
     """
-    Metadata associated with the customer. If not provided, the existing metadata will be preserved.
+    Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+    additional information about the object in a structured format, and querying for objects
+    via API or the dashboard.
+    
+    Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+    length of 512 characters.
+    
+    If not provided, the existing metadata will be preserved.
     """
 
     assignees: typing.Optional[typing.Set[str]] = pydantic.Field(default=None)

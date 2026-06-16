@@ -2568,7 +2568,16 @@ search results unless explicitly included via the `simulationFilter` field.
 <dl>
 <dd>
 
-**metadata:** `typing.Optional[typing.Dict[str, str]]` — The metadata of the conversation supplied by the app which created the conversation.
+**metadata:** `typing.Optional[typing.Dict[str, str]]` 
+
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+additional information about the object in a structured format, and querying for objects
+via API or the dashboard.
+
+Keys are strings with a maximum length of 500 characters. Values are strings with a maximum
+length of 512 characters.
+
+The metadata of the conversation supplied by the app which created the conversation.
     
 </dd>
 </dl>
@@ -3748,7 +3757,13 @@ client.conversation.update_conversation_metadata(
 <dl>
 <dd>
 
-**values:** `typing.Dict[str, str]` — The metadata values to add to the conversation.
+**values:** `typing.Dict[str, str]` 
+
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+additional information about the object in a structured format, and querying for objects
+via API or the dashboard.
+
+Keys and values are strings with a maximum length of 500 characters.
     
 </dd>
 </dl>
@@ -4442,7 +4457,16 @@ Only active customers will be available for agent interactions.
 <dl>
 <dd>
 
-**metadata:** `typing.Optional[typing.Dict[str, str]]` — Metadata associated with the customer. If not provided, the existing metadata will be preserved.
+**metadata:** `typing.Optional[typing.Dict[str, str]]` 
+
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+additional information about the object in a structured format, and querying for objects
+via API or the dashboard.
+
+Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+length of 512 characters.
+
+If not provided, the existing metadata will be preserved.
     
 </dd>
 </dl>
@@ -5065,7 +5089,14 @@ client.inbox.create_or_update(
 <dl>
 <dd>
 
-**metadata:** `typing.Dict[str, str]` — Additional metadata associated with the inbox item.
+**metadata:** `typing.Dict[str, str]` 
+
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+additional information about the object in a structured format, and querying for objects
+via API or the dashboard.
+
+Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+length of 512 characters.
     
 </dd>
 </dl>
@@ -5215,7 +5246,14 @@ client.inbox.patch(
 <dl>
 <dd>
 
-**metadata:** `typing.Optional[typing.Dict[str, str]]` — Additional metadata associated with the inbox item.
+**metadata:** `typing.Optional[typing.Dict[str, str]]` 
+
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+additional information about the object in a structured format, and querying for objects
+via API or the dashboard.
+
+Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+length of 512 characters.
     
 </dd>
 </dl>
@@ -6066,7 +6104,14 @@ client.knowledge.create_or_update_knowledge_base(
 <dl>
 <dd>
 
-**metadata:** `typing.Optional[typing.Dict[str, str]]` — Metadata for the knowledge base.
+**metadata:** `typing.Optional[typing.Dict[str, str]]` 
+
+Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+additional information about the object in a structured format, and querying for objects
+via API or the dashboard.
+
+Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+length of 512 characters.
     
 </dd>
 </dl>
@@ -7011,7 +7056,14 @@ Either this or content is required, but not both. The asset must have a checksum
 <dl>
 <dd>
 
-**metadata:** `typing.Optional[typing.Dict[str, str]]` — Metadata for the knowledge document.
+**metadata:** `typing.Optional[typing.Dict[str, str]]` 
+
+Set of 16 key-value pairs that can be attached to the knowledge document. This can be useful 
+for storing additional information about the object in a structured format, and querying for 
+objects via API or the dashboard.
+
+Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+length of 512 characters.
     
 </dd>
 </dl>

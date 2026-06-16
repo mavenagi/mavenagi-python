@@ -8,6 +8,7 @@ import typing_extensions
 from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .knowledge_base_indexing_progress_state import KnowledgeBaseIndexingProgressState
 from .knowledge_base_version_request import KnowledgeBaseVersionRequest
 from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 
@@ -65,6 +66,13 @@ class KnowledgeBaseVersion(KnowledgeBaseVersionRequest):
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")] = pydantic.Field()
     """
     The date and time the knowledge base version was last updated.
+    """
+
+    indexing_state: typing_extensions.Annotated[
+        typing.Optional[KnowledgeBaseIndexingProgressState], FieldMetadata(alias="indexingState")
+    ] = pydantic.Field(default=None)
+    """
+    The indexing status of the knowledge base version.
     """
 
     if IS_PYDANTIC_V2:

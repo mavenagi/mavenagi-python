@@ -11,6 +11,7 @@ from ...commons.types.entity_id import EntityId
 from ...commons.types.llm_inclusion_status import LlmInclusionStatus
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .knowledge_base_indexing_progress_state import KnowledgeBaseIndexingProgressState
 from .knowledge_base_properties import KnowledgeBaseProperties
 from .knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .knowledge_base_type import KnowledgeBaseType
@@ -154,6 +155,13 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     url: typing.Optional[str] = pydantic.Field(default=None)
     """
     The source URL of URL and RSS knowledge bases that was used for crawl.
+    """
+
+    indexing_state: typing_extensions.Annotated[
+        typing.Optional[KnowledgeBaseIndexingProgressState], FieldMetadata(alias="indexingState")
+    ] = pydantic.Field(default=None)
+    """
+    The indexing status of the latest version of the knowledge base.
     """
 
     if IS_PYDANTIC_V2:

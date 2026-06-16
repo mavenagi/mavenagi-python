@@ -66,6 +66,13 @@ class ConversationRequest(UniversalBaseModel):
 
     metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
     """
+    Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
+    additional information about the object in a structured format, and querying for objects
+    via API or the dashboard.
+    
+    Keys are strings with a maximum length of 500 characters. Values are strings with a maximum
+    length of 512 characters.
+    
     The metadata of the conversation supplied by the app which created the conversation.
     """
 

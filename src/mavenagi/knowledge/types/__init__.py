@@ -7,6 +7,8 @@ from .cancel_knowledge_base_version_request import CancelKnowledgeBaseVersionReq
 from .finalize_knowledge_base_version_request import FinalizeKnowledgeBaseVersionRequest
 from .knowledge_base_field import KnowledgeBaseField
 from .knowledge_base_filter import KnowledgeBaseFilter
+from .knowledge_base_indexing_progress_state import KnowledgeBaseIndexingProgressState
+from .knowledge_base_indexing_status import KnowledgeBaseIndexingStatus
 from .knowledge_base_properties import KnowledgeBaseProperties
 from .knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .knowledge_base_refresh_request import KnowledgeBaseRefreshRequest
@@ -38,6 +40,8 @@ __all__ = [
     "FinalizeKnowledgeBaseVersionRequest",
     "KnowledgeBaseField",
     "KnowledgeBaseFilter",
+    "KnowledgeBaseIndexingProgressState",
+    "KnowledgeBaseIndexingStatus",
     "KnowledgeBaseProperties",
     "KnowledgeBaseRefreshFrequency",
     "KnowledgeBaseRefreshRequest",

@@ -80,7 +80,12 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
 
     metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
     """
-    Metadata for the knowledge document.
+    Set of 16 key-value pairs that can be attached to the knowledge document. This can be useful 
+    for storing additional information about the object in a structured format, and querying for 
+    objects via API or the dashboard.
+    
+    Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
+    length of 512 characters.
     """
 
     created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = (
