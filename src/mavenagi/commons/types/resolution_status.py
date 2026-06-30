@@ -9,6 +9,7 @@ ResolutionStatus = typing.Union[
         "IN_PROGRESS",
         "RESOLVED",
         "ESCALATED",
+        "INCOMPLETE",
         "NEGATIVE_FEEDBACK",
         "CONTENT_SAFETY_FLAGGED",
         "PROMPT_ATTACK_FLAGGED",
