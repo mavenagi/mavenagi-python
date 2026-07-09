@@ -19,6 +19,7 @@ from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
 from ..commons.types.feedback import Feedback
 from ..commons.types.feedback_type import FeedbackType
+from ..commons.types.initialize_conversation_response import InitializeConversationResponse
 from ..commons.types.response_config import ResponseConfig
 from ..commons.types.simulation_context import SimulationContext
 from ..core.api_error import ApiError
@@ -61,7 +62,7 @@ class RawConversationClient:
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[ConversationResponse]:
+    ) -> HttpResponse[InitializeConversationResponse]:
         """
         Initialize a new conversation.
         Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
@@ -118,7 +119,7 @@ class RawConversationClient:
 
         Returns
         -------
-        HttpResponse[ConversationResponse]
+        HttpResponse[InitializeConversationResponse]
             Initialized conversation
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -150,9 +151,9 @@ class RawConversationClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ConversationResponse,
+                    InitializeConversationResponse,
                     parse_obj_as(
-                        type_=ConversationResponse,  # type: ignore
+                        type_=InitializeConversationResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -2022,7 +2023,7 @@ class AsyncRawConversationClient:
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[ConversationResponse]:
+    ) -> AsyncHttpResponse[InitializeConversationResponse]:
         """
         Initialize a new conversation.
         Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
@@ -2079,7 +2080,7 @@ class AsyncRawConversationClient:
 
         Returns
         -------
-        AsyncHttpResponse[ConversationResponse]
+        AsyncHttpResponse[InitializeConversationResponse]
             Initialized conversation
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -2111,9 +2112,9 @@ class AsyncRawConversationClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ConversationResponse,
+                    InitializeConversationResponse,
                     parse_obj_as(
-                        type_=ConversationResponse,  # type: ignore
+                        type_=InitializeConversationResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

@@ -84,6 +84,8 @@ from .context_info import ContextInfo
 from .conversation_analysis import ConversationAnalysis
 from .conversation_executed_action_precondition import ConversationExecutedActionPrecondition
 from .conversation_information import ConversationInformation
+from .conversation_kickoff_result import ConversationKickoffResult
+from .conversation_kickoff_status import ConversationKickoffStatus
 from .conversation_message_base import ConversationMessageBase
 from .conversation_message_response import (
     ConversationMessageResponse,
@@ -153,6 +155,7 @@ from .inbox_item_missing_knowledge import InboxItemMissingKnowledge
 from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
 from .inbox_item_type import InboxItemType
+from .initialize_conversation_response import InitializeConversationResponse
 from .intelligent_field_condition import (
     IntelligentFieldCondition,
     IntelligentFieldCondition_Boolean,
@@ -344,6 +347,8 @@ __all__ = [
     "ConversationAnalysis",
     "ConversationExecutedActionPrecondition",
     "ConversationInformation",
+    "ConversationKickoffResult",
+    "ConversationKickoffStatus",
     "ConversationMessageBase",
     "ConversationMessageResponse",
     "ConversationMessageResponse_Bot",
@@ -416,6 +421,7 @@ __all__ = [
     "InboxItem_Custom",
     "InboxItem_DuplicateDocuments",
     "InboxItem_MissingKnowledge",
+    "InitializeConversationResponse",
     "IntelligentFieldCondition",
     "IntelligentFieldCondition_Boolean",
     "IntelligentFieldCondition_Numeric",

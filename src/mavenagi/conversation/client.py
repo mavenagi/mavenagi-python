@@ -9,6 +9,7 @@ from ..commons.types.conversation_response import ConversationResponse
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.feedback import Feedback
 from ..commons.types.feedback_type import FeedbackType
+from ..commons.types.initialize_conversation_response import InitializeConversationResponse
 from ..commons.types.response_config import ResponseConfig
 from ..commons.types.simulation_context import SimulationContext
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -58,7 +59,7 @@ class ConversationClient:
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> ConversationResponse:
+    ) -> InitializeConversationResponse:
         """
         Initialize a new conversation.
         Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
@@ -115,7 +116,7 @@ class ConversationClient:
 
         Returns
         -------
-        ConversationResponse
+        InitializeConversationResponse
             Initialized conversation
 
         Examples
@@ -1132,7 +1133,7 @@ class AsyncConversationClient:
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> ConversationResponse:
+    ) -> InitializeConversationResponse:
         """
         Initialize a new conversation.
         Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
@@ -1189,7 +1190,7 @@ class AsyncConversationClient:
 
         Returns
         -------
-        ConversationResponse
+        InitializeConversationResponse
             Initialized conversation
 
         Examples
