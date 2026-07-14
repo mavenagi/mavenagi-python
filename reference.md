@@ -3135,6 +3135,21 @@ Non-image attachments can be stored and downloaded from the API but will not be 
 <dl>
 <dd>
 
+**app_metadata:** `typing.Optional[typing.Dict[str, str]]` 
+
+Key-value metadata to persist on the user message created by this request. Unlike
+`transientData` (which is never persisted) this is stored and returned when the message
+is read back via the API or dashboard, and unlike user data it is not sent to the LLM.
+Applied only when the message is first created — if `conversationMessageId` already
+exists the message is reused and its metadata is not updated. Keys and values are strings
+with a maximum length of 500 characters each.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -3282,6 +3297,21 @@ Non-image attachments can be stored and downloaded from the API but will not be 
 <dd>
 
 **timezone:** `typing.Optional[str]` — IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_metadata:** `typing.Optional[typing.Dict[str, str]]` 
+
+Key-value metadata to persist on the user message created by this request. Unlike
+`transientData` (which is never persisted) this is stored and returned when the message
+is read back via the API or dashboard, and unlike user data it is not sent to the LLM.
+Applied only when the message is first created — if `conversationMessageId` already
+exists the message is reused and its metadata is not updated. Keys and values are strings
+with a maximum length of 500 characters each.
     
 </dd>
 </dl>
@@ -6370,6 +6400,79 @@ client.knowledge.cancel_knowledge_base_version(
 <dd>
 
 **version_id:** `typing.Optional[EntityIdWithoutAgent]` — ID that uniquely identifies which knowledge base version to cancel. If not provided will use the most recent version of the knowledge base.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">rollback_knowledge_base_version</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Rolls the knowledge base back to its previous published version.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.rollback_knowledge_base_version(
+    knowledge_base_reference_id="knowledgeBaseReferenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to roll back. All other entity ID fields are inferred from the request.
     
 </dd>
 </dl>

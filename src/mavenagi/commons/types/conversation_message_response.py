@@ -37,6 +37,9 @@ class ConversationMessageResponse_User(UniversalBaseModel):
     user_message_type: typing_extensions.Annotated[UserConversationMessageType, FieldMetadata(alias="userMessageType")]
     created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = None
     updated_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="updatedAt")] = None
+    app_metadata: typing_extensions.Annotated[
+        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="appMetadata")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -58,6 +61,9 @@ class ConversationMessageResponse_Bot(UniversalBaseModel):
     logic: typing.Optional[BotLogic] = None
     created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = None
     updated_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="updatedAt")] = None
+    app_metadata: typing_extensions.Annotated[
+        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="appMetadata")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

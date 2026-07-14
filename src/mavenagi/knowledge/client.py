@@ -302,6 +302,43 @@ class KnowledgeClient:
         )
         return _response.data
 
+    def rollback_knowledge_base_version(
+        self, knowledge_base_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> None:
+        """
+        Rolls the knowledge base back to its previous published version.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to roll back. All other entity ID fields are inferred from the request.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.rollback_knowledge_base_version(
+            knowledge_base_reference_id="knowledgeBaseReferenceId",
+        )
+        """
+        _response = self._raw_client.rollback_knowledge_base_version(
+            knowledge_base_reference_id, request_options=request_options
+        )
+        return _response.data
+
     def patch_knowledge_base(
         self,
         knowledge_base_reference_id: str,
@@ -1227,6 +1264,51 @@ class AsyncKnowledgeClient:
         """
         _response = await self._raw_client.cancel_knowledge_base_version(
             knowledge_base_reference_id, version_id=version_id, request_options=request_options
+        )
+        return _response.data
+
+    async def rollback_knowledge_base_version(
+        self, knowledge_base_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> None:
+        """
+        Rolls the knowledge base back to its previous published version.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to roll back. All other entity ID fields are inferred from the request.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.rollback_knowledge_base_version(
+                knowledge_base_reference_id="knowledgeBaseReferenceId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.rollback_knowledge_base_version(
+            knowledge_base_reference_id, request_options=request_options
         )
         return _response.data
 

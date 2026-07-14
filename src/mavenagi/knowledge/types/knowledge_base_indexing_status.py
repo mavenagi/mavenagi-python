@@ -3,5 +3,8 @@
 import typing
 
 KnowledgeBaseIndexingStatus = typing.Union[
-    typing.Literal["BUILDING", "INDEXING", "INDEXED", "PUBLISHED", "FAILED", "SUPERSEDED"], typing.Any
+    typing.Literal[
+        "BUILDING", "INDEXING", "INDEXED", "PUBLISHED", "ROLLING_BACK", "FAILED", "SUPERSEDED", "ROLLED_BACK"
+    ],
+    typing.Any,
 ]

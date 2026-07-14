@@ -24,6 +24,18 @@ class ConversationMessageBase(UniversalBaseModel):
     The date and time the conversation was last updated
     """
 
+    app_metadata: typing_extensions.Annotated[
+        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="appMetadata")
+    ] = pydantic.Field(default=None)
+    """
+    Key-value metadata for this message, supplied by the app which created the message.
+    Useful for storing additional structured information about the message and querying
+    for it via API or the dashboard.
+    
+    Keys are strings with a maximum length of 500 characters. Values are strings with a
+    maximum length of 500 characters.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

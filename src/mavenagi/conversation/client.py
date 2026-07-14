@@ -423,6 +423,7 @@ class ConversationClient:
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
+        app_metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -459,6 +460,14 @@ class ConversationClient:
 
         timezone : typing.Optional[str]
             IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
+        app_metadata : typing.Optional[typing.Dict[str, str]]
+            Key-value metadata to persist on the user message created by this request. Unlike
+            `transientData` (which is never persisted) this is stored and returned when the message
+            is read back via the API or dashboard, and unlike user data it is not sent to the LLM.
+            Applied only when the message is first created — if `conversationMessageId` already
+            exists the message is reused and its metadata is not updated. Keys and values are strings
+            with a maximum length of 500 characters each.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -506,6 +515,7 @@ class ConversationClient:
             attachments=attachments,
             transient_data=transient_data,
             timezone=timezone,
+            app_metadata=app_metadata,
             request_options=request_options,
         )
         return _response.data
@@ -520,6 +530,7 @@ class ConversationClient:
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
+        app_metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.Iterator[StreamResponse]:
         """
@@ -560,6 +571,14 @@ class ConversationClient:
 
         timezone : typing.Optional[str]
             IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
+        app_metadata : typing.Optional[typing.Dict[str, str]]
+            Key-value metadata to persist on the user message created by this request. Unlike
+            `transientData` (which is never persisted) this is stored and returned when the message
+            is read back via the API or dashboard, and unlike user data it is not sent to the LLM.
+            Applied only when the message is first created — if `conversationMessageId` already
+            exists the message is reused and its metadata is not updated. Keys and values are strings
+            with a maximum length of 500 characters each.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -608,6 +627,7 @@ class ConversationClient:
             attachments=attachments,
             transient_data=transient_data,
             timezone=timezone,
+            app_metadata=app_metadata,
             request_options=request_options,
         ) as r:
             yield from r.data
@@ -1537,6 +1557,7 @@ class AsyncConversationClient:
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
+        app_metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -1573,6 +1594,14 @@ class AsyncConversationClient:
 
         timezone : typing.Optional[str]
             IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
+        app_metadata : typing.Optional[typing.Dict[str, str]]
+            Key-value metadata to persist on the user message created by this request. Unlike
+            `transientData` (which is never persisted) this is stored and returned when the message
+            is read back via the API or dashboard, and unlike user data it is not sent to the LLM.
+            Applied only when the message is first created — if `conversationMessageId` already
+            exists the message is reused and its metadata is not updated. Keys and values are strings
+            with a maximum length of 500 characters each.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1628,6 +1657,7 @@ class AsyncConversationClient:
             attachments=attachments,
             transient_data=transient_data,
             timezone=timezone,
+            app_metadata=app_metadata,
             request_options=request_options,
         )
         return _response.data
@@ -1642,6 +1672,7 @@ class AsyncConversationClient:
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
+        app_metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> typing.AsyncIterator[StreamResponse]:
         """
@@ -1682,6 +1713,14 @@ class AsyncConversationClient:
 
         timezone : typing.Optional[str]
             IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+
+        app_metadata : typing.Optional[typing.Dict[str, str]]
+            Key-value metadata to persist on the user message created by this request. Unlike
+            `transientData` (which is never persisted) this is stored and returned when the message
+            is read back via the API or dashboard, and unlike user data it is not sent to the LLM.
+            Applied only when the message is first created — if `conversationMessageId` already
+            exists the message is reused and its metadata is not updated. Keys and values are strings
+            with a maximum length of 500 characters each.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1738,6 +1777,7 @@ class AsyncConversationClient:
             attachments=attachments,
             transient_data=transient_data,
             timezone=timezone,
+            app_metadata=app_metadata,
             request_options=request_options,
         ) as r:
             async for _chunk in r.data:
