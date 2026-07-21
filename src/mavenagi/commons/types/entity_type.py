@@ -24,6 +24,7 @@ EntityType = typing.Union[
         "CHARTER",
         "CONVERSATION_KICKOFF",
         "AGENT_VARIANT",
+        "CONFIG_SNAPSHOT",
     ],
     typing.Any,
 ]

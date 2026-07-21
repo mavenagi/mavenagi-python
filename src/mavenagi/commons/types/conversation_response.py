@@ -45,6 +45,9 @@ class ConversationResponse(BaseConversationResponse):
         summary=ConversationSummary(
             action_ids=[],
             incomplete_action_ids=[],
+            matched_charter_ids=[],
+            matched_charter_names=[],
+            matched_segmented_charter_names=[],
             insert_count=0,
             thumbs_up_count=0,
             thumbs_down_count=0,

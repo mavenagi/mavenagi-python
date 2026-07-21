@@ -24,6 +24,27 @@ class ConversationSummary(UniversalBaseModel):
     The IDs of the actions that were taken by Maven but not completed in the conversation. Occurs when the user is shown an action form but does not submit it.
     """
 
+    matched_charter_ids: typing_extensions.Annotated[
+        typing.List[EntityIdWithoutAgent], FieldMetadata(alias="matchedCharterIds")
+    ] = pydantic.Field()
+    """
+    The IDs of the charters that were matched anywhere in the conversation.
+    """
+
+    matched_charter_names: typing_extensions.Annotated[typing.List[str], FieldMetadata(alias="matchedCharterNames")] = (
+        pydantic.Field()
+    )
+    """
+    The names of the charters that were matched anywhere in the conversation.
+    """
+
+    matched_segmented_charter_names: typing_extensions.Annotated[
+        typing.List[str], FieldMetadata(alias="matchedSegmentedCharterNames")
+    ] = pydantic.Field()
+    """
+    The names of the matched charters that are gated by a segment (i.e. have a segment condition) anywhere in the conversation.
+    """
+
     insert_count: typing_extensions.Annotated[int, FieldMetadata(alias="insertCount")] = pydantic.Field()
     """
     The number of insert events on messages in the conversation.
