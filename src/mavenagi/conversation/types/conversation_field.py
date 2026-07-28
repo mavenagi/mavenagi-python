@@ -26,6 +26,7 @@ ConversationField = typing.Union[
         "Languages",
         "Actions",
         "IncompleteActions",
+        "Charters",
         "Sources",
         "CreatedAt",
         "PredictedNPS",

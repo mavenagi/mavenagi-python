@@ -11,6 +11,7 @@ from ...core.serialization import FieldMetadata
 from .numeric_condition import NumericCondition
 from .set_condition import SetCondition
 from .string_condition import StringCondition
+from .universal_condition import UniversalCondition
 
 
 class IntelligentFieldCondition_String(UniversalBaseModel):
@@ -89,9 +90,25 @@ class IntelligentFieldCondition_Set(UniversalBaseModel):
             smart_union = True
 
 
+class IntelligentFieldCondition_Universal(UniversalBaseModel):
+    value: UniversalCondition
+    field_validation_type: typing_extensions.Annotated[
+        typing.Literal["universal"], FieldMetadata(alias="fieldValidationType")
+    ] = "universal"
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+
+
 IntelligentFieldCondition = typing.Union[
     IntelligentFieldCondition_String,
     IntelligentFieldCondition_Numeric,
     IntelligentFieldCondition_Boolean,
     IntelligentFieldCondition_Set,
+    IntelligentFieldCondition_Universal,
 ]

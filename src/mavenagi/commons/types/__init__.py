@@ -162,11 +162,13 @@ from .intelligent_field_condition import (
     IntelligentFieldCondition_Numeric,
     IntelligentFieldCondition_Set,
     IntelligentFieldCondition_String,
+    IntelligentFieldCondition_Universal,
 )
 from .intelligent_field_precondition import IntelligentFieldPrecondition
 from .intelligent_field_precondition_response import IntelligentFieldPreconditionResponse
 from .intelligent_field_value_response import IntelligentFieldValueResponse
 from .ip_info import IpInfo
+from .json_schema_settings_schema_entry import JsonSchemaSettingsSchemaEntry
 from .knowledge_context_by_entities import KnowledgeContextByEntities
 from .knowledge_context_by_entity_types import KnowledgeContextByEntityTypes
 from .knowledge_context_filter import (
@@ -210,6 +212,8 @@ from .precondition_response import (
     PreconditionResponse_Group,
     PreconditionResponse_User,
 )
+from .presence_condition import PresenceCondition
+from .presence_operator import PresenceOperator
 from .quality import Quality
 from .quality_reason import QualityReason
 from .resolution_status import ResolutionStatus
@@ -237,11 +241,13 @@ from .settings_schema_entry import (
     SettingsSchemaEntry_Complexarray,
     SettingsSchemaEntry_Dropdown,
     SettingsSchemaEntry_Image,
+    SettingsSchemaEntry_JsonSchema,
     SettingsSchemaEntry_Multiline,
     SettingsSchemaEntry_Number,
     SettingsSchemaEntry_Oauth,
     SettingsSchemaEntry_OneOf,
     SettingsSchemaEntry_Section,
+    SettingsSchemaEntry_Switch,
     SettingsSchemaEntry_Text,
 )
 from .settings_schema_entry_base import SettingsSchemaEntryBase
@@ -256,10 +262,12 @@ from .string_condition import StringCondition, StringCondition_Comparison, Strin
 from .string_membership_condition import StringMembershipCondition
 from .string_membership_operator import StringMembershipOperator
 from .survey_info import SurveyInfo
+from .switch_settings_schema_entry import SwitchSettingsSchemaEntry
 from .system_event import SystemEvent
 from .system_event_name import SystemEventName
 from .tags_precondition import TagsPrecondition
 from .text_settings_schema_entry import TextSettingsSchemaEntry
+from .universal_condition import UniversalCondition, UniversalCondition_Presence
 from .user_conversation_message_type import UserConversationMessageType
 from .user_data import UserData
 from .user_data_with_reference import UserDataWithReference
@@ -427,10 +435,12 @@ __all__ = [
     "IntelligentFieldCondition_Numeric",
     "IntelligentFieldCondition_Set",
     "IntelligentFieldCondition_String",
+    "IntelligentFieldCondition_Universal",
     "IntelligentFieldPrecondition",
     "IntelligentFieldPreconditionResponse",
     "IntelligentFieldValueResponse",
     "IpInfo",
+    "JsonSchemaSettingsSchemaEntry",
     "KnowledgeContextByEntities",
     "KnowledgeContextByEntityTypes",
     "KnowledgeContextFilter",
@@ -475,6 +485,8 @@ __all__ = [
     "Precondition_Conversation",
     "Precondition_Group",
     "Precondition_User",
+    "PresenceCondition",
+    "PresenceOperator",
     "Quality",
     "QualityReason",
     "ResolutionStatus",
@@ -504,11 +516,13 @@ __all__ = [
     "SettingsSchemaEntry_Complexarray",
     "SettingsSchemaEntry_Dropdown",
     "SettingsSchemaEntry_Image",
+    "SettingsSchemaEntry_JsonSchema",
     "SettingsSchemaEntry_Multiline",
     "SettingsSchemaEntry_Number",
     "SettingsSchemaEntry_Oauth",
     "SettingsSchemaEntry_OneOf",
     "SettingsSchemaEntry_Section",
+    "SettingsSchemaEntry_Switch",
     "SettingsSchemaEntry_Text",
     "SettingsSchemaValidation",
     "SimulationContext",
@@ -523,10 +537,13 @@ __all__ = [
     "StringMembershipCondition",
     "StringMembershipOperator",
     "SurveyInfo",
+    "SwitchSettingsSchemaEntry",
     "SystemEvent",
     "SystemEventName",
     "TagsPrecondition",
     "TextSettingsSchemaEntry",
+    "UniversalCondition",
+    "UniversalCondition_Presence",
     "UserConversationMessageType",
     "UserData",
     "UserDataWithReference",

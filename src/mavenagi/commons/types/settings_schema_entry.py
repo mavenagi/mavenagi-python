@@ -152,6 +152,25 @@ class SettingsSchemaEntry_Checkbox(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class SettingsSchemaEntry_Switch(UniversalBaseModel):
+    type: typing.Literal["switch"] = "switch"
+    default_value: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="defaultValue")] = None
+    key: str
+    display_name: typing_extensions.Annotated[str, FieldMetadata(alias="displayName")]
+    description: typing.Optional[str] = None
+    visibility: typing.Optional[VisibilityType] = None
+    required: typing.Optional[bool] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 class SettingsSchemaEntry_Dropdown(UniversalBaseModel):
     type: typing.Literal["dropdown"] = "dropdown"
     dropdown_options: typing_extensions.Annotated[typing.List[str], FieldMetadata(alias="dropdownOptions")]
@@ -276,6 +295,29 @@ from .one_of_settings_schema_entry import OneOfSettingsSchemaEntry  # noqa: E402
 from .section_settings_schema_entry import SectionSettingsSchemaEntry  # noqa: E402, F401, I001
 from .settings_schema_discriminated_union_option import SettingsSchemaDiscriminatedUnionOption  # noqa: E402, F401, I001
 
+
+class SettingsSchemaEntry_JsonSchema(UniversalBaseModel):
+    type: typing.Literal["jsonSchema"] = "jsonSchema"
+    json_schema: typing_extensions.Annotated[str, FieldMetadata(alias="jsonSchema")]
+    default_value: typing_extensions.Annotated[
+        typing.Optional[typing.Optional[typing.Any]], FieldMetadata(alias="defaultValue")
+    ] = None
+    key: str
+    display_name: typing_extensions.Annotated[str, FieldMetadata(alias="displayName")]
+    description: typing.Optional[str] = None
+    visibility: typing.Optional[VisibilityType] = None
+    required: typing.Optional[bool] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 SettingsSchemaEntry = typing.Union[
     SettingsSchemaEntry_Text,
     SettingsSchemaEntry_Multiline,
@@ -284,11 +326,13 @@ SettingsSchemaEntry = typing.Union[
     SettingsSchemaEntry_Color,
     SettingsSchemaEntry_Image,
     SettingsSchemaEntry_Checkbox,
+    SettingsSchemaEntry_Switch,
     SettingsSchemaEntry_Dropdown,
     SettingsSchemaEntry_Section,
     SettingsSchemaEntry_Oauth,
     SettingsSchemaEntry_Number,
     SettingsSchemaEntry_OneOf,
+    SettingsSchemaEntry_JsonSchema,
 ]
 from .settings_schema import SettingsSchema  # noqa: E402, F401, I001
 from .settings_schema_discriminated_union_options import SettingsSchemaDiscriminatedUnionOptions  # noqa: E402, F401, I001
