@@ -8,6 +8,8 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .conversation_round import ConversationRound
+from .conversation_state import ConversationState
 from .entity_id_without_agent import EntityIdWithoutAgent
 from .intelligent_field_condition import IntelligentFieldCondition
 from .precondition_operator import PreconditionOperator
@@ -56,6 +58,9 @@ class ConversationPrecondition_ActionExecuted(UniversalBaseModel):
     ] = "actionExecuted"
     action_id: typing_extensions.Annotated[str, FieldMetadata(alias="actionId")]
     app_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="appId")] = None
+    conversation_round: typing_extensions.Annotated[
+        typing.Optional[ConversationRound], FieldMetadata(alias="conversationRound")
+    ] = None
     operator: typing.Optional[PreconditionOperator] = None
 
     if IS_PYDANTIC_V2:
@@ -108,6 +113,23 @@ class ConversationPrecondition_App(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class ConversationPrecondition_ConversationState(UniversalBaseModel):
+    conversation_precondition_type: typing_extensions.Annotated[
+        typing.Literal["conversationState"], FieldMetadata(alias="conversationPreconditionType")
+    ] = "conversationState"
+    state: ConversationState
+    operator: typing.Optional[PreconditionOperator] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 class ConversationPrecondition_IntelligentField(UniversalBaseModel):
     conversation_precondition_type: typing_extensions.Annotated[
         typing.Literal["intelligentField"], FieldMetadata(alias="conversationPreconditionType")
@@ -133,5 +155,6 @@ ConversationPrecondition = typing.Union[
     ConversationPrecondition_ActionExecuted,
     ConversationPrecondition_ResponseConfig,
     ConversationPrecondition_App,
+    ConversationPrecondition_ConversationState,
     ConversationPrecondition_IntelligentField,
 ]

@@ -6,6 +6,7 @@ import typing
 from .. import core
 from ..commons.types.attachment_request import AttachmentRequest
 from ..commons.types.conversation_response import ConversationResponse
+from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.feedback import Feedback
 from ..commons.types.feedback_type import FeedbackType
@@ -58,6 +59,7 @@ class ConversationClient:
         updated_at: typing.Optional[dt.datetime] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
+        spawned_from_conversation_id: typing.Optional[EntityId] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> InitializeConversationResponse:
         """
@@ -110,6 +112,9 @@ class ConversationClient:
             length of 512 characters.
 
             The metadata of the conversation supplied by the app which created the conversation.
+
+        spawned_from_conversation_id : typing.Optional[EntityId]
+            The unique identifier of the conversation this new conversation was spawned from, if applicable.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -170,6 +175,7 @@ class ConversationClient:
             updated_at=updated_at,
             tags=tags,
             metadata=metadata,
+            spawned_from_conversation_id=spawned_from_conversation_id,
             request_options=request_options,
         )
         return _response.data
@@ -1152,6 +1158,7 @@ class AsyncConversationClient:
         updated_at: typing.Optional[dt.datetime] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
+        spawned_from_conversation_id: typing.Optional[EntityId] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> InitializeConversationResponse:
         """
@@ -1204,6 +1211,9 @@ class AsyncConversationClient:
             length of 512 characters.
 
             The metadata of the conversation supplied by the app which created the conversation.
+
+        spawned_from_conversation_id : typing.Optional[EntityId]
+            The unique identifier of the conversation this new conversation was spawned from, if applicable.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1272,6 +1282,7 @@ class AsyncConversationClient:
             updated_at=updated_at,
             tags=tags,
             metadata=metadata,
+            spawned_from_conversation_id=spawned_from_conversation_id,
             request_options=request_options,
         )
         return _response.data

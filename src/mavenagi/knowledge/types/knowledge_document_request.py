@@ -68,8 +68,17 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
     )
     """
     (Beta: under development, endpoint may change.)
-    ID of the asset associated with this document. This asset will be transformed into
-    text and set as the content of the document. Supported MIME types are those accepted by `initiateUpload`.
+    ID of the asset associated with this document. This asset is transformed into text and
+    set as the content of a single document, so only single-document MIME types are supported:
+      - text/plain
+      - text/markdown
+      - text/x-markdown
+      - application/pdf
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document (docx)
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet (xlsx)
+    Multi-record formats that fan out into many documents (text/csv, application/json,
+    application/jsonl) are not supported here. Any other type accepted by `initiateUpload`
+    (e.g. images, audio, video) will result in a failed knowledge base version.
     Either this or content is required, but not both. The asset must have a checksum provided at commit time (see `commitUpload`).
     """
 

@@ -9,6 +9,7 @@ from ...commons.types.entity_id import EntityId
 from ...commons.types.llm_inclusion_status import LlmInclusionStatus
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .knowledge_base_type import KnowledgeBaseType
 from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 
 
@@ -53,6 +54,11 @@ class KnowledgeBaseFilter(UniversalBaseModel):
     )
     """
     Filter by app IDs
+    """
+
+    types: typing.Optional[typing.List[KnowledgeBaseType]] = pydantic.Field(default=None)
+    """
+    Filter by knowledge base type.
     """
 
     most_recent_version_status: typing_extensions.Annotated[

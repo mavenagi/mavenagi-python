@@ -84,7 +84,7 @@ from .context_info import ContextInfo
 from .conversation_analysis import ConversationAnalysis
 from .conversation_executed_action_precondition import ConversationExecutedActionPrecondition
 from .conversation_information import ConversationInformation
-from .conversation_kickoff_result import ConversationKickoffResult
+from .conversation_kickoff_execution_response import ConversationKickoffExecutionResponse
 from .conversation_kickoff_status import ConversationKickoffStatus
 from .conversation_message_base import ConversationMessageBase
 from .conversation_message_response import (
@@ -96,6 +96,7 @@ from .conversation_precondition import (
     ConversationPrecondition,
     ConversationPrecondition_ActionExecuted,
     ConversationPrecondition_App,
+    ConversationPrecondition_ConversationState,
     ConversationPrecondition_IntelligentField,
     ConversationPrecondition_Metadata,
     ConversationPrecondition_ResponseConfig,
@@ -105,6 +106,7 @@ from .conversation_precondition_response import (
     ConversationPreconditionResponse,
     ConversationPreconditionResponse_ActionExecuted,
     ConversationPreconditionResponse_App,
+    ConversationPreconditionResponse_ConversationState,
     ConversationPreconditionResponse_IntelligentField,
     ConversationPreconditionResponse_Metadata,
     ConversationPreconditionResponse_ResponseConfig,
@@ -112,6 +114,9 @@ from .conversation_precondition_response import (
 )
 from .conversation_preview import ConversationPreview
 from .conversation_response import ConversationResponse
+from .conversation_round import ConversationRound
+from .conversation_state import ConversationState
+from .conversation_state_precondition import ConversationStatePrecondition
 from .conversation_summary import ConversationSummary
 from .csat_info import CsatInfo
 from .device_info import DeviceInfo
@@ -216,6 +221,7 @@ from .presence_condition import PresenceCondition
 from .presence_operator import PresenceOperator
 from .quality import Quality
 from .quality_reason import QualityReason
+from .relationship_type import RelationshipType
 from .resolution_status import ResolutionStatus
 from .response_config import ResponseConfig
 from .response_config_precondition import ResponseConfigPrecondition
@@ -355,7 +361,7 @@ __all__ = [
     "ConversationAnalysis",
     "ConversationExecutedActionPrecondition",
     "ConversationInformation",
-    "ConversationKickoffResult",
+    "ConversationKickoffExecutionResponse",
     "ConversationKickoffStatus",
     "ConversationMessageBase",
     "ConversationMessageResponse",
@@ -365,18 +371,23 @@ __all__ = [
     "ConversationPreconditionResponse",
     "ConversationPreconditionResponse_ActionExecuted",
     "ConversationPreconditionResponse_App",
+    "ConversationPreconditionResponse_ConversationState",
     "ConversationPreconditionResponse_IntelligentField",
     "ConversationPreconditionResponse_Metadata",
     "ConversationPreconditionResponse_ResponseConfig",
     "ConversationPreconditionResponse_Tags",
     "ConversationPrecondition_ActionExecuted",
     "ConversationPrecondition_App",
+    "ConversationPrecondition_ConversationState",
     "ConversationPrecondition_IntelligentField",
     "ConversationPrecondition_Metadata",
     "ConversationPrecondition_ResponseConfig",
     "ConversationPrecondition_Tags",
     "ConversationPreview",
     "ConversationResponse",
+    "ConversationRound",
+    "ConversationState",
+    "ConversationStatePrecondition",
     "ConversationSummary",
     "CsatInfo",
     "DeviceInfo",
@@ -489,6 +500,7 @@ __all__ = [
     "PresenceOperator",
     "Quality",
     "QualityReason",
+    "RelationshipType",
     "ResolutionStatus",
     "ResponseConfig",
     "ResponseConfigPrecondition",

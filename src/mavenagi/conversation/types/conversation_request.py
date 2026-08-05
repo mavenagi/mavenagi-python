@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.entity_id import EntityId
 from ...commons.types.entity_id_base import EntityIdBase
 from ...commons.types.response_config import ResponseConfig
 from ...commons.types.simulation_context import SimulationContext
@@ -79,6 +80,13 @@ class ConversationRequest(UniversalBaseModel):
     messages: typing.List[ConversationMessageRequest] = pydantic.Field()
     """
     The messages in the conversation
+    """
+
+    spawned_from_conversation_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="spawnedFromConversationId")
+    ] = pydantic.Field(default=None)
+    """
+    The unique identifier of the conversation this new conversation was spawned from, if applicable.
     """
 
     if IS_PYDANTIC_V2:

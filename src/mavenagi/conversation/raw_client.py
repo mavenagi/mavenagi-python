@@ -15,6 +15,7 @@ from ..commons.errors.server_error import ServerError
 from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.attachment_request import AttachmentRequest
 from ..commons.types.conversation_response import ConversationResponse
+from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
 from ..commons.types.feedback import Feedback
@@ -61,6 +62,7 @@ class RawConversationClient:
         updated_at: typing.Optional[dt.datetime] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
+        spawned_from_conversation_id: typing.Optional[EntityId] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[InitializeConversationResponse]:
         """
@@ -114,6 +116,9 @@ class RawConversationClient:
 
             The metadata of the conversation supplied by the app which created the conversation.
 
+        spawned_from_conversation_id : typing.Optional[EntityId]
+            The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -143,6 +148,9 @@ class RawConversationClient:
                 "metadata": metadata,
                 "messages": convert_and_respect_annotation_metadata(
                     object_=messages, annotation=typing.Sequence[ConversationMessageRequest], direction="write"
+                ),
+                "spawnedFromConversationId": convert_and_respect_annotation_metadata(
+                    object_=spawned_from_conversation_id, annotation=EntityId, direction="write"
                 ),
             },
             request_options=request_options,
@@ -2042,6 +2050,7 @@ class AsyncRawConversationClient:
         updated_at: typing.Optional[dt.datetime] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
+        spawned_from_conversation_id: typing.Optional[EntityId] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[InitializeConversationResponse]:
         """
@@ -2095,6 +2104,9 @@ class AsyncRawConversationClient:
 
             The metadata of the conversation supplied by the app which created the conversation.
 
+        spawned_from_conversation_id : typing.Optional[EntityId]
+            The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -2124,6 +2136,9 @@ class AsyncRawConversationClient:
                 "metadata": metadata,
                 "messages": convert_and_respect_annotation_metadata(
                     object_=messages, annotation=typing.Sequence[ConversationMessageRequest], direction="write"
+                ),
+                "spawnedFromConversationId": convert_and_respect_annotation_metadata(
+                    object_=spawned_from_conversation_id, annotation=EntityId, direction="write"
                 ),
             },
             request_options=request_options,

@@ -12,6 +12,7 @@ from .ask_stream_metadata_event import AskStreamMetadataEvent
 from .ask_stream_o_auth_button_event import AskStreamOAuthButtonEvent
 from .ask_stream_start_event import AskStreamStartEvent
 from .ask_stream_text_event import AskStreamTextEvent
+from .billable_filter_field import BillableFilterField
 from .categorization_response import CategorizationResponse
 from .conversation_field import ConversationField
 from .conversation_filter import ConversationFilter
@@ -62,6 +63,7 @@ __all__ = [
     "AskStreamOAuthButtonEvent",
     "AskStreamStartEvent",
     "AskStreamTextEvent",
+    "BillableFilterField",
     "CategorizationResponse",
     "ConversationField",
     "ConversationFilter",

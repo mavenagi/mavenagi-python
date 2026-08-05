@@ -6,7 +6,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
-from .conversation_kickoff_result import ConversationKickoffResult
+from .conversation_kickoff_execution_response import ConversationKickoffExecutionResponse
 from .conversation_response import ConversationResponse
 
 
@@ -17,13 +17,14 @@ class InitializeConversationResponse(ConversationResponse):
     initialization time.
     """
 
-    conversation_kickoff_result: typing_extensions.Annotated[
-        typing.Optional[ConversationKickoffResult], FieldMetadata(alias="conversationKickoffResult")
-    ] = pydantic.Field(default=None)
+    conversation_kickoff_results: typing_extensions.Annotated[
+        typing.List[ConversationKickoffExecutionResponse], FieldMetadata(alias="conversationKickoffResults")
+    ] = pydantic.Field()
     """
-    Result of the Conversation Kickoff, when one ran during conversation initialization.
-    Only present on this initialize response; other endpoints that return a conversation
-    do not include it.
+    Results of the Conversation Kickoffs that ran during conversation initialization, one
+    entry per kickoff in the order they were recorded. Empty when no kickoff ran. Only
+    present on this initialize response; other endpoints that return a conversation do not
+    include it.
     """
 
     if IS_PYDANTIC_V2:

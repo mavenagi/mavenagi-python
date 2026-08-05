@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .conversation_round import ConversationRound
 from .precondition_base import PreconditionBase
 
 
@@ -20,6 +21,13 @@ class ConversationExecutedActionPrecondition(PreconditionBase):
     )
     """
     App ID that the given actionId belongs to. If not provided, the calling appId will be used.
+    """
+
+    conversation_round: typing_extensions.Annotated[
+        typing.Optional[ConversationRound], FieldMetadata(alias="conversationRound")
+    ] = pydantic.Field(default=None)
+    """
+    Restricts which round the action must have executed in. Defaults to ANY when omitted, matching an action executed in any round.
     """
 
     if IS_PYDANTIC_V2:

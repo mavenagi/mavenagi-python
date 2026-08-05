@@ -10,6 +10,7 @@ from ...core.serialization import FieldMetadata
 from .conversation_analysis import ConversationAnalysis
 from .conversation_summary import ConversationSummary
 from .entity_id import EntityId
+from .relationship_type import RelationshipType
 from .response_config import ResponseConfig
 from .simulation_context import SimulationContext
 
@@ -102,6 +103,16 @@ class BaseConversationResponse(UniversalBaseModel):
     """
     Additional context used for simulation runs. When present, this conversation is treated as a simulation.
     Simulation conversations are excluded from normal search results unless explicitly included via the `simulationFilter` field.
+    """
+
+    related_entities: typing_extensions.Annotated[
+        typing.Optional[typing.Dict[RelationshipType, typing.List[EntityId]]], FieldMetadata(alias="relatedEntities")
+    ] = pydantic.Field(default=None)
+    """
+    Related entity ids grouped by relationship type.
+    
+    - `SPAWN_FROM`: the conversation this one was spawned from (set via `ConversationCreateRequest.spawnedFromConversationId`).
+    - `SPAWN_TO`: the conversations that were spawned from this conversation.
     """
 
     if IS_PYDANTIC_V2:

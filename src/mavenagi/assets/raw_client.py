@@ -43,6 +43,8 @@ class RawAssetsClient:
             - image/webp
             - application/pdf
             - text/plain
+            - text/markdown
+            - text/x-markdown
             - text/csv
             - application/vnd.openxmlformats-officedocument.wordprocessingml.document
             - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
@@ -270,6 +272,8 @@ class AsyncRawAssetsClient:
             - image/webp
             - application/pdf
             - text/plain
+            - text/markdown
+            - text/x-markdown
             - text/csv
             - application/vnd.openxmlformats-officedocument.wordprocessingml.document
             - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet

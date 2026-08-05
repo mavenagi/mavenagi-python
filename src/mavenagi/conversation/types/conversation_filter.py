@@ -15,6 +15,7 @@ from ...commons.types.response_length import ResponseLength
 from ...commons.types.sentiment import Sentiment
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .billable_filter_field import BillableFilterField
 from .intelligent_field_filter import IntelligentFieldFilter
 from .simulation_filter import SimulationFilter
 
@@ -22,11 +23,11 @@ from .simulation_filter import SimulationFilter
 class ConversationFilter(UniversalBaseModel):
     search: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Full-text search query for matching conversations by content. 
-    When you search with this parameter, you're performing a full-text search across all textual content 
+    Full-text search query for matching conversations by content.
+    When you search with this parameter, you're performing a full-text search across all textual content
     in the conversations, including both the user's messages and the AI's responses.
     
-    This field also supports a syntax for advanced filtering the `metadata` and `tags` fields.           
+    This field also supports a syntax for advanced filtering the `metadata` and `tags` fields.
     
     Metadata examples:
     - `metadata:myvalue` - matches conversations with any metadata field set to `myvalue`
@@ -81,8 +82,8 @@ class ConversationFilter(UniversalBaseModel):
 
     feedback: typing.Optional[typing.List[FeedbackType]] = pydantic.Field(default=None)
     """
-    Filter by feedback types received in the conversation. 
-    This is a legacy field that maps to Events saved in the system for `ThumbsUp`, `ThumbsDown`, and `Insert`. 
+    Filter by feedback types received in the conversation.
+    This is a legacy field that maps to Events saved in the system for `ThumbsUp`, `ThumbsDown`, and `Insert`.
     The `Handoff` filter will pass if any bot responses on the conversation returned the system fallback message; there are no corresponding handoff events.
     """
 
@@ -146,13 +147,21 @@ class ConversationFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Filter by conversation resolution status which is determined by AI based on the conversation content.
+    
+    When `resolutionStatus`, `resolvedByMaven`, and `billable` are combined in a single filter,
+    precedence is applied in the following order: `resolutionStatus`, `resolvedByMaven`,
+    and then `billable`.          
     """
 
     resolved_by_maven: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="resolvedByMaven")] = (
         pydantic.Field(default=None)
     )
     """
-    Filter conversations based on whether they were resolved by Maven AI
+    Filter conversations based on whether they were resolved by Maven AI.
+    
+    When `resolutionStatus`, `resolvedByMaven`, and `billable` are combined in a single filter,
+    precedence is applied in the following order: `resolutionStatus`, `resolvedByMaven`,
+    and then `billable`.          
     """
 
     user_message_count: typing_extensions.Annotated[
@@ -212,6 +221,19 @@ class ConversationFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Filter by intelligent field values. All conditions are ANDed together.
+    """
+
+    billable: typing.Optional[typing.List[BillableFilterField]] = pydantic.Field(default=None)
+    """
+    Filter by whether the conversation is billable. Defaults to all eligible conversations,
+    which means ELIGIBLE_AND_BILLABLE and ELIGIBLE_AND_NOT_BILLABLE.
+    
+    When `resolutionStatus`, `resolvedByMaven`, and `billable` are combined in a single filter,
+    precedence is applied in the following order: `resolutionStatus`, `resolvedByMaven`,
+    and then `billable`.
+    
+    If billable is `null` or `[]` then defaults to all eligible conversations,
+    which means ELIGIBLE_AND_BILLABLE and ELIGIBLE_AND_NOT_BILLABLE.
     """
 
     if IS_PYDANTIC_V2:
