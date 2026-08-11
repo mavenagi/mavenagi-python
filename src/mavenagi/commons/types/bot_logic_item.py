@@ -9,6 +9,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .action_execution_param_value import ActionExecutionParamValue
+from .ask_type import AskType
 from .bot_logic_action_executed_detail import BotLogicActionExecutedDetail
 from .bot_logic_action_reviewed_detail import BotLogicActionReviewedDetail
 from .bot_logic_charter_detail import BotLogicCharterDetail
@@ -153,6 +154,21 @@ class BotLogicItem_Charters(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class BotLogicItem_Steering(UniversalBaseModel):
+    type: typing.Literal["steering"] = "steering"
+    ask_type: typing_extensions.Annotated[AskType, FieldMetadata(alias="askType")]
+    text: typing.Optional[str] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 BotLogicItem = typing.Union[
     BotLogicItem_Knowledge,
     BotLogicItem_Actions,
@@ -162,4 +178,5 @@ BotLogicItem = typing.Union[
     BotLogicItem_Segments,
     BotLogicItem_IntelligentFields,
     BotLogicItem_Charters,
+    BotLogicItem_Steering,
 ]

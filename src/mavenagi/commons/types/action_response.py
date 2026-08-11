@@ -87,7 +87,7 @@ class ActionResponse(ActionBase):
         typing.Optional[str], FieldMetadata(alias="preconditionExplanation")
     ] = pydantic.Field(default=None)
     """
-    A human-readable explanation of the precondition associated with this action, if present.
+    No longer populated. This field is always absent and will be removed in a future release.
     """
 
     deleted: bool = pydantic.Field()

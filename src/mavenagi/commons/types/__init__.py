@@ -23,6 +23,7 @@ from .app_user_identifying_property_type import AppUserIdentifyingPropertyType
 from .app_user_request import AppUserRequest
 from .app_user_response import AppUserResponse
 from .array_settings_schema_entry import ArraySettingsSchemaEntry
+from .ask_type import AskType
 from .attachment_request import AttachmentRequest
 from .attachment_response import AttachmentResponse
 from .attachment_status import AttachmentStatus
@@ -53,12 +54,14 @@ from .bot_logic_item import (
     BotLogicItem_Knowledge,
     BotLogicItem_Safety,
     BotLogicItem_Segments,
+    BotLogicItem_Steering,
     BotLogicItem_User,
 )
 from .bot_logic_knowledge_detail import BotLogicKnowledgeDetail
 from .bot_logic_knowledge_item import BotLogicKnowledgeItem
 from .bot_logic_safety_item import BotLogicSafetyItem
 from .bot_logic_segments_item import BotLogicSegmentsItem
+from .bot_logic_steering_item import BotLogicSteeringItem
 from .bot_logic_user_item import BotLogicUserItem
 from .bot_message import BotMessage
 from .bot_o_auth_button_response import BotOAuthButtonResponse
@@ -304,6 +307,7 @@ __all__ = [
     "AppUserRequest",
     "AppUserResponse",
     "ArraySettingsSchemaEntry",
+    "AskType",
     "AttachmentRequest",
     "AttachmentResponse",
     "AttachmentStatus",
@@ -333,11 +337,13 @@ __all__ = [
     "BotLogicItem_Knowledge",
     "BotLogicItem_Safety",
     "BotLogicItem_Segments",
+    "BotLogicItem_Steering",
     "BotLogicItem_User",
     "BotLogicKnowledgeDetail",
     "BotLogicKnowledgeItem",
     "BotLogicSafetyItem",
     "BotLogicSegmentsItem",
+    "BotLogicSteeringItem",
     "BotLogicUserItem",
     "BotMessage",
     "BotOAuthButtonResponse",

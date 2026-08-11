@@ -3110,7 +3110,25 @@ client.conversation.ask(
 <dl>
 <dd>
 
-**text:** `str` — The text of the message
+**type:** `typing.Optional[AskType]` 
+
+What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+opener, or PROACTIVE for a message the user did not prompt.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**text:** `typing.Optional[str]` 
+
+For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+agent's response (a directive to the agent, not the user's own words). (Changed from
+required to optional to support the non-user turn types — existing USER_MESSAGE callers
+are unaffected.)
     
 </dd>
 </dl>
@@ -3279,7 +3297,25 @@ for chunk in response.data:
 <dl>
 <dd>
 
-**text:** `str` — The text of the message
+**type:** `typing.Optional[AskType]` 
+
+What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+opener, or PROACTIVE for a message the user did not prompt.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**text:** `typing.Optional[str]` 
+
+For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+agent's response (a directive to the agent, not the user's own words). (Changed from
+required to optional to support the non-user turn types — existing USER_MESSAGE callers
+are unaffected.)
     
 </dd>
 </dl>

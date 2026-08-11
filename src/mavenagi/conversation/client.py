@@ -4,6 +4,7 @@ import datetime as dt
 import typing
 
 from .. import core
+from ..commons.types.ask_type import AskType
 from ..commons.types.attachment_request import AttachmentRequest
 from ..commons.types.conversation_response import ConversationResponse
 from ..commons.types.entity_id import EntityId
@@ -425,7 +426,8 @@ class ConversationClient:
         *,
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
-        text: str,
+        type: typing.Optional[AskType] = OMIT,
+        text: typing.Optional[str] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -454,8 +456,17 @@ class ConversationClient:
         user_id : EntityIdBase
             Externally supplied ID to uniquely identify the user that created this message
 
-        text : str
-            The text of the message
+        type : typing.Optional[AskType]
+            What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+            opener, or PROACTIVE for a message the user did not prompt.
+
+        text : typing.Optional[str]
+            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+            agent's response (a directive to the agent, not the user's own words). (Changed from
+            required to optional to support the non-user turn types — existing USER_MESSAGE callers
+            are unaffected.)
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -517,6 +528,7 @@ class ConversationClient:
             conversation_id,
             conversation_message_id=conversation_message_id,
             user_id=user_id,
+            type=type,
             text=text,
             attachments=attachments,
             transient_data=transient_data,
@@ -532,7 +544,8 @@ class ConversationClient:
         *,
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
-        text: str,
+        type: typing.Optional[AskType] = OMIT,
+        text: typing.Optional[str] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -565,8 +578,17 @@ class ConversationClient:
         user_id : EntityIdBase
             Externally supplied ID to uniquely identify the user that created this message
 
-        text : str
-            The text of the message
+        type : typing.Optional[AskType]
+            What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+            opener, or PROACTIVE for a message the user did not prompt.
+
+        text : typing.Optional[str]
+            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+            agent's response (a directive to the agent, not the user's own words). (Changed from
+            required to optional to support the non-user turn types — existing USER_MESSAGE callers
+            are unaffected.)
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -629,6 +651,7 @@ class ConversationClient:
             conversation_id,
             conversation_message_id=conversation_message_id,
             user_id=user_id,
+            type=type,
             text=text,
             attachments=attachments,
             transient_data=transient_data,
@@ -1564,7 +1587,8 @@ class AsyncConversationClient:
         *,
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
-        text: str,
+        type: typing.Optional[AskType] = OMIT,
+        text: typing.Optional[str] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -1593,8 +1617,17 @@ class AsyncConversationClient:
         user_id : EntityIdBase
             Externally supplied ID to uniquely identify the user that created this message
 
-        text : str
-            The text of the message
+        type : typing.Optional[AskType]
+            What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+            opener, or PROACTIVE for a message the user did not prompt.
+
+        text : typing.Optional[str]
+            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+            agent's response (a directive to the agent, not the user's own words). (Changed from
+            required to optional to support the non-user turn types — existing USER_MESSAGE callers
+            are unaffected.)
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -1664,6 +1697,7 @@ class AsyncConversationClient:
             conversation_id,
             conversation_message_id=conversation_message_id,
             user_id=user_id,
+            type=type,
             text=text,
             attachments=attachments,
             transient_data=transient_data,
@@ -1679,7 +1713,8 @@ class AsyncConversationClient:
         *,
         conversation_message_id: EntityIdBase,
         user_id: EntityIdBase,
-        text: str,
+        type: typing.Optional[AskType] = OMIT,
+        text: typing.Optional[str] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -1712,8 +1747,17 @@ class AsyncConversationClient:
         user_id : EntityIdBase
             Externally supplied ID to uniquely identify the user that created this message
 
-        text : str
-            The text of the message
+        type : typing.Optional[AskType]
+            What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+            opener, or PROACTIVE for a message the user did not prompt.
+
+        text : typing.Optional[str]
+            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+            agent's response (a directive to the agent, not the user's own words). (Changed from
+            required to optional to support the non-user turn types — existing USER_MESSAGE callers
+            are unaffected.)
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -1784,6 +1828,7 @@ class AsyncConversationClient:
             conversation_id,
             conversation_message_id=conversation_message_id,
             user_id=user_id,
+            type=type,
             text=text,
             attachments=attachments,
             transient_data=transient_data,

@@ -20,6 +20,7 @@ class ConversationPieChartRequest(ConversationAnalyticsRequest):
     - `Sources`: Document title (e.g., "Product Documentation")
     - `Actions`: "Action Name - App Name" (e.g., "Create Ticket - Freshdesk")
     - `IncompleteActions`: "Action Name - App Name" (e.g., "Search Documents - Zendesk")
+    - `ErroredActions`: "Action Name - App Name" (e.g., "Get Balance - Core Banking")
     - `Users`: User identifier value (e.g., "user@example.com")
     - `InboxItems`: Inbox item title
     - `HumanAgents`: Human agent display name

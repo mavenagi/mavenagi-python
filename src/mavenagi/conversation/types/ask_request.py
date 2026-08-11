@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.ask_type import AskType
 from ...commons.types.attachment_request import AttachmentRequest
 from ...commons.types.entity_id_base import EntityIdBase
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
@@ -48,9 +49,20 @@ class AskRequest(UniversalBaseModel):
     Externally supplied ID to uniquely identify the user that created this message
     """
 
-    text: str = pydantic.Field()
+    type: typing.Optional[AskType] = pydantic.Field(default=None)
     """
-    The text of the message
+    What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+    question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+    opener, or PROACTIVE for a message the user did not prompt.
+    """
+
+    text: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+    is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+    agent's response (a directive to the agent, not the user's own words). (Changed from
+    required to optional to support the non-user turn types — existing USER_MESSAGE callers
+    are unaffected.)
     """
 
     attachments: typing.Optional[typing.List[AttachmentRequest]] = pydantic.Field(default=None)

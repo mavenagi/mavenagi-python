@@ -80,6 +80,13 @@ class ConversationFilter(UniversalBaseModel):
     Filter by actions that were suggested but not completed by the AI agent
     """
 
+    errored_actions: typing_extensions.Annotated[
+        typing.Optional[typing.List[EntityIdFilter]], FieldMetadata(alias="erroredActions")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by actions that returned an error when executed in the conversation
+    """
+
     feedback: typing.Optional[typing.List[FeedbackType]] = pydantic.Field(default=None)
     """
     Filter by feedback types received in the conversation.
