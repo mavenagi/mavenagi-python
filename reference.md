@@ -6393,10 +6393,13 @@ client.knowledge.refresh_knowledge_base(
 <dl>
 <dd>
 
-in-progress knowledge base version.
+Cancel an in-progress knowledge base version.
 
-If the knowledge base has a version that is currently being ingested,
-this will cancel the ingestion workflow and set the version status to FAILED.
+If the knowledge base has a version that is currently being ingested, this cancels the
+ingestion workflow and sets the version status to CANCELED.
+
+An app still refreshing that version finds out on its next write to it: adding or
+removing a document on a canceled version is rejected rather than succeeding.
 </dd>
 </dl>
 </dd>
@@ -6438,6 +6441,14 @@ client.knowledge.cancel_knowledge_base_version(
 <dd>
 
 **knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to cancel ingestion for. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the knowledge base to cancel. If not provided the ID of the calling app will be used.
     
 </dd>
 </dl>

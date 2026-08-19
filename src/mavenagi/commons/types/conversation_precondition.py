@@ -8,10 +8,12 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .conversation_mode import ConversationMode
 from .conversation_round import ConversationRound
 from .conversation_state import ConversationState
 from .entity_id_without_agent import EntityIdWithoutAgent
 from .intelligent_field_condition import IntelligentFieldCondition
+from .object_condition import ObjectCondition
 from .precondition_operator import PreconditionOperator
 from .response_length import ResponseLength
 
@@ -60,6 +62,9 @@ class ConversationPrecondition_ActionExecuted(UniversalBaseModel):
     app_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="appId")] = None
     conversation_round: typing_extensions.Annotated[
         typing.Optional[ConversationRound], FieldMetadata(alias="conversationRound")
+    ] = None
+    data_condition: typing_extensions.Annotated[
+        typing.Optional[ObjectCondition], FieldMetadata(alias="dataCondition")
     ] = None
     operator: typing.Optional[PreconditionOperator] = None
 
@@ -130,6 +135,23 @@ class ConversationPrecondition_ConversationState(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class ConversationPrecondition_ConversationMode(UniversalBaseModel):
+    conversation_precondition_type: typing_extensions.Annotated[
+        typing.Literal["conversationMode"], FieldMetadata(alias="conversationPreconditionType")
+    ] = "conversationMode"
+    conversation_mode: typing_extensions.Annotated[ConversationMode, FieldMetadata(alias="conversationMode")]
+    operator: typing.Optional[PreconditionOperator] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 class ConversationPrecondition_IntelligentField(UniversalBaseModel):
     conversation_precondition_type: typing_extensions.Annotated[
         typing.Literal["intelligentField"], FieldMetadata(alias="conversationPreconditionType")
@@ -156,5 +178,6 @@ ConversationPrecondition = typing.Union[
     ConversationPrecondition_ResponseConfig,
     ConversationPrecondition_App,
     ConversationPrecondition_ConversationState,
+    ConversationPrecondition_ConversationMode,
     ConversationPrecondition_IntelligentField,
 ]

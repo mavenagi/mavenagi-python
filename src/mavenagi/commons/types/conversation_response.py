@@ -37,6 +37,7 @@ class ConversationResponse(BaseConversationResponse):
         deleted=False,
         open=False,
         llm_enabled=True,
+        conversation_mode="TEXT",
         analysis=ConversationAnalysis(
             resolution_status="RESOLVED",
             sentiment="POSITIVE",

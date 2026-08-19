@@ -8,6 +8,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .conversation_analysis import ConversationAnalysis
+from .conversation_mode import ConversationMode
 from .conversation_summary import ConversationSummary
 from .entity_id import EntityId
 from .relationship_type import RelationshipType
@@ -113,6 +114,14 @@ class BaseConversationResponse(UniversalBaseModel):
     
     - `SPAWN_FROM`: the conversation this one was spawned from (set via `ConversationCreateRequest.spawnedFromConversationId`).
     - `SPAWN_TO`: the conversations that were spawned from this conversation.
+    """
+
+    conversation_mode: typing_extensions.Annotated[
+        typing.Optional[ConversationMode], FieldMetadata(alias="conversationMode")
+    ] = pydantic.Field(default=None)
+    """
+    Whether the conversation is spoken or written. Set by the platform and read-only —
+    it cannot be supplied when creating or updating a conversation.
     """
 
     if IS_PYDANTIC_V2:

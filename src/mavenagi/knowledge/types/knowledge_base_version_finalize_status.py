@@ -2,4 +2,4 @@
 
 import typing
 
-KnowledgeBaseVersionFinalizeStatus = typing.Union[typing.Literal["SUCCEEDED", "FAILED"], typing.Any]
+KnowledgeBaseVersionFinalizeStatus = typing.Union[typing.Literal["SUCCEEDED", "FAILED", "CANCELED"], typing.Any]

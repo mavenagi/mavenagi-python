@@ -95,10 +95,13 @@ from .conversation_message_response import (
     ConversationMessageResponse_Bot,
     ConversationMessageResponse_User,
 )
+from .conversation_mode import ConversationMode
+from .conversation_mode_precondition import ConversationModePrecondition
 from .conversation_precondition import (
     ConversationPrecondition,
     ConversationPrecondition_ActionExecuted,
     ConversationPrecondition_App,
+    ConversationPrecondition_ConversationMode,
     ConversationPrecondition_ConversationState,
     ConversationPrecondition_IntelligentField,
     ConversationPrecondition_Metadata,
@@ -109,6 +112,7 @@ from .conversation_precondition_response import (
     ConversationPreconditionResponse,
     ConversationPreconditionResponse_ActionExecuted,
     ConversationPreconditionResponse_App,
+    ConversationPreconditionResponse_ConversationMode,
     ConversationPreconditionResponse_ConversationState,
     ConversationPreconditionResponse_IntelligentField,
     ConversationPreconditionResponse_Metadata,
@@ -177,6 +181,7 @@ from .intelligent_field_precondition_response import IntelligentFieldPreconditio
 from .intelligent_field_value_response import IntelligentFieldValueResponse
 from .ip_info import IpInfo
 from .json_schema_settings_schema_entry import JsonSchemaSettingsSchemaEntry
+from .key_value_entry_condition import KeyValueEntryCondition
 from .knowledge_context_by_entities import KnowledgeContextByEntities
 from .knowledge_context_by_entity_types import KnowledgeContextByEntityTypes
 from .knowledge_context_filter import (
@@ -202,6 +207,7 @@ from .numeric_membership_condition import NumericMembershipCondition
 from .numeric_membership_operator import NumericMembershipOperator
 from .o_auth_authentication_method import OAuthAuthenticationMethod
 from .o_auth_settings_schema_entry import OAuthSettingsSchemaEntry
+from .object_condition import ObjectCondition, ObjectCondition_Entry
 from .one_of_settings_schema_entry import OneOfSettingsSchemaEntry
 from .os_info import OsInfo
 from .os_type import OsType
@@ -373,10 +379,13 @@ __all__ = [
     "ConversationMessageResponse",
     "ConversationMessageResponse_Bot",
     "ConversationMessageResponse_User",
+    "ConversationMode",
+    "ConversationModePrecondition",
     "ConversationPrecondition",
     "ConversationPreconditionResponse",
     "ConversationPreconditionResponse_ActionExecuted",
     "ConversationPreconditionResponse_App",
+    "ConversationPreconditionResponse_ConversationMode",
     "ConversationPreconditionResponse_ConversationState",
     "ConversationPreconditionResponse_IntelligentField",
     "ConversationPreconditionResponse_Metadata",
@@ -384,6 +393,7 @@ __all__ = [
     "ConversationPreconditionResponse_Tags",
     "ConversationPrecondition_ActionExecuted",
     "ConversationPrecondition_App",
+    "ConversationPrecondition_ConversationMode",
     "ConversationPrecondition_ConversationState",
     "ConversationPrecondition_IntelligentField",
     "ConversationPrecondition_Metadata",
@@ -458,6 +468,7 @@ __all__ = [
     "IntelligentFieldValueResponse",
     "IpInfo",
     "JsonSchemaSettingsSchemaEntry",
+    "KeyValueEntryCondition",
     "KnowledgeContextByEntities",
     "KnowledgeContextByEntityTypes",
     "KnowledgeContextFilter",
@@ -483,6 +494,8 @@ __all__ = [
     "NumericMembershipOperator",
     "OAuthAuthenticationMethod",
     "OAuthSettingsSchemaEntry",
+    "ObjectCondition",
+    "ObjectCondition_Entry",
     "OneOfSettingsSchemaEntry",
     "OsInfo",
     "OsType",

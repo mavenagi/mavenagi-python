@@ -259,19 +259,26 @@ class KnowledgeClient:
         self,
         knowledge_base_reference_id: str,
         *,
+        app_id: typing.Optional[str] = OMIT,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
-        in-progress knowledge base version.
+        Cancel an in-progress knowledge base version.
 
-        If the knowledge base has a version that is currently being ingested,
-        this will cancel the ingestion workflow and set the version status to FAILED.
+        If the knowledge base has a version that is currently being ingested, this cancels the
+        ingestion workflow and sets the version status to CANCELED.
+
+        An app still refreshing that version finds out on its next write to it: adding or
+        removing a document on a canceled version is rejected rather than succeeding.
 
         Parameters
         ----------
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to cancel ingestion for. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to cancel. If not provided the ID of the calling app will be used.
 
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to cancel. If not provided will use the most recent version of the knowledge base.
@@ -298,7 +305,7 @@ class KnowledgeClient:
         )
         """
         _response = self._raw_client.cancel_knowledge_base_version(
-            knowledge_base_reference_id, version_id=version_id, request_options=request_options
+            knowledge_base_reference_id, app_id=app_id, version_id=version_id, request_options=request_options
         )
         return _response.data
 
@@ -1225,19 +1232,26 @@ class AsyncKnowledgeClient:
         self,
         knowledge_base_reference_id: str,
         *,
+        app_id: typing.Optional[str] = OMIT,
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
-        in-progress knowledge base version.
+        Cancel an in-progress knowledge base version.
 
-        If the knowledge base has a version that is currently being ingested,
-        this will cancel the ingestion workflow and set the version status to FAILED.
+        If the knowledge base has a version that is currently being ingested, this cancels the
+        ingestion workflow and sets the version status to CANCELED.
+
+        An app still refreshing that version finds out on its next write to it: adding or
+        removing a document on a canceled version is rejected rather than succeeding.
 
         Parameters
         ----------
         knowledge_base_reference_id : str
             The reference ID of the knowledge base to cancel ingestion for. All other entity ID fields are inferred from the request.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to cancel. If not provided the ID of the calling app will be used.
 
         version_id : typing.Optional[EntityIdWithoutAgent]
             ID that uniquely identifies which knowledge base version to cancel. If not provided will use the most recent version of the knowledge base.
@@ -1272,7 +1286,7 @@ class AsyncKnowledgeClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.cancel_knowledge_base_version(
-            knowledge_base_reference_id, version_id=version_id, request_options=request_options
+            knowledge_base_reference_id, app_id=app_id, version_id=version_id, request_options=request_options
         )
         return _response.data
 

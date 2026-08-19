@@ -10,6 +10,13 @@ from ...core.serialization import FieldMetadata
 
 
 class CancelKnowledgeBaseVersionRequest(UniversalBaseModel):
+    app_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="appId")] = pydantic.Field(
+        default=None
+    )
+    """
+    The App ID of the knowledge base to cancel. If not provided the ID of the calling app will be used.
+    """
+
     version_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="versionId")] = (
         pydantic.Field(default=None)
     )
