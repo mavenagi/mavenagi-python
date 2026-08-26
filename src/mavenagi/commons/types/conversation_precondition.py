@@ -12,7 +12,7 @@ from .conversation_mode import ConversationMode
 from .conversation_round import ConversationRound
 from .conversation_state import ConversationState
 from .entity_id_without_agent import EntityIdWithoutAgent
-from .intelligent_field_condition import IntelligentFieldCondition
+from .field_condition import FieldCondition
 from .object_condition import ObjectCondition
 from .precondition_operator import PreconditionOperator
 from .response_length import ResponseLength
@@ -159,7 +159,7 @@ class ConversationPrecondition_IntelligentField(UniversalBaseModel):
     field_id_without_agent: typing_extensions.Annotated[
         EntityIdWithoutAgent, FieldMetadata(alias="fieldIdWithoutAgent")
     ]
-    field_condition: typing_extensions.Annotated[IntelligentFieldCondition, FieldMetadata(alias="fieldCondition")]
+    field_condition: typing_extensions.Annotated[FieldCondition, FieldMetadata(alias="fieldCondition")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

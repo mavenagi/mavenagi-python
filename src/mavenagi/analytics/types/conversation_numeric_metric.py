@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.entity_id import EntityId
 from ...conversation.types.numeric_conversation_field import NumericConversationField
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
@@ -15,6 +16,14 @@ class ConversationNumericMetric(UniversalBaseModel):
     )
     """
     Numeric field to apply the metric to.
+    """
+
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = pydantic.Field(default=None)
+    """
+    Fully specified ID of the intelligent field. Required when `targetField` is
+    `IntelligentField`, and ignored otherwise.
     """
 
     if IS_PYDANTIC_V2:

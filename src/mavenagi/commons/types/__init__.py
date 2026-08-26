@@ -152,6 +152,14 @@ from .feedback import Feedback
 from .feedback_base import FeedbackBase
 from .feedback_info import FeedbackInfo
 from .feedback_type import FeedbackType
+from .field_condition import (
+    FieldCondition,
+    FieldCondition_Boolean,
+    FieldCondition_Numeric,
+    FieldCondition_Set,
+    FieldCondition_String,
+    FieldCondition_Universal,
+)
 from .geo_info import GeoInfo
 from .harmful_content_analysis import HarmfulContentAnalysis
 from .image_settings_schema_entry import ImageSettingsSchemaEntry
@@ -168,14 +176,6 @@ from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
 from .inbox_item_type import InboxItemType
 from .initialize_conversation_response import InitializeConversationResponse
-from .intelligent_field_condition import (
-    IntelligentFieldCondition,
-    IntelligentFieldCondition_Boolean,
-    IntelligentFieldCondition_Numeric,
-    IntelligentFieldCondition_Set,
-    IntelligentFieldCondition_String,
-    IntelligentFieldCondition_Universal,
-)
 from .intelligent_field_precondition import IntelligentFieldPrecondition
 from .intelligent_field_precondition_response import IntelligentFieldPreconditionResponse
 from .intelligent_field_value_response import IntelligentFieldValueResponse
@@ -281,6 +281,9 @@ from .switch_settings_schema_entry import SwitchSettingsSchemaEntry
 from .system_event import SystemEvent
 from .system_event_name import SystemEventName
 from .tags_precondition import TagsPrecondition
+from .text_format import TextFormat, TextFormat_JsonSchema, TextFormat_Text
+from .text_format_json_schema import TextFormatJsonSchema
+from .text_format_text import TextFormatText
 from .text_settings_schema_entry import TextSettingsSchemaEntry
 from .universal_condition import UniversalCondition, UniversalCondition_Presence
 from .user_conversation_message_type import UserConversationMessageType
@@ -436,6 +439,12 @@ __all__ = [
     "FeedbackBase",
     "FeedbackInfo",
     "FeedbackType",
+    "FieldCondition",
+    "FieldCondition_Boolean",
+    "FieldCondition_Numeric",
+    "FieldCondition_Set",
+    "FieldCondition_String",
+    "FieldCondition_Universal",
     "GeoInfo",
     "HarmfulContentAnalysis",
     "ImageSettingsSchemaEntry",
@@ -457,12 +466,6 @@ __all__ = [
     "InboxItem_DuplicateDocuments",
     "InboxItem_MissingKnowledge",
     "InitializeConversationResponse",
-    "IntelligentFieldCondition",
-    "IntelligentFieldCondition_Boolean",
-    "IntelligentFieldCondition_Numeric",
-    "IntelligentFieldCondition_Set",
-    "IntelligentFieldCondition_String",
-    "IntelligentFieldCondition_Universal",
     "IntelligentFieldPrecondition",
     "IntelligentFieldPreconditionResponse",
     "IntelligentFieldValueResponse",
@@ -572,6 +575,11 @@ __all__ = [
     "SystemEvent",
     "SystemEventName",
     "TagsPrecondition",
+    "TextFormat",
+    "TextFormatJsonSchema",
+    "TextFormatText",
+    "TextFormat_JsonSchema",
+    "TextFormat_Text",
     "TextSettingsSchemaEntry",
     "UniversalCondition",
     "UniversalCondition_Presence",

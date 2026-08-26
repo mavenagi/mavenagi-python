@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.entity_id import EntityId
 from ...conversation.types.conversation_field import ConversationField
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
@@ -13,6 +14,14 @@ class ConversationBasicMetric(UniversalBaseModel):
     target_field: typing_extensions.Annotated[ConversationField, FieldMetadata(alias="targetField")] = pydantic.Field()
     """
     Field to apply the metric to.
+    """
+
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = pydantic.Field(default=None)
+    """
+    Fully specified ID of the intelligent field. Required when `targetField` is
+    `IntelligentField`, and ignored otherwise.
     """
 
     if IS_PYDANTIC_V2:

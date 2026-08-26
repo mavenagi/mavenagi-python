@@ -7,7 +7,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .entity_id_without_agent import EntityIdWithoutAgent
-from .intelligent_field_condition import IntelligentFieldCondition
+from .field_condition import FieldCondition
 
 
 class IntelligentFieldPreconditionResponse(UniversalBaseModel):
@@ -28,7 +28,7 @@ class IntelligentFieldPreconditionResponse(UniversalBaseModel):
     Human-readable display name of the intelligent field. Resolved server-side.
     """
 
-    field_condition: typing_extensions.Annotated[IntelligentFieldCondition, FieldMetadata(alias="fieldCondition")] = (
+    field_condition: typing_extensions.Annotated[FieldCondition, FieldMetadata(alias="fieldCondition")] = (
         pydantic.Field()
     )
     """

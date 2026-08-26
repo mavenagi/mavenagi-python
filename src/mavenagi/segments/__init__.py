@@ -10,6 +10,7 @@ from .types import (
     SegmentRequest,
     SegmentResponse,
     SegmentStatus,
+    SegmentSummary,
     SegmentsSearchRequest,
     SegmentsSearchResponse,
 )
@@ -22,6 +23,7 @@ __all__ = [
     "SegmentRequest",
     "SegmentResponse",
     "SegmentStatus",
+    "SegmentSummary",
     "SegmentsSearchRequest",
     "SegmentsSearchResponse",
 ]

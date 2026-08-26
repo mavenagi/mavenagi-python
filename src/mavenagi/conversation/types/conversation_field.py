@@ -36,8 +36,10 @@ ConversationField = typing.Union[
         "Csat",
         "OrganizationId",
         "AgentId",
+        "AgentEnvironment",
         "InboxItems",
         "InvolvedApps",
+        "IntelligentField",
     ],
     typing.Any,
 ]

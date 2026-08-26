@@ -16,6 +16,7 @@ from .environment import MavenAGIEnvironment
 from .events.client import AsyncEventsClient, EventsClient
 from .inbox.client import AsyncInboxClient, InboxClient
 from .integrations.client import AsyncIntegrationsClient, IntegrationsClient
+from .intelligent_fields.client import AsyncIntelligentFieldsClient, IntelligentFieldsClient
 from .knowledge.client import AsyncKnowledgeClient, KnowledgeClient
 from .organizations.client import AsyncOrganizationsClient, OrganizationsClient
 from .segments.client import AsyncSegmentsClient, SegmentsClient
@@ -112,6 +113,7 @@ class MavenAGI:
         self.events = EventsClient(client_wrapper=self._client_wrapper)
         self.inbox = InboxClient(client_wrapper=self._client_wrapper)
         self.integrations = IntegrationsClient(client_wrapper=self._client_wrapper)
+        self.intelligent_fields = IntelligentFieldsClient(client_wrapper=self._client_wrapper)
         self.knowledge = KnowledgeClient(client_wrapper=self._client_wrapper)
         self.organizations = OrganizationsClient(client_wrapper=self._client_wrapper)
         self.segments = SegmentsClient(client_wrapper=self._client_wrapper)
@@ -208,6 +210,7 @@ class AsyncMavenAGI:
         self.events = AsyncEventsClient(client_wrapper=self._client_wrapper)
         self.inbox = AsyncInboxClient(client_wrapper=self._client_wrapper)
         self.integrations = AsyncIntegrationsClient(client_wrapper=self._client_wrapper)
+        self.intelligent_fields = AsyncIntelligentFieldsClient(client_wrapper=self._client_wrapper)
         self.knowledge = AsyncKnowledgeClient(client_wrapper=self._client_wrapper)
         self.organizations = AsyncOrganizationsClient(client_wrapper=self._client_wrapper)
         self.segments = AsyncSegmentsClient(client_wrapper=self._client_wrapper)

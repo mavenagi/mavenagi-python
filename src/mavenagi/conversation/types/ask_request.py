@@ -7,6 +7,7 @@ import typing_extensions
 from ...commons.types.ask_type import AskType
 from ...commons.types.attachment_request import AttachmentRequest
 from ...commons.types.entity_id_base import EntityIdBase
+from ...commons.types.text_format import TextFormat
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 
@@ -63,6 +64,36 @@ class AskRequest(UniversalBaseModel):
     agent's response (a directive to the agent, not the user's own words). (Changed from
     required to optional to support the non-user turn types — existing USER_MESSAGE callers
     are unaffected.)
+    """
+
+    text_format: typing_extensions.Annotated[typing.Optional[TextFormat], FieldMetadata(alias="textFormat")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
+    `BotObjectResponse` matching a schema you supply.
+    
+    Set per ask and independent of `type`, so one conversation can mix prose and structured
+    turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+    the same way either way.
+    
+    A structured answer accompanies the prose one rather than replacing it — the same turn
+    produces both, so the conversation stays readable. On `ask_stream` the prose still streams
+    on `text` events as it always has, and the object arrives whole on a single `object` event
+    near the end.
+    
+    Every answering turn carries an object, including one where the agent asks a clarifying
+    question rather than answering. Shape the schema so it can say "not enough information"
+    — a populated object is not on its own evidence of a confident answer.
+    
+    Two exceptions. A turn that asks the user to *act* produces an action form from the
+    action rather than from an answer, so it carries no object; the turn that answers after
+    the form is submitted does carry one. Leave the `FORMS` capability off if you need an
+    object on every turn.
+    
+    A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+    charter's manual is returned exactly as written without consulting the agent, so there is
+    nothing to shape into the requested schema — the turn returns the manual as `text` alone.
     """
 
     attachments: typing.Optional[typing.List[AttachmentRequest]] = pydantic.Field(default=None)

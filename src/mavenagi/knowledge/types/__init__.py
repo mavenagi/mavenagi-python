@@ -18,6 +18,8 @@ from .knowledge_base_search_request import KnowledgeBaseSearchRequest
 from .knowledge_base_type import KnowledgeBaseType
 from .knowledge_base_version import KnowledgeBaseVersion
 from .knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
+from .knowledge_base_version_progress import KnowledgeBaseVersionProgress
+from .knowledge_base_version_progress_request import KnowledgeBaseVersionProgressRequest
 from .knowledge_base_version_request import KnowledgeBaseVersionRequest
 from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 from .knowledge_base_version_type import KnowledgeBaseVersionType
@@ -51,6 +53,8 @@ __all__ = [
     "KnowledgeBaseType",
     "KnowledgeBaseVersion",
     "KnowledgeBaseVersionFinalizeStatus",
+    "KnowledgeBaseVersionProgress",
+    "KnowledgeBaseVersionProgressRequest",
     "KnowledgeBaseVersionRequest",
     "KnowledgeBaseVersionStatus",
     "KnowledgeBaseVersionType",

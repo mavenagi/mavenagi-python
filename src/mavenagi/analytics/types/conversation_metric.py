@@ -6,6 +6,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.entity_id import EntityId
 from ...conversation.types.conversation_field import ConversationField
 from ...conversation.types.numeric_conversation_field import NumericConversationField
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
@@ -38,6 +39,9 @@ class ConversationMetric_Sum(UniversalBaseModel):
 
     type: typing.Literal["sum"] = "sum"
     target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -57,6 +61,9 @@ class ConversationMetric_Average(UniversalBaseModel):
 
     type: typing.Literal["average"] = "average"
     target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -76,6 +83,9 @@ class ConversationMetric_Min(UniversalBaseModel):
 
     type: typing.Literal["min"] = "min"
     target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -95,6 +105,9 @@ class ConversationMetric_Max(UniversalBaseModel):
 
     type: typing.Literal["max"] = "max"
     target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -115,6 +128,9 @@ class ConversationMetric_Percentile(UniversalBaseModel):
     type: typing.Literal["percentile"] = "percentile"
     percentile: float
     target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -134,6 +150,9 @@ class ConversationMetric_Median(UniversalBaseModel):
 
     type: typing.Literal["median"] = "median"
     target_field: typing_extensions.Annotated[NumericConversationField, FieldMetadata(alias="targetField")]
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -153,6 +172,9 @@ class ConversationMetric_DistinctCount(UniversalBaseModel):
 
     type: typing.Literal["distinctCount"] = "distinctCount"
     target_field: typing_extensions.Annotated[ConversationField, FieldMetadata(alias="targetField")]
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

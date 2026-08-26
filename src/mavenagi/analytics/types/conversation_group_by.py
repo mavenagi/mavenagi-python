@@ -3,8 +3,11 @@
 import typing
 
 import pydantic
+import typing_extensions
+from ...commons.types.entity_id import EntityId
 from ...conversation.types.conversation_field import ConversationField
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from ...core.serialization import FieldMetadata
 from .group_by_base import GroupByBase
 from .range import Range
 
@@ -15,9 +18,18 @@ class ConversationGroupBy(GroupByBase):
     Field used for data grouping.
     """
 
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = pydantic.Field(default=None)
+    """
+    Fully specified ID of the intelligent field. Required when `field` is
+    `IntelligentField`, and ignored otherwise.
+    """
+
     ranges: typing.Optional[typing.List[Range]] = pydantic.Field(default=None)
     """
-    Numeric ranges for grouping data into predefined buckets. Applies only to numeric fields.
+    Numeric ranges for grouping data into predefined buckets.
+    Applies only to numeric fields and to NUMBER-validated intelligent fields.
     """
 
     if IS_PYDANTIC_V2:

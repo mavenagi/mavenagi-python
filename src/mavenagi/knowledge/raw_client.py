@@ -29,6 +29,7 @@ from .types.knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequenc
 from .types.knowledge_base_response import KnowledgeBaseResponse
 from .types.knowledge_base_version import KnowledgeBaseVersion
 from .types.knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
+from .types.knowledge_base_version_progress import KnowledgeBaseVersionProgress
 from .types.knowledge_base_version_type import KnowledgeBaseVersionType
 from .types.knowledge_base_versions_list_response import KnowledgeBaseVersionsListResponse
 from .types.knowledge_bases_response import KnowledgeBasesResponse
@@ -996,6 +997,128 @@ class RawKnowledgeClient:
                 ),
                 "status": status,
                 "errorMessage": error_message,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeBaseVersion,
+                    parse_obj_as(
+                        type_=KnowledgeBaseVersion,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def update_knowledge_base_version_progress(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: EntityIdWithoutAgent,
+        progress: KnowledgeBaseVersionProgress,
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[KnowledgeBaseVersion]:
+        """
+        Report refresh progress for an in-progress knowledge base version.
+
+        Progress is advisory and shown to users while a refresh runs. Each call replaces the
+        version's entire progress state - no history is kept, only the most recent value is
+        retained. Will throw an exception if the target version is not in progress.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to report progress for. All other entity ID fields are inferred from the request.
+
+        version_id : EntityIdWithoutAgent
+            ID that uniquely identifies which knowledge base version to report progress for.
+
+        progress : KnowledgeBaseVersionProgress
+            The progress state to store on the version, replacing any previously reported progress.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to report progress for. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[KnowledgeBaseVersion]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/version/progress",
+            method="POST",
+            json={
+                "appId": app_id,
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
+                "progress": convert_and_respect_annotation_metadata(
+                    object_=progress, annotation=KnowledgeBaseVersionProgress, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,
@@ -2775,6 +2898,128 @@ class AsyncRawKnowledgeClient:
                 ),
                 "status": status,
                 "errorMessage": error_message,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    KnowledgeBaseVersion,
+                    parse_obj_as(
+                        type_=KnowledgeBaseVersion,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def update_knowledge_base_version_progress(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: EntityIdWithoutAgent,
+        progress: KnowledgeBaseVersionProgress,
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[KnowledgeBaseVersion]:
+        """
+        Report refresh progress for an in-progress knowledge base version.
+
+        Progress is advisory and shown to users while a refresh runs. Each call replaces the
+        version's entire progress state - no history is kept, only the most recent value is
+        retained. Will throw an exception if the target version is not in progress.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to report progress for. All other entity ID fields are inferred from the request.
+
+        version_id : EntityIdWithoutAgent
+            ID that uniquely identifies which knowledge base version to report progress for.
+
+        progress : KnowledgeBaseVersionProgress
+            The progress state to store on the version, replacing any previously reported progress.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to report progress for. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[KnowledgeBaseVersion]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/knowledge/{jsonable_encoder(knowledge_base_reference_id)}/version/progress",
+            method="POST",
+            json={
+                "appId": app_id,
+                "versionId": convert_and_respect_annotation_metadata(
+                    object_=version_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
+                "progress": convert_and_respect_annotation_metadata(
+                    object_=progress, annotation=KnowledgeBaseVersionProgress, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,

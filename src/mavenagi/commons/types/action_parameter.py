@@ -57,8 +57,8 @@ class ActionParameter(UniversalBaseModel):
     
     **Schema Requirements:**
     - Root type must be "object" - The top-level schema must define an object type
-    - Supported types: string, number, boolean, integer, object, array, enum, anyOf
-    - Unsupported features: oneOf, allOf, const, not, if/then/else, pattern, maxLength, minLength
+    - Supported types: string, number, integer, boolean, object, array, null
+    - Structural keywords only: properties, required, additionalProperties, items, anyOf, enum, const (with a sibling type), $defs/$ref, description. Value constraints such as pattern, format, minimum or minItems, and combinators such as oneOf, allOf and if/then/else, are not accepted
     - Required fields: All fields must be required (no optional properties)
     - Additional properties: Must be set to false
     

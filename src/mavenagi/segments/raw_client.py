@@ -9,6 +9,7 @@ from ..commons.errors.payload_too_large_error import PayloadTooLargeError
 from ..commons.errors.server_error import ServerError
 from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.entity_id_base import EntityIdBase
+from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.error_message import ErrorMessage
 from ..commons.types.precondition import Precondition
 from ..core.api_error import ApiError
@@ -158,6 +159,7 @@ class RawSegmentsClient:
         segment_id: EntityIdBase,
         precondition: Precondition,
         name: str,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -175,6 +177,13 @@ class RawSegmentsClient:
 
         name : str
             The name of the segment.
+
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            The agent variant this write is scoped to. When set, the segment content is staged in
+            that variant's working set instead of being applied to the agent's live configuration.
+
+            Omit this field to write directly to the agent. Variant scoping is not active yet: a
+            variant supplied today is accepted and ignored, and the write applies to the agent.
 
         status : typing.Optional[SegmentStatus]
             Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -195,6 +204,9 @@ class RawSegmentsClient:
             json={
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=EntityIdBase, direction="write"
+                ),
+                "variantId": convert_and_respect_annotation_metadata(
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
@@ -388,6 +400,7 @@ class RawSegmentsClient:
         description: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SegmentResponse]:
         """
@@ -416,6 +429,13 @@ class RawSegmentsClient:
         status : typing.Optional[SegmentStatus]
             The status of the segment. Segments can only be deactivated if they are not set on any actions or active knowledge bases.
 
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            The agent variant this patch is scoped to. When set, the patch is staged in that
+            variant's working set instead of being applied to the agent's live configuration.
+
+            Omit this field to patch the agent directly. Variant scoping is not active yet: a
+            variant supplied today is accepted and ignored, and the patch applies to the agent.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -435,6 +455,9 @@ class RawSegmentsClient:
                     object_=precondition, annotation=Precondition, direction="write"
                 ),
                 "status": status,
+                "variantId": convert_and_respect_annotation_metadata(
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
             },
             headers={
                 "content-type": "application/merge-patch+json",
@@ -517,6 +540,8 @@ class RawSegmentsClient:
         segment_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        variant_reference_id: typing.Optional[str] = None,
+        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SegmentResponse]:
         """
@@ -534,6 +559,18 @@ class RawSegmentsClient:
         app_id : typing.Optional[str]
             The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
 
+        variant_reference_id : typing.Optional[str]
+            The reference ID of the agent variant this delete is scoped to. When set, the
+            deletion is staged in that variant's working set instead of being applied to the
+            agent's live configuration.
+
+            Omit this parameter to delete directly from the agent. Variant scoping is not
+            active yet: a variant supplied today is accepted and ignored, and the delete applies
+            to the agent.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -546,6 +583,8 @@ class RawSegmentsClient:
             method="DELETE",
             params={
                 "appId": app_id,
+                "variantReferenceId": variant_reference_id,
+                "variantAppId": variant_app_id,
             },
             request_options=request_options,
         )
@@ -750,6 +789,7 @@ class AsyncRawSegmentsClient:
         segment_id: EntityIdBase,
         precondition: Precondition,
         name: str,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -767,6 +807,13 @@ class AsyncRawSegmentsClient:
 
         name : str
             The name of the segment.
+
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            The agent variant this write is scoped to. When set, the segment content is staged in
+            that variant's working set instead of being applied to the agent's live configuration.
+
+            Omit this field to write directly to the agent. Variant scoping is not active yet: a
+            variant supplied today is accepted and ignored, and the write applies to the agent.
 
         status : typing.Optional[SegmentStatus]
             Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -787,6 +834,9 @@ class AsyncRawSegmentsClient:
             json={
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=EntityIdBase, direction="write"
+                ),
+                "variantId": convert_and_respect_annotation_metadata(
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "precondition": convert_and_respect_annotation_metadata(
                     object_=precondition, annotation=Precondition, direction="write"
@@ -980,6 +1030,7 @@ class AsyncRawSegmentsClient:
         description: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SegmentResponse]:
         """
@@ -1008,6 +1059,13 @@ class AsyncRawSegmentsClient:
         status : typing.Optional[SegmentStatus]
             The status of the segment. Segments can only be deactivated if they are not set on any actions or active knowledge bases.
 
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            The agent variant this patch is scoped to. When set, the patch is staged in that
+            variant's working set instead of being applied to the agent's live configuration.
+
+            Omit this field to patch the agent directly. Variant scoping is not active yet: a
+            variant supplied today is accepted and ignored, and the patch applies to the agent.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -1027,6 +1085,9 @@ class AsyncRawSegmentsClient:
                     object_=precondition, annotation=Precondition, direction="write"
                 ),
                 "status": status,
+                "variantId": convert_and_respect_annotation_metadata(
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
             },
             headers={
                 "content-type": "application/merge-patch+json",
@@ -1109,6 +1170,8 @@ class AsyncRawSegmentsClient:
         segment_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        variant_reference_id: typing.Optional[str] = None,
+        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SegmentResponse]:
         """
@@ -1126,6 +1189,18 @@ class AsyncRawSegmentsClient:
         app_id : typing.Optional[str]
             The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
 
+        variant_reference_id : typing.Optional[str]
+            The reference ID of the agent variant this delete is scoped to. When set, the
+            deletion is staged in that variant's working set instead of being applied to the
+            agent's live configuration.
+
+            Omit this parameter to delete directly from the agent. Variant scoping is not
+            active yet: a variant supplied today is accepted and ignored, and the delete applies
+            to the agent.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -1138,6 +1213,8 @@ class AsyncRawSegmentsClient:
             method="DELETE",
             params={
                 "appId": app_id,
+                "variantReferenceId": variant_reference_id,
+                "variantAppId": variant_app_id,
             },
             request_options=request_options,
         )

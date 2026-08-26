@@ -81,6 +81,20 @@ class StreamResponse_Chart(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class StreamResponse_Object(UniversalBaseModel):
+    event_type: typing_extensions.Annotated[typing.Literal["object"], FieldMetadata(alias="eventType")] = "object"
+    object: typing.Optional[typing.Any] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 class StreamResponse_Metadata(UniversalBaseModel):
     event_type: typing_extensions.Annotated[typing.Literal["metadata"], FieldMetadata(alias="eventType")] = "metadata"
     followup_questions: typing_extensions.Annotated[typing.List[str], FieldMetadata(alias="followupQuestions")]
@@ -130,6 +144,7 @@ StreamResponse = typing.Union[
     StreamResponse_Action,
     StreamResponse_OauthButton,
     StreamResponse_Chart,
+    StreamResponse_Object,
     StreamResponse_Metadata,
     StreamResponse_Start,
     StreamResponse_End,

@@ -15,6 +15,7 @@ from .knowledge_base_indexing_progress_state import KnowledgeBaseIndexingProgres
 from .knowledge_base_properties import KnowledgeBaseProperties
 from .knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .knowledge_base_type import KnowledgeBaseType
+from .knowledge_base_version_progress import KnowledgeBaseVersionProgress
 from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 
 
@@ -162,6 +163,12 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
     ] = pydantic.Field(default=None)
     """
     The indexing status of the latest version of the knowledge base.
+    """
+
+    progress: typing.Optional[KnowledgeBaseVersionProgress] = pydantic.Field(default=None)
+    """
+    Refresh progress most recently reported by the app that owns this knowledge base.
+    Only populated while the latest version is in progress - absent once it has completed.
     """
 
     if IS_PYDANTIC_V2:

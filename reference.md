@@ -1226,6 +1226,12 @@ Specifies the fields by which data should be grouped. Each unique combination fo
 If multiple fields are provided, the result is grouped by their unique value combinations.
 If empty, all data is aggregated into a single row. |
 Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+
+Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
+grouping is not currently distinguishable here from a second `IntelligentField` grouping,
+nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
+only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
+chart, which is unaffected.
     
 </dd>
 </dl>
@@ -1454,6 +1460,12 @@ Specifies the fields by which data should be grouped. Each unique combination fo
 If multiple fields are provided, the result is grouped by their unique value combinations.
 If empty, all data is aggregated into a single row. |
 Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+
+Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
+grouping is not currently distinguishable here from a second `IntelligentField` grouping,
+nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
+only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
+chart, which is unaffected.
     
 </dd>
 </dl>
@@ -3136,6 +3148,39 @@ are unaffected.)
 <dl>
 <dd>
 
+**text_format:** `typing.Optional[TextFormat]` 
+
+What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
+`BotObjectResponse` matching a schema you supply.
+
+Set per ask and independent of `type`, so one conversation can mix prose and structured
+turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+the same way either way.
+
+A structured answer accompanies the prose one rather than replacing it — the same turn
+produces both, so the conversation stays readable. On `ask_stream` the prose still streams
+on `text` events as it always has, and the object arrives whole on a single `object` event
+near the end.
+
+Every answering turn carries an object, including one where the agent asks a clarifying
+question rather than answering. Shape the schema so it can say "not enough information"
+— a populated object is not on its own evidence of a confident answer.
+
+Two exceptions. A turn that asks the user to *act* produces an action form from the
+action rather than from an answer, so it carries no object; the turn that answers after
+the form is submitted does carry one. Leave the `FORMS` capability off if you need an
+object on every turn.
+
+A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+charter's manual is returned exactly as written without consulting the agent, so there is
+nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **attachments:** `typing.Optional[typing.Sequence[AttachmentRequest]]` 
 
 The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -3316,6 +3361,39 @@ is required. For WELCOME and PROACTIVE it is optional and, when provided, steers
 agent's response (a directive to the agent, not the user's own words). (Changed from
 required to optional to support the non-user turn types — existing USER_MESSAGE callers
 are unaffected.)
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**text_format:** `typing.Optional[TextFormat]` 
+
+What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
+`BotObjectResponse` matching a schema you supply.
+
+Set per ask and independent of `type`, so one conversation can mix prose and structured
+turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+the same way either way.
+
+A structured answer accompanies the prose one rather than replacing it — the same turn
+produces both, so the conversation stays readable. On `ask_stream` the prose still streams
+on `text` events as it always has, and the object arrives whole on a single `object` event
+near the end.
+
+Every answering turn carries an object, including one where the agent asks a clarifying
+question rather than answering. Shape the schema so it can say "not enough information"
+— a populated object is not on its own evidence of a confident answer.
+
+Two exceptions. A turn that asks the user to *act* produces an action form from the
+action rather than from an answer, so it carries no object; the turn that answers after
+the form is submitted does carry one. Leave the `FORMS` capability off if you need an
+object on every turn.
+
+A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+charter's manual is returned exactly as written without consulting the agent, so there is
+nothing to shape into the requested schema — the turn returns the manual as `text` alone.
     
 </dd>
 </dl>
@@ -3919,6 +3997,10 @@ client.conversation.search()
 <dd>
 
 **sort:** `typing.Optional[ConversationField]` 
+
+Field to sort results by. `IntelligentField` is not supported here - sorting conversations
+by an intelligent field value is not available. Intelligent fields can be filtered on via
+`filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
     
 </dd>
 </dl>
@@ -4027,6 +4109,10 @@ client.conversation.export()
 <dd>
 
 **sort:** `typing.Optional[ConversationField]` 
+
+Field to sort results by. `IntelligentField` is not supported here - sorting conversations
+by an intelligent field value is not available. Intelligent fields can be filtered on via
+`filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
     
 </dd>
 </dl>
@@ -6003,6 +6089,649 @@ client.integrations.update(
 </dl>
 </details>
 
+## IntelligentFields
+<details><summary><code>client.intelligent_fields.<a href="src/mavenagi/intelligent_fields/client.py">create_or_update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new intelligent field. Intelligent fields are used to store custom LLM-generated values on entities like conversations or events.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdBase
+from mavenagi.intelligent_fields import EnumOption
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.intelligent_fields.create_or_update(
+    field_id=EntityIdBase(
+        reference_id="ticket-priority",
+    ),
+    name="Ticket Priority",
+    description="The priority of the conversation based on urgency",
+    entity_type="CONVERSATION",
+    validation_type="STRING",
+    enum_options=[
+        EnumOption(
+            value="HIGH",
+            label="High Priority",
+        ),
+        EnumOption(
+            value="MEDIUM",
+            label="Medium Priority",
+        ),
+        EnumOption(
+            value="LOW",
+            label="Low Priority",
+        ),
+    ],
+    definition="The priority of the conversation based on the urgency and importance; draw from the content / messages in the conversation; must be one of HIGH, MEDIUM, or LOW.",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_id:** `EntityIdBase` — ID that uniquely identifies this intelligent field
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**entity_type:** `EntityType` — Target entity type for evaluation. Only CONVERSATION is supported at this time. The backend will return an error for other types.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` — Display name for the intelligent field
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**validation_type:** `IntelligentFieldType` 
+
+Result type hint used for schema generation, UI, and validation.
+
+- STRING / MULTILINE: single string value
+- MULTI_SELECT: multiple values
+- BOOLEAN: boolean value
+- NUMBER: numeric value
+
+Note: for single select, use STRING/NUMBER with a list of enumOptions.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**definition:** `str` — Definition used by the LLM when generating this field's value
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` — ID of the agent variant that created this field, if applicable
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — A plain text description of the intelligent field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enum_options:** `typing.Optional[typing.Sequence[EnumOption]]` — Optional enum options for STRING/MULTILINE/NUMBER when a finite set is desired
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.intelligent_fields.<a href="src/mavenagi/intelligent_fields/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get an intelligent field by its supplied ID
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.intelligent_fields.get(
+    field_reference_id="ticket-priority",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_reference_id:** `str` — The reference ID of the intelligent field to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the intelligent field to get. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.intelligent_fields.<a href="src/mavenagi/intelligent_fields/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Patch an intelligent field. Can be used to update the definition, status, or other mutable properties.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.intelligent_fields.patch(
+    field_reference_id="ticket-priority",
+    status="INACTIVE",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_reference_id:** `str` — The reference ID of the intelligent field to patch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the intelligent field to update. If not provided the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**definition:** `typing.Optional[str]` — The definition of the intelligent field. This text will be influential in guiding the LLM to produce the desired results.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[IntelligentFieldStatus]` — The lifecycle state for whether this field is evaluated by workflows. Use INACTIVE to deactivate.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — A plain text description of the intelligent field.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enum_options:** `typing.Optional[typing.Sequence[EnumOption]]` — Updated enum options for select/multi-select fields. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_id:** `typing.Optional[EntityIdBase]` — ID of the agent variant that this field belongs to, if applicable
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.intelligent_fields.<a href="src/mavenagi/intelligent_fields/client.py">delete</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Soft delete an intelligent field. Only INACTIVE fields can be deleted.
+
+Deleted fields are excluded from search results but can still be retrieved by ID.
+Creating a new field with the same referenceId as a deleted field will overwrite
+the deleted field and restore it to INACTIVE status.
+
+Deleted fields cannot be modified.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.intelligent_fields.delete(
+    field_reference_id="ticket-priority",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_reference_id:** `str` — The reference ID of the intelligent field to delete.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the intelligent field to delete. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_reference_id:** `typing.Optional[str]` — The agent variant reference ID of the intelligent field to delete.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant reference for the intelligent field to delete. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.intelligent_fields.<a href="src/mavenagi/intelligent_fields/client.py">search_values</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search computed values for intelligent fields across entities. Supports filtering by field properties and target entity.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityId
+from mavenagi.intelligent_fields import (
+    IntelligentFieldValueEntityFilter,
+    IntelligentFieldValueFieldFilter,
+)
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.intelligent_fields.search_values(
+    field_filter=IntelligentFieldValueFieldFilter(
+        field_ids=[
+            EntityId(
+                reference_id="ticket-priority",
+                app_id="zendesk",
+                type="INTELLIGENT_FIELD",
+                organization_id="acme",
+                agent_id="support",
+            )
+        ],
+    ),
+    entity_filter=IntelligentFieldValueEntityFilter(
+        entity_ids=[
+            EntityId(
+                reference_id="conv-123",
+                app_id="zendesk",
+                type="CONVERSATION",
+                organization_id="acme",
+                agent_id="support",
+            )
+        ],
+    ),
+    page=0,
+    size=20,
+    sort="CREATED_AT",
+    sort_desc=True,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**field_filter:** `typing.Optional[IntelligentFieldValueFieldFilter]` — Filter by properties of the intelligent field definition. If not provided, returns values for all fields.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**entity_filter:** `typing.Optional[IntelligentFieldValueEntityFilter]` — Filter by properties of the target entity. If not provided, returns values across all entities.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**created_after:** `typing.Optional[dt.datetime]` — Filter values computed on or after this timestamp
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**created_before:** `typing.Optional[dt.datetime]` — Filter values computed on or before this timestamp
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include_unknown_values:** `typing.Optional[bool]` — Whether to include results where the LLM could not determine a value (value is null). Defaults to false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[IntelligentFieldValueSortField]` — Field to sort by. Defaults to CREATED_AT.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` — Filter to values generated by a specific agent variant. If not provided, returns values from all variants.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20. Max 1000.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Knowledge
 <details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">search_knowledge_bases</a>(...)</code></summary>
 <dl>
@@ -6880,6 +7609,119 @@ client.knowledge.finalize_knowledge_base_version(
 <dd>
 
 **error_message:** `typing.Optional[str]` — A user-facing error message that provides more details about a version failure.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.knowledge.<a href="src/mavenagi/knowledge/client.py">update_knowledge_base_version_progress</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Report refresh progress for an in-progress knowledge base version.
+
+Progress is advisory and shown to users while a refresh runs. Each call replaces the
+version's entire progress state - no history is kept, only the most recent value is
+retained. Will throw an exception if the target version is not in progress.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdWithoutAgent
+from mavenagi.knowledge import KnowledgeBaseVersionProgress
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.knowledge.update_knowledge_base_version_progress(
+    knowledge_base_reference_id="help-center",
+    version_id=EntityIdWithoutAgent(
+        type="KNOWLEDGE_BASE_VERSION",
+        reference_id="versionId",
+        app_id="maven",
+    ),
+    progress=KnowledgeBaseVersionProgress(
+        message="Fetching articles from the help center",
+        completed_count=120,
+        total_count=500,
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledge_base_reference_id:** `str` — The reference ID of the knowledge base to report progress for. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**version_id:** `EntityIdWithoutAgent` — ID that uniquely identifies which knowledge base version to report progress for.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**progress:** `KnowledgeBaseVersionProgress` — The progress state to store on the version, replacing any previously reported progress.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the knowledge base to report progress for. If not provided the ID of the calling app will be used.
     
 </dd>
 </dl>
@@ -8031,6 +8873,12 @@ Specifies the fields by which data should be grouped. Each unique combination fo
 If multiple fields are provided, the result is grouped by their unique value combinations.
 If empty, all data is aggregated into a single row. |
 Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+
+Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
+grouping is not currently distinguishable here from a second `IntelligentField` grouping,
+nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
+only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
+chart, which is unaffected.
     
 </dd>
 </dl>
@@ -8359,6 +9207,20 @@ client.segments.create_or_update(
 <dl>
 <dd>
 
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+The agent variant this write is scoped to. When set, the segment content is staged in
+that variant's working set instead of being applied to the agent's live configuration.
+
+Omit this field to write directly to the agent. Variant scoping is not active yet: a
+variant supplied today is accepted and ignored, and the write applies to the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **status:** `typing.Optional[SegmentStatus]` — Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
     
 </dd>
@@ -8572,6 +9434,20 @@ client.segments.patch(
 <dl>
 <dd>
 
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+The agent variant this patch is scoped to. When set, the patch is staged in that
+variant's working set instead of being applied to the agent's live configuration.
+
+Omit this field to patch the agent directly. Variant scoping is not active yet: a
+variant supplied today is accepted and ignored, and the patch applies to the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -8650,6 +9526,30 @@ client.segments.delete(
 <dd>
 
 **app_id:** `typing.Optional[str]` — The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_reference_id:** `typing.Optional[str]` 
+
+The reference ID of the agent variant this delete is scoped to. When set, the
+deletion is staged in that variant's working set instead of being applied to the
+agent's live configuration.
+
+Omit this parameter to delete directly from the agent. Variant scoping is not
+active yet: a variant supplied today is accepted and ignored, and the delete applies
+to the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
     
 </dd>
 </dl>

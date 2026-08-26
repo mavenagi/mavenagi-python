@@ -18,6 +18,7 @@ from .types.knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequenc
 from .types.knowledge_base_response import KnowledgeBaseResponse
 from .types.knowledge_base_version import KnowledgeBaseVersion
 from .types.knowledge_base_version_finalize_status import KnowledgeBaseVersionFinalizeStatus
+from .types.knowledge_base_version_progress import KnowledgeBaseVersionProgress
 from .types.knowledge_base_version_type import KnowledgeBaseVersionType
 from .types.knowledge_base_versions_list_response import KnowledgeBaseVersionsListResponse
 from .types.knowledge_bases_response import KnowledgeBasesResponse
@@ -554,6 +555,78 @@ class KnowledgeClient:
             version_id=version_id,
             status=status,
             error_message=error_message,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def update_knowledge_base_version_progress(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: EntityIdWithoutAgent,
+        progress: KnowledgeBaseVersionProgress,
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBaseVersion:
+        """
+        Report refresh progress for an in-progress knowledge base version.
+
+        Progress is advisory and shown to users while a refresh runs. Each call replaces the
+        version's entire progress state - no history is kept, only the most recent value is
+        retained. Will throw an exception if the target version is not in progress.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to report progress for. All other entity ID fields are inferred from the request.
+
+        version_id : EntityIdWithoutAgent
+            ID that uniquely identifies which knowledge base version to report progress for.
+
+        progress : KnowledgeBaseVersionProgress
+            The progress state to store on the version, replacing any previously reported progress.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to report progress for. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeBaseVersion
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.commons import EntityIdWithoutAgent
+        from mavenagi.knowledge import KnowledgeBaseVersionProgress
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.knowledge.update_knowledge_base_version_progress(
+            knowledge_base_reference_id="help-center",
+            version_id=EntityIdWithoutAgent(
+                type="KNOWLEDGE_BASE_VERSION",
+                reference_id="versionId",
+                app_id="maven",
+            ),
+            progress=KnowledgeBaseVersionProgress(
+                message="Fetching articles from the help center",
+                completed_count=120,
+                total_count=500,
+            ),
+        )
+        """
+        _response = self._raw_client.update_knowledge_base_version_progress(
+            knowledge_base_reference_id,
+            version_id=version_id,
+            progress=progress,
+            app_id=app_id,
             request_options=request_options,
         )
         return _response.data
@@ -1567,6 +1640,86 @@ class AsyncKnowledgeClient:
             version_id=version_id,
             status=status,
             error_message=error_message,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def update_knowledge_base_version_progress(
+        self,
+        knowledge_base_reference_id: str,
+        *,
+        version_id: EntityIdWithoutAgent,
+        progress: KnowledgeBaseVersionProgress,
+        app_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> KnowledgeBaseVersion:
+        """
+        Report refresh progress for an in-progress knowledge base version.
+
+        Progress is advisory and shown to users while a refresh runs. Each call replaces the
+        version's entire progress state - no history is kept, only the most recent value is
+        retained. Will throw an exception if the target version is not in progress.
+
+        Parameters
+        ----------
+        knowledge_base_reference_id : str
+            The reference ID of the knowledge base to report progress for. All other entity ID fields are inferred from the request.
+
+        version_id : EntityIdWithoutAgent
+            ID that uniquely identifies which knowledge base version to report progress for.
+
+        progress : KnowledgeBaseVersionProgress
+            The progress state to store on the version, replacing any previously reported progress.
+
+        app_id : typing.Optional[str]
+            The App ID of the knowledge base to report progress for. If not provided the ID of the calling app will be used.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        KnowledgeBaseVersion
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityIdWithoutAgent
+        from mavenagi.knowledge import KnowledgeBaseVersionProgress
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.knowledge.update_knowledge_base_version_progress(
+                knowledge_base_reference_id="help-center",
+                version_id=EntityIdWithoutAgent(
+                    type="KNOWLEDGE_BASE_VERSION",
+                    reference_id="versionId",
+                    app_id="maven",
+                ),
+                progress=KnowledgeBaseVersionProgress(
+                    message="Fetching articles from the help center",
+                    completed_count=120,
+                    total_count=500,
+                ),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.update_knowledge_base_version_progress(
+            knowledge_base_reference_id,
+            version_id=version_id,
+            progress=progress,
+            app_id=app_id,
             request_options=request_options,
         )
         return _response.data

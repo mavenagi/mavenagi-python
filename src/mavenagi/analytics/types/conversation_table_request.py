@@ -73,6 +73,12 @@ class ConversationTableRequest(ConversationAnalyticsRequest):
     If multiple fields are provided, the result is grouped by their unique value combinations.
     If empty, all data is aggregated into a single row. |
     Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+    
+    Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
+    grouping is not currently distinguishable here from a second `IntelligentField` grouping,
+    nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
+    only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
+    chart, which is unaffected.
     """
 
     column_definitions: typing_extensions.Annotated[

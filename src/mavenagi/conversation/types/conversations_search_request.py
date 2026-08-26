@@ -10,7 +10,13 @@ from .conversation_filter import ConversationFilter
 
 
 class ConversationsSearchRequest(BasePaginatedRequest):
-    sort: typing.Optional[ConversationField] = None
+    sort: typing.Optional[ConversationField] = pydantic.Field(default=None)
+    """
+    Field to sort results by. `IntelligentField` is not supported here - sorting conversations
+    by an intelligent field value is not available. Intelligent fields can be filtered on via
+    `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
+    """
+
     filter: typing.Optional[ConversationFilter] = None
 
     if IS_PYDANTIC_V2:

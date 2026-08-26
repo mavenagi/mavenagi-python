@@ -9,6 +9,7 @@ from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .knowledge_base_indexing_progress_state import KnowledgeBaseIndexingProgressState
+from .knowledge_base_version_progress import KnowledgeBaseVersionProgress
 from .knowledge_base_version_request import KnowledgeBaseVersionRequest
 from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 
@@ -73,6 +74,12 @@ class KnowledgeBaseVersion(KnowledgeBaseVersionRequest):
     ] = pydantic.Field(default=None)
     """
     The indexing status of the knowledge base version.
+    """
+
+    progress: typing.Optional[KnowledgeBaseVersionProgress] = pydantic.Field(default=None)
+    """
+    Refresh progress most recently reported by the app that owns this knowledge base.
+    Only populated while the version is in progress - absent once the version has completed.
     """
 
     if IS_PYDANTIC_V2:

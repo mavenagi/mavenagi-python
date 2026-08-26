@@ -24,6 +24,7 @@ from ..commons.types.feedback_type import FeedbackType
 from ..commons.types.initialize_conversation_response import InitializeConversationResponse
 from ..commons.types.response_config import ResponseConfig
 from ..commons.types.simulation_context import SimulationContext
+from ..commons.types.text_format import TextFormat
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
@@ -681,6 +682,7 @@ class RawConversationClient:
         user_id: EntityIdBase,
         type: typing.Optional[AskType] = OMIT,
         text: typing.Optional[str] = OMIT,
+        text_format: typing.Optional[TextFormat] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -721,6 +723,32 @@ class RawConversationClient:
             required to optional to support the non-user turn types — existing USER_MESSAGE callers
             are unaffected.)
 
+        text_format : typing.Optional[TextFormat]
+            What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
+            `BotObjectResponse` matching a schema you supply.
+
+            Set per ask and independent of `type`, so one conversation can mix prose and structured
+            turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+            the same way either way.
+
+            A structured answer accompanies the prose one rather than replacing it — the same turn
+            produces both, so the conversation stays readable. On `ask_stream` the prose still streams
+            on `text` events as it always has, and the object arrives whole on a single `object` event
+            near the end.
+
+            Every answering turn carries an object, including one where the agent asks a clarifying
+            question rather than answering. Shape the schema so it can say "not enough information"
+            — a populated object is not on its own evidence of a confident answer.
+
+            Two exceptions. A turn that asks the user to *act* produces an action form from the
+            action rather than from an answer, so it carries no object; the turn that answers after
+            the form is submitted does carry one. Leave the `FORMS` capability off if you need an
+            object on every turn.
+
+            A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+            charter's manual is returned exactly as written without consulting the agent, so there is
+            nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
             Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
@@ -759,6 +787,9 @@ class RawConversationClient:
                 ),
                 "type": type,
                 "text": text,
+                "textFormat": convert_and_respect_annotation_metadata(
+                    object_=text_format, annotation=TextFormat, direction="write"
+                ),
                 "attachments": convert_and_respect_annotation_metadata(
                     object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
@@ -848,6 +879,7 @@ class RawConversationClient:
         user_id: EntityIdBase,
         type: typing.Optional[AskType] = OMIT,
         text: typing.Optional[str] = OMIT,
+        text_format: typing.Optional[TextFormat] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -892,6 +924,32 @@ class RawConversationClient:
             required to optional to support the non-user turn types — existing USER_MESSAGE callers
             are unaffected.)
 
+        text_format : typing.Optional[TextFormat]
+            What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
+            `BotObjectResponse` matching a schema you supply.
+
+            Set per ask and independent of `type`, so one conversation can mix prose and structured
+            turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+            the same way either way.
+
+            A structured answer accompanies the prose one rather than replacing it — the same turn
+            produces both, so the conversation stays readable. On `ask_stream` the prose still streams
+            on `text` events as it always has, and the object arrives whole on a single `object` event
+            near the end.
+
+            Every answering turn carries an object, including one where the agent asks a clarifying
+            question rather than answering. Shape the schema so it can say "not enough information"
+            — a populated object is not on its own evidence of a confident answer.
+
+            Two exceptions. A turn that asks the user to *act* produces an action form from the
+            action rather than from an answer, so it carries no object; the turn that answers after
+            the form is submitted does carry one. Leave the `FORMS` capability off if you need an
+            object on every turn.
+
+            A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+            charter's manual is returned exactly as written without consulting the agent, so there is
+            nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
             Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
@@ -929,6 +987,9 @@ class RawConversationClient:
                 ),
                 "type": type,
                 "text": text,
+                "textFormat": convert_and_respect_annotation_metadata(
+                    object_=text_format, annotation=TextFormat, direction="write"
+                ),
                 "attachments": convert_and_respect_annotation_metadata(
                     object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
@@ -1613,6 +1674,9 @@ class RawConversationClient:
         Parameters
         ----------
         sort : typing.Optional[ConversationField]
+            Field to sort results by. `IntelligentField` is not supported here - sorting conversations
+            by an intelligent field value is not available. Intelligent fields can be filtered on via
+            `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
 
         filter : typing.Optional[ConversationFilter]
 
@@ -1739,6 +1803,9 @@ class RawConversationClient:
         Parameters
         ----------
         sort : typing.Optional[ConversationField]
+            Field to sort results by. `IntelligentField` is not supported here - sorting conversations
+            by an intelligent field value is not available. Intelligent fields can be filtered on via
+            `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
 
         filter : typing.Optional[ConversationFilter]
 
@@ -2691,6 +2758,7 @@ class AsyncRawConversationClient:
         user_id: EntityIdBase,
         type: typing.Optional[AskType] = OMIT,
         text: typing.Optional[str] = OMIT,
+        text_format: typing.Optional[TextFormat] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -2731,6 +2799,32 @@ class AsyncRawConversationClient:
             required to optional to support the non-user turn types — existing USER_MESSAGE callers
             are unaffected.)
 
+        text_format : typing.Optional[TextFormat]
+            What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
+            `BotObjectResponse` matching a schema you supply.
+
+            Set per ask and independent of `type`, so one conversation can mix prose and structured
+            turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+            the same way either way.
+
+            A structured answer accompanies the prose one rather than replacing it — the same turn
+            produces both, so the conversation stays readable. On `ask_stream` the prose still streams
+            on `text` events as it always has, and the object arrives whole on a single `object` event
+            near the end.
+
+            Every answering turn carries an object, including one where the agent asks a clarifying
+            question rather than answering. Shape the schema so it can say "not enough information"
+            — a populated object is not on its own evidence of a confident answer.
+
+            Two exceptions. A turn that asks the user to *act* produces an action form from the
+            action rather than from an answer, so it carries no object; the turn that answers after
+            the form is submitted does carry one. Leave the `FORMS` capability off if you need an
+            object on every turn.
+
+            A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+            charter's manual is returned exactly as written without consulting the agent, so there is
+            nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
             Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
@@ -2769,6 +2863,9 @@ class AsyncRawConversationClient:
                 ),
                 "type": type,
                 "text": text,
+                "textFormat": convert_and_respect_annotation_metadata(
+                    object_=text_format, annotation=TextFormat, direction="write"
+                ),
                 "attachments": convert_and_respect_annotation_metadata(
                     object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
@@ -2858,6 +2955,7 @@ class AsyncRawConversationClient:
         user_id: EntityIdBase,
         type: typing.Optional[AskType] = OMIT,
         text: typing.Optional[str] = OMIT,
+        text_format: typing.Optional[TextFormat] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -2902,6 +3000,32 @@ class AsyncRawConversationClient:
             required to optional to support the non-user turn types — existing USER_MESSAGE callers
             are unaffected.)
 
+        text_format : typing.Optional[TextFormat]
+            What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
+            `BotObjectResponse` matching a schema you supply.
+
+            Set per ask and independent of `type`, so one conversation can mix prose and structured
+            turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+            the same way either way.
+
+            A structured answer accompanies the prose one rather than replacing it — the same turn
+            produces both, so the conversation stays readable. On `ask_stream` the prose still streams
+            on `text` events as it always has, and the object arrives whole on a single `object` event
+            near the end.
+
+            Every answering turn carries an object, including one where the agent asks a clarifying
+            question rather than answering. Shape the schema so it can say "not enough information"
+            — a populated object is not on its own evidence of a confident answer.
+
+            Two exceptions. A turn that asks the user to *act* produces an action form from the
+            action rather than from an answer, so it carries no object; the turn that answers after
+            the form is submitted does carry one. Leave the `FORMS` capability off if you need an
+            object on every turn.
+
+            A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+            charter's manual is returned exactly as written without consulting the agent, so there is
+            nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
             Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
@@ -2939,6 +3063,9 @@ class AsyncRawConversationClient:
                 ),
                 "type": type,
                 "text": text,
+                "textFormat": convert_and_respect_annotation_metadata(
+                    object_=text_format, annotation=TextFormat, direction="write"
+                ),
                 "attachments": convert_and_respect_annotation_metadata(
                     object_=attachments, annotation=typing.Sequence[AttachmentRequest], direction="write"
                 ),
@@ -3623,6 +3750,9 @@ class AsyncRawConversationClient:
         Parameters
         ----------
         sort : typing.Optional[ConversationField]
+            Field to sort results by. `IntelligentField` is not supported here - sorting conversations
+            by an intelligent field value is not available. Intelligent fields can be filtered on via
+            `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
 
         filter : typing.Optional[ConversationFilter]
 
@@ -3749,6 +3879,9 @@ class AsyncRawConversationClient:
         Parameters
         ----------
         sort : typing.Optional[ConversationField]
+            Field to sort results by. `IntelligentField` is not supported here - sorting conversations
+            by an intelligent field value is not available. Intelligent fields can be filtered on via
+            `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
 
         filter : typing.Optional[ConversationFilter]
 

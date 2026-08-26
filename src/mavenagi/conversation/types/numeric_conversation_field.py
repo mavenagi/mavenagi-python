@@ -15,6 +15,7 @@ NumericConversationField = typing.Union[
         "Csat",
         "ActionExecutionCount",
         "ActionErrorCount",
+        "IntelligentField",
     ],
     typing.Any,
 ]

@@ -6,6 +6,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
 from ...core.serialization import FieldMetadata
 from .segment_status import SegmentStatus
@@ -37,6 +38,17 @@ class SegmentPatchRequest(UniversalBaseModel):
     status: typing.Optional[SegmentStatus] = pydantic.Field(default=None)
     """
     The status of the segment. Segments can only be deactivated if they are not set on any actions or active knowledge bases.
+    """
+
+    variant_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="variantId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The agent variant this patch is scoped to. When set, the patch is staged in that
+    variant's working set instead of being applied to the agent's live configuration.
+    
+    Omit this field to patch the agent directly. Variant scoping is not active yet: a
+    variant supplied today is accepted and ignored, and the patch applies to the agent.
     """
 
     if IS_PYDANTIC_V2:

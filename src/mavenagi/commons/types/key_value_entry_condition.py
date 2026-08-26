@@ -4,7 +4,7 @@ import typing
 
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .intelligent_field_condition import IntelligentFieldCondition
+from .field_condition import FieldCondition
 
 
 class KeyValueEntryCondition(UniversalBaseModel):
@@ -18,7 +18,7 @@ class KeyValueEntryCondition(UniversalBaseModel):
     The path must address a single value. Wildcards, filters, slices and recursive descent (`orders[*].total`, `$..total`) address many values and are rejected, as is a path with a syntax error.
     """
 
-    condition: IntelligentFieldCondition = pydantic.Field()
+    condition: FieldCondition = pydantic.Field()
     """
     The condition to evaluate against the value at `path`.
     """

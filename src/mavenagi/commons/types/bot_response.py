@@ -78,7 +78,6 @@ class BotResponse_Chart(UniversalBaseModel):
 
 class BotResponse_Object(UniversalBaseModel):
     type: typing.Literal["object"] = "object"
-    label: typing.Optional[str] = None
     object: typing.Optional[typing.Any] = None
 
     if IS_PYDANTIC_V2:

@@ -8,7 +8,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
-from .intelligent_field_condition import IntelligentFieldCondition
+from .field_condition import FieldCondition
 
 
 class ObjectCondition_Entry(UniversalBaseModel):
@@ -20,7 +20,7 @@ class ObjectCondition_Entry(UniversalBaseModel):
         typing.Literal["entry"], FieldMetadata(alias="objectConditionType")
     ] = "entry"
     path: str
-    condition: IntelligentFieldCondition
+    condition: FieldCondition
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

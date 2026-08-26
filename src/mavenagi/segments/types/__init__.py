@@ -9,6 +9,7 @@ from .segment_patch_request import SegmentPatchRequest
 from .segment_request import SegmentRequest
 from .segment_response import SegmentResponse
 from .segment_status import SegmentStatus
+from .segment_summary import SegmentSummary
 from .segments_search_request import SegmentsSearchRequest
 from .segments_search_response import SegmentsSearchResponse
 
@@ -20,6 +21,7 @@ __all__ = [
     "SegmentRequest",
     "SegmentResponse",
     "SegmentStatus",
+    "SegmentSummary",
     "SegmentsSearchRequest",
     "SegmentsSearchResponse",
 ]

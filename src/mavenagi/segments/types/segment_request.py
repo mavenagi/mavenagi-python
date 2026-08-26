@@ -7,6 +7,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id_base import EntityIdBase
+from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, update_forward_refs
 from ...core.serialization import FieldMetadata
 from .segment_base import SegmentBase
@@ -38,6 +39,17 @@ class SegmentRequest(SegmentBase):
     segment_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="segmentId")] = pydantic.Field()
     """
     ID that uniquely identifies this segment
+    """
+
+    variant_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="variantId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The agent variant this write is scoped to. When set, the segment content is staged in
+    that variant's working set instead of being applied to the agent's live configuration.
+    
+    Omit this field to write directly to the agent. Variant scoping is not active yet: a
+    variant supplied today is accepted and ignored, and the write applies to the agent.
     """
 
     precondition: "Precondition" = pydantic.Field()
