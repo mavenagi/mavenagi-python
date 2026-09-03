@@ -2599,7 +2599,18 @@ The metadata of the conversation supplied by the app which created the conversat
 <dl>
 <dd>
 
-**spawned_from_conversation_id:** `typing.Optional[EntityId]` — The unique identifier of the conversation this new conversation was spawned from, if applicable.
+**spawned_from_conversation_id:** `typing.Optional[EntityId]` 
+
+The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
+Setting this also gives the new conversation access to the context it branched from: when the bot
+answers, the transcript of the spawned-from conversation (and of the conversations that one was
+spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+included.
+
+The referenced conversation must belong to the same agent. Because the merged transcript is read
+back to the end user, only set this to a conversation the current user is entitled to see.
     
 </dd>
 </dl>
@@ -3540,7 +3551,9 @@ client.conversation.categorize(
 <dl>
 <dd>
 
-Update feedback or create it if it doesn't exist
+Replaced by the Create events API, which records feedback as a user event.
+
+Update feedback or create it if it doesn't exist.
 </dd>
 </dl>
 </dd>
@@ -4033,6 +4046,117 @@ by an intelligent field value is not available. Intelligent fields can be filter
 <dd>
 
 **sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">search_cursor</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search conversations using cursor pagination, which can read past the 10,000th result that
+`search` cannot reach.
+
+Results are ordered by conversation creation time. Start with no `cursor`, then pass each
+response's `nextCursor` back unchanged until the response omits it. Keep every other field
+identical for the whole traversal — changing the filter, size, or sort direction mid-way is
+rejected rather than silently restarting you at the beginning.
+
+`nextCursor` is the only reliable end-of-results signal. Do not stop early because a page
+came back with fewer conversations than you asked for: that happens legitimately, and more
+pages may still remain.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation.search_cursor()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[ConversationFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20. Max 200.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` 
+
+Opaque cursor from the previous response's `nextCursor`, passed back unchanged. Omit it to
+start a new traversal. Every other field must stay identical for the whole traversal;
+changing one is rejected rather than silently restarting from the beginning. Cursors have
+no expiry, but a cursor can still be rejected with a 400 if the server's signing key has
+since been rotated out; if that happens, discard it and restart the traversal.
     
 </dd>
 </dl>

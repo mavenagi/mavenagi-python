@@ -24,6 +24,7 @@ from .types.conversation_field import ConversationField
 from .types.conversation_filter import ConversationFilter
 from .types.conversation_message_request import ConversationMessageRequest
 from .types.conversation_metadata import ConversationMetadata
+from .types.conversations_cursor_search_response import ConversationsCursorSearchResponse
 from .types.conversations_response import ConversationsResponse
 from .types.deliver_message_request import DeliverMessageRequest
 from .types.deliver_message_response import DeliverMessageResponse
@@ -117,6 +118,15 @@ class ConversationClient:
 
         spawned_from_conversation_id : typing.Optional[EntityId]
             The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
+            Setting this also gives the new conversation access to the context it branched from: when the bot
+            answers, the transcript of the spawned-from conversation (and of the conversations that one was
+            spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+            ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+            included.
+
+            The referenced conversation must belong to the same agent. Because the merged transcript is read
+            back to the end user, only set this to a conversation the current user is entitled to see.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -766,7 +776,9 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Feedback:
         """
-        Update feedback or create it if it doesn't exist
+        Replaced by the Create events API, which records feedback as a user event.
+
+        Update feedback or create it if it doesn't exist.
 
         Parameters
         ----------
@@ -1058,6 +1070,69 @@ class ConversationClient:
         )
         return _response.data
 
+    def search_cursor(
+        self,
+        *,
+        filter: typing.Optional[ConversationFilter] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        cursor: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ConversationsCursorSearchResponse:
+        """
+        Search conversations using cursor pagination, which can read past the 10,000th result that
+        `search` cannot reach.
+
+        Results are ordered by conversation creation time. Start with no `cursor`, then pass each
+        response's `nextCursor` back unchanged until the response omits it. Keep every other field
+        identical for the whole traversal — changing the filter, size, or sort direction mid-way is
+        rejected rather than silently restarting you at the beginning.
+
+        `nextCursor` is the only reliable end-of-results signal. Do not stop early because a page
+        came back with fewer conversations than you asked for: that happens legitimately, and more
+        pages may still remain.
+
+        Parameters
+        ----------
+        filter : typing.Optional[ConversationFilter]
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 200.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        cursor : typing.Optional[str]
+            Opaque cursor from the previous response's `nextCursor`, passed back unchanged. Omit it to
+            start a new traversal. Every other field must stay identical for the whole traversal;
+            changing one is rejected rather than silently restarting from the beginning. Cursors have
+            no expiry, but a cursor can still be rejected with a 400 if the server's signing key has
+            since been rotated out; if that happens, discard it and restart the traversal.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ConversationsCursorSearchResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.conversation.search_cursor()
+        """
+        _response = self._raw_client.search_cursor(
+            filter=filter, size=size, sort_desc=sort_desc, cursor=cursor, request_options=request_options
+        )
+        return _response.data
+
     def export(
         self,
         *,
@@ -1300,6 +1375,15 @@ class AsyncConversationClient:
 
         spawned_from_conversation_id : typing.Optional[EntityId]
             The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
+            Setting this also gives the new conversation access to the context it branched from: when the bot
+            answers, the transcript of the spawned-from conversation (and of the conversations that one was
+            spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+            ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+            included.
+
+            The referenced conversation must belong to the same agent. Because the merged transcript is read
+            back to the end user, only set this to a conversation the current user is entitled to see.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -2014,7 +2098,9 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> Feedback:
         """
-        Update feedback or create it if it doesn't exist
+        Replaced by the Create events API, which records feedback as a user event.
+
+        Update feedback or create it if it doesn't exist.
 
         Parameters
         ----------
@@ -2343,6 +2429,77 @@ class AsyncConversationClient:
         """
         _response = await self._raw_client.search(
             sort=sort, filter=filter, page=page, size=size, sort_desc=sort_desc, request_options=request_options
+        )
+        return _response.data
+
+    async def search_cursor(
+        self,
+        *,
+        filter: typing.Optional[ConversationFilter] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        cursor: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ConversationsCursorSearchResponse:
+        """
+        Search conversations using cursor pagination, which can read past the 10,000th result that
+        `search` cannot reach.
+
+        Results are ordered by conversation creation time. Start with no `cursor`, then pass each
+        response's `nextCursor` back unchanged until the response omits it. Keep every other field
+        identical for the whole traversal — changing the filter, size, or sort direction mid-way is
+        rejected rather than silently restarting you at the beginning.
+
+        `nextCursor` is the only reliable end-of-results signal. Do not stop early because a page
+        came back with fewer conversations than you asked for: that happens legitimately, and more
+        pages may still remain.
+
+        Parameters
+        ----------
+        filter : typing.Optional[ConversationFilter]
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 200.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        cursor : typing.Optional[str]
+            Opaque cursor from the previous response's `nextCursor`, passed back unchanged. Omit it to
+            start a new traversal. Every other field must stay identical for the whole traversal;
+            changing one is rejected rather than silently restarting from the beginning. Cursors have
+            no expiry, but a cursor can still be rejected with a 400 if the server's signing key has
+            since been rotated out; if that happens, discard it and restart the traversal.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ConversationsCursorSearchResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.conversation.search_cursor()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search_cursor(
+            filter=filter, size=size, sort_desc=sort_desc, cursor=cursor, request_options=request_options
         )
         return _response.data
 

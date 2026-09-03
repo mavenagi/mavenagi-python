@@ -21,6 +21,8 @@ from .conversation_message_request import ConversationMessageRequest
 from .conversation_metadata import ConversationMetadata
 from .conversation_patch_request import ConversationPatchRequest
 from .conversation_request import ConversationRequest
+from .conversations_cursor_search_request import ConversationsCursorSearchRequest
+from .conversations_cursor_search_response import ConversationsCursorSearchResponse
 from .conversations_response import ConversationsResponse
 from .conversations_search_request import ConversationsSearchRequest
 from .deliver_conversation_message_request import DeliverConversationMessageRequest
@@ -74,6 +76,8 @@ __all__ = [
     "ConversationMetadata",
     "ConversationPatchRequest",
     "ConversationRequest",
+    "ConversationsCursorSearchRequest",
+    "ConversationsCursorSearchResponse",
     "ConversationsResponse",
     "ConversationsSearchRequest",
     "DeliverConversationMessageRequest",

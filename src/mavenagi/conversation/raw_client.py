@@ -38,6 +38,7 @@ from .types.conversation_field import ConversationField
 from .types.conversation_filter import ConversationFilter
 from .types.conversation_message_request import ConversationMessageRequest
 from .types.conversation_metadata import ConversationMetadata
+from .types.conversations_cursor_search_response import ConversationsCursorSearchResponse
 from .types.conversations_response import ConversationsResponse
 from .types.deliver_message_request import DeliverMessageRequest
 from .types.deliver_message_response import DeliverMessageResponse
@@ -120,6 +121,15 @@ class RawConversationClient:
 
         spawned_from_conversation_id : typing.Optional[EntityId]
             The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
+            Setting this also gives the new conversation access to the context it branched from: when the bot
+            answers, the transcript of the spawned-from conversation (and of the conversations that one was
+            spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+            ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+            included.
+
+            The referenced conversation must belong to the same agent. Because the merged transcript is read
+            back to the end user, only set this to a conversation the current user is entitled to see.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1194,7 +1204,9 @@ class RawConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[Feedback]:
         """
-        Update feedback or create it if it doesn't exist
+        Replaced by the Create events API, which records feedback as a user event.
+
+        Update feedback or create it if it doesn't exist.
 
         Parameters
         ----------
@@ -1781,6 +1793,136 @@ class RawConversationClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def search_cursor(
+        self,
+        *,
+        filter: typing.Optional[ConversationFilter] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        cursor: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ConversationsCursorSearchResponse]:
+        """
+        Search conversations using cursor pagination, which can read past the 10,000th result that
+        `search` cannot reach.
+
+        Results are ordered by conversation creation time. Start with no `cursor`, then pass each
+        response's `nextCursor` back unchanged until the response omits it. Keep every other field
+        identical for the whole traversal — changing the filter, size, or sort direction mid-way is
+        rejected rather than silently restarting you at the beginning.
+
+        `nextCursor` is the only reliable end-of-results signal. Do not stop early because a page
+        came back with fewer conversations than you asked for: that happens legitimately, and more
+        pages may still remain.
+
+        Parameters
+        ----------
+        filter : typing.Optional[ConversationFilter]
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 200.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        cursor : typing.Optional[str]
+            Opaque cursor from the previous response's `nextCursor`, passed back unchanged. Omit it to
+            start a new traversal. Every other field must stay identical for the whole traversal;
+            changing one is rejected rather than silently restarting from the beginning. Cursors have
+            no expiry, but a cursor can still be rejected with a 400 if the server's signing key has
+            since been rotated out; if that happens, discard it and restart the traversal.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ConversationsCursorSearchResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/conversations/search/cursor",
+            method="POST",
+            json={
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=ConversationFilter, direction="write"
+                ),
+                "size": size,
+                "sortDesc": sort_desc,
+                "cursor": cursor,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ConversationsCursorSearchResponse,
+                    parse_obj_as(
+                        type_=ConversationsCursorSearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     @contextlib.contextmanager
     def export(
         self,
@@ -2196,6 +2338,15 @@ class AsyncRawConversationClient:
 
         spawned_from_conversation_id : typing.Optional[EntityId]
             The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
+            Setting this also gives the new conversation access to the context it branched from: when the bot
+            answers, the transcript of the spawned-from conversation (and of the conversations that one was
+            spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+            ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+            included.
+
+            The referenced conversation must belong to the same agent. Because the merged transcript is read
+            back to the end user, only set this to a conversation the current user is entitled to see.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -3270,7 +3421,9 @@ class AsyncRawConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[Feedback]:
         """
-        Update feedback or create it if it doesn't exist
+        Replaced by the Create events API, which records feedback as a user event.
+
+        Update feedback or create it if it doesn't exist.
 
         Parameters
         ----------
@@ -3793,6 +3946,136 @@ class AsyncRawConversationClient:
                     ConversationsResponse,
                     parse_obj_as(
                         type_=ConversationsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def search_cursor(
+        self,
+        *,
+        filter: typing.Optional[ConversationFilter] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        cursor: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ConversationsCursorSearchResponse]:
+        """
+        Search conversations using cursor pagination, which can read past the 10,000th result that
+        `search` cannot reach.
+
+        Results are ordered by conversation creation time. Start with no `cursor`, then pass each
+        response's `nextCursor` back unchanged until the response omits it. Keep every other field
+        identical for the whole traversal — changing the filter, size, or sort direction mid-way is
+        rejected rather than silently restarting you at the beginning.
+
+        `nextCursor` is the only reliable end-of-results signal. Do not stop early because a page
+        came back with fewer conversations than you asked for: that happens legitimately, and more
+        pages may still remain.
+
+        Parameters
+        ----------
+        filter : typing.Optional[ConversationFilter]
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 200.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        cursor : typing.Optional[str]
+            Opaque cursor from the previous response's `nextCursor`, passed back unchanged. Omit it to
+            start a new traversal. Every other field must stay identical for the whole traversal;
+            changing one is rejected rather than silently restarting from the beginning. Cursors have
+            no expiry, but a cursor can still be rejected with a 400 if the server's signing key has
+            since been rotated out; if that happens, discard it and restart the traversal.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ConversationsCursorSearchResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/conversations/search/cursor",
+            method="POST",
+            json={
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=ConversationFilter, direction="write"
+                ),
+                "size": size,
+                "sortDesc": sort_desc,
+                "cursor": cursor,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ConversationsCursorSearchResponse,
+                    parse_obj_as(
+                        type_=ConversationsCursorSearchResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

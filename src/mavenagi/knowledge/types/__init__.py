@@ -5,6 +5,7 @@
 from .base_knowledge_document import BaseKnowledgeDocument
 from .cancel_knowledge_base_version_request import CancelKnowledgeBaseVersionRequest
 from .finalize_knowledge_base_version_request import FinalizeKnowledgeBaseVersionRequest
+from .knowledge_base_document_deltas import KnowledgeBaseDocumentDeltas
 from .knowledge_base_field import KnowledgeBaseField
 from .knowledge_base_filter import KnowledgeBaseFilter
 from .knowledge_base_indexing_progress_state import KnowledgeBaseIndexingProgressState
@@ -40,6 +41,7 @@ __all__ = [
     "BaseKnowledgeDocument",
     "CancelKnowledgeBaseVersionRequest",
     "FinalizeKnowledgeBaseVersionRequest",
+    "KnowledgeBaseDocumentDeltas",
     "KnowledgeBaseField",
     "KnowledgeBaseFilter",
     "KnowledgeBaseIndexingProgressState",

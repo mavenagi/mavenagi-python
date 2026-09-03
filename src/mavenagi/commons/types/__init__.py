@@ -30,6 +30,7 @@ from .attachment_status import AttachmentStatus
 from .base_attachment import BaseAttachment
 from .base_capped_paginated_request import BaseCappedPaginatedRequest
 from .base_conversation_response import BaseConversationResponse
+from .base_cursor_request import BaseCursorRequest
 from .base_paginated_request import BasePaginatedRequest
 from .base_search_request import BaseSearchRequest
 from .boolean_condition import BooleanCondition
@@ -126,6 +127,7 @@ from .conversation_state import ConversationState
 from .conversation_state_precondition import ConversationStatePrecondition
 from .conversation_summary import ConversationSummary
 from .csat_info import CsatInfo
+from .cursor_page import CursorPage
 from .device_info import DeviceInfo
 from .device_type import DeviceType
 from .document_information import DocumentInformation
@@ -323,6 +325,7 @@ __all__ = [
     "BaseAttachment",
     "BaseCappedPaginatedRequest",
     "BaseConversationResponse",
+    "BaseCursorRequest",
     "BasePaginatedRequest",
     "BaseSearchRequest",
     "BooleanCondition",
@@ -409,6 +412,7 @@ __all__ = [
     "ConversationStatePrecondition",
     "ConversationSummary",
     "CsatInfo",
+    "CursorPage",
     "DeviceInfo",
     "DeviceType",
     "DocumentInformation",

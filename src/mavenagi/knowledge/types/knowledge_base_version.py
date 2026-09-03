@@ -8,6 +8,7 @@ import typing_extensions
 from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .knowledge_base_document_deltas import KnowledgeBaseDocumentDeltas
 from .knowledge_base_indexing_progress_state import KnowledgeBaseIndexingProgressState
 from .knowledge_base_version_progress import KnowledgeBaseVersionProgress
 from .knowledge_base_version_request import KnowledgeBaseVersionRequest
@@ -80,6 +81,14 @@ class KnowledgeBaseVersion(KnowledgeBaseVersionRequest):
     """
     Refresh progress most recently reported by the app that owns this knowledge base.
     Only populated while the version is in progress - absent once the version has completed.
+    """
+
+    document_deltas: typing_extensions.Annotated[
+        typing.Optional[KnowledgeBaseDocumentDeltas], FieldMetadata(alias="documentDeltas")
+    ] = pydantic.Field(default=None)
+    """
+    How this version changed the knowledge base. Absent for historical versions and for
+    versions that did not complete successfully.
     """
 
     if IS_PYDANTIC_V2:

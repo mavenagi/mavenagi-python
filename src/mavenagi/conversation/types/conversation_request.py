@@ -87,6 +87,15 @@ class ConversationRequest(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     The unique identifier of the conversation this new conversation was spawned from, if applicable.
+    
+    Setting this also gives the new conversation access to the context it branched from: when the bot
+    answers, the transcript of the spawned-from conversation (and of the conversations that one was
+    spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+    ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+    included.
+    
+    The referenced conversation must belong to the same agent. Because the merged transcript is read
+    back to the end user, only set this to a conversation the current user is entitled to see.
     """
 
     if IS_PYDANTIC_V2:
