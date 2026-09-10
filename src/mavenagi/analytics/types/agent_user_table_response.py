@@ -16,6 +16,7 @@ class AgentUserTableResponse(TableResponseBase):
 
     from mavenagi.analytics import (
         AgentUserRow,
+        AgentUserRowIdentifier,
         AgentUserTableResponse,
         CellData_Double,
         FieldValue_DateTime,
@@ -32,6 +33,16 @@ class AgentUserTableResponse(TableResponseBase):
                         )
                     )
                 },
+                identifiers=[
+                    AgentUserRowIdentifier(
+                        field="CreatedAt",
+                        value=FieldValue_DateTime(
+                            value=datetime.datetime.fromisoformat(
+                                "2023-10-01 00:00:00+00:00",
+                            )
+                        ),
+                    )
+                ],
                 data={"user_count": CellData_Double(value=5.0)},
             )
         ],

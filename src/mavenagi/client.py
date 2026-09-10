@@ -7,6 +7,7 @@ import httpx
 from .actions.client import ActionsClient, AsyncActionsClient
 from .agents.client import AgentsClient, AsyncAgentsClient
 from .analytics.client import AnalyticsClient, AsyncAnalyticsClient
+from .app_directory.client import AppDirectoryClient, AsyncAppDirectoryClient
 from .app_settings.client import AppSettingsClient, AsyncAppSettingsClient
 from .assets.client import AssetsClient, AsyncAssetsClient
 from .conversation.client import AsyncConversationClient, ConversationClient
@@ -106,6 +107,7 @@ class MavenAGI:
         self.actions = ActionsClient(client_wrapper=self._client_wrapper)
         self.agents = AgentsClient(client_wrapper=self._client_wrapper)
         self.analytics = AnalyticsClient(client_wrapper=self._client_wrapper)
+        self.app_directory = AppDirectoryClient(client_wrapper=self._client_wrapper)
         self.app_settings = AppSettingsClient(client_wrapper=self._client_wrapper)
         self.assets = AssetsClient(client_wrapper=self._client_wrapper)
         self.conversation = ConversationClient(client_wrapper=self._client_wrapper)
@@ -203,6 +205,7 @@ class AsyncMavenAGI:
         self.actions = AsyncActionsClient(client_wrapper=self._client_wrapper)
         self.agents = AsyncAgentsClient(client_wrapper=self._client_wrapper)
         self.analytics = AsyncAnalyticsClient(client_wrapper=self._client_wrapper)
+        self.app_directory = AsyncAppDirectoryClient(client_wrapper=self._client_wrapper)
         self.app_settings = AsyncAppSettingsClient(client_wrapper=self._client_wrapper)
         self.assets = AsyncAssetsClient(client_wrapper=self._client_wrapper)
         self.conversation = AsyncConversationClient(client_wrapper=self._client_wrapper)

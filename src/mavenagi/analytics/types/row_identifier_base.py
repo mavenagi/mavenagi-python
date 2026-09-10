@@ -4,26 +4,13 @@ import typing
 
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .field_value import FieldValue
 
 
-class Link(UniversalBaseModel):
+class RowIdentifierBase(UniversalBaseModel):
+    value: FieldValue = pydantic.Field()
     """
-    A supporting link published by an app's author.
-    """
-
-    title: str = pydantic.Field()
-    """
-    Link text.
-    """
-
-    description: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Optional longer explanation of where the link goes.
-    """
-
-    url: str = pydantic.Field()
-    """
-    Destination URL.
+    The row's value for this grouping.
     """
 
     if IS_PYDANTIC_V2:

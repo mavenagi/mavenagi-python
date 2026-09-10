@@ -15,6 +15,7 @@ class EventTableResponse(TableResponseBase):
     from mavenagi.analytics import (
         CellData_Double,
         EventRow,
+        EventRowIdentifier,
         EventTableResponse,
         FieldValue_String,
     )
@@ -24,10 +25,22 @@ class EventTableResponse(TableResponseBase):
         rows=[
             EventRow(
                 identifier={"EVENT_NAME": FieldValue_String(value="CHAT_OPENED")},
+                identifiers=[
+                    EventRowIdentifier(
+                        field="EVENT_NAME",
+                        value=FieldValue_String(value="CHAT_OPENED"),
+                    )
+                ],
                 data={"event_count": CellData_Double(value=50.0)},
             ),
             EventRow(
                 identifier={"EVENT_NAME": FieldValue_String(value="CHAT_CLOSED")},
+                identifiers=[
+                    EventRowIdentifier(
+                        field="EVENT_NAME",
+                        value=FieldValue_String(value="CHAT_CLOSED"),
+                    )
+                ],
                 data={"event_count": CellData_Double(value=45.0)},
             ),
         ],

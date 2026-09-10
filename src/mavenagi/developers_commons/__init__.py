@@ -2,6 +2,36 @@
 
 # isort: skip_file
 
-from .types import AppCapability, AppCategory, AppVisibility, GithubRepository, Link
+from .types import (
+    AppCapability,
+    AppCategory,
+    AppInstalled,
+    AppVisibility,
+    AppsFilter,
+    AppsResponse,
+    BaseApp,
+    BaseDetailApp,
+    CountByFilterResult,
+    DeveloperOrganization,
+    GithubRepository,
+    Link,
+    MarketplaceApp,
+    MarketplaceAppDetail,
+)
 
-__all__ = ["AppCapability", "AppCategory", "AppVisibility", "GithubRepository", "Link"]
+__all__ = [
+    "AppCapability",
+    "AppCategory",
+    "AppInstalled",
+    "AppVisibility",
+    "AppsFilter",
+    "AppsResponse",
+    "BaseApp",
+    "BaseDetailApp",
+    "CountByFilterResult",
+    "DeveloperOrganization",
+    "GithubRepository",
+    "Link",
+    "MarketplaceApp",
+    "MarketplaceAppDetail",
+]

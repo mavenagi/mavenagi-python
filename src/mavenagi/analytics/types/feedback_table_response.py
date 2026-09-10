@@ -15,6 +15,7 @@ class FeedbackTableResponse(TableResponseBase):
     from mavenagi.analytics import (
         CellData_Double,
         FeedbackRow,
+        FeedbackRowIdentifier,
         FeedbackTableResponse,
         FieldValue_String,
     )
@@ -24,10 +25,22 @@ class FeedbackTableResponse(TableResponseBase):
         rows=[
             FeedbackRow(
                 identifier={"CreatedBy": FieldValue_String(value="John Doe")},
+                identifiers=[
+                    FeedbackRowIdentifier(
+                        field="CreatedBy",
+                        value=FieldValue_String(value="John Doe"),
+                    )
+                ],
                 data={"feedback_count": CellData_Double(value=5.0)},
             ),
             FeedbackRow(
                 identifier={"CreatedBy": FieldValue_String(value="Jane Smith")},
+                identifiers=[
+                    FeedbackRowIdentifier(
+                        field="CreatedBy",
+                        value=FieldValue_String(value="Jane Smith"),
+                    )
+                ],
                 data={"feedback_count": CellData_Double(value=3.0)},
             ),
         ],

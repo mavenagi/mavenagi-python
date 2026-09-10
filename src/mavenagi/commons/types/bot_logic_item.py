@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import typing
 
 import pydantic
@@ -65,6 +66,9 @@ class BotLogicItem_Form(UniversalBaseModel):
     ]
     execution_result: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="executionResult")] = None
     execution_error: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="executionError")] = None
+    data: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
+    started_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="startedAt")] = None
+    duration_ms: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="durationMs")] = None
     action_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="actionId")]
     action_name: typing_extensions.Annotated[str, FieldMetadata(alias="actionName")]
 
@@ -96,6 +100,7 @@ class BotLogicItem_Safety(UniversalBaseModel):
 class BotLogicItem_User(UniversalBaseModel):
     type: typing.Literal["user"] = "user"
     user_data: typing_extensions.Annotated[typing.Dict[str, str], FieldMetadata(alias="userData")]
+    display_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="displayName")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

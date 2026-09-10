@@ -3,28 +3,14 @@
 import typing
 
 import pydantic
+import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.serialization import FieldMetadata
 
 
-class Link(UniversalBaseModel):
-    """
-    A supporting link published by an app's author.
-    """
-
-    title: str = pydantic.Field()
-    """
-    Link text.
-    """
-
-    description: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Optional longer explanation of where the link goes.
-    """
-
-    url: str = pydantic.Field()
-    """
-    Destination URL.
-    """
+class GetDirectoryAppSettingUploadUrlResponse(UniversalBaseModel):
+    upload_url: typing_extensions.Annotated[str, FieldMetadata(alias="uploadUrl")]
+    download_url: typing_extensions.Annotated[str, FieldMetadata(alias="downloadUrl")]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

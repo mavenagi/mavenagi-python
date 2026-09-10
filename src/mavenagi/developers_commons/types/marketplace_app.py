@@ -3,27 +3,19 @@
 import typing
 
 import pydantic
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from .app_installed import AppInstalled
+from .base_app import BaseApp
 
 
-class Link(UniversalBaseModel):
+class MarketplaceApp(BaseApp):
     """
-    A supporting link published by an app's author.
-    """
-
-    title: str = pydantic.Field()
-    """
-    Link text.
+    A minimal app definition used when rendering the main app directory page
     """
 
-    description: typing.Optional[str] = pydantic.Field(default=None)
+    installed: AppInstalled = pydantic.Field()
     """
-    Optional longer explanation of where the link goes.
-    """
-
-    url: str = pydantic.Field()
-    """
-    Destination URL.
+    Whether this app is currently installed on the agent the request was scoped to.
     """
 
     if IS_PYDANTIC_V2:

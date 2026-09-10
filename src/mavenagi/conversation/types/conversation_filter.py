@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.conversation_mode import ConversationMode
 from ...commons.types.entity_id_filter import EntityIdFilter
 from ...commons.types.feedback_type import FeedbackType
 from ...commons.types.number_range import NumberRange
@@ -135,6 +136,14 @@ class ConversationFilter(UniversalBaseModel):
     sentiment: typing.Optional[typing.List[Sentiment]] = pydantic.Field(default=None)
     """
     Filter by AI assessed sentiment analysis
+    """
+
+    conversation_mode: typing_extensions.Annotated[
+        typing.Optional[typing.List[ConversationMode]], FieldMetadata(alias="conversationMode")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by whether the conversation is spoken or written. Platform-assigned, never
+    customer-writable.
     """
 
     tags: typing.Optional[typing.List[str]] = pydantic.Field(default=None)

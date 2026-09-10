@@ -18,6 +18,7 @@ class ConversationTableResponse(TableResponseBase):
         CellData_Double,
         CellData_Millisecond,
         ConversationRow,
+        ConversationRowIdentifier,
         ConversationTableResponse,
         FieldValue_DateTime,
         FieldValue_String,
@@ -39,6 +40,20 @@ class ConversationTableResponse(TableResponseBase):
                         )
                     ),
                 },
+                identifiers=[
+                    ConversationRowIdentifier(
+                        field="Category",
+                        value=FieldValue_String(value="Sales"),
+                    ),
+                    ConversationRowIdentifier(
+                        field="CreatedAt",
+                        value=FieldValue_DateTime(
+                            value=datetime.datetime.fromisoformat(
+                                "2023-10-01 00:00:00+00:00",
+                            )
+                        ),
+                    ),
+                ],
                 data={
                     "count": CellData_Double(value=5.0),
                     "avg_first_response_time": CellData_Millisecond(value=150.0),
@@ -54,6 +69,20 @@ class ConversationTableResponse(TableResponseBase):
                         )
                     ),
                 },
+                identifiers=[
+                    ConversationRowIdentifier(
+                        field="Category",
+                        value=FieldValue_String(value="Support"),
+                    ),
+                    ConversationRowIdentifier(
+                        field="CreatedAt",
+                        value=FieldValue_DateTime(
+                            value=datetime.datetime.fromisoformat(
+                                "2023-10-01 00:00:00+00:00",
+                            )
+                        ),
+                    ),
+                ],
                 data={
                     "count": CellData_Double(value=10.0),
                     "avg_first_response_time": CellData_Millisecond(value=300.0),
@@ -61,7 +90,28 @@ class ConversationTableResponse(TableResponseBase):
                 },
             ),
             ConversationRow(
-                identifier={"Category": FieldValue_String(value="Sales")},
+                identifier={
+                    "Category": FieldValue_String(value="Sales"),
+                    "CreatedAt": FieldValue_DateTime(
+                        value=datetime.datetime.fromisoformat(
+                            "2023-10-02 00:00:00+00:00",
+                        )
+                    ),
+                },
+                identifiers=[
+                    ConversationRowIdentifier(
+                        field="Category",
+                        value=FieldValue_String(value="Sales"),
+                    ),
+                    ConversationRowIdentifier(
+                        field="CreatedAt",
+                        value=FieldValue_DateTime(
+                            value=datetime.datetime.fromisoformat(
+                                "2023-10-02 00:00:00+00:00",
+                            )
+                        ),
+                    ),
+                ],
                 data={
                     "count": CellData_Double(value=7.0),
                     "avg_first_response_time": CellData_Millisecond(value=180.0),
@@ -77,6 +127,20 @@ class ConversationTableResponse(TableResponseBase):
                         )
                     ),
                 },
+                identifiers=[
+                    ConversationRowIdentifier(
+                        field="Category",
+                        value=FieldValue_String(value="Support"),
+                    ),
+                    ConversationRowIdentifier(
+                        field="CreatedAt",
+                        value=FieldValue_DateTime(
+                            value=datetime.datetime.fromisoformat(
+                                "2023-10-02 00:00:00+00:00",
+                            )
+                        ),
+                    ),
+                ],
                 data={
                     "count": CellData_Double(value=8.0),
                     "avg_first_response_time": CellData_Millisecond(value=320.0),

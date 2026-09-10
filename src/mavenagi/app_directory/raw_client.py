@@ -3,19 +3,12 @@
 import typing
 from json.decoder import JSONDecodeError
 
-from ..analytics.types.chart_response import ChartResponse
-from ..analytics.types.conversation_chart_request import ConversationChartRequest
-from ..analytics.types.conversation_column_definition import ConversationColumnDefinition
-from ..analytics.types.conversation_group_by import ConversationGroupBy
-from ..analytics.types.conversation_table_response import ConversationTableResponse
-from ..analytics.types.time_interval import TimeInterval
 from ..commons.errors.bad_request_error import BadRequestError
 from ..commons.errors.not_found_error import NotFoundError
 from ..commons.errors.payload_too_large_error import PayloadTooLargeError
 from ..commons.errors.server_error import ServerError
 from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.error_message import ErrorMessage
-from ..conversation.types.conversation_filter import ConversationFilter
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
@@ -23,55 +16,69 @@ from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
-from .types.organization import Organization
+from ..developers_commons.types.apps_filter import AppsFilter
+from ..developers_commons.types.apps_response import AppsResponse
+from ..developers_commons.types.marketplace_app_detail import MarketplaceAppDetail
+from .types.directory_app_sort_field import DirectoryAppSortField
+from .types.get_directory_app_setting_download_url_response import GetDirectoryAppSettingDownloadUrlResponse
+from .types.get_directory_app_setting_upload_url_response import GetDirectoryAppSettingUploadUrlResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class RawOrganizationsClient:
+class RawAppDirectoryClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def create(
+    def search(
         self,
-        organization_reference_id: str,
         *,
-        name: str,
-        default_language: str,
+        sort: typing.Optional[DirectoryAppSortField] = OMIT,
+        filter: typing.Optional[AppsFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[Organization]:
+    ) -> HttpResponse[AppsResponse]:
         """
-        Create a new organization.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Lists apps available to install on the agent, with filtering and pagination.
 
         Parameters
         ----------
-        organization_reference_id : str
-            The reference ID of the organization.
+        sort : typing.Optional[DirectoryAppSortField]
+            The field to sort by. Defaults to the app's id.
 
-        name : str
-            The name of the organization.
+        filter : typing.Optional[AppsFilter]
+            Narrows the results. Omit to list everything available to the agent.
 
-        default_language : str
-            The default language for the organization in ISO 639-1 code format.
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 1000.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[Organization]
+        HttpResponse[AppsResponse]
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            "v1/directory/search",
             method="POST",
             json={
-                "name": name,
-                "defaultLanguage": default_language,
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=AppsFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
             },
             request_options=request_options,
             omit=OMIT,
@@ -79,9 +86,9 @@ class RawOrganizationsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    Organization,
+                    AppsResponse,
                     parse_obj_as(
-                        type_=Organization,  # type: ignore
+                        type_=AppsResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -147,34 +154,33 @@ class RawOrganizationsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def get(
-        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[Organization]:
+        self, app_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[MarketplaceAppDetail]:
         """
-        Get an organization by ID
+        Gets an app and its installation status for the agent.
 
         Parameters
         ----------
-        organization_reference_id : str
-            The reference ID of the organization.
+        app_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[Organization]
+        HttpResponse[MarketplaceAppDetail]
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            f"v1/directory/{jsonable_encoder(app_id)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    Organization,
+                    MarketplaceAppDetail,
                     parse_obj_as(
-                        type_=Organization,  # type: ignore
+                        type_=MarketplaceAppDetail,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -239,134 +245,60 @@ class RawOrganizationsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def patch(
+    def install(
         self,
-        organization_reference_id: str,
+        app_id: str,
         *,
-        name: typing.Optional[str] = OMIT,
-        default_language: typing.Optional[str] = OMIT,
+        settings: typing.Optional[typing.Any] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[Organization]:
-        """
-        Update mutable organization fields.
-        All fields will overwrite the existing value on the organization only if provided.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
-
-        Parameters
-        ----------
-        organization_reference_id : str
-            The reference ID of the organization.
-
-        name : typing.Optional[str]
-            The name of the organization.
-
-        default_language : typing.Optional[str]
-            The default language for the organization in ISO 639-1 code format.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[Organization]
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
-            method="PATCH",
-            json={
-                "name": name,
-                "defaultLanguage": default_language,
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    Organization,
-                    parse_obj_as(
-                        type_=Organization,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 413:
-                raise PayloadTooLargeError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise ServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def delete(
-        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[None]:
         """
-        Delete an organization.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Installs the app on the agent, or updates settings for an existing installation. Re-runs the postInstall lifecycle hook on each call.
 
         Parameters
         ----------
-        organization_reference_id : str
-            The reference ID of the organization.
+        app_id : str
+
+        settings : typing.Optional[typing.Any]
+            The app's configuration, as an object keyed by setting key.
+
+            The keys and accepted values are defined by the app itself: fetch the app with
+            `get` and read its `settingsSchema`, where every entry carries a `key`, a `type`, and
+            whether it is `required`. Values are merged into the installation's existing settings:
+            keys you omit keep their stored value, and the server does not currently reject an unknown
+            key or require an entry the schema marks `required`. Sending an empty object installs an
+            app that declares no settings.
+
+            Sensitive entries are returned redacted by `get`, and sending one back unchanged here is a
+            no-op that keeps the stored value, so a settings object can be read, edited and written
+            back whole. See `MarketplaceAppDetail.settings` for what is redacted and how.
+
+            The value's JSON type follows the entry's `type`:
+
+            | Entry type | Value |
+            | --- | --- |
+            | `text`, `multiline`, `color`, `dropdown` | string |
+            | `number` | number |
+            | `checkbox`, `switch` | boolean |
+            | `array` | list of strings |
+            | `complexarray` | list of objects |
+            | `oneOf`, `jsonSchema` | object matching the entry's schema |
+            | `image` | omitted — see below |
+
+            `image` entries are file settings. Do not send their bytes here: upload them first with
+            `getSettingUploadUrl` using the same setting key, and the stored file is picked up
+            automatically. `section` entries are layout only and take no value.
+
+            ```json
+            {
+              "settings": {
+                "acme.api.key": "sk-live-...",
+                "acme.region": "us-east-1",
+                "acme.sync.enabled": true,
+                "acme.retry.count": 3
+              }
+            }
+            ```
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -376,7 +308,94 @@ class RawOrganizationsClient:
         HttpResponse[None]
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            f"v1/directory/{jsonable_encoder(app_id)}/install",
+            method="POST",
+            json={
+                "settings": settings,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return HttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def uninstall(self, app_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[None]:
+        """
+        Uninstalls the app from the agent.
+
+        Parameters
+        ----------
+        app_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[None]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/directory/{jsonable_encoder(app_id)}/install",
             method="DELETE",
             request_options=request_options,
         )
@@ -443,70 +462,135 @@ class RawOrganizationsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def get_conversation_table(
-        self,
-        *,
-        field_groupings: typing.Sequence[ConversationGroupBy],
-        column_definitions: typing.Sequence[ConversationColumnDefinition],
-        time_grouping: typing.Optional[TimeInterval] = OMIT,
-        conversation_filter: typing.Optional[ConversationFilter] = OMIT,
-        timezone: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[ConversationTableResponse]:
+    def get_setting_download_url(
+        self, app_id: str, settings_key: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[GetDirectoryAppSettingDownloadUrlResponse]:
         """
-        Retrieves structured conversation data across all organizations, formatted as a table,
-        allowing users to group, filter, and define specific metrics to display as columns.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Gets a url for downloading a file app setting.
 
         Parameters
         ----------
-        field_groupings : typing.Sequence[ConversationGroupBy]
-            Specifies the fields by which data should be grouped. Each unique combination forms a row.
-            If multiple fields are provided, the result is grouped by their unique value combinations.
-            If empty, all data is aggregated into a single row. |
-            Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+        app_id : str
 
-        column_definitions : typing.Sequence[ConversationColumnDefinition]
-            Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
-
-        time_grouping : typing.Optional[TimeInterval]
-            Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
-
-        conversation_filter : typing.Optional[ConversationFilter]
-            Optional filter applied to refine the conversation data before processing.
-
-        timezone : typing.Optional[str]
-            IANA timezone identifier (e.g., "America/Los_Angeles").
-            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
-            otherwise UTC is used.
+        settings_key : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[ConversationTableResponse]
+        HttpResponse[GetDirectoryAppSettingDownloadUrlResponse]
         """
         _response = self._client_wrapper.httpx_client.request(
-            "v1/organizations/tables/conversations",
+            f"v1/directory/{jsonable_encoder(app_id)}/settings/{jsonable_encoder(settings_key)}",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetDirectoryAppSettingDownloadUrlResponse,
+                    parse_obj_as(
+                        type_=GetDirectoryAppSettingDownloadUrlResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get_setting_upload_url(
+        self,
+        app_id: str,
+        settings_key: str,
+        *,
+        content_length: int,
+        content_type: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[GetDirectoryAppSettingUploadUrlResponse]:
+        """
+        Gets a presigned url for uploading a file app setting before installation.
+
+        Parameters
+        ----------
+        app_id : str
+
+        settings_key : str
+
+        content_length : int
+
+        content_type : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[GetDirectoryAppSettingUploadUrlResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/directory/{jsonable_encoder(app_id)}/settings/{jsonable_encoder(settings_key)}/upload-url",
             method="POST",
             json={
-                "timeGrouping": time_grouping,
-                "fieldGroupings": convert_and_respect_annotation_metadata(
-                    object_=field_groupings, annotation=typing.Sequence[ConversationGroupBy], direction="write"
-                ),
-                "columnDefinitions": convert_and_respect_annotation_metadata(
-                    object_=column_definitions,
-                    annotation=typing.Sequence[ConversationColumnDefinition],
-                    direction="write",
-                ),
-                "conversationFilter": convert_and_respect_annotation_metadata(
-                    object_=conversation_filter, annotation=ConversationFilter, direction="write"
-                ),
-                "timezone": timezone,
+                "contentLength": content_length,
+                "contentType": content_type,
             },
             request_options=request_options,
             omit=OMIT,
@@ -514,110 +598,9 @@ class RawOrganizationsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ConversationTableResponse,
+                    GetDirectoryAppSettingUploadUrlResponse,
                     parse_obj_as(
-                        type_=ConversationTableResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 413:
-                raise PayloadTooLargeError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise ServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def get_conversation_chart(
-        self, *, request: ConversationChartRequest, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[ChartResponse]:
-        """
-        Fetches conversation data across all organizations, visualized in a chart format.
-        Supported chart types include pie chart, date histogram, and stacked bar charts.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
-
-        Parameters
-        ----------
-        request : ConversationChartRequest
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[ChartResponse]
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "v1/organizations/charts/conversations",
-            method="POST",
-            json=convert_and_respect_annotation_metadata(
-                object_=request, annotation=ConversationChartRequest, direction="write"
-            ),
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    ChartResponse,
-                    parse_obj_as(
-                        type_=ChartResponse,  # type: ignore
+                        type_=GetDirectoryAppSettingUploadUrlResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -683,49 +666,58 @@ class RawOrganizationsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
 
-class AsyncRawOrganizationsClient:
+class AsyncRawAppDirectoryClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def create(
+    async def search(
         self,
-        organization_reference_id: str,
         *,
-        name: str,
-        default_language: str,
+        sort: typing.Optional[DirectoryAppSortField] = OMIT,
+        filter: typing.Optional[AppsFilter] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[Organization]:
+    ) -> AsyncHttpResponse[AppsResponse]:
         """
-        Create a new organization.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Lists apps available to install on the agent, with filtering and pagination.
 
         Parameters
         ----------
-        organization_reference_id : str
-            The reference ID of the organization.
+        sort : typing.Optional[DirectoryAppSortField]
+            The field to sort by. Defaults to the app's id.
 
-        name : str
-            The name of the organization.
+        filter : typing.Optional[AppsFilter]
+            Narrows the results. Omit to list everything available to the agent.
 
-        default_language : str
-            The default language for the organization in ISO 639-1 code format.
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 1000.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[Organization]
+        AsyncHttpResponse[AppsResponse]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            "v1/directory/search",
             method="POST",
             json={
-                "name": name,
-                "defaultLanguage": default_language,
+                "sort": sort,
+                "filter": convert_and_respect_annotation_metadata(
+                    object_=filter, annotation=AppsFilter, direction="write"
+                ),
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
             },
             request_options=request_options,
             omit=OMIT,
@@ -733,9 +725,9 @@ class AsyncRawOrganizationsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    Organization,
+                    AppsResponse,
                     parse_obj_as(
-                        type_=Organization,  # type: ignore
+                        type_=AppsResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -801,34 +793,33 @@ class AsyncRawOrganizationsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def get(
-        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[Organization]:
+        self, app_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[MarketplaceAppDetail]:
         """
-        Get an organization by ID
+        Gets an app and its installation status for the agent.
 
         Parameters
         ----------
-        organization_reference_id : str
-            The reference ID of the organization.
+        app_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[Organization]
+        AsyncHttpResponse[MarketplaceAppDetail]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            f"v1/directory/{jsonable_encoder(app_id)}",
             method="GET",
             request_options=request_options,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    Organization,
+                    MarketplaceAppDetail,
                     parse_obj_as(
-                        type_=Organization,  # type: ignore
+                        type_=MarketplaceAppDetail,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -893,134 +884,60 @@ class AsyncRawOrganizationsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def patch(
+    async def install(
         self,
-        organization_reference_id: str,
+        app_id: str,
         *,
-        name: typing.Optional[str] = OMIT,
-        default_language: typing.Optional[str] = OMIT,
+        settings: typing.Optional[typing.Any] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[Organization]:
-        """
-        Update mutable organization fields.
-        All fields will overwrite the existing value on the organization only if provided.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
-
-        Parameters
-        ----------
-        organization_reference_id : str
-            The reference ID of the organization.
-
-        name : typing.Optional[str]
-            The name of the organization.
-
-        default_language : typing.Optional[str]
-            The default language for the organization in ISO 639-1 code format.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[Organization]
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
-            method="PATCH",
-            json={
-                "name": name,
-                "defaultLanguage": default_language,
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    Organization,
-                    parse_obj_as(
-                        type_=Organization,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 413:
-                raise PayloadTooLargeError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise ServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def delete(
-        self, organization_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[None]:
         """
-        Delete an organization.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Installs the app on the agent, or updates settings for an existing installation. Re-runs the postInstall lifecycle hook on each call.
 
         Parameters
         ----------
-        organization_reference_id : str
-            The reference ID of the organization.
+        app_id : str
+
+        settings : typing.Optional[typing.Any]
+            The app's configuration, as an object keyed by setting key.
+
+            The keys and accepted values are defined by the app itself: fetch the app with
+            `get` and read its `settingsSchema`, where every entry carries a `key`, a `type`, and
+            whether it is `required`. Values are merged into the installation's existing settings:
+            keys you omit keep their stored value, and the server does not currently reject an unknown
+            key or require an entry the schema marks `required`. Sending an empty object installs an
+            app that declares no settings.
+
+            Sensitive entries are returned redacted by `get`, and sending one back unchanged here is a
+            no-op that keeps the stored value, so a settings object can be read, edited and written
+            back whole. See `MarketplaceAppDetail.settings` for what is redacted and how.
+
+            The value's JSON type follows the entry's `type`:
+
+            | Entry type | Value |
+            | --- | --- |
+            | `text`, `multiline`, `color`, `dropdown` | string |
+            | `number` | number |
+            | `checkbox`, `switch` | boolean |
+            | `array` | list of strings |
+            | `complexarray` | list of objects |
+            | `oneOf`, `jsonSchema` | object matching the entry's schema |
+            | `image` | omitted — see below |
+
+            `image` entries are file settings. Do not send their bytes here: upload them first with
+            `getSettingUploadUrl` using the same setting key, and the stored file is picked up
+            automatically. `section` entries are layout only and take no value.
+
+            ```json
+            {
+              "settings": {
+                "acme.api.key": "sk-live-...",
+                "acme.region": "us-east-1",
+                "acme.sync.enabled": true,
+                "acme.retry.count": 3
+              }
+            }
+            ```
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1030,7 +947,96 @@ class AsyncRawOrganizationsClient:
         AsyncHttpResponse[None]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"v1/organizations/{jsonable_encoder(organization_reference_id)}",
+            f"v1/directory/{jsonable_encoder(app_id)}/install",
+            method="POST",
+            json={
+                "settings": settings,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return AsyncHttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def uninstall(
+        self, app_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[None]:
+        """
+        Uninstalls the app from the agent.
+
+        Parameters
+        ----------
+        app_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[None]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/directory/{jsonable_encoder(app_id)}/install",
             method="DELETE",
             request_options=request_options,
         )
@@ -1097,80 +1103,36 @@ class AsyncRawOrganizationsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def get_conversation_table(
-        self,
-        *,
-        field_groupings: typing.Sequence[ConversationGroupBy],
-        column_definitions: typing.Sequence[ConversationColumnDefinition],
-        time_grouping: typing.Optional[TimeInterval] = OMIT,
-        conversation_filter: typing.Optional[ConversationFilter] = OMIT,
-        timezone: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[ConversationTableResponse]:
+    async def get_setting_download_url(
+        self, app_id: str, settings_key: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[GetDirectoryAppSettingDownloadUrlResponse]:
         """
-        Retrieves structured conversation data across all organizations, formatted as a table,
-        allowing users to group, filter, and define specific metrics to display as columns.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Gets a url for downloading a file app setting.
 
         Parameters
         ----------
-        field_groupings : typing.Sequence[ConversationGroupBy]
-            Specifies the fields by which data should be grouped. Each unique combination forms a row.
-            If multiple fields are provided, the result is grouped by their unique value combinations.
-            If empty, all data is aggregated into a single row. |
-            Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
+        app_id : str
 
-        column_definitions : typing.Sequence[ConversationColumnDefinition]
-            Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
-
-        time_grouping : typing.Optional[TimeInterval]
-            Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
-
-        conversation_filter : typing.Optional[ConversationFilter]
-            Optional filter applied to refine the conversation data before processing.
-
-        timezone : typing.Optional[str]
-            IANA timezone identifier (e.g., "America/Los_Angeles").
-            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
-            otherwise UTC is used.
+        settings_key : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[ConversationTableResponse]
+        AsyncHttpResponse[GetDirectoryAppSettingDownloadUrlResponse]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/organizations/tables/conversations",
-            method="POST",
-            json={
-                "timeGrouping": time_grouping,
-                "fieldGroupings": convert_and_respect_annotation_metadata(
-                    object_=field_groupings, annotation=typing.Sequence[ConversationGroupBy], direction="write"
-                ),
-                "columnDefinitions": convert_and_respect_annotation_metadata(
-                    object_=column_definitions,
-                    annotation=typing.Sequence[ConversationColumnDefinition],
-                    direction="write",
-                ),
-                "conversationFilter": convert_and_respect_annotation_metadata(
-                    object_=conversation_filter, annotation=ConversationFilter, direction="write"
-                ),
-                "timezone": timezone,
-            },
+            f"v1/directory/{jsonable_encoder(app_id)}/settings/{jsonable_encoder(settings_key)}",
+            method="GET",
             request_options=request_options,
-            omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ConversationTableResponse,
+                    GetDirectoryAppSettingDownloadUrlResponse,
                     parse_obj_as(
-                        type_=ConversationTableResponse,  # type: ignore
+                        type_=GetDirectoryAppSettingDownloadUrlResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1235,43 +1197,51 @@ class AsyncRawOrganizationsClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def get_conversation_chart(
-        self, *, request: ConversationChartRequest, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[ChartResponse]:
+    async def get_setting_upload_url(
+        self,
+        app_id: str,
+        settings_key: str,
+        *,
+        content_length: int,
+        content_type: str,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[GetDirectoryAppSettingUploadUrlResponse]:
         """
-        Fetches conversation data across all organizations, visualized in a chart format.
-        Supported chart types include pie chart, date histogram, and stacked bar charts.
-
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Gets a presigned url for uploading a file app setting before installation.
 
         Parameters
         ----------
-        request : ConversationChartRequest
+        app_id : str
+
+        settings_key : str
+
+        content_length : int
+
+        content_type : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[ChartResponse]
+        AsyncHttpResponse[GetDirectoryAppSettingUploadUrlResponse]
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/organizations/charts/conversations",
+            f"v1/directory/{jsonable_encoder(app_id)}/settings/{jsonable_encoder(settings_key)}/upload-url",
             method="POST",
-            json=convert_and_respect_annotation_metadata(
-                object_=request, annotation=ConversationChartRequest, direction="write"
-            ),
+            json={
+                "contentLength": content_length,
+                "contentType": content_type,
+            },
             request_options=request_options,
             omit=OMIT,
         )
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ChartResponse,
+                    GetDirectoryAppSettingUploadUrlResponse,
                     parse_obj_as(
-                        type_=ChartResponse,  # type: ignore
+                        type_=GetDirectoryAppSettingUploadUrlResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

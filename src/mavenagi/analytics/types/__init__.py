@@ -7,6 +7,7 @@ from .agent_user_column_definition import AgentUserColumnDefinition
 from .agent_user_count import AgentUserCount
 from .agent_user_metric import AgentUserMetric, AgentUserMetric_Count
 from .agent_user_row import AgentUserRow
+from .agent_user_row_identifier import AgentUserRowIdentifier
 from .agent_user_table_request import AgentUserTableRequest
 from .agent_user_table_response import AgentUserTableResponse
 from .bar_chart_response import BarChartResponse
@@ -46,6 +47,7 @@ from .conversation_numeric_metric import ConversationNumericMetric
 from .conversation_percentile import ConversationPercentile
 from .conversation_pie_chart_request import ConversationPieChartRequest
 from .conversation_row import ConversationRow
+from .conversation_row_identifier import ConversationRowIdentifier
 from .conversation_sum import ConversationSum
 from .conversation_table_request import ConversationTableRequest
 from .conversation_table_response import ConversationTableResponse
@@ -66,6 +68,7 @@ from .event_group_by import EventGroupBy
 from .event_metric import EventMetric, EventMetric_Count, EventMetric_DistinctCount
 from .event_pie_chart_request import EventPieChartRequest
 from .event_row import EventRow
+from .event_row_identifier import EventRowIdentifier
 from .event_table_request import EventTableRequest
 from .event_table_response import EventTableResponse
 from .feedback_analytics_request import FeedbackAnalyticsRequest
@@ -75,6 +78,7 @@ from .feedback_distinct_count import FeedbackDistinctCount
 from .feedback_group_by import FeedbackGroupBy
 from .feedback_metric import FeedbackMetric, FeedbackMetric_Count, FeedbackMetric_DistinctCount
 from .feedback_row import FeedbackRow
+from .feedback_row_identifier import FeedbackRowIdentifier
 from .feedback_table_request import FeedbackTableRequest
 from .feedback_table_response import FeedbackTableResponse
 from .field_value import (
@@ -92,6 +96,7 @@ from .labeled_point import LabeledPoint
 from .pie_chart_response import PieChartResponse
 from .range import Range
 from .row_base import RowBase
+from .row_identifier_base import RowIdentifierBase
 from .series import Series
 from .table_response_base import TableResponseBase
 from .time_data_point import TimeDataPoint
@@ -105,6 +110,7 @@ __all__ = [
     "AgentUserMetric",
     "AgentUserMetric_Count",
     "AgentUserRow",
+    "AgentUserRowIdentifier",
     "AgentUserTableRequest",
     "AgentUserTableResponse",
     "BarChartResponse",
@@ -147,6 +153,7 @@ __all__ = [
     "ConversationPercentile",
     "ConversationPieChartRequest",
     "ConversationRow",
+    "ConversationRowIdentifier",
     "ConversationSum",
     "ConversationTableRequest",
     "ConversationTableResponse",
@@ -167,6 +174,7 @@ __all__ = [
     "EventMetric_DistinctCount",
     "EventPieChartRequest",
     "EventRow",
+    "EventRowIdentifier",
     "EventTableRequest",
     "EventTableResponse",
     "FeedbackAnalyticsRequest",
@@ -178,6 +186,7 @@ __all__ = [
     "FeedbackMetric_Count",
     "FeedbackMetric_DistinctCount",
     "FeedbackRow",
+    "FeedbackRowIdentifier",
     "FeedbackTableRequest",
     "FeedbackTableResponse",
     "FieldValue",
@@ -193,6 +202,7 @@ __all__ = [
     "PieChartResponse",
     "Range",
     "RowBase",
+    "RowIdentifierBase",
     "Series",
     "TableResponseBase",
     "TimeDataPoint",

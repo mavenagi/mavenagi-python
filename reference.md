@@ -221,6 +221,19 @@ client.actions.create_or_update(
 <dl>
 <dd>
 
+**side_effects:** `typing.Optional[SideEffects]` 
+
+Whether executing this action causes side effects. Absent means the action has never
+declared either way.
+
+This value is informational only. It does not yet affect action execution.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -414,11 +427,22 @@ client.actions.patch(
 
 **segment_id:** `typing.Optional[EntityId]` 
 
-The ID of the segment that must be matched for the action to be relevant to a conversation. 
+The ID of the segment that must be matched for the action to be relevant to a conversation.
 A null value will remove the segment from the action, it will be available on all conversations.
 
 Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
 Inline precondition support will be removed in a future release.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**side_effects:** `typing.Optional[SideEffects]` 
+
+Whether executing this action causes side effects.
+A null value clears it back to undeclared.
     
 </dd>
 </dl>
@@ -1226,12 +1250,6 @@ Specifies the fields by which data should be grouped. Each unique combination fo
 If multiple fields are provided, the result is grouped by their unique value combinations.
 If empty, all data is aggregated into a single row. |
 Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
-
-Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
-grouping is not currently distinguishable here from a second `IntelligentField` grouping,
-nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
-only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
-chart, which is unaffected.
     
 </dd>
 </dl>
@@ -1460,12 +1478,6 @@ Specifies the fields by which data should be grouped. Each unique combination fo
 If multiple fields are provided, the result is grouped by their unique value combinations.
 If empty, all data is aggregated into a single row. |
 Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
-
-Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
-grouping is not currently distinguishable here from a second `IntelligentField` grouping,
-nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
-only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
-chart, which is unaffected.
     
 </dd>
 </dl>
@@ -1989,6 +2001,560 @@ client.analytics.get_event_chart(
 <dd>
 
 **request:** `EventChartRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## AppDirectory
+<details><summary><code>client.app_directory.<a href="src/mavenagi/app_directory/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists apps available to install on the agent, with filtering and pagination.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.app_directory.search()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[DirectoryAppSortField]` — The field to sort by. Defaults to the app's id.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[AppsFilter]` — Narrows the results. Omit to list everything available to the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20. Max 1000.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.app_directory.<a href="src/mavenagi/app_directory/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Gets an app and its installation status for the agent.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.app_directory.get(
+    app_id="appId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**app_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.app_directory.<a href="src/mavenagi/app_directory/client.py">install</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Installs the app on the agent, or updates settings for an existing installation. Re-runs the postInstall lifecycle hook on each call.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.app_directory.install(
+    app_id="appId",
+    settings={"key": "value"},
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**app_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**settings:** `typing.Optional[typing.Any]` 
+
+The app's configuration, as an object keyed by setting key.
+
+The keys and accepted values are defined by the app itself: fetch the app with
+`get` and read its `settingsSchema`, where every entry carries a `key`, a `type`, and
+whether it is `required`. Values are merged into the installation's existing settings:
+keys you omit keep their stored value, and the server does not currently reject an unknown
+key or require an entry the schema marks `required`. Sending an empty object installs an
+app that declares no settings.
+
+Sensitive entries are returned redacted by `get`, and sending one back unchanged here is a
+no-op that keeps the stored value, so a settings object can be read, edited and written
+back whole. See `MarketplaceAppDetail.settings` for what is redacted and how.
+
+The value's JSON type follows the entry's `type`:
+
+| Entry type | Value |
+| --- | --- |
+| `text`, `multiline`, `color`, `dropdown` | string |
+| `number` | number |
+| `checkbox`, `switch` | boolean |
+| `array` | list of strings |
+| `complexarray` | list of objects |
+| `oneOf`, `jsonSchema` | object matching the entry's schema |
+| `image` | omitted — see below |
+
+`image` entries are file settings. Do not send their bytes here: upload them first with
+`getSettingUploadUrl` using the same setting key, and the stored file is picked up
+automatically. `section` entries are layout only and take no value.
+
+```json
+{
+  "settings": {
+    "acme.api.key": "sk-live-...",
+    "acme.region": "us-east-1",
+    "acme.sync.enabled": true,
+    "acme.retry.count": 3
+  }
+}
+```
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.app_directory.<a href="src/mavenagi/app_directory/client.py">uninstall</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Uninstalls the app from the agent.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.app_directory.uninstall(
+    app_id="appId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**app_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.app_directory.<a href="src/mavenagi/app_directory/client.py">get_setting_download_url</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Gets a url for downloading a file app setting.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.app_directory.get_setting_download_url(
+    app_id="appId",
+    settings_key="settingsKey",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**app_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**settings_key:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.app_directory.<a href="src/mavenagi/app_directory/client.py">get_setting_upload_url</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Gets a presigned url for uploading a file app setting before installation.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.app_directory.get_setting_upload_url(
+    app_id="appId",
+    settings_key="settingsKey",
+    content_length=1,
+    content_type="contentType",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**app_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**settings_key:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content_length:** `int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content_type:** `str` 
     
 </dd>
 </dl>
@@ -8997,12 +9563,6 @@ Specifies the fields by which data should be grouped. Each unique combination fo
 If multiple fields are provided, the result is grouped by their unique value combinations.
 If empty, all data is aggregated into a single row. |
 Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
-
-Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
-grouping is not currently distinguishable here from a second `IntelligentField` grouping,
-nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
-only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
-chart, which is unaffected.
     
 </dd>
 </dl>

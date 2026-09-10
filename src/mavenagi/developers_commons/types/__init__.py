@@ -4,8 +4,32 @@
 
 from .app_capability import AppCapability
 from .app_category import AppCategory
+from .app_installed import AppInstalled
 from .app_visibility import AppVisibility
+from .apps_filter import AppsFilter
+from .apps_response import AppsResponse
+from .base_app import BaseApp
+from .base_detail_app import BaseDetailApp
+from .count_by_filter_result import CountByFilterResult
+from .developer_organization import DeveloperOrganization
 from .github_repository import GithubRepository
 from .link import Link
+from .marketplace_app import MarketplaceApp
+from .marketplace_app_detail import MarketplaceAppDetail
 
-__all__ = ["AppCapability", "AppCategory", "AppVisibility", "GithubRepository", "Link"]
+__all__ = [
+    "AppCapability",
+    "AppCategory",
+    "AppInstalled",
+    "AppVisibility",
+    "AppsFilter",
+    "AppsResponse",
+    "BaseApp",
+    "BaseDetailApp",
+    "CountByFilterResult",
+    "DeveloperOrganization",
+    "GithubRepository",
+    "Link",
+    "MarketplaceApp",
+    "MarketplaceAppDetail",
+]

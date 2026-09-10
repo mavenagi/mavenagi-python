@@ -15,6 +15,7 @@ from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
 from ..commons.types.llm_inclusion_status import LlmInclusionStatus
 from ..commons.types.precondition import Precondition
+from ..commons.types.side_effects import SideEffects
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
@@ -163,6 +164,7 @@ class RawActionsClient:
         button_name: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         language: typing.Optional[str] = OMIT,
+        side_effects: typing.Optional[SideEffects] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ActionResponse]:
         """
@@ -194,6 +196,12 @@ class RawActionsClient:
         language : typing.Optional[str]
             The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
 
+        side_effects : typing.Optional[SideEffects]
+            Whether executing this action causes side effects. Absent means the action has never
+            declared either way.
+
+            This value is informational only. It does not yet affect action execution.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -219,6 +227,7 @@ class RawActionsClient:
                     object_=user_form_parameters, annotation=typing.Sequence[ActionParameter], direction="write"
                 ),
                 "language": language,
+                "sideEffects": side_effects,
             },
             request_options=request_options,
             omit=OMIT,
@@ -404,6 +413,7 @@ class RawActionsClient:
         instructions: typing.Optional[str] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
         segment_id: typing.Optional[EntityId] = OMIT,
+        side_effects: typing.Optional[SideEffects] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ActionResponse]:
         """
@@ -433,6 +443,10 @@ class RawActionsClient:
             Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
             Inline precondition support will be removed in a future release.
 
+        side_effects : typing.Optional[SideEffects]
+            Whether executing this action causes side effects.
+            A null value clears it back to undeclared.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -450,6 +464,7 @@ class RawActionsClient:
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=typing.Optional[EntityId], direction="write"
                 ),
+                "sideEffects": side_effects,
             },
             headers={
                 "content-type": "application/merge-patch+json",
@@ -747,6 +762,7 @@ class AsyncRawActionsClient:
         button_name: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         language: typing.Optional[str] = OMIT,
+        side_effects: typing.Optional[SideEffects] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ActionResponse]:
         """
@@ -778,6 +794,12 @@ class AsyncRawActionsClient:
         language : typing.Optional[str]
             The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
 
+        side_effects : typing.Optional[SideEffects]
+            Whether executing this action causes side effects. Absent means the action has never
+            declared either way.
+
+            This value is informational only. It does not yet affect action execution.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -803,6 +825,7 @@ class AsyncRawActionsClient:
                     object_=user_form_parameters, annotation=typing.Sequence[ActionParameter], direction="write"
                 ),
                 "language": language,
+                "sideEffects": side_effects,
             },
             request_options=request_options,
             omit=OMIT,
@@ -988,6 +1011,7 @@ class AsyncRawActionsClient:
         instructions: typing.Optional[str] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
         segment_id: typing.Optional[EntityId] = OMIT,
+        side_effects: typing.Optional[SideEffects] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ActionResponse]:
         """
@@ -1017,6 +1041,10 @@ class AsyncRawActionsClient:
             Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
             Inline precondition support will be removed in a future release.
 
+        side_effects : typing.Optional[SideEffects]
+            Whether executing this action causes side effects.
+            A null value clears it back to undeclared.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -1034,6 +1062,7 @@ class AsyncRawActionsClient:
                 "segmentId": convert_and_respect_annotation_metadata(
                     object_=segment_id, annotation=typing.Optional[EntityId], direction="write"
                 ),
+                "sideEffects": side_effects,
             },
             headers={
                 "content-type": "application/merge-patch+json",

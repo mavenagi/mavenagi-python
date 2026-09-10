@@ -10,6 +10,12 @@ from ...core.serialization import FieldMetadata
 
 class BotLogicUserItem(UniversalBaseModel):
     user_data: typing_extensions.Annotated[typing.Dict[str, str], FieldMetadata(alias="userData")]
+    display_name: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="displayName")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The user's name, when one can be determined from their user data. Absent otherwise — how a name is derived may broaden over time, so treat this as a display convenience rather than an identifier.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

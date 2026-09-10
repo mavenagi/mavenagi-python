@@ -9,6 +9,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
 from ...core.serialization import FieldMetadata
 from .action_parameter import ActionParameter
+from .side_effects import SideEffects
 
 
 class ActionProperties(UniversalBaseModel):
@@ -41,6 +42,16 @@ class ActionProperties(UniversalBaseModel):
     language: typing.Optional[str] = pydantic.Field(default=None)
     """
     The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
+    """
+
+    side_effects: typing_extensions.Annotated[typing.Optional[SideEffects], FieldMetadata(alias="sideEffects")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Whether executing this action causes side effects. Absent means the action has never
+    declared either way.
+    
+    This value is informational only. It does not yet affect action execution.
     """
 
     if IS_PYDANTIC_V2:

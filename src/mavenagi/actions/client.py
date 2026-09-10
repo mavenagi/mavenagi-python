@@ -8,6 +8,7 @@ from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.llm_inclusion_status import LlmInclusionStatus
 from ..commons.types.precondition import Precondition
+from ..commons.types.side_effects import SideEffects
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawActionsClient, RawActionsClient
@@ -95,6 +96,7 @@ class ActionsClient:
         button_name: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         language: typing.Optional[str] = OMIT,
+        side_effects: typing.Optional[SideEffects] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ActionResponse:
         """
@@ -125,6 +127,12 @@ class ActionsClient:
 
         language : typing.Optional[str]
             The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
+
+        side_effects : typing.Optional[SideEffects]
+            Whether executing this action causes side effects. Absent means the action has never
+            declared either way.
+
+            This value is informational only. It does not yet affect action execution.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -171,6 +179,7 @@ class ActionsClient:
             button_name=button_name,
             precondition=precondition,
             language=language,
+            side_effects=side_effects,
             request_options=request_options,
         )
         return _response.data
@@ -225,6 +234,7 @@ class ActionsClient:
         instructions: typing.Optional[str] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
         segment_id: typing.Optional[EntityId] = OMIT,
+        side_effects: typing.Optional[SideEffects] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ActionResponse:
         """
@@ -253,6 +263,10 @@ class ActionsClient:
 
             Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
             Inline precondition support will be removed in a future release.
+
+        side_effects : typing.Optional[SideEffects]
+            Whether executing this action causes side effects.
+            A null value clears it back to undeclared.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -291,6 +305,7 @@ class ActionsClient:
             instructions=instructions,
             llm_inclusion_status=llm_inclusion_status,
             segment_id=segment_id,
+            side_effects=side_effects,
             request_options=request_options,
         )
         return _response.data
@@ -413,6 +428,7 @@ class AsyncActionsClient:
         button_name: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         language: typing.Optional[str] = OMIT,
+        side_effects: typing.Optional[SideEffects] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ActionResponse:
         """
@@ -443,6 +459,12 @@ class AsyncActionsClient:
 
         language : typing.Optional[str]
             The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
+
+        side_effects : typing.Optional[SideEffects]
+            Whether executing this action causes side effects. Absent means the action has never
+            declared either way.
+
+            This value is informational only. It does not yet affect action execution.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -497,6 +519,7 @@ class AsyncActionsClient:
             button_name=button_name,
             precondition=precondition,
             language=language,
+            side_effects=side_effects,
             request_options=request_options,
         )
         return _response.data
@@ -559,6 +582,7 @@ class AsyncActionsClient:
         instructions: typing.Optional[str] = OMIT,
         llm_inclusion_status: typing.Optional[LlmInclusionStatus] = OMIT,
         segment_id: typing.Optional[EntityId] = OMIT,
+        side_effects: typing.Optional[SideEffects] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ActionResponse:
         """
@@ -587,6 +611,10 @@ class AsyncActionsClient:
 
             Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
             Inline precondition support will be removed in a future release.
+
+        side_effects : typing.Optional[SideEffects]
+            Whether executing this action causes side effects.
+            A null value clears it back to undeclared.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -633,6 +661,7 @@ class AsyncActionsClient:
             instructions=instructions,
             llm_inclusion_status=llm_inclusion_status,
             segment_id=segment_id,
+            side_effects=side_effects,
             request_options=request_options,
         )
         return _response.data

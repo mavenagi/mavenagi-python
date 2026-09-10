@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...users.types.agent_user_field import AgentUserField
+from .agent_user_row_identifier import AgentUserRowIdentifier
 from .field_value import FieldValue
 from .row_base import RowBase
 
@@ -12,8 +13,14 @@ from .row_base import RowBase
 class AgentUserRow(RowBase):
     identifier: typing.Dict[AgentUserField, FieldValue] = pydantic.Field()
     """
-    A unique identifier for each row, consisting of field names mapped to their respective values.
-    This includes time groupings and any specified field groupings.
+    Keyed by field, so it cannot represent two groupings that share a key - notably two
+    intelligent fields. Use `identifiers`, which carries one entry per grouping in request
+    order.
+    """
+
+    identifiers: typing.List[AgentUserRowIdentifier] = pydantic.Field()
+    """
+    One entry per grouping, in the order the groupings were requested.
     """
 
     if IS_PYDANTIC_V2:

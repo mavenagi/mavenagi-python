@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ...conversation.types.feedback_field import FeedbackField
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from .feedback_row_identifier import FeedbackRowIdentifier
 from .field_value import FieldValue
 from .row_base import RowBase
 
@@ -12,8 +13,14 @@ from .row_base import RowBase
 class FeedbackRow(RowBase):
     identifier: typing.Dict[FeedbackField, FieldValue] = pydantic.Field()
     """
-    A unique identifier for each row, consisting of field names mapped to their respective values.
-    This includes time groupings and any specified field groupings.
+    Keyed by field, so it cannot represent two groupings that share a key - notably two
+    intelligent fields. Use `identifiers`, which carries one entry per grouping in request
+    order.
+    """
+
+    identifiers: typing.List[FeedbackRowIdentifier] = pydantic.Field()
+    """
+    One entry per grouping, in the order the groupings were requested.
     """
 
     if IS_PYDANTIC_V2:

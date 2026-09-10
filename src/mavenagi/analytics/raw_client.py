@@ -65,12 +65,6 @@ class RawAnalyticsClient:
             If empty, all data is aggregated into a single row. |
             Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
 
-            Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
-            grouping is not currently distinguishable here from a second `IntelligentField` grouping,
-            nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
-            only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
-            chart, which is unaffected.
-
         column_definitions : typing.Sequence[ConversationColumnDefinition]
             Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
 
@@ -302,12 +296,6 @@ class RawAnalyticsClient:
             If multiple fields are provided, the result is grouped by their unique value combinations.
             If empty, all data is aggregated into a single row. |
             Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
-
-            Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
-            grouping is not currently distinguishable here from a second `IntelligentField` grouping,
-            nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
-            only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
-            chart, which is unaffected.
 
         column_definitions : typing.Sequence[ConversationColumnDefinition]
             Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
@@ -938,12 +926,6 @@ class AsyncRawAnalyticsClient:
             If empty, all data is aggregated into a single row. |
             Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
 
-            Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
-            grouping is not currently distinguishable here from a second `IntelligentField` grouping,
-            nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
-            only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
-            chart, which is unaffected.
-
         column_definitions : typing.Sequence[ConversationColumnDefinition]
             Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
 
@@ -1175,12 +1157,6 @@ class AsyncRawAnalyticsClient:
             If multiple fields are provided, the result is grouped by their unique value combinations.
             If empty, all data is aggregated into a single row. |
             Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
-
-            Note: A row's `identifier` cannot name an intelligent field, so an `IntelligentField`
-            grouping is not currently distinguishable here from a second `IntelligentField` grouping,
-            nor from `timeGrouping`. Row counts are correct in both cases, but the identifier keeps
-            only one value. Use a single `IntelligentField` grouping with no `timeGrouping`, or a
-            chart, which is unaffected.
 
         column_definitions : typing.Sequence[ConversationColumnDefinition]
             Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.

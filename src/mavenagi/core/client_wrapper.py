@@ -28,10 +28,10 @@ class BaseClientWrapper:
 
     def get_headers(self) -> typing.Dict[str, str]:
         headers: typing.Dict[str, str] = {
-            "User-Agent": "mavenagi/1.2.58",
+            "User-Agent": "mavenagi/1.2.59",
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "mavenagi",
-            "X-Fern-SDK-Version": "1.2.58",
+            "X-Fern-SDK-Version": "1.2.59",
             **(self.get_custom_headers() or {}),
         }
         app_id = self._get_app_id()

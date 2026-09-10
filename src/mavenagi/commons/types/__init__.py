@@ -269,6 +269,7 @@ from .settings_schema_entry import (
 )
 from .settings_schema_entry_base import SettingsSchemaEntryBase
 from .settings_schema_validation import SettingsSchemaValidation
+from .side_effects import SideEffects
 from .simulation_context import SimulationContext
 from .source import Source
 from .source_info import SourceInfo
@@ -563,6 +564,7 @@ __all__ = [
     "SettingsSchemaEntry_Switch",
     "SettingsSchemaEntry_Text",
     "SettingsSchemaValidation",
+    "SideEffects",
     "SimulationContext",
     "Source",
     "SourceInfo",
