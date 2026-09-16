@@ -10,6 +10,10 @@ from .entity_type import EntityType
 
 
 class KnowledgeContextByEntityTypes(UniversalBaseModel):
+    """
+    Not yet supported - see the `byEntityTypes` variant of `KnowledgeContextFilter`.
+    """
+
     entity_types: typing_extensions.Annotated[typing.Set[EntityType], FieldMetadata(alias="entityTypes")]
 
     if IS_PYDANTIC_V2:

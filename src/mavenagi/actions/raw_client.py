@@ -191,7 +191,9 @@ class RawActionsClient:
             When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action. Defaults to "Submit" if not supplied.
 
         precondition : typing.Optional[Precondition]
-            The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+            The preconditions that must be met for an action to be relevant to a conversation.
 
         language : typing.Optional[str]
             The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
@@ -437,11 +439,10 @@ class RawActionsClient:
             Determines whether the action is sent to the LLM as part of a conversation.
 
         segment_id : typing.Optional[EntityId]
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
             The ID of the segment that must be matched for the action to be relevant to a conversation.
             A null value will remove the segment from the action, it will be available on all conversations.
-
-            Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
-            Inline precondition support will be removed in a future release.
 
         side_effects : typing.Optional[SideEffects]
             Whether executing this action causes side effects.
@@ -789,7 +790,9 @@ class AsyncRawActionsClient:
             When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action. Defaults to "Submit" if not supplied.
 
         precondition : typing.Optional[Precondition]
-            The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+            The preconditions that must be met for an action to be relevant to a conversation.
 
         language : typing.Optional[str]
             The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
@@ -1035,11 +1038,10 @@ class AsyncRawActionsClient:
             Determines whether the action is sent to the LLM as part of a conversation.
 
         segment_id : typing.Optional[EntityId]
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
             The ID of the segment that must be matched for the action to be relevant to a conversation.
             A null value will remove the segment from the action, it will be available on all conversations.
-
-            Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
-            Inline precondition support will be removed in a future release.
 
         side_effects : typing.Optional[SideEffects]
             Whether executing this action causes side effects.

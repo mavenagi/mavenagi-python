@@ -12,14 +12,14 @@ from ...core.serialization import FieldMetadata
 class AgentPrompting(UniversalBaseModel):
     persona: LlmPersona = pydantic.Field()
     """
-    The overall persona of the agent.
+    Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
     """
 
     additional_prompt_text: typing_extensions.Annotated[
         typing.Optional[str], FieldMetadata(alias="additionalPromptText")
     ] = pydantic.Field(default=None)
     """
-    Additional text directly appended to the prompt. This field is replaced by Knowledge Documents with `llmInclusionsStatus` set to `ALWAYS`.
+    Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
     """
 
     category_generation_prompt_text: typing_extensions.Annotated[
@@ -46,6 +46,8 @@ class AgentPrompting(UniversalBaseModel):
         bool, FieldMetadata(alias="rejectQuestionsWithoutKnowledge")
     ] = pydantic.Field()
     """
+    Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+    
     Return the system fallback message on all questions that have no relevant knowledge bases or actions.
     """
 

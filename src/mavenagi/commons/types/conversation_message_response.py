@@ -32,6 +32,7 @@ class ConversationMessageResponse_User(UniversalBaseModel):
     response_state: typing_extensions.Annotated[
         typing.Optional[UserMessageResponseState], FieldMetadata(alias="responseState")
     ] = None
+    timezone: typing.Optional[str] = None
     user_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="userId")]
     text: str
     user_message_type: typing_extensions.Annotated[UserConversationMessageType, FieldMetadata(alias="userMessageType")]

@@ -35,7 +35,13 @@ class EventFilter(UniversalBaseModel):
     ] = None
     legacy_feedback_types: typing_extensions.Annotated[
         typing.Optional[typing.List[FeedbackType]], FieldMetadata(alias="legacyFeedbackTypes")
-    ] = None
+    ] = pydantic.Field(default=None)
+    """
+    Narrow to the events that carry a rating. `ThumbsUp` and `ThumbsDown` match `BUTTON_CLICKED`
+    events by their `feedbackInfo.thumbUp` value, and `Insert` matches `TEXT_INSERTED` events.
+    `Handoff` is no longer supported.
+    """
+
     has_event_text: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="hasEventText")] = None
 
     if IS_PYDANTIC_V2:

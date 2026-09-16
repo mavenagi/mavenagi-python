@@ -295,7 +295,11 @@ class AnalyticsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> FeedbackTableResponse:
         """
-        Retrieves structured feedback data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+        Deprecated. Use `getEventTable` instead, which reports the same thumbs up/down and insert
+        activity as user events.
+
+        Retrieves structured feedback data formatted as a table, allowing users to group, filter,
+        and define specific metrics to display as columns.
 
         Parameters
         ----------
@@ -870,7 +874,11 @@ class AsyncAnalyticsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> FeedbackTableResponse:
         """
-        Retrieves structured feedback data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+        Deprecated. Use `getEventTable` instead, which reports the same thumbs up/down and insert
+        activity as user events.
+
+        Retrieves structured feedback data formatted as a table, allowing users to group, filter,
+        and define specific metrics to display as columns.
 
         Parameters
         ----------

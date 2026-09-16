@@ -86,7 +86,10 @@ class KnowledgeBaseFilter(UniversalBaseModel):
         typing.Optional[typing.List[EntityId]], FieldMetadata(alias="segmentIds")
     ] = pydantic.Field(default=None)
     """
-    Filter knowledge bases by the segments they are assigned to. Uses OR semantics — returns knowledge bases assigned to any of the provided segments.
+    Deprecated. Segment assignment on knowledge bases is superseded by charters.
+    
+    Filter knowledge bases by the segments they are assigned to. Uses OR semantics — returns knowledge bases
+    assigned to any of the provided segments.
     """
 
     if IS_PYDANTIC_V2:

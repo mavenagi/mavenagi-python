@@ -1204,7 +1204,9 @@ class RawConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[Feedback]:
         """
-        Replaced by the Create events API, which records feedback as a user event.
+        Deprecated. Use the Create events API instead, which records feedback as a user event:
+        emit a `USER` event with an `eventName` of `BUTTON_CLICKED` for thumbs up/down or
+        `TEXT_INSERTED` for inserts.
 
         Update feedback or create it if it doesn't exist.
 
@@ -3421,7 +3423,9 @@ class AsyncRawConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[Feedback]:
         """
-        Replaced by the Create events API, which records feedback as a user event.
+        Deprecated. Use the Create events API instead, which records feedback as a user event:
+        emit a `USER` event with an `eventName` of `BUTTON_CLICKED` for thumbs up/down or
+        `TEXT_INSERTED` for inserts.
 
         Update feedback or create it if it doesn't exist.
 

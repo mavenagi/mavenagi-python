@@ -2,4 +2,19 @@
 
 import typing
 
-SystemEventName = typing.Union[typing.Literal["APP_INSTALLED", "APP_UNINSTALLED", "APP_UPDATED"], typing.Any]
+SystemEventName = typing.Union[
+    typing.Literal[
+        "APP_INSTALLED",
+        "APP_UNINSTALLED",
+        "APP_UPDATED",
+        "NOTIFICATION_SENT",
+        "NOTIFICATION_DELIVERED",
+        "NOTIFICATION_FAILED",
+        "INTEGRATION_CONNECTED",
+        "INTEGRATION_DISCONNECTED",
+        "SYNC_STARTED",
+        "SYNC_COMPLETED",
+        "SYNC_FAILED",
+    ],
+    typing.Any,
+]

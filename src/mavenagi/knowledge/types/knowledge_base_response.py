@@ -118,6 +118,8 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
 
     tags: typing.Set[str] = pydantic.Field()
     """
+    Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+    
     The tags of the knowledge base.
     """
 
@@ -139,18 +141,18 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
         pydantic.Field(default=None)
     )
     """
-    The IDs of the segment that must be matched for the knowledge base to be relevant to a conversation.
-    Segments are replacing inline preconditions - a Knowledge Base may not have both an inline precondition and a segment.
-    Inline precondition support will be removed in a future release.
+    Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+    
+    The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
     """
 
     segment_ids: typing_extensions.Annotated[typing.List[EntityId], FieldMetadata(alias="segmentIds")] = (
         pydantic.Field()
     )
     """
+    Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+    
     The IDs of the segments that should be matched for the knowledge base to be relevant to a conversation.
-    Segments are replacing inline preconditions - a Knowledge Base may not have both an inline precondition and a segment.
-    Inline precondition support will be removed in a future release.
     """
 
     url: typing.Optional[str] = pydantic.Field(default=None)

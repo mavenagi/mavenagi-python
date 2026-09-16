@@ -40,9 +40,15 @@ class ResponseConfig(UniversalBaseModel):
         typing.Optional[KnowledgeContextFilter], FieldMetadata(alias="contextFilter")
     ] = pydantic.Field(default=None)
     """
-    Filters that restrict the knowledge retrieval candidate pool.
-    - entities: specific entities to scope by
-    - entityTypes: entity types to scope by (e.g., AGENT, CUSTOMER)
+    Widens the knowledge retrieval candidate pool to include documents scoped to the given
+    entities, in addition to the agent's own knowledge.
+    
+    Knowledge documents are scoped by setting `relevantEntities` on the document. A document
+    with no `relevantEntities` belongs to the agent and is always a retrieval candidate;
+    naming entities here additionally makes documents scoped to those entities retrievable.
+    Omitting this field restricts retrieval to the agent's own knowledge.
+    
+    Only the `byEntities` variant is supported today - see `byEntityTypes`.
     """
 
     if IS_PYDANTIC_V2:

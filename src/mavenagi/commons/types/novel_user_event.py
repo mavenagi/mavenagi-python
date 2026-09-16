@@ -42,7 +42,8 @@ class NovelUserEvent(EventBaseNoId):
         typing.Optional[typing.List[FeedbackInfo]], FieldMetadata(alias="feedbackInfo")
     ] = pydantic.Field(default=None)
     """
-    Information about any feedback associated with the event
+    Any rating carried by the event. A `BUTTON_CLICKED` thumbs up or down sets a single entry
+    with `thumbUp` true or false.
     """
 
     page_info: typing_extensions.Annotated[typing.Optional[PageInfo], FieldMetadata(alias="pageInfo")] = pydantic.Field(

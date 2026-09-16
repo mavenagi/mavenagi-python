@@ -67,6 +67,14 @@ class UserMessage(UserMessageBase):
     - `LLM_DISABLED`: An answer was requested for this user message and the LLM was disabled.
     """
 
+    timezone: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The timezone supplied with the creating request and used for the message's time-based
+    operations, normally an IANA identifier (e.g. "America/New_York", "Europe/London").
+    Absent when the request did not supply one, in which case the agent's default timezone
+    applied.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

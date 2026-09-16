@@ -90,9 +90,10 @@ class ConversationFilter(UniversalBaseModel):
 
     feedback: typing.Optional[typing.List[FeedbackType]] = pydantic.Field(default=None)
     """
-    Filter by feedback types received in the conversation.
-    This is a legacy field that maps to Events saved in the system for `ThumbsUp`, `ThumbsDown`, and `Insert`.
-    The `Handoff` filter will pass if any bot responses on the conversation returned the system fallback message; there are no corresponding handoff events.
+    Filter by the user events recorded on the conversation. `ThumbsUp` and `ThumbsDown` match
+    `BUTTON_CLICKED` events by their `feedbackInfo.thumbUp` value, and `Insert` matches
+    `TEXT_INSERTED` events. `Handoff` matches bot responses that returned the system fallback
+    message.
     """
 
     human_agents: typing_extensions.Annotated[typing.Optional[typing.List[str]], FieldMetadata(alias="humanAgents")] = (

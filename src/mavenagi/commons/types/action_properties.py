@@ -29,7 +29,9 @@ class ActionProperties(UniversalBaseModel):
 
     precondition: typing.Optional["Precondition"] = pydantic.Field(default=None)
     """
-    The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
+    Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+    
+    The preconditions that must be met for an action to be relevant to a conversation.
     """
 
     user_form_parameters: typing_extensions.Annotated[

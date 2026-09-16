@@ -517,10 +517,10 @@ class RawAgentsClient:
             The system fallback message.
 
         persona : typing.Optional[LlmPersona]
-            The overall persona of the agent.
+            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
 
         additional_prompt_text : typing.Optional[str]
-            Additional text directly appended to the prompt.
+            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
 
         category_generation_prompt_text : typing.Optional[str]
             LLM prompt for category generation.
@@ -529,6 +529,8 @@ class RawAgentsClient:
             LLM prompt for generating a response when the user's question has been detected as unsafe.
 
         reject_questions_without_knowledge : typing.Optional[bool]
+            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+
             Return the system fallback message on all questions that have no relevant knowledge bases or actions.
 
         request_options : typing.Optional[RequestOptions]
@@ -1216,10 +1218,10 @@ class AsyncRawAgentsClient:
             The system fallback message.
 
         persona : typing.Optional[LlmPersona]
-            The overall persona of the agent.
+            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
 
         additional_prompt_text : typing.Optional[str]
-            Additional text directly appended to the prompt.
+            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
 
         category_generation_prompt_text : typing.Optional[str]
             LLM prompt for category generation.
@@ -1228,6 +1230,8 @@ class AsyncRawAgentsClient:
             LLM prompt for generating a response when the user's question has been detected as unsafe.
 
         reject_questions_without_knowledge : typing.Optional[bool]
+            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+
             Return the system fallback message on all questions that have no relevant knowledge bases or actions.
 
         request_options : typing.Optional[RequestOptions]

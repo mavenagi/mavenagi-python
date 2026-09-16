@@ -205,7 +205,11 @@ client.actions.create_or_update(
 <dl>
 <dd>
 
-**precondition:** `typing.Optional[Precondition]` — The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
+**precondition:** `typing.Optional[Precondition]` 
+
+Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+The preconditions that must be met for an action to be relevant to a conversation.
     
 </dd>
 </dl>
@@ -427,11 +431,10 @@ client.actions.patch(
 
 **segment_id:** `typing.Optional[EntityId]` 
 
+Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
 The ID of the segment that must be matched for the action to be relevant to a conversation.
 A null value will remove the segment from the action, it will be available on all conversations.
-
-Segments are replacing inline preconditions - an action may not have both an inline precondition and a segment.
-Inline precondition support will be removed in a future release.
     
 </dd>
 </dl>
@@ -1017,7 +1020,7 @@ client.agents.patch(
 <dl>
 <dd>
 
-**persona:** `typing.Optional[LlmPersona]` — The overall persona of the agent.
+**persona:** `typing.Optional[LlmPersona]` — Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
     
 </dd>
 </dl>
@@ -1025,7 +1028,7 @@ client.agents.patch(
 <dl>
 <dd>
 
-**additional_prompt_text:** `typing.Optional[str]` — Additional text directly appended to the prompt.
+**additional_prompt_text:** `typing.Optional[str]` — Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
     
 </dd>
 </dl>
@@ -1049,7 +1052,11 @@ client.agents.patch(
 <dl>
 <dd>
 
-**reject_questions_without_knowledge:** `typing.Optional[bool]` — Return the system fallback message on all questions that have no relevant knowledge bases or actions.
+**reject_questions_without_knowledge:** `typing.Optional[bool]` 
+
+Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+
+Return the system fallback message on all questions that have no relevant knowledge bases or actions.
     
 </dd>
 </dl>
@@ -1545,7 +1552,11 @@ otherwise UTC is used.
 <dl>
 <dd>
 
-Retrieves structured feedback data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+Deprecated. Use `getEventTable` instead, which reports the same thumbs up/down and insert
+activity as user events.
+
+Retrieves structured feedback data formatted as a table, allowing users to group, filter,
+and define specific metrics to display as columns.
 </dd>
 </dl>
 </dd>
@@ -4117,7 +4128,9 @@ client.conversation.categorize(
 <dl>
 <dd>
 
-Replaced by the Create events API, which records feedback as a user event.
+Deprecated. Use the Create events API instead, which records feedback as a user event:
+emit a `USER` event with an `eventName` of `BUTTON_CLICKED` for thumbs up/down or
+`TEXT_INSERTED` for inserts.
 
 Update feedback or create it if it doesn't exist.
 </dd>
@@ -7614,7 +7627,11 @@ length of 512 characters.
 <dl>
 <dd>
 
-**precondition:** `typing.Optional[Precondition]` — The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
+**precondition:** `typing.Optional[Precondition]` 
+
+Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+The preconditions that must be met for a knowledge base to be relevant to a conversation.
     
 </dd>
 </dl>
@@ -8058,7 +8075,11 @@ client.knowledge.patch_knowledge_base(
 <dl>
 <dd>
 
-**tags:** `typing.Optional[typing.Set[str]]` — The tags of the knowledge base.
+**tags:** `typing.Optional[typing.Set[str]]` 
+
+Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+The tags of the knowledge base.
     
 </dd>
 </dl>
@@ -8074,7 +8095,12 @@ client.knowledge.patch_knowledge_base(
 <dl>
 <dd>
 
-**precondition:** `typing.Optional[Precondition]` — The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+**precondition:** `typing.Optional[Precondition]` 
+
+Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+The preconditions that must be met for a knowledge base to be relevant to a conversation.
+A null value will remove the precondition from the knowledge base, it will be available on all conversations.
     
 </dd>
 </dl>
@@ -8084,11 +8110,10 @@ client.knowledge.patch_knowledge_base(
 
 **segment_id:** `typing.Optional[EntityId]` 
 
+Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
 The ID of a segment that must be matched for the knowledge base to be relevant to a conversation.
 A null value will remove the segment from the knowledge base, it will be available on all conversations.
-
-Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
-Inline precondition support will be removed in a future release.
     
 </dd>
 </dl>
@@ -8098,11 +8123,11 @@ Inline precondition support will be removed in a future release.
 
 **segment_ids:** `typing.Optional[typing.Sequence[EntityId]]` 
 
-The IDs of segment that should be matched (under an OR clause) for the knowledge base to be relevant to a 
-conversation. An empty list will remove segments from the knowledge base, it will be available on all 
-conversations.
-Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
-Inline precondition support will be removed in a future release.
+Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+The IDs of segments that should be matched (under an OR clause) for the knowledge base to be relevant
+to a conversation. An empty list will remove segments from the knowledge base, it will be available on
+all conversations.
     
 </dd>
 </dl>
@@ -8788,7 +8813,20 @@ length of 512 characters.
 <dl>
 <dd>
 
-**relevant_entities:** `typing.Optional[typing.Sequence[ScopedEntity]]` — Scoped entities this document is associated with for context-based filtering. By default, the document is associated with the agent.
+**relevant_entities:** `typing.Optional[typing.Sequence[ScopedEntity]]` 
+
+Narrows this document to the given entities. Omit it - the default - to make the document
+part of the agent's general knowledge, retrievable on every conversation.
+
+A document narrowed to entities is only retrieved on conversations whose
+`responseConfig.contextFilter` names one of them, so it never surfaces on unrelated
+conversations. Each `entityId` must be fully specified and must belong to the
+organization and agent the request is made against; one that does not, or that names an
+entity type with no internal form, is rejected rather than dropped - dropping the last
+entity would widen the document back to the whole agent.
+
+Changing the entities on an existing document is not supported yet: re-sending a
+document with different `relevantEntities` but unchanged content is a no-op.
     
 </dd>
 </dl>
@@ -10499,7 +10537,9 @@ The type of event trigger this app wishes to handle.
 Conversation triggers fire when a conversation is created, after each additional message, and upon deletion events.
 There is a small delay before trigger execution to allow time for conversation analysis to complete.
 
-Feedback can not be modified, so the feedback trigger fires immediately after feedback is created.
+Events are immutable, so an event trigger fires immediately after the event is created.
+
+Inbox triggers fire when an inbox item is created or updated.
     
 </dd>
 </dl>

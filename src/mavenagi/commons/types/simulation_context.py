@@ -15,14 +15,14 @@ class SimulationContext(UniversalBaseModel):
         typing.Optional[str], FieldMetadata(alias="additionalPromptText")
     ] = pydantic.Field(default=None)
     """
+    Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+    
     If provided, overrides the agent's default additional prompt text during the simulation.
-    Note that this field is provided for backwards compatibility and will be removed in a future release.
-    Instead please use the `availableKnowledgeBases` field to include a knowledge base with a document `llmInclusionStatus` set to `ALWAYS`.
     """
 
     persona: typing.Optional[LlmPersona] = pydantic.Field(default=None)
     """
-    The persona to use during the simulation. If not provided, the agent's default persona will be used.
+    Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
     """
 
     available_knowledge_bases: typing_extensions.Annotated[

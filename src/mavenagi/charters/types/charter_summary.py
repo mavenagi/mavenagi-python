@@ -36,8 +36,14 @@ class CharterSummary(UniversalBaseModel):
         typing.Optional[SegmentSummary], FieldMetadata(alias="segmentSummary")
     ] = pydantic.Field(default=None)
     """
-    The segment controlling when this charter applies. Null means wildcard
-    (always matches).
+    The segment backing this charter's rule. An implementation detail of `precondition`;
+    read that instead.
+    """
+
+    precondition: typing.Optional["PreconditionResponse"] = pydantic.Field(default=None)
+    """
+    The rule controlling when this charter applies, read from the charter's backing
+    segment. Null means wildcard (always matches).
     """
 
     parent_charter_id: typing_extensions.Annotated[
@@ -85,5 +91,6 @@ class CharterSummary(UniversalBaseModel):
 
 
 from ...commons.types.precondition_group_response import PreconditionGroupResponse  # noqa: E402, F401, I001
+from ...commons.types.precondition_response import PreconditionResponse  # noqa: E402, F401, I001
 
 update_forward_refs(CharterSummary)

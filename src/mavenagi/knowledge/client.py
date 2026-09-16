@@ -128,7 +128,9 @@ class KnowledgeClient:
             length of 512 characters.
 
         precondition : typing.Optional[Precondition]
-            The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+            The preconditions that must be met for a knowledge base to be relevant to a conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -379,27 +381,31 @@ class KnowledgeClient:
             The name of the knowledge base.
 
         tags : typing.Optional[typing.Set[str]]
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
             The tags of the knowledge base.
 
         llm_inclusion_status : typing.Optional[LlmInclusionStatus]
             Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
 
         precondition : typing.Optional[Precondition]
-            The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+            The preconditions that must be met for a knowledge base to be relevant to a conversation.
+            A null value will remove the precondition from the knowledge base, it will be available on all conversations.
 
         segment_id : typing.Optional[EntityId]
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
             The ID of a segment that must be matched for the knowledge base to be relevant to a conversation.
             A null value will remove the segment from the knowledge base, it will be available on all conversations.
 
-            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
-            Inline precondition support will be removed in a future release.
-
         segment_ids : typing.Optional[typing.Sequence[EntityId]]
-            The IDs of segment that should be matched (under an OR clause) for the knowledge base to be relevant to a
-            conversation. An empty list will remove segments from the knowledge base, it will be available on all
-            conversations.
-            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
-            Inline precondition support will be removed in a future release.
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+            The IDs of segments that should be matched (under an OR clause) for the knowledge base to be relevant
+            to a conversation. An empty list will remove segments from the knowledge base, it will be available on
+            all conversations.
 
         refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
             How often the knowledge base should be refreshed.
@@ -805,7 +811,18 @@ class KnowledgeClient:
             The time at which this document was last modified.
 
         relevant_entities : typing.Optional[typing.Sequence[ScopedEntity]]
-            Scoped entities this document is associated with for context-based filtering. By default, the document is associated with the agent.
+            Narrows this document to the given entities. Omit it - the default - to make the document
+            part of the agent's general knowledge, retrievable on every conversation.
+
+            A document narrowed to entities is only retrieved on conversations whose
+            `responseConfig.contextFilter` names one of them, so it never surfaces on unrelated
+            conversations. Each `entityId` must be fully specified and must belong to the
+            organization and agent the request is made against; one that does not, or that names an
+            entity type with no internal form, is rejected rather than dropped - dropping the last
+            entity would widen the document back to the whole agent.
+
+            Changing the entities on an existing document is not supported yet: re-sending a
+            document with different `relevantEntities` but unchanged content is a no-op.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
@@ -1149,7 +1166,9 @@ class AsyncKnowledgeClient:
             length of 512 characters.
 
         precondition : typing.Optional[Precondition]
-            The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users.
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+            The preconditions that must be met for a knowledge base to be relevant to a conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1440,27 +1459,31 @@ class AsyncKnowledgeClient:
             The name of the knowledge base.
 
         tags : typing.Optional[typing.Set[str]]
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
             The tags of the knowledge base.
 
         llm_inclusion_status : typing.Optional[LlmInclusionStatus]
             Determines whether documents in the knowledge base are sent to the LLM as part of a conversation. Note that at this time knowledge bases can not be set to `ALWAYS`.
 
         precondition : typing.Optional[Precondition]
-            The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+            The preconditions that must be met for a knowledge base to be relevant to a conversation.
+            A null value will remove the precondition from the knowledge base, it will be available on all conversations.
 
         segment_id : typing.Optional[EntityId]
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
             The ID of a segment that must be matched for the knowledge base to be relevant to a conversation.
             A null value will remove the segment from the knowledge base, it will be available on all conversations.
 
-            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
-            Inline precondition support will be removed in a future release.
-
         segment_ids : typing.Optional[typing.Sequence[EntityId]]
-            The IDs of segment that should be matched (under an OR clause) for the knowledge base to be relevant to a
-            conversation. An empty list will remove segments from the knowledge base, it will be available on all
-            conversations.
-            Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
-            Inline precondition support will be removed in a future release.
+            Deprecated. Superseded by charters, which determine when knowledge bases and actions apply. Has no effect for agents using charters.
+
+            The IDs of segments that should be matched (under an OR clause) for the knowledge base to be relevant
+            to a conversation. An empty list will remove segments from the knowledge base, it will be available on
+            all conversations.
 
         refresh_frequency : typing.Optional[KnowledgeBaseRefreshFrequency]
             How often the knowledge base should be refreshed.
@@ -1914,7 +1937,18 @@ class AsyncKnowledgeClient:
             The time at which this document was last modified.
 
         relevant_entities : typing.Optional[typing.Sequence[ScopedEntity]]
-            Scoped entities this document is associated with for context-based filtering. By default, the document is associated with the agent.
+            Narrows this document to the given entities. Omit it - the default - to make the document
+            part of the agent's general knowledge, retrievable on every conversation.
+
+            A document narrowed to entities is only retrieved on conversations whose
+            `responseConfig.contextFilter` names one of them, so it never surfaces on unrelated
+            conversations. Each `entityId` must be fully specified and must belong to the
+            organization and agent the request is made against; one that does not, or that names an
+            entity type with no internal form, is rejected rather than dropped - dropping the last
+            entity would widen the document back to the whole agent.
+
+            Changing the entities on an existing document is not supported yet: re-sending a
+            document with different `relevantEntities` but unchanged content is a no-op.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
