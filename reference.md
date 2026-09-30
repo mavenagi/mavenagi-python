@@ -4,6 +4,22 @@
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deprecated. Use `POST /v1/capabilities/search`, which searches every kind of capability
+at once. It returns the fields every capability shares rather than the whole Action;
+fetch one by its kind and reference ID for the rest.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -262,6 +278,9 @@ This value is informational only. It does not yet affect action execution.
 <dl>
 <dd>
 
+Deprecated. Use `GET /v1/capabilities/ACTION/{referenceId}`, which returns this same
+object for an action and the equivalent for every other kind of capability.
+
 Get an action by its supplied ID
 </dd>
 </dl>
@@ -476,6 +495,9 @@ A null value clears it back to undeclared.
 
 <dl>
 <dd>
+
+Deprecated. Use `DELETE /v1/capabilities/ACTION/{referenceId}`, which deletes any kind of
+capability the same way.
 
 Delete an action
 </dd>
@@ -1020,7 +1042,7 @@ client.agents.patch(
 <dl>
 <dd>
 
-**persona:** `typing.Optional[LlmPersona]` — Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+**persona:** `typing.Optional[LlmPersona]` — Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
     
 </dd>
 </dl>
@@ -1028,7 +1050,7 @@ client.agents.patch(
 <dl>
 <dd>
 
-**additional_prompt_text:** `typing.Optional[str]` — Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+**additional_prompt_text:** `typing.Optional[str]` — Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
     
 </dd>
 </dl>
@@ -1054,7 +1076,7 @@ client.agents.patch(
 
 **reject_questions_without_knowledge:** `typing.Optional[bool]` 
 
-Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
 Return the system fallback message on all questions that have no relevant knowledge bases or actions.
     
@@ -2996,6 +3018,1617 @@ client.assets.commit_upload(
 </dl>
 </details>
 
+## Capabilities
+<details><summary><code>client.capabilities.<a href="src/mavenagi/capabilities/client.py">get_capability</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetch one of an agent's capabilities by its type and reference ID.
+
+The response carries the same fields the capability's own API returns, so an Action read
+here and an Action read from the Actions API are the same object. Intelligent Fields are the
+one exception: their own API also returns the charters referencing the field, which this
+endpoint leaves out.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.capabilities.get_capability(
+    capability_type="ACTION",
+    reference_id="referenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**capability_type:** `CapabilityType` — Which kind of capability to fetch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**reference_id:** `str` — The capability's reference ID, unique within its type and app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` 
+
+The app that owns the capability. Defaults to the calling app, which is what an app
+managing its own capabilities wants.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_reference_id:** `typing.Optional[str]` 
+
+The agent variant to read an intelligent field through, by reference ID.
+Required for an intelligent field on an agent with versioned intelligent fields; a
+request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
+if omitted, the agent's only variant is used.
+The other capability types aren't versioned and are the same in every variant,
+though a named variant must still exist.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The app that owns the agent variant. Defaults to the calling app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.capabilities.<a href="src/mavenagi/capabilities/client.py">patch_capability</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Set whether the agent uses a capability, whatever kind it is. This is the publish and
+unpublish operation, and it works the same way for every capability type.
+
+Everything else about a capability -- its name, its description, and any settings
+particular to its kind -- is changed through that capability's own API.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.capabilities.patch_capability(
+    capability_type="ACTION",
+    reference_id="referenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**capability_type:** `CapabilityType` — Which kind of capability to update.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**reference_id:** `str` — The capability's reference ID, unique within its type and app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The app that owns the capability. Defaults to the calling app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_reference_id:** `typing.Optional[str]` 
+
+The agent variant to stage an intelligent field's status change in, by reference ID.
+Required for an intelligent field on an agent with versioned intelligent fields; a
+request that omits it there is rejected with reason `VARIANT_REQUIRED`.
+The other capability types aren't versioned and are the same in every variant,
+though a named variant must still exist.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The app that owns the agent variant. Defaults to the calling app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[CapabilityStatus]` 
+
+Whether the agent uses this capability. Use ACTIVE to start and INACTIVE to stop;
+deleting is done through the delete endpoint, so DELETED is rejected here.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.capabilities.<a href="src/mavenagi/capabilities/client.py">delete_capability</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete one of an agent's capabilities. The agent stops using it, and it stops being
+addressable: a later get, patch or delete of the same capability is a 404, and it no longer
+appears in search.
+
+With `variantReferenceId`, an intelligent field's delete is staged in that variant instead,
+and takes effect when the variant is committed. Until then the agent keeps using the field,
+and only a later patch or delete through the same variant is a 404.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.capabilities.delete_capability(
+    capability_type="ACTION",
+    reference_id="referenceId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**capability_type:** `CapabilityType` — Which kind of capability to delete.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**reference_id:** `str` — The capability's reference ID, unique within its type and app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The app that owns the capability. Defaults to the calling app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_reference_id:** `typing.Optional[str]` 
+
+The agent variant to stage an intelligent field's delete in, by reference ID.
+Required for an intelligent field on an agent with versioned intelligent fields; a
+request that omits it there is rejected with reason `VARIANT_REQUIRED`.
+The other capability types aren't versioned and are the same in every variant,
+though a named variant must still exist.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The app that owns the agent variant. Defaults to the calling app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.capabilities.<a href="src/mavenagi/capabilities/client.py">search_capabilities</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search an agent's capabilities of every kind at once, newest first by default.
+
+Returns the fields every capability shares. Fetch one by its type and reference ID for the
+settings particular to its kind.
+
+Sorting by `NAME` or `TYPE` instead orders ascending unless `sortDesc` says otherwise;
+`sortDesc` overrides the default either way.
+
+Deleted capabilities are never returned.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.capabilities.search_capabilities()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**capability_types:** `typing.Optional[typing.Sequence[CapabilityType]]` — Only return capabilities of these kinds. Omit for every kind.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**statuses:** `typing.Optional[typing.Sequence[CapabilityStatus]]` 
+
+Only return capabilities the agent does or does not use. Deleted capabilities are
+never searchable, so `DELETED` is rejected here rather than matching nothing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_ids:** `typing.Optional[typing.Sequence[str]]` — Only return capabilities owned by these apps.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — Only return capabilities whose name matches this text.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — Only return capabilities whose description matches this text.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_interaction_required:** `typing.Optional[bool]` 
+
+Only return capabilities that do or do not require user interaction. Only Actions
+can require it, so filtering on true returns Actions alone.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_id:** `typing.Optional[CapabilitySortField]` — The field to sort by. Defaults to when the capability was created.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_reference_id:** `typing.Optional[str]` 
+
+The agent variant to read intelligent field versions through. Required on an agent
+with versioned intelligent fields unless `capabilityTypes` excludes them; a
+request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
+if omitted, the agent's only variant is used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The app that owns the agent variant. Defaults to the calling app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20. Max 1000.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Charters
+<details><summary><code>client.charters.<a href="src/mavenagi/charters/client.py">create_or_update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new charter or update an existing one. Charters are governing
+documents that combine a precondition (when the charter applies), a manual
+(what the LLM should do), and the knowledge bases and actions the charter
+makes available.
+
+All charters in an agent form a tree (forest / multi-roots). When a
+charter is matched on a round, all its ancestor charters will be
+incorporated. Non-leaf charters are referred to as a charter group.
+
+Charters may specify a 0-indexed custom `userRank` that indicates
+preferences among its siblings. The rank is currently only meaningful
+for leaf charters as we enforce mutual exclusion among the leafs and
+pick only the highest ranked (lowest numerical value) leaf to include in
+the round. userRank may have gaps.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.charters import CharterReferences
+from mavenagi.commons import (
+    ConversationPrecondition_Tags,
+    EntityIdBase,
+    Precondition_Conversation,
+)
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.charters.create_or_update(
+    charter_id=EntityIdBase(
+        reference_id="cancellation-flow",
+    ),
+    name="Cancellation Flow",
+    manual="Guide the user through the cancellation process with empathy. Always confirm their intent before proceeding.",
+    precondition=Precondition_Conversation(
+        value=ConversationPrecondition_Tags(
+            tags={"cancellation"},
+        )
+    ),
+    status="ACTIVE",
+    type="STANDARD",
+    references=CharterReferences(
+        knowledge_bases=[],
+        action_ids=[],
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**charter_id:** `EntityIdBase` — ID that uniquely identifies this charter.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `CharterStatus` — Desired lifecycle status.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**references:** `CharterReferences` 
+
+Context items (knowledge bases and actions) this charter makes available.
+Maximum 50 knowledge bases and 50 actions per charter.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` — Display name for this charter or group.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+The agent variant this write is scoped to. When set, the charter content is staged in
+that variant's working set instead of being applied to the agent's live configuration.
+
+Omit this field to write directly to the agent. Variant scoping is not active yet: a
+variant supplied today is accepted and ignored, and the write applies to the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parent_charter_id:** `typing.Optional[EntityId]` 
+
+The fully-qualified ID of the parent charter. Send null to place this charter at the
+root level -- the field is nullable rather than optional, so null is meaningful and
+distinct from absent.
+
+The resulting tree must remain acyclic. A write that would make this charter its own
+ancestor is rejected with a 400 and leaves the tree unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**precondition:** `typing.Optional[Precondition]` 
+
+The rule controlling when this charter applies. Preconditions on
+ancestor charters are AND'd together with this charter's own
+precondition to determine whether there is a match. When null, the
+charter is a wildcard and always matches (subject to ancestor
+preconditions still combining with AND logic).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `typing.Optional[CharterType]` 
+
+The behavioral mode for this charter. Defaults to STANDARD when omitted.
+
+Set at creation and immutable afterward. When updating an existing charter (via
+createOrUpdate), this field must either be omitted or repeat the charter's current
+type — a differing value is rejected. There is no way to change a charter's type once
+created. (Recreating a deleted charter is a create, so it may pick any type.)
+
+STRICT_RETURN charters cannot have children, and reference neither knowledge bases nor
+actions: no charter may name a STRICT_RETURN charter as its parent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_rank:** `typing.Optional[int]` 
+
+User-defined 0-indexed rank among siblings.
+
+The rank is currently only meaningful for leaf charters as we enforce
+mutual exclusion among the leafs and pick only the highest ranked
+(lowest numerical value) leaf to include in the round. userRank may have
+gaps.
+
+Lower rank = higher priority. When provided and conflicts with an
+existing sibling, siblings at that rank and above are shifted up by 1
+(like linked list semantics). When omitted on create, auto-assigned as
+`max(siblings.userRank) + 1` (0 if no siblings).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — A plain text description of this charter. If not set, existing description is preserved if present.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**manual:** `typing.Optional[str]` 
+
+Optional additional natural language instruction text when this
+charter matches. Manuals concatenate with ancestor charter manuals
+before delivery.
+
+If not set, existing manual is preserved if present.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.charters.<a href="src/mavenagi/charters/client.py">get</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a charter by its reference ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.charters.get(
+    charter_reference_id="cancellation-flow",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**charter_reference_id:** `str` — The reference ID of the charter to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the charter to get. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.charters.<a href="src/mavenagi/charters/client.py">patch</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable fields on a charter. Only provided fields are modified.
+
+To move a charter within the tree, set `parentCharterId`.
+To promote to root level, set `parentCharterId` explicitly to null.
+
+**Status behavior**:
+  - Setting `status` to `INACTIVE` applies only to the targeted charter;
+    it does not cascade to descendants. However, its descendants will no
+    longer be incorporated at runtime.
+  - Setting `status` to `ACTIVE` applies only to the targeted charter.
+    The caller is responsible for ensuring ancestor charters are also `ACTIVE`
+    if the full subtree should be reachable at runtime.
+
+**userRank conflict resolution**: When `userRank` is set to a value already held by a
+sibling, siblings at that rank and above are shifted up by 1 (like linked list semantics).
+The caller does not need to manage uniqueness explicitly.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import (
+    ConversationPrecondition_Tags,
+    Precondition_Conversation,
+)
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.charters.patch(
+    charter_reference_id="cancellation-flow",
+    precondition=Precondition_Conversation(
+        value=ConversationPrecondition_Tags(
+            tags={"cancellation"},
+        )
+    ),
+    status="ACTIVE",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**charter_reference_id:** `str` — The reference ID of the charter to patch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the charter to update. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — The display name of the charter.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — A plain text description. Omit to leave unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**manual:** `typing.Optional[str]` — The instruction text. Omit to leave unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parent_charter_id:** `typing.Optional[EntityId]` 
+
+Move this charter to a new parent. Omit to leave the current parent unchanged.
+To promote this charter to root level instead, set the field explicitly to null.
+
+The resulting tree must remain acyclic. A move that would make this charter its own
+ancestor is rejected with a 400 and leaves the tree unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**precondition:** `typing.Optional[Precondition]` 
+
+The rule controlling when this charter applies. Replaces the charter's existing
+rule outright -- this is not a merge. Set to null to make this charter a
+wildcard, removing the rule. Omit to leave unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `typing.Optional[CharterStatus]` — The lifecycle status of this charter.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**children_exclusion_policy:** `typing.Optional[CharterChildrenExclusionPolicy]` 
+
+Whether this charter's children mutually exclude each other.
+Omit to leave unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**user_rank:** `typing.Optional[int]` 
+
+User-defined rank among siblings. When combined with `parentCharterId`,
+the rank is interpreted relative to the **new** sibling group, not the
+current one. Siblings in the destination at or above the target rank are
+shifted up by 1. Omit to keep the current rank value (which will still
+be applied to the new sibling group if `parentCharterId` is also changing).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**references:** `typing.Optional[CharterPatchReferences]` 
+
+Context items (knowledge bases and actions) this charter makes available.
+Each sub-field is independently optional — omit to leave unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+The agent variant this patch is scoped to. When set, the patch is staged in that
+variant's working set instead of being applied to the agent's live configuration.
+
+Omit this field to patch the agent directly. Variant scoping is not active yet:
+a variant supplied today is accepted and ignored, and the patch applies to the
+agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.charters.<a href="src/mavenagi/charters/client.py">delete</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete a charter and all of its descendants recursively.
+
+The charter must be set to `INACTIVE` before it can be deleted. This prevents accidental
+deletion of active charters. Descendant charters may be in any status — they will be
+soft-deleted regardless.
+
+Deleted charters are excluded from list results but can be retrieved by ID for archival purposes.
+
+Deleted charters cannot be modified.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.charters.delete(
+    charter_reference_id="cancellation-flow",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**charter_reference_id:** `str` — The reference ID of the charter to delete.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the charter to delete. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_reference_id:** `typing.Optional[str]` 
+
+The reference ID of the agent variant this delete is scoped to. When set, the
+deletion is staged in that variant's working set instead of being applied to the
+agent's live configuration.
+
+Omit this parameter to delete directly from the agent. Variant scoping is not
+active yet: a variant supplied today is accepted and ignored, and the delete applies
+to the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.charters.<a href="src/mavenagi/charters/client.py">search</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search for charters matching the provided filters. Supports filtering by
+referenced action IDs and knowledge base IDs to find charters that make
+specific context items available.
+
+Returns both ACTIVE and INACTIVE charters (DELETED charters are excluded).
+
+Results are ordered by the `sort` field (defaults to CreatedAt). Use `sortDesc`
+to control direction (defaults to descending). An empty filter list is
+equivalent to omitting the field (no filter applied).
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.charters.search(
+    page=0,
+    size=20,
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**sort:** `typing.Optional[CharterSearchField]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `typing.Optional[CharterSearchFilter]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20. Max 1000.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.charters.<a href="src/mavenagi/charters/client.py">get_ancestors</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Return a flat list containing the specified charter and all of its ancestors
+up to the root. Useful for rendering tree context around search results.
+
+Each entry is a full charter, so an ancestor's references and precondition are
+readable without a follow-up request per level.
+
+The list is always finite: charter hierarchies are acyclic, so a charter is never its own
+ancestor and the walk to the root terminates.
+
+Returns 404 if the charter does not exist or is deleted.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.charters.get_ancestors(
+    charter_reference_id="cancellation-step-1",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**charter_reference_id:** `str` — The reference ID of the charter. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The App ID of the charter. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.charters.<a href="src/mavenagi/charters/client.py">list_children</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Batch fetch direct children of the specified parent charters. Returns one
+group per requested parent in the same order as parentIds, with grandchild
+IDs populated on each child for expandability signals.
+
+Pass an empty parentIds list to fetch all root-level charters for the agent.
+Intended to be used for easy BFS traversal, though calling with parents
+at mixed levels are allowed. Roots and specific parents cannot be mixed
+in one request.
+
+DELETED charters are never returned.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.charters.list_children(
+    parent_ids=[],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**parent_ids:** `typing.Sequence[EntityId]` 
+
+Parents whose direct children to return. Pass an empty list to fetch root
+charters for the agent. Roots and specific parents cannot be mixed in one request.
+Maximum 50 parent IDs per request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20. Max 1000.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## ConversationKickoffs
+<details><summary><code>client.conversation_kickoffs.<a href="src/mavenagi/conversation_kickoffs/client.py">create_or_update</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Register or update one of the calling app's Conversation Kickoffs for this agent. An app may
+hold multiple independent installs, and any number of an agent's kickoffs may run at once.
+
+A newly installed kickoff starts inactive, so installing one never changes an agent's
+behaviour on its own. Updating an existing one rewrites its name and description and leaves
+its status alone, so re-registering on every install refresh never deactivates a kickoff
+that is already live. Use the capability APIs to activate it, and to read, search or delete
+it afterwards.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityIdBase
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.conversation_kickoffs.create_or_update(
+    kickoff_id=EntityIdBase(
+        reference_id="greet-returning-customer",
+    ),
+    name="Greet returning customer",
+    description="Looks up the customer's open orders before the agent's first reply",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**kickoff_id:** `EntityIdBase` 
+
+ID that uniquely identifies this Conversation Kickoff. Must be unique within the
+calling app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` — The kickoff's display name, shown to whoever manages the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — What the kickoff does, shown to whoever manages the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Conversation
 <details><summary><code>client.conversation.<a href="src/mavenagi/conversation/client.py">initialize</a>(...)</code></summary>
 <dl>
@@ -3420,6 +5053,7 @@ client.conversation.get(
 Wipes a conversation of all user data.
 The conversation ID will still exist and non-user specific data will still be retained.
 Attempts to modify or add messages to the conversation will throw an error.
+The conversation is sealed against further writes as soon as this call returns. A `202 Accepted` response means the wipe is still completing and will finish on its own.
 
 Simulation conversations will no longer be visible in search results nor metrics.
 Non-simulation conversations will remain visible - they can not be fully removed from the system.
@@ -3712,7 +5346,7 @@ client.conversation.ask(
 
 **type:** `typing.Optional[AskType]` 
 
-What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
 question — this is the backwards-compatible default. Use WELCOME for an agent-authored
 opener, or PROACTIVE for a message the user did not prompt.
     
@@ -3727,7 +5361,7 @@ opener, or PROACTIVE for a message the user did not prompt.
 For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
 is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
 agent's response (a directive to the agent, not the user's own words). (Changed from
-required to optional to support the non-user turn types — existing USER_MESSAGE callers
+required to optional to support the non-user ask types — existing USER_MESSAGE callers
 are unaffected.)
     
 </dd>
@@ -3742,26 +5376,26 @@ What form the answer takes. Omit it for prose, or send `jsonSchema` to additiona
 `BotObjectResponse` matching a schema you supply.
 
 Set per ask and independent of `type`, so one conversation can mix prose and structured
-turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+rounds. Only the answer's form changes: knowledge, actions, charters and segments apply
 the same way either way.
 
-A structured answer accompanies the prose one rather than replacing it — the same turn
+A structured answer accompanies the prose one rather than replacing it — the same round
 produces both, so the conversation stays readable. On `ask_stream` the prose still streams
 on `text` events as it always has, and the object arrives whole on a single `object` event
 near the end.
 
-Every answering turn carries an object, including one where the agent asks a clarifying
+Every answering round carries an object, including one where the agent asks a clarifying
 question rather than answering. Shape the schema so it can say "not enough information"
 — a populated object is not on its own evidence of a confident answer.
 
-Two exceptions. A turn that asks the user to *act* produces an action form from the
-action rather than from an answer, so it carries no object; the turn that answers after
+Two exceptions. A round that asks the user to *act* produces an action form from the
+action rather than from an answer, so it carries no object; the round that answers after
 the form is submitted does carry one. Leave the `FORMS` capability off if you need an
-object on every turn.
+object on every round.
 
-A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
 charter's manual is returned exactly as written without consulting the agent, so there is
-nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+nothing to shape into the requested schema — the round returns the manual as `text` alone.
     
 </dd>
 </dl>
@@ -3932,7 +5566,7 @@ for chunk in response.data:
 
 **type:** `typing.Optional[AskType]` 
 
-What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
 question — this is the backwards-compatible default. Use WELCOME for an agent-authored
 opener, or PROACTIVE for a message the user did not prompt.
     
@@ -3947,7 +5581,7 @@ opener, or PROACTIVE for a message the user did not prompt.
 For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
 is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
 agent's response (a directive to the agent, not the user's own words). (Changed from
-required to optional to support the non-user turn types — existing USER_MESSAGE callers
+required to optional to support the non-user ask types — existing USER_MESSAGE callers
 are unaffected.)
     
 </dd>
@@ -3962,26 +5596,26 @@ What form the answer takes. Omit it for prose, or send `jsonSchema` to additiona
 `BotObjectResponse` matching a schema you supply.
 
 Set per ask and independent of `type`, so one conversation can mix prose and structured
-turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+rounds. Only the answer's form changes: knowledge, actions, charters and segments apply
 the same way either way.
 
-A structured answer accompanies the prose one rather than replacing it — the same turn
+A structured answer accompanies the prose one rather than replacing it — the same round
 produces both, so the conversation stays readable. On `ask_stream` the prose still streams
 on `text` events as it always has, and the object arrives whole on a single `object` event
 near the end.
 
-Every answering turn carries an object, including one where the agent asks a clarifying
+Every answering round carries an object, including one where the agent asks a clarifying
 question rather than answering. Shape the schema so it can say "not enough information"
 — a populated object is not on its own evidence of a confident answer.
 
-Two exceptions. A turn that asks the user to *act* produces an action form from the
-action rather than from an answer, so it carries no object; the turn that answers after
+Two exceptions. A round that asks the user to *act* produces an action form from the
+action rather than from an answer, so it carries no object; the round that answers after
 the form is submitted does carry one. Leave the `FORMS` capability off if you need an
-object on every turn.
+object on every round.
 
-A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
 charter's manual is returned exactly as written without consulting the agent, so there is
-nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+nothing to shape into the requested schema — the round returns the manual as `text` alone.
     
 </dd>
 </dl>
@@ -6805,7 +8439,12 @@ client.integrations.update(
 <dl>
 <dd>
 
-Create a new intelligent field. Intelligent fields are used to store custom LLM-generated values on entities like conversations or events.
+Create a new intelligent field, or replace it if one already exists with the same
+`fieldId.referenceId`. Intelligent fields hold LLM-generated values computed for
+entities such as conversations.
+
+New fields are created with `status: INACTIVE` and are not evaluated until activated
+with the patch endpoint. `definition` is limited to 5,000 characters.
 </dd>
 </dl>
 </dd>
@@ -6842,6 +8481,7 @@ client.intelligent_fields.create_or_update(
         EnumOption(
             value="HIGH",
             label="High Priority",
+            description="The customer is blocked or reports an outage.",
         ),
         EnumOption(
             value="MEDIUM",
@@ -6869,7 +8509,18 @@ client.intelligent_fields.create_or_update(
 <dl>
 <dd>
 
-**field_id:** `EntityIdBase` — ID that uniquely identifies this intelligent field
+**name:** `str` — Display name for the intelligent field
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**field_id:** `EntityIdBase` 
+
+ID that uniquely identifies this intelligent field. `referenceId` is supplied by the
+caller and is how the field is addressed on every other endpoint.
     
 </dd>
 </dl>
@@ -6885,24 +8536,17 @@ client.intelligent_fields.create_or_update(
 <dl>
 <dd>
 
-**name:** `str` — Display name for the intelligent field
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **validation_type:** `IntelligentFieldType` 
 
-Result type hint used for schema generation, UI, and validation.
+The type of value this field holds. It constrains the schema the LLM is asked to fill
+and the JSON type of the computed `value`.
 
-- STRING / MULTILINE: single string value
-- MULTI_SELECT: multiple values
-- BOOLEAN: boolean value
-- NUMBER: numeric value
+- STRING / MULTILINE: a single string
+- MULTI_SELECT: a list of strings
+- BOOLEAN: `true` or `false`
+- NUMBER: a number
 
-Note: for single select, use STRING/NUMBER with a list of enumOptions.
+For a single select, use STRING or NUMBER together with `enumOptions`.
     
 </dd>
 </dl>
@@ -6918,14 +8562,6 @@ Note: for single select, use STRING/NUMBER with a list of enumOptions.
 <dl>
 <dd>
 
-**variant_id:** `typing.Optional[EntityIdWithoutAgent]` — ID of the agent variant that created this field, if applicable
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **description:** `typing.Optional[str]` — A plain text description of the intelligent field.
     
 </dd>
@@ -6934,7 +8570,18 @@ Note: for single select, use STRING/NUMBER with a list of enumOptions.
 <dl>
 <dd>
 
-**enum_options:** `typing.Optional[typing.Sequence[EnumOption]]` — Optional enum options for STRING/MULTILINE/NUMBER when a finite set is desired
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` — ID of the agent variant this field belongs to, if applicable
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**enum_options:** `typing.Optional[typing.Sequence[EnumOption]]` 
+
+The finite set of values this field may take. Omit to let the LLM produce any value of
+the `validationType`. Options may be added later with the patch endpoint, but not removed.
     
 </dd>
 </dl>
@@ -6965,6 +8612,10 @@ Note: for single select, use STRING/NUMBER with a list of enumOptions.
 
 <dl>
 <dd>
+
+Deprecated. Use `GET /v1/capabilities/INTELLIGENT_FIELD/{referenceId}`, which reads any
+kind of capability the same way. It does not carry `referencingCharters`; search
+charters to find the ones that reference a capability.
 
 Get an intelligent field by its supplied ID
 </dd>
@@ -7023,6 +8674,22 @@ client.intelligent_fields.get(
 <dl>
 <dd>
 
+**variant_reference_id:** `typing.Optional[str]` — The agent variant reference ID to resolve the intelligent field's version through. Required on an agent with versioned intelligent fields; a request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise, if omitted, the agent's only variant is used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -7047,7 +8714,12 @@ client.intelligent_fields.get(
 <dl>
 <dd>
 
-Patch an intelligent field. Can be used to update the definition, status, or other mutable properties.
+Update the mutable properties of an intelligent field. Only the properties present in
+the request body are changed.
+
+This is also how a field is activated and deactivated: set `status` to `ACTIVE` to
+start evaluating it, or `INACTIVE` to stop. `name`, `entityType`, and `validationType`
+cannot be changed after creation.
 </dd>
 </dl>
 </dd>
@@ -7105,7 +8777,7 @@ client.intelligent_fields.patch(
 <dl>
 <dd>
 
-**definition:** `typing.Optional[str]` — The definition of the intelligent field. This text will be influential in guiding the LLM to produce the desired results.
+**definition:** `typing.Optional[str]` — The definition of the intelligent field. This text will be influential in guiding the LLM to produce the desired results. Limited to 5,000 characters.
     
 </dd>
 </dl>
@@ -7113,7 +8785,14 @@ client.intelligent_fields.patch(
 <dl>
 <dd>
 
-**status:** `typing.Optional[IntelligentFieldStatus]` — The lifecycle state for whether this field is evaluated by workflows. Use INACTIVE to deactivate.
+**status:** `typing.Optional[CapabilityStatus]` 
+
+The lifecycle state for whether this field is evaluated. Use ACTIVE to start
+evaluating the field and INACTIVE to stop.
+
+Each agent has a limit on how many fields may be ACTIVE at once; activating a
+field beyond that limit is rejected. A field referenced by an active precondition
+cannot be deactivated.
     
 </dd>
 </dl>
@@ -7129,7 +8808,7 @@ client.intelligent_fields.patch(
 <dl>
 <dd>
 
-**enum_options:** `typing.Optional[typing.Sequence[EnumOption]]` — Updated enum options for select/multi-select fields. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
+**enum_options:** `typing.Optional[typing.Sequence[EnumOption]]` — Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
     
 </dd>
 </dl>
@@ -7137,7 +8816,15 @@ client.intelligent_fields.patch(
 <dl>
 <dd>
 
-**variant_id:** `typing.Optional[EntityIdBase]` — ID of the agent variant that this field belongs to, if applicable
+**variant_id:** `typing.Optional[EntityIdBase]` — The agent variant to stage this patch in, by reference ID. Its owning app is `variantAppId`. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant named by `variantId`. If not provided, the ID of the calling app will be used — name the owning app to patch in a variant the caller does not own, as the platform's own seeded variants are.
     
 </dd>
 </dl>
@@ -7168,6 +8855,9 @@ client.intelligent_fields.patch(
 
 <dl>
 <dd>
+
+Deprecated. Use `DELETE /v1/capabilities/INTELLIGENT_FIELD/{referenceId}`, which
+deletes any kind of capability the same way. That endpoint returns no body.
 
 Soft delete an intelligent field. Only INACTIVE fields can be deleted.
 
@@ -7232,7 +8922,7 @@ client.intelligent_fields.delete(
 <dl>
 <dd>
 
-**variant_reference_id:** `typing.Optional[str]` — The agent variant reference ID of the intelligent field to delete.
+**variant_reference_id:** `typing.Optional[str]` — The agent variant to stage the delete in, by reference ID. Required on an agent with versioned intelligent fields; a delete that omits it there is rejected with reason `VARIANT_REQUIRED`.
     
 </dd>
 </dl>
@@ -7272,7 +8962,12 @@ client.intelligent_fields.delete(
 <dl>
 <dd>
 
-Search computed values for intelligent fields across entities. Supports filtering by field properties and target entity.
+Search the values that have been computed for intelligent fields, across entities.
+Supports filtering by properties of the field, by target entity, and by when the
+value was computed.
+
+Values only exist for fields that were ACTIVE when the entity was evaluated, so a
+newly activated field returns nothing until evaluation has run.
 </dd>
 </dl>
 </dd>
@@ -8170,6 +9865,9 @@ all conversations.
 Create a new knowledge base version.
 
 If an existing version is in progress, then that version will be finalized in an error state.
+
+If another version create for the same knowledge base is still in progress, this request may
+return 503 with a `Retry-After` header. Nothing is changed in that case, so it is safe to retry.
 </dd>
 </dl>
 </dd>
@@ -8825,8 +10523,10 @@ organization and agent the request is made against; one that does not, or that n
 entity type with no internal form, is rejected rather than dropped - dropping the last
 entity would widen the document back to the whole agent.
 
-Changing the entities on an existing document is not supported yet: re-sending a
-document with different `relevantEntities` but unchanged content is a no-op.
+Changing the entities on an existing document is not supported yet: document reuse is
+decided by a checksum over `title`, `text`, `metadata`, `sourceUrl` and the attached
+asset, so re-sending a document with different `relevantEntities` but none of those
+changed returns the stored document and discards the new entities.
     
 </dd>
 </dl>
@@ -10379,6 +12079,22 @@ client.translations.translate(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deprecated. Use `POST /v1/capabilities/search`, which searches every kind of capability
+at once. It returns the fields every capability shares rather than the whole Event
+Trigger; fetch one by its kind and reference ID for the rest.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -10514,7 +12230,7 @@ client.triggers.create_or_update(
 <dl>
 <dd>
 
-**trigger_id:** `EntityIdBase` — ID that uniquely identifies this event trigger
+**description:** `str` — The description of what the event trigger does, shown in the Maven Dashboard
     
 </dd>
 </dl>
@@ -10522,7 +12238,7 @@ client.triggers.create_or_update(
 <dl>
 <dd>
 
-**description:** `str` — The description of what the event trigger does, shown in the Maven Dashboard
+**trigger_id:** `EntityIdBase` — ID that uniquely identifies this event trigger
     
 </dd>
 </dl>
@@ -10578,6 +12294,9 @@ Inbox triggers fire when an inbox item is created or updated.
 
 <dl>
 <dd>
+
+Deprecated. Use `GET /v1/capabilities/TRIGGER/{referenceId}`, which returns this same
+object for a trigger and the equivalent for every other kind of capability.
 
 Get an event trigger by its supplied ID
 </dd>
@@ -10652,6 +12371,9 @@ client.triggers.get(
 <dl>
 <dd>
 
+Deprecated. Use `DELETE /v1/capabilities/TRIGGER/{referenceId}`, which deletes any kind
+of capability the same way.
+
 Delete an event trigger
 </dd>
 </dl>
@@ -10724,6 +12446,9 @@ client.triggers.delete(
 
 <dl>
 <dd>
+
+Deprecated. Use `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status`, which
+publishes and unpublishes any kind of capability the same way.
 
 Updates an event trigger. Only the enabled field is editable.
 </dd>

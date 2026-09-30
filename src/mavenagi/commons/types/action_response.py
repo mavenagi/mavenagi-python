@@ -8,18 +8,28 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
-from .action_base import ActionBase
+from .action_properties import ActionProperties
+from .capability_base import CapabilityBase
 from .entity_id import EntityId
 from .llm_inclusion_status import LlmInclusionStatus
 
 
-class ActionResponse(ActionBase):
+class ActionResponse(ActionProperties, CapabilityBase):
     """
     Examples
     --------
+    import datetime
+
     from mavenagi.commons import ActionResponse, EntityId, Precondition_Group
 
     ActionResponse(
+        created_at=datetime.datetime.fromisoformat(
+            "2026-01-15 10:30:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2026-01-15 10:30:00+00:00",
+        ),
+        status="ACTIVE",
         action_id=EntityId(
             reference_id="get-balance",
             app_id="my-billing-system",
@@ -67,6 +77,8 @@ class ActionResponse(ActionBase):
         pydantic.Field()
     )
     """
+    Deprecated. Superseded by `status`, which says the same thing for every capability type.
+    
     Determines whether the action is sent to the LLM as part of a conversation.
     
     - `ALWAYS`: The action is always available for use in conversations, textual relevance is not considered.
@@ -92,6 +104,8 @@ class ActionResponse(ActionBase):
 
     deleted: bool = pydantic.Field()
     """
+    Deprecated. Superseded by `status`, where a deleted action is `DELETED`.
+    
     Whether the action has been deleted. Deleted actions will not sent to the LLM nor returned in search results.
     """
 

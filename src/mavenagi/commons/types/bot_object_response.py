@@ -8,7 +8,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 class BotObjectResponse(UniversalBaseModel):
     """
-    The structured answer for an ask whose `textFormat` was `jsonSchema`. Accompanies the `BotTextResponse` rather than replacing it — the same turn produces both, so the conversation still reads as prose.
+    The structured answer for an ask whose `textFormat` was `jsonSchema`. Accompanies the `BotTextResponse` rather than replacing it — the same round produces both, so the conversation still reads as prose.
     """
 
     object: typing.Optional[typing.Any] = pydantic.Field(default=None)

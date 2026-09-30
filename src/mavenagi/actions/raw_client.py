@@ -46,6 +46,10 @@ class RawActionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ActionsResponse]:
         """
+        Deprecated. Use `POST /v1/capabilities/search`, which searches every kind of capability
+        at once. It returns the fields every capability shares rather than the whole Action;
+        fetch one by its kind and reference ID for the rest.
+
         Parameters
         ----------
         sort : typing.Optional[ActionField]
@@ -312,6 +316,9 @@ class RawActionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ActionResponse]:
         """
+        Deprecated. Use `GET /v1/capabilities/ACTION/{referenceId}`, which returns this same
+        object for an action and the equivalent for every other kind of capability.
+
         Get an action by its supplied ID
 
         Parameters
@@ -547,6 +554,9 @@ class RawActionsClient:
         self, action_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[None]:
         """
+        Deprecated. Use `DELETE /v1/capabilities/ACTION/{referenceId}`, which deletes any kind of
+        capability the same way.
+
         Delete an action
 
         Parameters
@@ -645,6 +655,10 @@ class AsyncRawActionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ActionsResponse]:
         """
+        Deprecated. Use `POST /v1/capabilities/search`, which searches every kind of capability
+        at once. It returns the fields every capability shares rather than the whole Action;
+        fetch one by its kind and reference ID for the rest.
+
         Parameters
         ----------
         sort : typing.Optional[ActionField]
@@ -911,6 +925,9 @@ class AsyncRawActionsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ActionResponse]:
         """
+        Deprecated. Use `GET /v1/capabilities/ACTION/{referenceId}`, which returns this same
+        object for an action and the equivalent for every other kind of capability.
+
         Get an action by its supplied ID
 
         Parameters
@@ -1146,6 +1163,9 @@ class AsyncRawActionsClient:
         self, action_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[None]:
         """
+        Deprecated. Use `DELETE /v1/capabilities/ACTION/{referenceId}`, which deletes any kind of
+        capability the same way.
+
         Delete an action
 
         Parameters

@@ -7,6 +7,7 @@ import pydantic
 import typing_extensions
 from ...commons.types.entity_id import EntityId
 from ...commons.types.llm_inclusion_status import LlmInclusionStatus
+from ...commons.types.scoped_entity import ScopedEntity
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .base_knowledge_document import BaseKnowledgeDocument
@@ -53,6 +54,7 @@ class KnowledgeDocumentSearchResponse(BaseKnowledgeDocument):
         updated_at=datetime.datetime.fromisoformat(
             "2024-02-02 00:00:00+00:00",
         ),
+        relevant_entities=[],
     )
     """
 
@@ -103,6 +105,14 @@ class KnowledgeDocumentSearchResponse(BaseKnowledgeDocument):
     updated_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="updatedAt")] = pydantic.Field()
     """
     The time at which this document was last modified.
+    """
+
+    relevant_entities: typing_extensions.Annotated[
+        typing.List[ScopedEntity], FieldMetadata(alias="relevantEntities")
+    ] = pydantic.Field()
+    """
+    The entities this document is narrowed to. Empty for a document that is part of the
+    agent's general knowledge.
     """
 
     if IS_PYDANTIC_V2:

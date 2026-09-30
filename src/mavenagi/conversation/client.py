@@ -317,6 +317,7 @@ class ConversationClient:
         Wipes a conversation of all user data.
         The conversation ID will still exist and non-user specific data will still be retained.
         Attempts to modify or add messages to the conversation will throw an error.
+        The conversation is sealed against further writes as soon as this call returns. A `202 Accepted` response means the wipe is still completing and will finish on its own.
 
         Simulation conversations will no longer be visible in search results nor metrics.
         Non-simulation conversations will remain visible - they can not be fully removed from the system.
@@ -469,7 +470,7 @@ class ConversationClient:
             Externally supplied ID to uniquely identify the user that created this message
 
         type : typing.Optional[AskType]
-            What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
             question — this is the backwards-compatible default. Use WELCOME for an agent-authored
             opener, or PROACTIVE for a message the user did not prompt.
 
@@ -477,7 +478,7 @@ class ConversationClient:
             For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
             is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
             agent's response (a directive to the agent, not the user's own words). (Changed from
-            required to optional to support the non-user turn types — existing USER_MESSAGE callers
+            required to optional to support the non-user ask types — existing USER_MESSAGE callers
             are unaffected.)
 
         text_format : typing.Optional[TextFormat]
@@ -485,26 +486,26 @@ class ConversationClient:
             `BotObjectResponse` matching a schema you supply.
 
             Set per ask and independent of `type`, so one conversation can mix prose and structured
-            turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+            rounds. Only the answer's form changes: knowledge, actions, charters and segments apply
             the same way either way.
 
-            A structured answer accompanies the prose one rather than replacing it — the same turn
+            A structured answer accompanies the prose one rather than replacing it — the same round
             produces both, so the conversation stays readable. On `ask_stream` the prose still streams
             on `text` events as it always has, and the object arrives whole on a single `object` event
             near the end.
 
-            Every answering turn carries an object, including one where the agent asks a clarifying
+            Every answering round carries an object, including one where the agent asks a clarifying
             question rather than answering. Shape the schema so it can say "not enough information"
             — a populated object is not on its own evidence of a confident answer.
 
-            Two exceptions. A turn that asks the user to *act* produces an action form from the
-            action rather than from an answer, so it carries no object; the turn that answers after
+            Two exceptions. A round that asks the user to *act* produces an action form from the
+            action rather than from an answer, so it carries no object; the round that answers after
             the form is submitted does carry one. Leave the `FORMS` capability off if you need an
-            object on every turn.
+            object on every round.
 
-            A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+            A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
             charter's manual is returned exactly as written without consulting the agent, so there is
-            nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+            nothing to shape into the requested schema — the round returns the manual as `text` alone.
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -619,7 +620,7 @@ class ConversationClient:
             Externally supplied ID to uniquely identify the user that created this message
 
         type : typing.Optional[AskType]
-            What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
             question — this is the backwards-compatible default. Use WELCOME for an agent-authored
             opener, or PROACTIVE for a message the user did not prompt.
 
@@ -627,7 +628,7 @@ class ConversationClient:
             For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
             is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
             agent's response (a directive to the agent, not the user's own words). (Changed from
-            required to optional to support the non-user turn types — existing USER_MESSAGE callers
+            required to optional to support the non-user ask types — existing USER_MESSAGE callers
             are unaffected.)
 
         text_format : typing.Optional[TextFormat]
@@ -635,26 +636,26 @@ class ConversationClient:
             `BotObjectResponse` matching a schema you supply.
 
             Set per ask and independent of `type`, so one conversation can mix prose and structured
-            turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+            rounds. Only the answer's form changes: knowledge, actions, charters and segments apply
             the same way either way.
 
-            A structured answer accompanies the prose one rather than replacing it — the same turn
+            A structured answer accompanies the prose one rather than replacing it — the same round
             produces both, so the conversation stays readable. On `ask_stream` the prose still streams
             on `text` events as it always has, and the object arrives whole on a single `object` event
             near the end.
 
-            Every answering turn carries an object, including one where the agent asks a clarifying
+            Every answering round carries an object, including one where the agent asks a clarifying
             question rather than answering. Shape the schema so it can say "not enough information"
             — a populated object is not on its own evidence of a confident answer.
 
-            Two exceptions. A turn that asks the user to *act* produces an action form from the
-            action rather than from an answer, so it carries no object; the turn that answers after
+            Two exceptions. A round that asks the user to *act* produces an action form from the
+            action rather than from an answer, so it carries no object; the round that answers after
             the form is submitted does carry one. Leave the `FORMS` capability off if you need an
-            object on every turn.
+            object on every round.
 
-            A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+            A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
             charter's manual is returned exactly as written without consulting the agent, so there is
-            nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+            nothing to shape into the requested schema — the round returns the manual as `text` alone.
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -1600,6 +1601,7 @@ class AsyncConversationClient:
         Wipes a conversation of all user data.
         The conversation ID will still exist and non-user specific data will still be retained.
         Attempts to modify or add messages to the conversation will throw an error.
+        The conversation is sealed against further writes as soon as this call returns. A `202 Accepted` response means the wipe is still completing and will finish on its own.
 
         Simulation conversations will no longer be visible in search results nor metrics.
         Non-simulation conversations will remain visible - they can not be fully removed from the system.
@@ -1768,7 +1770,7 @@ class AsyncConversationClient:
             Externally supplied ID to uniquely identify the user that created this message
 
         type : typing.Optional[AskType]
-            What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
             question — this is the backwards-compatible default. Use WELCOME for an agent-authored
             opener, or PROACTIVE for a message the user did not prompt.
 
@@ -1776,7 +1778,7 @@ class AsyncConversationClient:
             For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
             is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
             agent's response (a directive to the agent, not the user's own words). (Changed from
-            required to optional to support the non-user turn types — existing USER_MESSAGE callers
+            required to optional to support the non-user ask types — existing USER_MESSAGE callers
             are unaffected.)
 
         text_format : typing.Optional[TextFormat]
@@ -1784,26 +1786,26 @@ class AsyncConversationClient:
             `BotObjectResponse` matching a schema you supply.
 
             Set per ask and independent of `type`, so one conversation can mix prose and structured
-            turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+            rounds. Only the answer's form changes: knowledge, actions, charters and segments apply
             the same way either way.
 
-            A structured answer accompanies the prose one rather than replacing it — the same turn
+            A structured answer accompanies the prose one rather than replacing it — the same round
             produces both, so the conversation stays readable. On `ask_stream` the prose still streams
             on `text` events as it always has, and the object arrives whole on a single `object` event
             near the end.
 
-            Every answering turn carries an object, including one where the agent asks a clarifying
+            Every answering round carries an object, including one where the agent asks a clarifying
             question rather than answering. Shape the schema so it can say "not enough information"
             — a populated object is not on its own evidence of a confident answer.
 
-            Two exceptions. A turn that asks the user to *act* produces an action form from the
-            action rather than from an answer, so it carries no object; the turn that answers after
+            Two exceptions. A round that asks the user to *act* produces an action form from the
+            action rather than from an answer, so it carries no object; the round that answers after
             the form is submitted does carry one. Leave the `FORMS` capability off if you need an
-            object on every turn.
+            object on every round.
 
-            A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+            A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
             charter's manual is returned exactly as written without consulting the agent, so there is
-            nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+            nothing to shape into the requested schema — the round returns the manual as `text` alone.
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -1926,7 +1928,7 @@ class AsyncConversationClient:
             Externally supplied ID to uniquely identify the user that created this message
 
         type : typing.Optional[AskType]
-            What prompts this assistant turn. Omit (or send USER_MESSAGE) for a normal user
+            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
             question — this is the backwards-compatible default. Use WELCOME for an agent-authored
             opener, or PROACTIVE for a message the user did not prompt.
 
@@ -1934,7 +1936,7 @@ class AsyncConversationClient:
             For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
             is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
             agent's response (a directive to the agent, not the user's own words). (Changed from
-            required to optional to support the non-user turn types — existing USER_MESSAGE callers
+            required to optional to support the non-user ask types — existing USER_MESSAGE callers
             are unaffected.)
 
         text_format : typing.Optional[TextFormat]
@@ -1942,26 +1944,26 @@ class AsyncConversationClient:
             `BotObjectResponse` matching a schema you supply.
 
             Set per ask and independent of `type`, so one conversation can mix prose and structured
-            turns. Only the answer's form changes: knowledge, actions, charters and segments apply
+            rounds. Only the answer's form changes: knowledge, actions, charters and segments apply
             the same way either way.
 
-            A structured answer accompanies the prose one rather than replacing it — the same turn
+            A structured answer accompanies the prose one rather than replacing it — the same round
             produces both, so the conversation stays readable. On `ask_stream` the prose still streams
             on `text` events as it always has, and the object arrives whole on a single `object` event
             near the end.
 
-            Every answering turn carries an object, including one where the agent asks a clarifying
+            Every answering round carries an object, including one where the agent asks a clarifying
             question rather than answering. Shape the schema so it can say "not enough information"
             — a populated object is not on its own evidence of a confident answer.
 
-            Two exceptions. A turn that asks the user to *act* produces an action form from the
-            action rather than from an answer, so it carries no object; the turn that answers after
+            Two exceptions. A round that asks the user to *act* produces an action form from the
+            action rather than from an answer, so it carries no object; the round that answers after
             the form is submitted does carry one. Leave the `FORMS` capability off if you need an
-            object on every turn.
+            object on every round.
 
-            A turn answered verbatim by a `STRICT_RETURN` charter also carries no object. That
+            A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
             charter's manual is returned exactly as written without consulting the agent, so there is
-            nothing to shape into the requested schema — the turn returns the manual as `text` alone.
+            nothing to shape into the requested schema — the round returns the manual as `text` alone.
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.

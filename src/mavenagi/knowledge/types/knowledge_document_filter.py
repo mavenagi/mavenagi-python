@@ -7,6 +7,7 @@ import pydantic
 import typing_extensions
 from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...commons.types.llm_inclusion_status import LlmInclusionStatus
+from ...commons.types.scoped_entity import ScopedEntity
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 
@@ -72,6 +73,22 @@ class KnowledgeDocumentFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Filter by the LLM inclusion status
+    """
+
+    relevant_entities: typing_extensions.Annotated[
+        typing.Optional[typing.List[ScopedEntity]], FieldMetadata(alias="relevantEntities")
+    ] = pydantic.Field(default=None)
+    """
+    Return only documents narrowed to one of these entities. Uses OR semantics - a document
+    matching any of them is returned.
+    
+    This is an exact match on the document's `relevantEntities`, not the widening a
+    conversation's `contextFilter` performs: filtering by a customer returns that customer's
+    documents and not the agent's general knowledge. Omit the field to search every
+    document regardless of what it is narrowed to; an empty list does the same.
+    
+    Each `entityId` must be fully specified and belong to the organization and agent the
+    request is made against.
     """
 
     if IS_PYDANTIC_V2:

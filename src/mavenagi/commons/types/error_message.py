@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .error_reason import ErrorReason
 
 
 class ErrorMessage(UniversalBaseModel):
@@ -20,6 +21,11 @@ class ErrorMessage(UniversalBaseModel):
     message: typing.Optional[str] = pydantic.Field(default=None)
     """
     Human-readable error details.
+    """
+
+    reason: typing.Optional[ErrorReason] = pydantic.Field(default=None)
+    """
+    Machine-readable reason for the failure, when the API defines one. Match on this rather than on `message`, whose wording may change.
     """
 
     if IS_PYDANTIC_V2:

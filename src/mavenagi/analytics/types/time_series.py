@@ -16,6 +16,8 @@ class TimeSeries(UniversalBaseModel):
     data: typing.List[TimeDataPoint] = pydantic.Field()
     """
     List of time-based data points for the series.
+    An interval the metric could not measure has no point here, so a series can be shorter
+    than the number of intervals in the requested range.
     """
 
     if IS_PYDANTIC_V2:

@@ -280,10 +280,10 @@ class AgentsClient:
             The system fallback message.
 
         persona : typing.Optional[LlmPersona]
-            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+            Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
         additional_prompt_text : typing.Optional[str]
-            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+            Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
         category_generation_prompt_text : typing.Optional[str]
             LLM prompt for category generation.
@@ -292,7 +292,7 @@ class AgentsClient:
             LLM prompt for generating a response when the user's question has been detected as unsafe.
 
         reject_questions_without_knowledge : typing.Optional[bool]
-            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+            Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
             Return the system fallback message on all questions that have no relevant knowledge bases or actions.
 
@@ -682,10 +682,10 @@ class AsyncAgentsClient:
             The system fallback message.
 
         persona : typing.Optional[LlmPersona]
-            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+            Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
         additional_prompt_text : typing.Optional[str]
-            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+            Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
         category_generation_prompt_text : typing.Optional[str]
             LLM prompt for category generation.
@@ -694,7 +694,7 @@ class AsyncAgentsClient:
             LLM prompt for generating a response when the user's question has been detected as unsafe.
 
         reject_questions_without_knowledge : typing.Optional[bool]
-            Deprecated. Superseded by charters, which determine agent behavior per turn. Has no effect for agents using charters.
+            Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
             Return the system fallback message on all questions that have no relevant knowledge bases or actions.
 

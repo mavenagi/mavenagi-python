@@ -12,34 +12,22 @@ from .intelligent_field_type import IntelligentFieldType
 
 class IntelligentFieldCore(UniversalBaseModel):
     """
-    The minimal set of fields describing an intelligent field's content, shared by both the
-    field's own resource representation (IntelligentFieldBase) and a single staged edit's
-    payload (IntelligentFieldPayload) -- kept as one type so the two don't drift out of sync on
-    what "the same" field content looks like.
-    """
-
-    name: str = pydantic.Field()
-    """
-    Display name for the intelligent field
-    """
-
-    description: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    A plain text description of the intelligent field.
+    The content of an intelligent field -- what it is called, and what the LLM should produce for it.
     """
 
     validation_type: typing_extensions.Annotated[IntelligentFieldType, FieldMetadata(alias="validationType")] = (
         pydantic.Field()
     )
     """
-    Result type hint used for schema generation, UI, and validation.
+    The type of value this field holds. It constrains the schema the LLM is asked to fill
+    and the JSON type of the computed `value`.
     
-    - STRING / MULTILINE: single string value
-    - MULTI_SELECT: multiple values
-    - BOOLEAN: boolean value
-    - NUMBER: numeric value
+    - STRING / MULTILINE: a single string
+    - MULTI_SELECT: a list of strings
+    - BOOLEAN: `true` or `false`
+    - NUMBER: a number
     
-    Note: for single select, use STRING/NUMBER with a list of enumOptions.
+    For a single select, use STRING or NUMBER together with `enumOptions`.
     """
 
     definition: str = pydantic.Field()
@@ -51,7 +39,8 @@ class IntelligentFieldCore(UniversalBaseModel):
         typing.Optional[typing.List[EnumOption]], FieldMetadata(alias="enumOptions")
     ] = pydantic.Field(default=None)
     """
-    Optional enum options for STRING/MULTILINE/NUMBER when a finite set is desired
+    The finite set of values this field may take. Omit to let the LLM produce any value of
+    the `validationType`. Options may be added later with the patch endpoint, but not removed.
     """
 
     if IS_PYDANTIC_V2:

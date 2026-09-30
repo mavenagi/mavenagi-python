@@ -11,6 +11,8 @@ class RowBase(UniversalBaseModel):
     data: typing.Dict[str, CellData] = pydantic.Field()
     """
     The actual row data, where keys represent column headers and values contain the respective metric results.
+    A column the metric could not measure is absent from the map, so a row can carry fewer
+    entries than there are headers.
     """
 
     if IS_PYDANTIC_V2:

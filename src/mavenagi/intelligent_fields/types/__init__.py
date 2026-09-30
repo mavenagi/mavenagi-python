@@ -8,7 +8,6 @@ from .intelligent_field_core import IntelligentFieldCore
 from .intelligent_field_detail_response import IntelligentFieldDetailResponse
 from .intelligent_field_request import IntelligentFieldRequest
 from .intelligent_field_response import IntelligentFieldResponse
-from .intelligent_field_status import IntelligentFieldStatus
 from .intelligent_field_type import IntelligentFieldType
 from .intelligent_field_value_entity_filter import IntelligentFieldValueEntityFilter
 from .intelligent_field_value_field_filter import IntelligentFieldValueFieldFilter
@@ -23,7 +22,6 @@ __all__ = [
     "IntelligentFieldDetailResponse",
     "IntelligentFieldRequest",
     "IntelligentFieldResponse",
-    "IntelligentFieldStatus",
     "IntelligentFieldType",
     "IntelligentFieldValueEntityFilter",
     "IntelligentFieldValueFieldFilter",

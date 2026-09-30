@@ -66,7 +66,8 @@ class IntelligentFieldDetailResponse(IntelligentFieldResponse):
         typing.Optional[typing.List[CharterSummary]], FieldMetadata(alias="referencingCharters")
     ] = pydantic.Field(default=None)
     """
-    Charters whose attached segment precondition references this intelligent field.
+    Charters whose precondition references this intelligent field. A field referenced by
+    an active precondition cannot be deactivated.
     """
 
     if IS_PYDANTIC_V2:

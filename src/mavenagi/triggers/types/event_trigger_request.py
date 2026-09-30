@@ -26,6 +26,16 @@ class EventTriggerRequest(EventTriggerBase):
     )
     """
 
+    name: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
+    """
+
+    description: str = pydantic.Field()
+    """
+    The description of what the event trigger does, shown in the Maven Dashboard
+    """
+
     trigger_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="triggerId")] = pydantic.Field()
     """
     ID that uniquely identifies this event trigger

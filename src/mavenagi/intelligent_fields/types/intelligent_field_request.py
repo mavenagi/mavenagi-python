@@ -29,6 +29,7 @@ class IntelligentFieldRequest(IntelligentFieldBase):
             EnumOption(
                 value="HIGH",
                 label="High Priority",
+                description="The customer is blocked or reports an outage.",
             ),
             EnumOption(
                 value="MEDIUM",
@@ -43,9 +44,20 @@ class IntelligentFieldRequest(IntelligentFieldBase):
     )
     """
 
+    name: str = pydantic.Field()
+    """
+    Display name for the intelligent field
+    """
+
+    description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    A plain text description of the intelligent field.
+    """
+
     field_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="fieldId")] = pydantic.Field()
     """
-    ID that uniquely identifies this intelligent field
+    ID that uniquely identifies this intelligent field. `referenceId` is supplied by the
+    caller and is how the field is addressed on every other endpoint.
     """
 
     if IS_PYDANTIC_V2:

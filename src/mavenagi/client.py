@@ -10,7 +10,10 @@ from .analytics.client import AnalyticsClient, AsyncAnalyticsClient
 from .app_directory.client import AppDirectoryClient, AsyncAppDirectoryClient
 from .app_settings.client import AppSettingsClient, AsyncAppSettingsClient
 from .assets.client import AssetsClient, AsyncAssetsClient
+from .capabilities.client import AsyncCapabilitiesClient, CapabilitiesClient
+from .charters.client import AsyncChartersClient, ChartersClient
 from .conversation.client import AsyncConversationClient, ConversationClient
+from .conversation_kickoffs.client import AsyncConversationKickoffsClient, ConversationKickoffsClient
 from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .customers.client import AsyncCustomersClient, CustomersClient
 from .environment import MavenAGIEnvironment
@@ -110,6 +113,9 @@ class MavenAGI:
         self.app_directory = AppDirectoryClient(client_wrapper=self._client_wrapper)
         self.app_settings = AppSettingsClient(client_wrapper=self._client_wrapper)
         self.assets = AssetsClient(client_wrapper=self._client_wrapper)
+        self.capabilities = CapabilitiesClient(client_wrapper=self._client_wrapper)
+        self.charters = ChartersClient(client_wrapper=self._client_wrapper)
+        self.conversation_kickoffs = ConversationKickoffsClient(client_wrapper=self._client_wrapper)
         self.conversation = ConversationClient(client_wrapper=self._client_wrapper)
         self.customers = CustomersClient(client_wrapper=self._client_wrapper)
         self.events = EventsClient(client_wrapper=self._client_wrapper)
@@ -208,6 +214,9 @@ class AsyncMavenAGI:
         self.app_directory = AsyncAppDirectoryClient(client_wrapper=self._client_wrapper)
         self.app_settings = AsyncAppSettingsClient(client_wrapper=self._client_wrapper)
         self.assets = AsyncAssetsClient(client_wrapper=self._client_wrapper)
+        self.capabilities = AsyncCapabilitiesClient(client_wrapper=self._client_wrapper)
+        self.charters = AsyncChartersClient(client_wrapper=self._client_wrapper)
+        self.conversation_kickoffs = AsyncConversationKickoffsClient(client_wrapper=self._client_wrapper)
         self.conversation = AsyncConversationClient(client_wrapper=self._client_wrapper)
         self.customers = AsyncCustomersClient(client_wrapper=self._client_wrapper)
         self.events = AsyncEventsClient(client_wrapper=self._client_wrapper)

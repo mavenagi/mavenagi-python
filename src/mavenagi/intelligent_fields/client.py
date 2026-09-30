@@ -3,6 +3,7 @@
 import datetime as dt
 import typing
 
+from ..commons.types.capability_status import CapabilityStatus
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.entity_type import EntityType
@@ -12,7 +13,6 @@ from .raw_client import AsyncRawIntelligentFieldsClient, RawIntelligentFieldsCli
 from .types.enum_option import EnumOption
 from .types.intelligent_field_detail_response import IntelligentFieldDetailResponse
 from .types.intelligent_field_response import IntelligentFieldResponse
-from .types.intelligent_field_status import IntelligentFieldStatus
 from .types.intelligent_field_type import IntelligentFieldType
 from .types.intelligent_field_value_entity_filter import IntelligentFieldValueEntityFilter
 from .types.intelligent_field_value_field_filter import IntelligentFieldValueFieldFilter
@@ -41,51 +41,59 @@ class IntelligentFieldsClient:
     def create_or_update(
         self,
         *,
+        name: str,
         field_id: EntityIdBase,
         entity_type: EntityType,
-        name: str,
         validation_type: IntelligentFieldType,
         definition: str,
-        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         description: typing.Optional[str] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldResponse:
         """
-        Create a new intelligent field. Intelligent fields are used to store custom LLM-generated values on entities like conversations or events.
+        Create a new intelligent field, or replace it if one already exists with the same
+        `fieldId.referenceId`. Intelligent fields hold LLM-generated values computed for
+        entities such as conversations.
+
+        New fields are created with `status: INACTIVE` and are not evaluated until activated
+        with the patch endpoint. `definition` is limited to 5,000 characters.
 
         Parameters
         ----------
+        name : str
+            Display name for the intelligent field
+
         field_id : EntityIdBase
-            ID that uniquely identifies this intelligent field
+            ID that uniquely identifies this intelligent field. `referenceId` is supplied by the
+            caller and is how the field is addressed on every other endpoint.
 
         entity_type : EntityType
             Target entity type for evaluation. Only CONVERSATION is supported at this time. The backend will return an error for other types.
 
-        name : str
-            Display name for the intelligent field
-
         validation_type : IntelligentFieldType
-            Result type hint used for schema generation, UI, and validation.
+            The type of value this field holds. It constrains the schema the LLM is asked to fill
+            and the JSON type of the computed `value`.
 
-            - STRING / MULTILINE: single string value
-            - MULTI_SELECT: multiple values
-            - BOOLEAN: boolean value
-            - NUMBER: numeric value
+            - STRING / MULTILINE: a single string
+            - MULTI_SELECT: a list of strings
+            - BOOLEAN: `true` or `false`
+            - NUMBER: a number
 
-            Note: for single select, use STRING/NUMBER with a list of enumOptions.
+            For a single select, use STRING or NUMBER together with `enumOptions`.
 
         definition : str
             Definition used by the LLM when generating this field's value
 
-        variant_id : typing.Optional[EntityIdWithoutAgent]
-            ID of the agent variant that created this field, if applicable
-
         description : typing.Optional[str]
             A plain text description of the intelligent field.
 
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            ID of the agent variant this field belongs to, if applicable
+
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
-            Optional enum options for STRING/MULTILINE/NUMBER when a finite set is desired
+            The finite set of values this field may take. Omit to let the LLM produce any value of
+            the `validationType`. Options may be added later with the patch endpoint, but not removed.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -118,6 +126,7 @@ class IntelligentFieldsClient:
                 EnumOption(
                     value="HIGH",
                     label="High Priority",
+                    description="The customer is blocked or reports an outage.",
                 ),
                 EnumOption(
                     value="MEDIUM",
@@ -132,13 +141,13 @@ class IntelligentFieldsClient:
         )
         """
         _response = self._raw_client.create_or_update(
+            name=name,
             field_id=field_id,
             entity_type=entity_type,
-            name=name,
             validation_type=validation_type,
             definition=definition,
-            variant_id=variant_id,
             description=description,
+            variant_id=variant_id,
             enum_options=enum_options,
             request_options=request_options,
         )
@@ -149,9 +158,15 @@ class IntelligentFieldsClient:
         field_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        variant_reference_id: typing.Optional[str] = None,
+        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldDetailResponse:
         """
+        Deprecated. Use `GET /v1/capabilities/INTELLIGENT_FIELD/{referenceId}`, which reads any
+        kind of capability the same way. It does not carry `referencingCharters`; search
+        charters to find the ones that reference a capability.
+
         Get an intelligent field by its supplied ID
 
         Parameters
@@ -161,6 +176,12 @@ class IntelligentFieldsClient:
 
         app_id : typing.Optional[str]
             The App ID of the intelligent field to get. If not provided the ID of the calling app will be used.
+
+        variant_reference_id : typing.Optional[str]
+            The agent variant reference ID to resolve the intelligent field's version through. Required on an agent with versioned intelligent fields; a request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise, if omitted, the agent's only variant is used.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -183,7 +204,13 @@ class IntelligentFieldsClient:
             field_reference_id="ticket-priority",
         )
         """
-        _response = self._raw_client.get(field_reference_id, app_id=app_id, request_options=request_options)
+        _response = self._raw_client.get(
+            field_reference_id,
+            app_id=app_id,
+            variant_reference_id=variant_reference_id,
+            variant_app_id=variant_app_id,
+            request_options=request_options,
+        )
         return _response.data
 
     def patch(
@@ -192,14 +219,20 @@ class IntelligentFieldsClient:
         *,
         app_id: typing.Optional[str] = OMIT,
         definition: typing.Optional[str] = OMIT,
-        status: typing.Optional[IntelligentFieldStatus] = OMIT,
+        status: typing.Optional[CapabilityStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
         variant_id: typing.Optional[EntityIdBase] = OMIT,
+        variant_app_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldResponse:
         """
-        Patch an intelligent field. Can be used to update the definition, status, or other mutable properties.
+        Update the mutable properties of an intelligent field. Only the properties present in
+        the request body are changed.
+
+        This is also how a field is activated and deactivated: set `status` to `ACTIVE` to
+        start evaluating it, or `INACTIVE` to stop. `name`, `entityType`, and `validationType`
+        cannot be changed after creation.
 
         Parameters
         ----------
@@ -210,19 +243,27 @@ class IntelligentFieldsClient:
             The App ID of the intelligent field to update. If not provided the ID of the calling app will be used.
 
         definition : typing.Optional[str]
-            The definition of the intelligent field. This text will be influential in guiding the LLM to produce the desired results.
+            The definition of the intelligent field. This text will be influential in guiding the LLM to produce the desired results. Limited to 5,000 characters.
 
-        status : typing.Optional[IntelligentFieldStatus]
-            The lifecycle state for whether this field is evaluated by workflows. Use INACTIVE to deactivate.
+        status : typing.Optional[CapabilityStatus]
+            The lifecycle state for whether this field is evaluated. Use ACTIVE to start
+            evaluating the field and INACTIVE to stop.
+
+            Each agent has a limit on how many fields may be ACTIVE at once; activating a
+            field beyond that limit is rejected. A field referenced by an active precondition
+            cannot be deactivated.
 
         description : typing.Optional[str]
             A plain text description of the intelligent field.
 
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
-            Updated enum options for select/multi-select fields. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
+            Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
 
         variant_id : typing.Optional[EntityIdBase]
-            ID of the agent variant that this field belongs to, if applicable
+            The agent variant to stage this patch in, by reference ID. Its owning app is `variantAppId`. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant named by `variantId`. If not provided, the ID of the calling app will be used — name the owning app to patch in a variant the caller does not own, as the platform's own seeded variants are.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -254,6 +295,7 @@ class IntelligentFieldsClient:
             description=description,
             enum_options=enum_options,
             variant_id=variant_id,
+            variant_app_id=variant_app_id,
             request_options=request_options,
         )
         return _response.data
@@ -268,6 +310,9 @@ class IntelligentFieldsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldResponse:
         """
+        Deprecated. Use `DELETE /v1/capabilities/INTELLIGENT_FIELD/{referenceId}`, which
+        deletes any kind of capability the same way. That endpoint returns no body.
+
         Soft delete an intelligent field. Only INACTIVE fields can be deleted.
 
         Deleted fields are excluded from search results but can still be retrieved by ID.
@@ -285,7 +330,7 @@ class IntelligentFieldsClient:
             The App ID of the intelligent field to delete. If not provided, the ID of the calling app will be used.
 
         variant_reference_id : typing.Optional[str]
-            The agent variant reference ID of the intelligent field to delete.
+            The agent variant to stage the delete in, by reference ID. Required on an agent with versioned intelligent fields; a delete that omits it there is rejected with reason `VARIANT_REQUIRED`.
 
         variant_app_id : typing.Optional[str]
             The App ID of the agent variant reference for the intelligent field to delete. If not provided, the ID of the calling app will be used.
@@ -336,7 +381,12 @@ class IntelligentFieldsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldValueSearchResponse:
         """
-        Search computed values for intelligent fields across entities. Supports filtering by field properties and target entity.
+        Search the values that have been computed for intelligent fields, across entities.
+        Supports filtering by properties of the field, by target entity, and by when the
+        value was computed.
+
+        Values only exist for fields that were ACTIVE when the entity was evaluated, so a
+        newly activated field returns nothing until evaluation has run.
 
         Parameters
         ----------
@@ -455,51 +505,59 @@ class AsyncIntelligentFieldsClient:
     async def create_or_update(
         self,
         *,
+        name: str,
         field_id: EntityIdBase,
         entity_type: EntityType,
-        name: str,
         validation_type: IntelligentFieldType,
         definition: str,
-        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         description: typing.Optional[str] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldResponse:
         """
-        Create a new intelligent field. Intelligent fields are used to store custom LLM-generated values on entities like conversations or events.
+        Create a new intelligent field, or replace it if one already exists with the same
+        `fieldId.referenceId`. Intelligent fields hold LLM-generated values computed for
+        entities such as conversations.
+
+        New fields are created with `status: INACTIVE` and are not evaluated until activated
+        with the patch endpoint. `definition` is limited to 5,000 characters.
 
         Parameters
         ----------
+        name : str
+            Display name for the intelligent field
+
         field_id : EntityIdBase
-            ID that uniquely identifies this intelligent field
+            ID that uniquely identifies this intelligent field. `referenceId` is supplied by the
+            caller and is how the field is addressed on every other endpoint.
 
         entity_type : EntityType
             Target entity type for evaluation. Only CONVERSATION is supported at this time. The backend will return an error for other types.
 
-        name : str
-            Display name for the intelligent field
-
         validation_type : IntelligentFieldType
-            Result type hint used for schema generation, UI, and validation.
+            The type of value this field holds. It constrains the schema the LLM is asked to fill
+            and the JSON type of the computed `value`.
 
-            - STRING / MULTILINE: single string value
-            - MULTI_SELECT: multiple values
-            - BOOLEAN: boolean value
-            - NUMBER: numeric value
+            - STRING / MULTILINE: a single string
+            - MULTI_SELECT: a list of strings
+            - BOOLEAN: `true` or `false`
+            - NUMBER: a number
 
-            Note: for single select, use STRING/NUMBER with a list of enumOptions.
+            For a single select, use STRING or NUMBER together with `enumOptions`.
 
         definition : str
             Definition used by the LLM when generating this field's value
 
-        variant_id : typing.Optional[EntityIdWithoutAgent]
-            ID of the agent variant that created this field, if applicable
-
         description : typing.Optional[str]
             A plain text description of the intelligent field.
 
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            ID of the agent variant this field belongs to, if applicable
+
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
-            Optional enum options for STRING/MULTILINE/NUMBER when a finite set is desired
+            The finite set of values this field may take. Omit to let the LLM produce any value of
+            the `validationType`. Options may be added later with the patch endpoint, but not removed.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -537,6 +595,7 @@ class AsyncIntelligentFieldsClient:
                     EnumOption(
                         value="HIGH",
                         label="High Priority",
+                        description="The customer is blocked or reports an outage.",
                     ),
                     EnumOption(
                         value="MEDIUM",
@@ -554,13 +613,13 @@ class AsyncIntelligentFieldsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.create_or_update(
+            name=name,
             field_id=field_id,
             entity_type=entity_type,
-            name=name,
             validation_type=validation_type,
             definition=definition,
-            variant_id=variant_id,
             description=description,
+            variant_id=variant_id,
             enum_options=enum_options,
             request_options=request_options,
         )
@@ -571,9 +630,15 @@ class AsyncIntelligentFieldsClient:
         field_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        variant_reference_id: typing.Optional[str] = None,
+        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldDetailResponse:
         """
+        Deprecated. Use `GET /v1/capabilities/INTELLIGENT_FIELD/{referenceId}`, which reads any
+        kind of capability the same way. It does not carry `referencingCharters`; search
+        charters to find the ones that reference a capability.
+
         Get an intelligent field by its supplied ID
 
         Parameters
@@ -583,6 +648,12 @@ class AsyncIntelligentFieldsClient:
 
         app_id : typing.Optional[str]
             The App ID of the intelligent field to get. If not provided the ID of the calling app will be used.
+
+        variant_reference_id : typing.Optional[str]
+            The agent variant reference ID to resolve the intelligent field's version through. Required on an agent with versioned intelligent fields; a request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise, if omitted, the agent's only variant is used.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -613,7 +684,13 @@ class AsyncIntelligentFieldsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get(field_reference_id, app_id=app_id, request_options=request_options)
+        _response = await self._raw_client.get(
+            field_reference_id,
+            app_id=app_id,
+            variant_reference_id=variant_reference_id,
+            variant_app_id=variant_app_id,
+            request_options=request_options,
+        )
         return _response.data
 
     async def patch(
@@ -622,14 +699,20 @@ class AsyncIntelligentFieldsClient:
         *,
         app_id: typing.Optional[str] = OMIT,
         definition: typing.Optional[str] = OMIT,
-        status: typing.Optional[IntelligentFieldStatus] = OMIT,
+        status: typing.Optional[CapabilityStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
         variant_id: typing.Optional[EntityIdBase] = OMIT,
+        variant_app_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldResponse:
         """
-        Patch an intelligent field. Can be used to update the definition, status, or other mutable properties.
+        Update the mutable properties of an intelligent field. Only the properties present in
+        the request body are changed.
+
+        This is also how a field is activated and deactivated: set `status` to `ACTIVE` to
+        start evaluating it, or `INACTIVE` to stop. `name`, `entityType`, and `validationType`
+        cannot be changed after creation.
 
         Parameters
         ----------
@@ -640,19 +723,27 @@ class AsyncIntelligentFieldsClient:
             The App ID of the intelligent field to update. If not provided the ID of the calling app will be used.
 
         definition : typing.Optional[str]
-            The definition of the intelligent field. This text will be influential in guiding the LLM to produce the desired results.
+            The definition of the intelligent field. This text will be influential in guiding the LLM to produce the desired results. Limited to 5,000 characters.
 
-        status : typing.Optional[IntelligentFieldStatus]
-            The lifecycle state for whether this field is evaluated by workflows. Use INACTIVE to deactivate.
+        status : typing.Optional[CapabilityStatus]
+            The lifecycle state for whether this field is evaluated. Use ACTIVE to start
+            evaluating the field and INACTIVE to stop.
+
+            Each agent has a limit on how many fields may be ACTIVE at once; activating a
+            field beyond that limit is rejected. A field referenced by an active precondition
+            cannot be deactivated.
 
         description : typing.Optional[str]
             A plain text description of the intelligent field.
 
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
-            Updated enum options for select/multi-select fields. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
+            Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
 
         variant_id : typing.Optional[EntityIdBase]
-            ID of the agent variant that this field belongs to, if applicable
+            The agent variant to stage this patch in, by reference ID. Its owning app is `variantAppId`. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant named by `variantId`. If not provided, the ID of the calling app will be used — name the owning app to patch in a variant the caller does not own, as the platform's own seeded variants are.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -692,6 +783,7 @@ class AsyncIntelligentFieldsClient:
             description=description,
             enum_options=enum_options,
             variant_id=variant_id,
+            variant_app_id=variant_app_id,
             request_options=request_options,
         )
         return _response.data
@@ -706,6 +798,9 @@ class AsyncIntelligentFieldsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldResponse:
         """
+        Deprecated. Use `DELETE /v1/capabilities/INTELLIGENT_FIELD/{referenceId}`, which
+        deletes any kind of capability the same way. That endpoint returns no body.
+
         Soft delete an intelligent field. Only INACTIVE fields can be deleted.
 
         Deleted fields are excluded from search results but can still be retrieved by ID.
@@ -723,7 +818,7 @@ class AsyncIntelligentFieldsClient:
             The App ID of the intelligent field to delete. If not provided, the ID of the calling app will be used.
 
         variant_reference_id : typing.Optional[str]
-            The agent variant reference ID of the intelligent field to delete.
+            The agent variant to stage the delete in, by reference ID. Required on an agent with versioned intelligent fields; a delete that omits it there is rejected with reason `VARIANT_REQUIRED`.
 
         variant_app_id : typing.Optional[str]
             The App ID of the agent variant reference for the intelligent field to delete. If not provided, the ID of the calling app will be used.
@@ -782,7 +877,12 @@ class AsyncIntelligentFieldsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldValueSearchResponse:
         """
-        Search computed values for intelligent fields across entities. Supports filtering by field properties and target entity.
+        Search the values that have been computed for intelligent fields, across entities.
+        Supports filtering by properties of the field, by target entity, and by when the
+        value was computed.
+
+        Values only exist for fields that were ACTIVE when the entity was evaluated, so a
+        newly activated field returns nothing until evaluation has run.
 
         Parameters
         ----------

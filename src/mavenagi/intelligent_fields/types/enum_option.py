@@ -8,7 +8,9 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 class EnumOption(UniversalBaseModel):
     """
-    Option for STRING/MULTILINE/NUMBER fields when a finite set is desired
+    One allowed choice for a field whose value should come from a finite set. Use with
+    MULTI_SELECT to constrain a list of choices, or with STRING/MULTILINE/NUMBER to make
+    the field a single select.
     """
 
     value: str = pydantic.Field()
@@ -19,6 +21,12 @@ class EnumOption(UniversalBaseModel):
     label: typing.Optional[str] = pydantic.Field(default=None)
     """
     Display label for the option
+    """
+
+    description: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Instructions that tell the LLM when to pick this option. Up to 1200 characters. On a
+    patch, an option sent without a description has its description cleared.
     """
 
     if IS_PYDANTIC_V2:

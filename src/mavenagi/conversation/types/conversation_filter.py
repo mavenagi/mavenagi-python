@@ -200,6 +200,9 @@ class ConversationFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Filter by the segments that any message on a conversation matched.
+    
+    Superseded by `matchedCharterIds`. Segments are being phased out in favour of
+    charter preconditions.
     """
 
     matched_charter_ids: typing_extensions.Annotated[

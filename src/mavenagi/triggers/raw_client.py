@@ -40,6 +40,10 @@ class RawTriggersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[EventTriggersSearchResponse]:
         """
+        Deprecated. Use `POST /v1/capabilities/search`, which searches every kind of capability
+        at once. It returns the fields every capability shares rather than the whole Event
+        Trigger; fetch one by its kind and reference ID for the rest.
+
         Parameters
         ----------
         sort : typing.Optional[TriggerField]
@@ -146,8 +150,8 @@ class RawTriggersClient:
     def create_or_update(
         self,
         *,
-        trigger_id: EntityIdBase,
         description: str,
+        trigger_id: EntityIdBase,
         type: EventTriggerType,
         name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -157,11 +161,11 @@ class RawTriggersClient:
 
         Parameters
         ----------
-        trigger_id : EntityIdBase
-            ID that uniquely identifies this event trigger
-
         description : str
             The description of what the event trigger does, shown in the Maven Dashboard
+
+        trigger_id : EntityIdBase
+            ID that uniquely identifies this event trigger
 
         type : EventTriggerType
             The type of event trigger this app wishes to handle.
@@ -187,11 +191,11 @@ class RawTriggersClient:
             "v1/triggers",
             method="PUT",
             json={
+                "name": name,
+                "description": description,
                 "triggerId": convert_and_respect_annotation_metadata(
                     object_=trigger_id, annotation=EntityIdBase, direction="write"
                 ),
-                "name": name,
-                "description": description,
                 "type": type,
             },
             request_options=request_options,
@@ -271,6 +275,9 @@ class RawTriggersClient:
         self, trigger_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[EventTriggerResponse]:
         """
+        Deprecated. Use `GET /v1/capabilities/TRIGGER/{referenceId}`, which returns this same
+        object for a trigger and the equivalent for every other kind of capability.
+
         Get an event trigger by its supplied ID
 
         Parameters
@@ -364,6 +371,9 @@ class RawTriggersClient:
         self, trigger_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[None]:
         """
+        Deprecated. Use `DELETE /v1/capabilities/TRIGGER/{referenceId}`, which deletes any kind
+        of capability the same way.
+
         Delete an event trigger
 
         Parameters
@@ -455,6 +465,9 @@ class RawTriggersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[EventTriggerResponse]:
         """
+        Deprecated. Use `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status`, which
+        publishes and unpublishes any kind of capability the same way.
+
         Updates an event trigger. Only the enabled field is editable.
 
         Parameters
@@ -573,6 +586,10 @@ class AsyncRawTriggersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[EventTriggersSearchResponse]:
         """
+        Deprecated. Use `POST /v1/capabilities/search`, which searches every kind of capability
+        at once. It returns the fields every capability shares rather than the whole Event
+        Trigger; fetch one by its kind and reference ID for the rest.
+
         Parameters
         ----------
         sort : typing.Optional[TriggerField]
@@ -679,8 +696,8 @@ class AsyncRawTriggersClient:
     async def create_or_update(
         self,
         *,
-        trigger_id: EntityIdBase,
         description: str,
+        trigger_id: EntityIdBase,
         type: EventTriggerType,
         name: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -690,11 +707,11 @@ class AsyncRawTriggersClient:
 
         Parameters
         ----------
-        trigger_id : EntityIdBase
-            ID that uniquely identifies this event trigger
-
         description : str
             The description of what the event trigger does, shown in the Maven Dashboard
+
+        trigger_id : EntityIdBase
+            ID that uniquely identifies this event trigger
 
         type : EventTriggerType
             The type of event trigger this app wishes to handle.
@@ -720,11 +737,11 @@ class AsyncRawTriggersClient:
             "v1/triggers",
             method="PUT",
             json={
+                "name": name,
+                "description": description,
                 "triggerId": convert_and_respect_annotation_metadata(
                     object_=trigger_id, annotation=EntityIdBase, direction="write"
                 ),
-                "name": name,
-                "description": description,
                 "type": type,
             },
             request_options=request_options,
@@ -804,6 +821,9 @@ class AsyncRawTriggersClient:
         self, trigger_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[EventTriggerResponse]:
         """
+        Deprecated. Use `GET /v1/capabilities/TRIGGER/{referenceId}`, which returns this same
+        object for a trigger and the equivalent for every other kind of capability.
+
         Get an event trigger by its supplied ID
 
         Parameters
@@ -897,6 +917,9 @@ class AsyncRawTriggersClient:
         self, trigger_reference_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[None]:
         """
+        Deprecated. Use `DELETE /v1/capabilities/TRIGGER/{referenceId}`, which deletes any kind
+        of capability the same way.
+
         Delete an event trigger
 
         Parameters
@@ -988,6 +1011,9 @@ class AsyncRawTriggersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[EventTriggerResponse]:
         """
+        Deprecated. Use `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status`, which
+        publishes and unpublishes any kind of capability the same way.
+
         Updates an event trigger. Only the enabled field is editable.
 
         Parameters

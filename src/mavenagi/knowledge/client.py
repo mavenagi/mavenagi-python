@@ -467,6 +467,9 @@ class KnowledgeClient:
 
         If an existing version is in progress, then that version will be finalized in an error state.
 
+        If another version create for the same knowledge base is still in progress, this request may
+        return 503 with a `Retry-After` header. Nothing is changed in that case, so it is safe to retry.
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -821,8 +824,10 @@ class KnowledgeClient:
             entity type with no internal form, is rejected rather than dropped - dropping the last
             entity would widen the document back to the whole agent.
 
-            Changing the entities on an existing document is not supported yet: re-sending a
-            document with different `relevantEntities` but unchanged content is a no-op.
+            Changing the entities on an existing document is not supported yet: document reuse is
+            decided by a checksum over `title`, `text`, `metadata`, `sourceUrl` and the attached
+            asset, so re-sending a document with different `relevantEntities` but none of those
+            changed returns the stored document and discards the new entities.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.
@@ -1553,6 +1558,9 @@ class AsyncKnowledgeClient:
 
         If an existing version is in progress, then that version will be finalized in an error state.
 
+        If another version create for the same knowledge base is still in progress, this request may
+        return 503 with a `Retry-After` header. Nothing is changed in that case, so it is safe to retry.
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -1947,8 +1955,10 @@ class AsyncKnowledgeClient:
             entity type with no internal form, is rejected rather than dropped - dropping the last
             entity would widen the document back to the whole agent.
 
-            Changing the entities on an existing document is not supported yet: re-sending a
-            document with different `relevantEntities` but unchanged content is a no-op.
+            Changing the entities on an existing document is not supported yet: document reuse is
+            decided by a checksum over `title`, `text`, `metadata`, `sourceUrl` and the attached
+            asset, so re-sending a document with different `relevantEntities` but none of those
+            changed returns the stored document and discards the new entities.
 
         url : typing.Optional[str]
             The URL of the document. Should be visible to end users. Will be shown as part of answers. Not used for crawling.

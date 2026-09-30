@@ -17,6 +17,7 @@ class Series(UniversalBaseModel):
     data: typing.List[LabeledPoint] = pydantic.Field()
     """
     List of labeled data points for the series.
+    A bucket the metric could not measure has no point here.
     """
 
     if IS_PYDANTIC_V2:

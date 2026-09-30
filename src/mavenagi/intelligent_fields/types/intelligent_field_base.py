@@ -21,7 +21,7 @@ class IntelligentFieldBase(IntelligentFieldCore):
         pydantic.Field(default=None)
     )
     """
-    ID of the agent variant that created this field, if applicable
+    ID of the agent variant this field belongs to, if applicable
     """
 
     if IS_PYDANTIC_V2:

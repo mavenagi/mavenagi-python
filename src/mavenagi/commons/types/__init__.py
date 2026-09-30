@@ -80,6 +80,9 @@ from .bot_text_response import BotTextResponse
 from .browser_info import BrowserInfo
 from .browser_type import BrowserType
 from .capability import Capability
+from .capability_base import CapabilityBase
+from .capability_status import CapabilityStatus
+from .capability_type import CapabilityType
 from .chart_spec_schema import ChartSpecSchema
 from .checkbox_settings_schema_entry import CheckboxSettingsSchemaEntry
 from .color_settings_schema_entry import ColorSettingsSchemaEntry
@@ -139,6 +142,7 @@ from .entity_id_without_agent import EntityIdWithoutAgent
 from .entity_result import EntityResult
 from .entity_type import EntityType
 from .error_message import ErrorMessage
+from .error_reason import ErrorReason
 from .event_base_no_id import EventBaseNoId
 from .event_field import EventField
 from .event_filter import EventFilter
@@ -195,6 +199,17 @@ from .language_info import LanguageInfo
 from .llm_inclusion_status import LlmInclusionStatus
 from .llm_persona import LlmPersona
 from .message_status import MessageStatus
+from .metadata_comparison_condition import MetadataComparisonCondition
+from .metadata_comparison_operator import MetadataComparisonOperator
+from .metadata_condition import (
+    MetadataCondition,
+    MetadataCondition_Comparison,
+    MetadataCondition_Membership,
+    MetadataCondition_Presence,
+)
+from .metadata_entry_condition import MetadataEntryCondition
+from .metadata_filter import MetadataFilter, MetadataFilter_Entry, MetadataFilter_Group
+from .metadata_filter_group import MetadataFilterGroup
 from .metadata_precondition import MetadataPrecondition
 from .multiline_settings_schema_entry import MultilineSettingsSchemaEntry
 from .novel_system_event import NovelSystemEvent
@@ -372,6 +387,9 @@ __all__ = [
     "BrowserInfo",
     "BrowserType",
     "Capability",
+    "CapabilityBase",
+    "CapabilityStatus",
+    "CapabilityType",
     "ChartSpecSchema",
     "CheckboxSettingsSchemaEntry",
     "ColorSettingsSchemaEntry",
@@ -425,6 +443,7 @@ __all__ = [
     "EntityResult",
     "EntityType",
     "ErrorMessage",
+    "ErrorReason",
     "EventBaseNoId",
     "EventField",
     "EventFilter",
@@ -486,6 +505,17 @@ __all__ = [
     "LlmInclusionStatus",
     "LlmPersona",
     "MessageStatus",
+    "MetadataComparisonCondition",
+    "MetadataComparisonOperator",
+    "MetadataCondition",
+    "MetadataCondition_Comparison",
+    "MetadataCondition_Membership",
+    "MetadataCondition_Presence",
+    "MetadataEntryCondition",
+    "MetadataFilter",
+    "MetadataFilterGroup",
+    "MetadataFilter_Entry",
+    "MetadataFilter_Group",
     "MetadataPrecondition",
     "MultilineSettingsSchemaEntry",
     "NovelSystemEvent",

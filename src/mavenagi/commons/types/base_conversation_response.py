@@ -124,6 +124,15 @@ class BaseConversationResponse(UniversalBaseModel):
     it cannot be supplied when creating or updating a conversation.
     """
 
+    variant_id: typing_extensions.Annotated[typing.Optional[EntityId], FieldMetadata(alias="variantId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The agent variant this conversation is pinned to. Chosen by the agent's traffic rules when
+    the conversation is created and fixed for its lifetime. Absent when the conversation was
+    not routed to a variant, for example one created before the agent had variants.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

@@ -4,16 +4,19 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.capability_base import CapabilityBase
 from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .event_trigger_base import EventTriggerBase
 
 
-class EventTriggerResponse(EventTriggerBase):
+class EventTriggerResponse(EventTriggerBase, CapabilityBase):
     """
     Examples
     --------
+    import datetime
+
     from mavenagi.commons import EntityId
     from mavenagi.triggers import EventTriggerResponse
 
@@ -25,9 +28,17 @@ class EventTriggerResponse(EventTriggerBase):
             agent_id="support",
             type="EVENT_TRIGGER",
         ),
+        name="Store in Snowflake",
         description="Stores conversation data in Snowflake",
         type="CONVERSATION_CREATED",
         enabled=True,
+        created_at=datetime.datetime.fromisoformat(
+            "2026-01-15 10:30:00+00:00",
+        ),
+        updated_at=datetime.datetime.fromisoformat(
+            "2026-01-15 10:30:00+00:00",
+        ),
+        status="ACTIVE",
     )
     """
 
@@ -38,6 +49,8 @@ class EventTriggerResponse(EventTriggerBase):
 
     enabled: bool = pydantic.Field()
     """
+    Deprecated. Superseded by `status`, which says the same thing for every capability type.
+    
     Whether this trigger will be called by Maven.
     """
 
