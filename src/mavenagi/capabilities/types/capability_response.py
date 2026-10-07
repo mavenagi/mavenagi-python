@@ -84,6 +84,7 @@ class CapabilityResponse_Trigger(UniversalBaseModel):
     trigger_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="triggerId")]
     enabled: bool
     type: EventTriggerType
+    condition: typing.Optional["EventCondition"] = None
     name: str
     description: typing.Optional[str] = None
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
@@ -98,6 +99,10 @@ class CapabilityResponse_Trigger(UniversalBaseModel):
             frozen = True
             smart_union = True
             extra = pydantic.Extra.allow
+
+
+from ...commons.types.event_condition_group import EventConditionGroup  # noqa: E402, F401, I001
+from ...commons.types.event_condition import EventCondition  # noqa: E402, F401, I001
 
 
 class CapabilityResponse_IntelligentField(UniversalBaseModel):
@@ -174,3 +179,4 @@ CapabilityResponse = typing.Union[
     CapabilityResponse_ConversationKickoff,
 ]
 update_forward_refs(CapabilityResponse_Action)
+update_forward_refs(CapabilityResponse_Trigger)

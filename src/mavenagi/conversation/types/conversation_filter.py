@@ -8,6 +8,7 @@ import typing_extensions
 from ...commons.types.conversation_mode import ConversationMode
 from ...commons.types.entity_id_filter import EntityIdFilter
 from ...commons.types.feedback_type import FeedbackType
+from ...commons.types.intelligent_field_filter import IntelligentFieldFilter
 from ...commons.types.number_range import NumberRange
 from ...commons.types.quality import Quality
 from ...commons.types.quality_reason import QualityReason
@@ -17,7 +18,6 @@ from ...commons.types.sentiment import Sentiment
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .billable_filter_field import BillableFilterField
-from .intelligent_field_filter import IntelligentFieldFilter
 from .simulation_filter import SimulationFilter
 
 
@@ -147,6 +147,15 @@ class ConversationFilter(UniversalBaseModel):
     customer-writable.
     """
 
+    deleted: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Filter by whether the conversation has been deleted with `deleteConversation`. `true`
+    returns only deleted conversations, `false` excludes them. When unset, both are returned.
+    
+    The filter reads the search index, which is updated shortly after a deletion. Use the
+    `deleted` field on each result to confirm.
+    """
+
     tags: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
     Filter by tags applied to the conversation
@@ -227,6 +236,19 @@ class ConversationFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Filter by inbox item IDs associated with the conversation
+    """
+
+    variant_ids: typing_extensions.Annotated[
+        typing.Optional[typing.List[EntityIdFilter]], FieldMetadata(alias="variantIds")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by the agent variant each conversation is pinned to (its `variantId`), by
+    reference ID and owning app, resolved against the calling agent. Matches conversations
+    pinned to any of them.
+    
+    Omit it to match every conversation in the window, whichever variant it ran on. A
+    conversation from before the agent's conversations were pinned has no variant, so it
+    matches no list; grouping by `Variant` reports those as `BEFORE_VERSIONING`.
     """
 
     simulation_filter: typing_extensions.Annotated[

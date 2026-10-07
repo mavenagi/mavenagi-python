@@ -5,6 +5,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.entity_id_filter import EntityIdFilter
 from ...commons.types.inbox_item_status import InboxItemStatus
 from ...commons.types.inbox_item_type import InboxItemType
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
@@ -39,6 +40,20 @@ class InboxFilter(UniversalBaseModel):
     )
     """
     Filter for items created before this timestamp.
+    """
+
+    variant_ids: typing_extensions.Annotated[
+        typing.Optional[typing.List[EntityIdFilter]], FieldMetadata(alias="variantIds")
+    ] = pydantic.Field(default=None)
+    """
+    Filter for items raised from conversations pinned to any of these agent variants, by
+    reference ID and owning app. Only missing-knowledge items are raised from
+    conversations, so no other item type matches a variant. Simulation conversations don't
+    count. Omit it to match items whatever variant their conversations ran on.
+    
+    Reads those conversations, so it needs permission to read conversations as well as the
+    inbox. At most 10,000 items are considered: those referenced by the most of the
+    variants' conversations.
     """
 
     if IS_PYDANTIC_V2:

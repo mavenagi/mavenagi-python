@@ -128,9 +128,10 @@ class BaseConversationResponse(UniversalBaseModel):
         pydantic.Field(default=None)
     )
     """
-    The agent variant this conversation is pinned to. Chosen by the agent's traffic rules when
-    the conversation is created and fixed for its lifetime. Absent when the conversation was
-    not routed to a variant, for example one created before the agent had variants.
+    The agent variant this conversation is pinned to. Chosen when the conversation is created,
+    by the agent's traffic rules or by the simulation's `simulationContext.variantId`, and fixed
+    for its lifetime. Absent when the conversation was not routed to a variant, for example one
+    created before the agent had variants.
     """
 
     if IS_PYDANTIC_V2:

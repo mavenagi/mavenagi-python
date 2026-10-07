@@ -14,14 +14,14 @@ from .intelligent_field_core import IntelligentFieldCore
 class IntelligentFieldBase(IntelligentFieldCore):
     entity_type: typing_extensions.Annotated[EntityType, FieldMetadata(alias="entityType")] = pydantic.Field()
     """
-    Target entity type for evaluation. Only CONVERSATION is supported at this time. The backend will return an error for other types.
+    Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types.
     """
 
     variant_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="variantId")] = (
         pydantic.Field(default=None)
     )
     """
-    ID of the agent variant this field belongs to, if applicable
+    On a request, the agent variant to stage the write in. On a response, the variant the request named, if any; absent when it named none.
     """
 
     if IS_PYDANTIC_V2:

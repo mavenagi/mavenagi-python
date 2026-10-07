@@ -10,6 +10,7 @@ from ..commons.errors.server_error import ServerError
 from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.capability_status import CapabilityStatus
 from ..commons.types.capability_type import CapabilityType
+from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.error_message import ErrorMessage
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -17,6 +18,7 @@ from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
+from ..core.serialization import convert_and_respect_annotation_metadata
 from .types.capabilities_search_response import CapabilitiesSearchResponse
 from .types.capability_response import CapabilityResponse
 from .types.capability_sort_field import CapabilitySortField
@@ -424,6 +426,7 @@ class RawCapabilitiesClient:
         description: typing.Optional[str] = OMIT,
         user_interaction_required: typing.Optional[bool] = OMIT,
         sort_id: typing.Optional[CapabilitySortField] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         variant_reference_id: typing.Optional[str] = OMIT,
         variant_app_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
@@ -467,14 +470,17 @@ class RawCapabilitiesClient:
         sort_id : typing.Optional[CapabilitySortField]
             The field to sort by. Defaults to when the capability was created.
 
-        variant_reference_id : typing.Optional[str]
+        variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to read intelligent field versions through. Required on an agent
             with versioned intelligent fields unless `capabilityTypes` excludes them; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
             if omitted, the agent's only variant is used.
 
+        variant_reference_id : typing.Optional[str]
+            Deprecated, use `variantId`, which wins when both are set.
+
         variant_app_id : typing.Optional[str]
-            The app that owns the agent variant. Defaults to the calling app.
+            Deprecated, use `variantId`, which wins when both are set.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -503,6 +509,9 @@ class RawCapabilitiesClient:
                 "description": description,
                 "userInteractionRequired": user_interaction_required,
                 "sortId": sort_id,
+                "variantId": convert_and_respect_annotation_metadata(
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
                 "variantReferenceId": variant_reference_id,
                 "variantAppId": variant_app_id,
                 "page": page,
@@ -982,6 +991,7 @@ class AsyncRawCapabilitiesClient:
         description: typing.Optional[str] = OMIT,
         user_interaction_required: typing.Optional[bool] = OMIT,
         sort_id: typing.Optional[CapabilitySortField] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         variant_reference_id: typing.Optional[str] = OMIT,
         variant_app_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
@@ -1025,14 +1035,17 @@ class AsyncRawCapabilitiesClient:
         sort_id : typing.Optional[CapabilitySortField]
             The field to sort by. Defaults to when the capability was created.
 
-        variant_reference_id : typing.Optional[str]
+        variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to read intelligent field versions through. Required on an agent
             with versioned intelligent fields unless `capabilityTypes` excludes them; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
             if omitted, the agent's only variant is used.
 
+        variant_reference_id : typing.Optional[str]
+            Deprecated, use `variantId`, which wins when both are set.
+
         variant_app_id : typing.Optional[str]
-            The app that owns the agent variant. Defaults to the calling app.
+            Deprecated, use `variantId`, which wins when both are set.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -1061,6 +1074,9 @@ class AsyncRawCapabilitiesClient:
                 "description": description,
                 "userInteractionRequired": user_interaction_required,
                 "sortId": sort_id,
+                "variantId": convert_and_respect_annotation_metadata(
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
+                ),
                 "variantReferenceId": variant_reference_id,
                 "variantAppId": variant_app_id,
                 "page": page,

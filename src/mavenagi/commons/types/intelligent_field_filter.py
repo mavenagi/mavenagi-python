@@ -4,12 +4,17 @@ import typing
 
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from .intelligent_field_search_condition import IntelligentFieldSearchCondition
 
 
-class TriggerPartialUpdate(UniversalBaseModel):
-    enabled: typing.Optional[bool] = pydantic.Field(default=None)
+class IntelligentFieldFilter(UniversalBaseModel):
     """
-    Whether the trigger will be called by Maven.
+    Filter by intelligent field values. All conditions are ANDed.
+    """
+
+    conditions: typing.List[IntelligentFieldSearchCondition] = pydantic.Field()
+    """
+    List of conditions to filter by. All conditions must match (AND logic).
     """
 
     if IS_PYDANTIC_V2:

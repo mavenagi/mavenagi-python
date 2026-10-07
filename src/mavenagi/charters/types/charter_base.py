@@ -3,13 +3,27 @@
 import typing
 
 import pydantic
+import typing_extensions
+from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.serialization import FieldMetadata
 
 
 class CharterBase(UniversalBaseModel):
     name: str = pydantic.Field()
     """
     Display name for this charter or group.
+    """
+
+    variant_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="variantId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    ID of the agent variant this charter belongs to, if applicable.
+    
+    On a write this is validated -- an unknown variant is rejected, as is any
+    variant while variant scoping is off for charters -- but not yet applied: the
+    write reaches the agent's live configuration either way.
     """
 
     description: typing.Optional[str] = pydantic.Field(default=None)

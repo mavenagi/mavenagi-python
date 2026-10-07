@@ -39,7 +39,9 @@ ConversationField = typing.Union[
         "AgentEnvironment",
         "InboxItems",
         "InvolvedApps",
+        "Variant",
         "IntelligentField",
+        "IntelligentFields",
     ],
     typing.Any,
 ]

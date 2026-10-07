@@ -13,6 +13,7 @@ ErrorReason = typing.Union[
         "CANNOT_ARCHIVE_LIVE_VARIANT",
         "VARIANT_HAS_STAGED_EDITS",
         "VARIANT_REQUIRED",
+        "INTELLIGENT_FIELD_TYPE_CHANGED",
     ],
     typing.Any,
 ]

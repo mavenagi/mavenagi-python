@@ -3506,7 +3506,7 @@ can require it, so filtering on true returns Actions alone.
 <dl>
 <dd>
 
-**variant_reference_id:** `typing.Optional[str]` 
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
 
 The agent variant to read intelligent field versions through. Required on an agent
 with versioned intelligent fields unless `capabilityTypes` excludes them; a
@@ -3519,7 +3519,15 @@ if omitted, the agent's only variant is used.
 <dl>
 <dd>
 
-**variant_app_id:** `typing.Optional[str]` — The app that owns the agent variant. Defaults to the calling app.
+**variant_reference_id:** `typing.Optional[str]` — Deprecated, use `variantId`, which wins when both are set.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — Deprecated, use `variantId`, which wins when both are set.
     
 </dd>
 </dl>
@@ -3686,20 +3694,6 @@ Maximum 50 knowledge bases and 50 actions per charter.
 <dl>
 <dd>
 
-**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
-
-The agent variant this write is scoped to. When set, the charter content is staged in
-that variant's working set instead of being applied to the agent's live configuration.
-
-Omit this field to write directly to the agent. Variant scoping is not active yet: a
-variant supplied today is accepted and ignored, and the write applies to the agent.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **parent_charter_id:** `typing.Optional[EntityId]` 
 
 The fully-qualified ID of the parent charter. Send null to place this charter at the
@@ -3760,6 +3754,20 @@ Lower rank = higher priority. When provided and conflicts with an
 existing sibling, siblings at that rank and above are shifted up by 1
 (like linked list semantics). When omitted on create, auto-assigned as
 `max(siblings.userRank) + 1` (0 if no siblings).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+ID of the agent variant this charter belongs to, if applicable.
+
+On a write this is validated -- an unknown variant is rejected, as is any
+variant while variant scoping is off for charters -- but not yet applied: the
+write reaches the agent's live configuration either way.
     
 </dd>
 </dl>
@@ -3863,6 +3871,22 @@ client.charters.get(
 <dd>
 
 **app_id:** `typing.Optional[str]` — The App ID of the charter to get. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_reference_id:** `typing.Optional[str]` — The agent variant reference ID to resolve the charter's version through. If not provided, defaults to the agent's production variant. Currently, validated but not applied.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
     
 </dd>
 </dl>
@@ -4076,7 +4100,7 @@ The agent variant this patch is scoped to. When set, the patch is staged in that
 variant's working set instead of being applied to the agent's live configuration.
 
 Omit this field to patch the agent directly. Variant scoping is not active yet:
-a variant supplied today is accepted and ignored, and the patch applies to the
+a variant supplied today is validated but not applied, and the patch applies to the
 agent.
     
 </dd>
@@ -4181,7 +4205,7 @@ deletion is staged in that variant's working set instead of being applied to the
 agent's live configuration.
 
 Omit this parameter to delete directly from the agent. Variant scoping is not
-active yet: a variant supplied today is accepted and ignored, and the delete applies
+active yet: a variant supplied today is validated but not applied, and the delete applies
 to the agent.
     
 </dd>
@@ -4856,6 +4880,9 @@ Update mutable conversation fields.
 
 The `appId` field can be provided to update a conversation owned by a different app.
 All other fields will overwrite the existing value on the conversation only if provided.
+
+A closed conversation (`open` set to false) cannot be reopened: a patch setting `open` to true
+returns a 400. Its other fields can still be patched.
 </dd>
 </dl>
 </dd>
@@ -4913,7 +4940,7 @@ client.conversation.patch(
 <dl>
 <dd>
 
-**open:** `typing.Optional[bool]` — Whether the conversation is able to receive asynchronous messages. Only valid for conversations with the `ASYNC` capability.
+**open:** `typing.Optional[bool]` — Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages.
     
 </dd>
 </dl>
@@ -5151,6 +5178,8 @@ client.conversation.delete(
 <dd>
 
 Append messages to an existing conversation. The conversation must be initialized first. If a message with the same ID already exists, it will be ignored. Messages do not allow modification.
+
+A closed conversation (`open` set to false) takes no new messages and returns a 400.
 </dd>
 </dl>
 </dd>
@@ -5257,6 +5286,8 @@ client.conversation.append_new_messages(
 
 Get an answer from Maven for a given user question. If the user question or its answer already exists,
 they will be reused and will not be updated. Messages do not allow modification once generated.
+
+A closed conversation (`open` set to false) takes no new questions and returns a 400.
 
 Concurrency Behavior:
 - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
@@ -5475,6 +5506,8 @@ Action and metadata events should overwrite past data and do not need concatenat
 
 If the user question or its answer already exists, they will be reused and will not be updated.
 Messages do not allow modification once generated.
+
+A closed conversation (`open` set to false) takes no new questions and returns a 400.
 
 Concurrency Behavior:
 - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
@@ -5898,6 +5931,8 @@ Action forms can not be submitted more than once, attempting to do so will resul
 
 Additionally, form submission is only allowed when the form is the last message in the conversation.
 Forms should be disabled in surface UI if a conversation continues and they remain unsubmitted.
+
+A form cannot be submitted on a closed conversation (`open` set to false): that returns a 400.
 </dd>
 </dl>
 </dd>
@@ -5999,6 +6034,8 @@ client.conversation.submit_action_form(
 Replaced by `updateConversationMetadata`.
 
 Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
+
+A closed conversation (`open` set to false) takes no new metadata and returns a 400.
 </dd>
 </dl>
 </dd>
@@ -6087,6 +6124,8 @@ If a metadata field already exists for the calling app, it will be overwritten.
 If it does not exist, it will be added. Will not remove metadata fields.
 
 Returns all metadata saved by any app on the conversation.
+
+A closed conversation (`open` set to false) takes no new metadata and returns a 400.
 </dd>
 </dl>
 </dd>
@@ -6224,8 +6263,8 @@ client.conversation.search()
 
 **sort:** `typing.Optional[ConversationField]` 
 
-Field to sort results by. `IntelligentField` is not supported here - sorting conversations
-by an intelligent field value is not available. Intelligent fields can be filtered on via
+Field to sort results by. `IntelligentField` and `IntelligentFields` are not supported
+here - sorting conversations by an intelligent field value is not available. Intelligent fields can be filtered on via
 `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
     
 </dd>
@@ -6447,8 +6486,8 @@ client.conversation.export()
 
 **sort:** `typing.Optional[ConversationField]` 
 
-Field to sort results by. `IntelligentField` is not supported here - sorting conversations
-by an intelligent field value is not available. Intelligent fields can be filtered on via
+Field to sort results by. `IntelligentField` and `IntelligentFields` are not supported
+here - sorting conversations by an intelligent field value is not available. Intelligent fields can be filtered on via
 `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
     
 </dd>
@@ -7014,7 +7053,7 @@ If not provided, the existing metadata will be preserved.
 <dl>
 <dd>
 
-Create a new event
+Create a new event. Events are immutable, so a create that reuses the `referenceId` of an existing event in the same app is rejected with a 409 and leaves that event unchanged.
 </dd>
 </dl>
 </dd>
@@ -8444,7 +8483,15 @@ Create a new intelligent field, or replace it if one already exists with the sam
 entities such as conversations.
 
 New fields are created with `status: INACTIVE` and are not evaluated until activated
-with the patch endpoint. `definition` is limited to 5,000 characters.
+with the patch endpoint. A new field created in a `variantId` starts `ACTIVE` instead,
+since it is evaluated only once that variant is published and given traffic; it starts
+`INACTIVE` while the agent is at its limit of active fields. `definition` is limited
+to 5,000 characters.
+
+A replace that names a `variantId` must keep the field's `validationType` as that
+variant has it, or it is rejected with reason `INTELLIGENT_FIELD_TYPE_CHANGED`. To use
+a different type, create a new field. A field deleted in the variant may be recreated
+with any type.
 </dd>
 </dl>
 </dd>
@@ -8528,7 +8575,7 @@ caller and is how the field is addressed on every other endpoint.
 <dl>
 <dd>
 
-**entity_type:** `EntityType` — Target entity type for evaluation. Only CONVERSATION is supported at this time. The backend will return an error for other types.
+**entity_type:** `EntityType` — Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types.
     
 </dd>
 </dl>
@@ -8570,7 +8617,7 @@ For a single select, use STRING or NUMBER together with `enumOptions`.
 <dl>
 <dd>
 
-**variant_id:** `typing.Optional[EntityIdWithoutAgent]` — ID of the agent variant this field belongs to, if applicable
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` — On a request, the agent variant to stage the write in. On a response, the variant the request named, if any; absent when it named none.
     
 </dd>
 </dl>
@@ -8816,7 +8863,7 @@ cannot be deactivated.
 <dl>
 <dd>
 
-**variant_id:** `typing.Optional[EntityIdBase]` — The agent variant to stage this patch in, by reference ID. Its owning app is `variantAppId`. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` — The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
     
 </dd>
 </dl>
@@ -8824,7 +8871,7 @@ cannot be deactivated.
 <dl>
 <dd>
 
-**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant named by `variantId`. If not provided, the ID of the calling app will be used — name the owning app to patch in a variant the caller does not own, as the platform's own seeded variants are.
+**variant_app_id:** `typing.Optional[str]` — Deprecated, use `variantId.appId`, which wins when both are set.
     
 </dd>
 </dl>
@@ -8863,7 +8910,7 @@ Soft delete an intelligent field. Only INACTIVE fields can be deleted.
 
 Deleted fields are excluded from search results but can still be retrieved by ID.
 Creating a new field with the same referenceId as a deleted field will overwrite
-the deleted field and restore it to INACTIVE status.
+the deleted field and restore it with the status a new field gets.
 
 Deleted fields cannot be modified.
 </dd>
@@ -9086,7 +9133,15 @@ client.intelligent_fields.search_values(
 <dl>
 <dd>
 
-**variant_id:** `typing.Optional[EntityIdWithoutAgent]` — Filter to values generated by a specific agent variant. If not provided, returns values from all variants.
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+Returns values of the fields in this agent variant's scope: its published snapshot plus
+its staged edits, matched by field. A value is included whichever variant's conversation
+produced it, and is named as this variant names the field. If not provided, returns
+values from all variants.
+
+To see values from the conversations pinned to a variant, filter conversations by
+`variantIds` in conversation search or the analytics APIs.
     
 </dd>
 </dl>
@@ -11629,20 +11684,6 @@ client.segments.create_or_update(
 <dl>
 <dd>
 
-**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
-
-The agent variant this write is scoped to. When set, the segment content is staged in
-that variant's working set instead of being applied to the agent's live configuration.
-
-Omit this field to write directly to the agent. Variant scoping is not active yet: a
-variant supplied today is accepted and ignored, and the write applies to the agent.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **status:** `typing.Optional[SegmentStatus]` — Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
     
 </dd>
@@ -11856,20 +11897,6 @@ client.segments.patch(
 <dl>
 <dd>
 
-**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
-
-The agent variant this patch is scoped to. When set, the patch is staged in that
-variant's working set instead of being applied to the agent's live configuration.
-
-Omit this field to patch the agent directly. Variant scoping is not active yet: a
-variant supplied today is accepted and ignored, and the patch applies to the agent.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -11948,30 +11975,6 @@ client.segments.delete(
 <dd>
 
 **app_id:** `typing.Optional[str]` — The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**variant_reference_id:** `typing.Optional[str]` 
-
-The reference ID of the agent variant this delete is scoped to. When set, the
-deletion is staged in that variant's working set instead of being applied to the
-agent's live configuration.
-
-Omit this parameter to delete directly from the agent. Variant scoping is not
-active yet: a variant supplied today is accepted and ignored, and the delete applies
-to the agent.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
     
 </dd>
 </dl>
@@ -12271,6 +12274,20 @@ Inbox triggers fire when an inbox item is created or updated.
 <dl>
 <dd>
 
+**condition:** `typing.Optional[EventCondition]` 
+
+Narrows which events fire this trigger. Without one the trigger fires for every event on
+the agent. Re-registering writes whatever condition the request carries, so omitting it
+removes one; PATCH changes or removes a condition without re-registering.
+
+Only allowed on `EVENT_CREATED`; the other trigger types reject it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -12447,10 +12464,10 @@ client.triggers.delete(
 <dl>
 <dd>
 
-Deprecated. Use `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status`, which
-publishes and unpublishes any kind of capability the same way.
+Updates an event trigger. `enabled` and `condition` are the editable fields.
 
-Updates an event trigger. Only the enabled field is editable.
+`PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status` also turns a trigger on and
+off, the same way it publishes and unpublishes any kind of capability.
 </dd>
 </dl>
 </dd>
@@ -12508,6 +12525,14 @@ client.triggers.partial_update(
 <dd>
 
 **enabled:** `typing.Optional[bool]` — Whether the trigger will be called by Maven.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**condition:** `typing.Optional[EventCondition]` — Narrows which events fire this trigger. Omitted leaves the current condition alone; an explicit null removes it, so the trigger fires for every event again.
     
 </dd>
 </dl>

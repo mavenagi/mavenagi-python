@@ -6,6 +6,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.app_user_identifier import AppUserIdentifier
+from ...commons.types.intelligent_field_value_response import IntelligentFieldValueResponse
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .app_user_summary import AppUserSummary
@@ -99,6 +100,13 @@ class AgentUser(UniversalBaseModel):
     """
     App created users that are associated with this agent user.
     If two apps create users with the same identifying properties, they will be merged into a single agent user.
+    """
+
+    intelligent_field_values: typing_extensions.Annotated[
+        typing.Optional[typing.List[IntelligentFieldValueResponse]], FieldMetadata(alias="intelligentFieldValues")
+    ] = pydantic.Field(default=None)
+    """
+    Latest successful values of the agent user's intelligent fields.
     """
 
     if IS_PYDANTIC_V2:

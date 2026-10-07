@@ -16,6 +16,7 @@ from .action_parameter_type import ActionParameterType
 from .action_properties import ActionProperties
 from .action_response import ActionResponse
 from .action_user import ActionUser
+from .additional_data_key import AdditionalDataKey
 from .app_precondition import AppPrecondition
 from .app_user import AppUser
 from .app_user_identifier import AppUserIdentifier
@@ -144,8 +145,18 @@ from .entity_type import EntityType
 from .error_message import ErrorMessage
 from .error_reason import ErrorReason
 from .event_base_no_id import EventBaseNoId
+from .event_condition import (
+    EventCondition,
+    EventCondition_Data,
+    EventCondition_Group,
+    EventCondition_References,
+    EventCondition_SystemEventName,
+    EventCondition_UserEventName,
+)
+from .event_condition_group import EventConditionGroup
 from .event_field import EventField
 from .event_filter import EventFilter
+from .event_references_condition import EventReferencesCondition
 from .event_request import EventRequest, EventRequest_SystemEvent, EventRequest_UserEvent
 from .event_response import EventResponse, EventResponse_SystemEvent, EventResponse_UserEvent
 from .event_trigger_type import EventTriggerType
@@ -182,8 +193,11 @@ from .inbox_item_severity import InboxItemSeverity
 from .inbox_item_status import InboxItemStatus
 from .inbox_item_type import InboxItemType
 from .initialize_conversation_response import InitializeConversationResponse
+from .intelligent_field_filter import IntelligentFieldFilter
+from .intelligent_field_operator import IntelligentFieldOperator
 from .intelligent_field_precondition import IntelligentFieldPrecondition
 from .intelligent_field_precondition_response import IntelligentFieldPreconditionResponse
+from .intelligent_field_search_condition import IntelligentFieldSearchCondition
 from .intelligent_field_value_response import IntelligentFieldValueResponse
 from .ip_info import IpInfo
 from .json_schema_settings_schema_entry import JsonSchemaSettingsSchemaEntry
@@ -298,6 +312,7 @@ from .survey_info import SurveyInfo
 from .switch_settings_schema_entry import SwitchSettingsSchemaEntry
 from .system_event import SystemEvent
 from .system_event_name import SystemEventName
+from .system_event_name_condition import SystemEventNameCondition
 from .tags_precondition import TagsPrecondition
 from .text_format import TextFormat, TextFormat_JsonSchema, TextFormat_Text
 from .text_format_json_schema import TextFormatJsonSchema
@@ -309,6 +324,7 @@ from .user_data import UserData
 from .user_data_with_reference import UserDataWithReference
 from .user_event import UserEvent
 from .user_event_name import UserEventName
+from .user_event_name_condition import UserEventNameCondition
 from .user_message import UserMessage
 from .user_message_base import UserMessageBase
 from .user_message_response_state import UserMessageResponseState
@@ -327,6 +343,7 @@ __all__ = [
     "ActionProperties",
     "ActionResponse",
     "ActionUser",
+    "AdditionalDataKey",
     "AppPrecondition",
     "AppUser",
     "AppUserIdentifier",
@@ -445,8 +462,16 @@ __all__ = [
     "ErrorMessage",
     "ErrorReason",
     "EventBaseNoId",
+    "EventCondition",
+    "EventConditionGroup",
+    "EventCondition_Data",
+    "EventCondition_Group",
+    "EventCondition_References",
+    "EventCondition_SystemEventName",
+    "EventCondition_UserEventName",
     "EventField",
     "EventFilter",
+    "EventReferencesCondition",
     "EventRequest",
     "EventRequest_SystemEvent",
     "EventRequest_UserEvent",
@@ -490,8 +515,11 @@ __all__ = [
     "InboxItem_DuplicateDocuments",
     "InboxItem_MissingKnowledge",
     "InitializeConversationResponse",
+    "IntelligentFieldFilter",
+    "IntelligentFieldOperator",
     "IntelligentFieldPrecondition",
     "IntelligentFieldPreconditionResponse",
+    "IntelligentFieldSearchCondition",
     "IntelligentFieldValueResponse",
     "IpInfo",
     "JsonSchemaSettingsSchemaEntry",
@@ -610,6 +638,7 @@ __all__ = [
     "SwitchSettingsSchemaEntry",
     "SystemEvent",
     "SystemEventName",
+    "SystemEventNameCondition",
     "TagsPrecondition",
     "TextFormat",
     "TextFormatJsonSchema",
@@ -624,6 +653,7 @@ __all__ = [
     "UserDataWithReference",
     "UserEvent",
     "UserEventName",
+    "UserEventNameCondition",
     "UserMessage",
     "UserMessageBase",
     "UserMessageResponseState",

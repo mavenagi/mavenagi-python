@@ -57,7 +57,15 @@ class RawIntelligentFieldsClient:
         entities such as conversations.
 
         New fields are created with `status: INACTIVE` and are not evaluated until activated
-        with the patch endpoint. `definition` is limited to 5,000 characters.
+        with the patch endpoint. A new field created in a `variantId` starts `ACTIVE` instead,
+        since it is evaluated only once that variant is published and given traffic; it starts
+        `INACTIVE` while the agent is at its limit of active fields. `definition` is limited
+        to 5,000 characters.
+
+        A replace that names a `variantId` must keep the field's `validationType` as that
+        variant has it, or it is rejected with reason `INTELLIGENT_FIELD_TYPE_CHANGED`. To use
+        a different type, create a new field. A field deleted in the variant may be recreated
+        with any type.
 
         Parameters
         ----------
@@ -69,7 +77,7 @@ class RawIntelligentFieldsClient:
             caller and is how the field is addressed on every other endpoint.
 
         entity_type : EntityType
-            Target entity type for evaluation. Only CONVERSATION is supported at this time. The backend will return an error for other types.
+            Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types.
 
         validation_type : IntelligentFieldType
             The type of value this field holds. It constrains the schema the LLM is asked to fill
@@ -89,7 +97,7 @@ class RawIntelligentFieldsClient:
             A plain text description of the intelligent field.
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
-            ID of the agent variant this field belongs to, if applicable
+            On a request, the agent variant to stage the write in. On a response, the variant the request named, if any; absent when it named none.
 
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
             The finite set of values this field may take. Omit to let the LLM produce any value of
@@ -320,7 +328,7 @@ class RawIntelligentFieldsClient:
         status: typing.Optional[CapabilityStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
-        variant_id: typing.Optional[EntityIdBase] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         variant_app_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[IntelligentFieldResponse]:
@@ -357,11 +365,11 @@ class RawIntelligentFieldsClient:
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
             Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
 
-        variant_id : typing.Optional[EntityIdBase]
-            The agent variant to stage this patch in, by reference ID. Its owning app is `variantAppId`. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
 
         variant_app_id : typing.Optional[str]
-            The App ID of the agent variant named by `variantId`. If not provided, the ID of the calling app will be used — name the owning app to patch in a variant the caller does not own, as the platform's own seeded variants are.
+            Deprecated, use `variantId.appId`, which wins when both are set.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -382,7 +390,7 @@ class RawIntelligentFieldsClient:
                     object_=enum_options, annotation=typing.Sequence[EnumOption], direction="write"
                 ),
                 "variantId": convert_and_respect_annotation_metadata(
-                    object_=variant_id, annotation=EntityIdBase, direction="write"
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "variantAppId": variant_app_id,
             },
@@ -479,7 +487,7 @@ class RawIntelligentFieldsClient:
 
         Deleted fields are excluded from search results but can still be retrieved by ID.
         Creating a new field with the same referenceId as a deleted field will overwrite
-        the deleted field and restore it to INACTIVE status.
+        the deleted field and restore it with the status a new field gets.
 
         Deleted fields cannot be modified.
 
@@ -628,7 +636,13 @@ class RawIntelligentFieldsClient:
             Field to sort by. Defaults to CREATED_AT.
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
-            Filter to values generated by a specific agent variant. If not provided, returns values from all variants.
+            Returns values of the fields in this agent variant's scope: its published snapshot plus
+            its staged edits, matched by field. A value is included whichever variant's conversation
+            produced it, and is named as this variant names the field. If not provided, returns
+            values from all variants.
+
+            To see values from the conversations pinned to a variant, filter conversations by
+            `variantIds` in conversation search or the analytics APIs.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -764,7 +778,15 @@ class AsyncRawIntelligentFieldsClient:
         entities such as conversations.
 
         New fields are created with `status: INACTIVE` and are not evaluated until activated
-        with the patch endpoint. `definition` is limited to 5,000 characters.
+        with the patch endpoint. A new field created in a `variantId` starts `ACTIVE` instead,
+        since it is evaluated only once that variant is published and given traffic; it starts
+        `INACTIVE` while the agent is at its limit of active fields. `definition` is limited
+        to 5,000 characters.
+
+        A replace that names a `variantId` must keep the field's `validationType` as that
+        variant has it, or it is rejected with reason `INTELLIGENT_FIELD_TYPE_CHANGED`. To use
+        a different type, create a new field. A field deleted in the variant may be recreated
+        with any type.
 
         Parameters
         ----------
@@ -776,7 +798,7 @@ class AsyncRawIntelligentFieldsClient:
             caller and is how the field is addressed on every other endpoint.
 
         entity_type : EntityType
-            Target entity type for evaluation. Only CONVERSATION is supported at this time. The backend will return an error for other types.
+            Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types.
 
         validation_type : IntelligentFieldType
             The type of value this field holds. It constrains the schema the LLM is asked to fill
@@ -796,7 +818,7 @@ class AsyncRawIntelligentFieldsClient:
             A plain text description of the intelligent field.
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
-            ID of the agent variant this field belongs to, if applicable
+            On a request, the agent variant to stage the write in. On a response, the variant the request named, if any; absent when it named none.
 
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
             The finite set of values this field may take. Omit to let the LLM produce any value of
@@ -1027,7 +1049,7 @@ class AsyncRawIntelligentFieldsClient:
         status: typing.Optional[CapabilityStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
-        variant_id: typing.Optional[EntityIdBase] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         variant_app_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[IntelligentFieldResponse]:
@@ -1064,11 +1086,11 @@ class AsyncRawIntelligentFieldsClient:
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
             Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
 
-        variant_id : typing.Optional[EntityIdBase]
-            The agent variant to stage this patch in, by reference ID. Its owning app is `variantAppId`. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
 
         variant_app_id : typing.Optional[str]
-            The App ID of the agent variant named by `variantId`. If not provided, the ID of the calling app will be used — name the owning app to patch in a variant the caller does not own, as the platform's own seeded variants are.
+            Deprecated, use `variantId.appId`, which wins when both are set.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1089,7 +1111,7 @@ class AsyncRawIntelligentFieldsClient:
                     object_=enum_options, annotation=typing.Sequence[EnumOption], direction="write"
                 ),
                 "variantId": convert_and_respect_annotation_metadata(
-                    object_=variant_id, annotation=EntityIdBase, direction="write"
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "variantAppId": variant_app_id,
             },
@@ -1186,7 +1208,7 @@ class AsyncRawIntelligentFieldsClient:
 
         Deleted fields are excluded from search results but can still be retrieved by ID.
         Creating a new field with the same referenceId as a deleted field will overwrite
-        the deleted field and restore it to INACTIVE status.
+        the deleted field and restore it with the status a new field gets.
 
         Deleted fields cannot be modified.
 
@@ -1335,7 +1357,13 @@ class AsyncRawIntelligentFieldsClient:
             Field to sort by. Defaults to CREATED_AT.
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
-            Filter to values generated by a specific agent variant. If not provided, returns values from all variants.
+            Returns values of the fields in this agent variant's scope: its published snapshot plus
+            its staged edits, matched by field. A value is included whichever variant's conversation
+            produced it, and is named as this variant names the field. If not provided, returns
+            values from all variants.
+
+            To see values from the conversations pinned to a variant, filter conversations by
+            `variantIds` in conversation search or the analytics APIs.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0

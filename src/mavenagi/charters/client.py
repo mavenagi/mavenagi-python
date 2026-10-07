@@ -47,11 +47,11 @@ class ChartersClient:
         status: CharterStatus,
         references: CharterReferences,
         name: str,
-        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         parent_charter_id: typing.Optional[EntityId] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         type: typing.Optional[CharterType] = OMIT,
         user_rank: typing.Optional[int] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         description: typing.Optional[str] = OMIT,
         manual: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -86,13 +86,6 @@ class ChartersClient:
 
         name : str
             Display name for this charter or group.
-
-        variant_id : typing.Optional[EntityIdWithoutAgent]
-            The agent variant this write is scoped to. When set, the charter content is staged in
-            that variant's working set instead of being applied to the agent's live configuration.
-
-            Omit this field to write directly to the agent. Variant scoping is not active yet: a
-            variant supplied today is accepted and ignored, and the write applies to the agent.
 
         parent_charter_id : typing.Optional[EntityId]
             The fully-qualified ID of the parent charter. Send null to place this charter at the
@@ -132,6 +125,13 @@ class ChartersClient:
             existing sibling, siblings at that rank and above are shifted up by 1
             (like linked list semantics). When omitted on create, auto-assigned as
             `max(siblings.userRank) + 1` (0 if no siblings).
+
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            ID of the agent variant this charter belongs to, if applicable.
+
+            On a write this is validated -- an unknown variant is rejected, as is any
+            variant while variant scoping is off for charters -- but not yet applied: the
+            write reaches the agent's live configuration either way.
 
         description : typing.Optional[str]
             A plain text description of this charter. If not set, existing description is preserved if present.
@@ -190,11 +190,11 @@ class ChartersClient:
             status=status,
             references=references,
             name=name,
-            variant_id=variant_id,
             parent_charter_id=parent_charter_id,
             precondition=precondition,
             type=type,
             user_rank=user_rank,
+            variant_id=variant_id,
             description=description,
             manual=manual,
             request_options=request_options,
@@ -206,6 +206,8 @@ class ChartersClient:
         charter_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        variant_reference_id: typing.Optional[str] = None,
+        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> CharterResponse:
         """
@@ -218,6 +220,12 @@ class ChartersClient:
 
         app_id : typing.Optional[str]
             The App ID of the charter to get. If not provided, the ID of the calling app will be used.
+
+        variant_reference_id : typing.Optional[str]
+            The agent variant reference ID to resolve the charter's version through. If not provided, defaults to the agent's production variant. Currently, validated but not applied.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -240,7 +248,13 @@ class ChartersClient:
             charter_reference_id="cancellation-flow",
         )
         """
-        _response = self._raw_client.get(charter_reference_id, app_id=app_id, request_options=request_options)
+        _response = self._raw_client.get(
+            charter_reference_id,
+            app_id=app_id,
+            variant_reference_id=variant_reference_id,
+            variant_app_id=variant_app_id,
+            request_options=request_options,
+        )
         return _response.data
 
     def patch(
@@ -330,7 +344,7 @@ class ChartersClient:
             variant's working set instead of being applied to the agent's live configuration.
 
             Omit this field to patch the agent directly. Variant scoping is not active yet:
-            a variant supplied today is accepted and ignored, and the patch applies to the
+            a variant supplied today is validated but not applied, and the patch applies to the
             agent.
 
         request_options : typing.Optional[RequestOptions]
@@ -415,7 +429,7 @@ class ChartersClient:
             agent's live configuration.
 
             Omit this parameter to delete directly from the agent. Variant scoping is not
-            active yet: a variant supplied today is accepted and ignored, and the delete applies
+            active yet: a variant supplied today is validated but not applied, and the delete applies
             to the agent.
 
         variant_app_id : typing.Optional[str]
@@ -651,11 +665,11 @@ class AsyncChartersClient:
         status: CharterStatus,
         references: CharterReferences,
         name: str,
-        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         parent_charter_id: typing.Optional[EntityId] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         type: typing.Optional[CharterType] = OMIT,
         user_rank: typing.Optional[int] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         description: typing.Optional[str] = OMIT,
         manual: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -690,13 +704,6 @@ class AsyncChartersClient:
 
         name : str
             Display name for this charter or group.
-
-        variant_id : typing.Optional[EntityIdWithoutAgent]
-            The agent variant this write is scoped to. When set, the charter content is staged in
-            that variant's working set instead of being applied to the agent's live configuration.
-
-            Omit this field to write directly to the agent. Variant scoping is not active yet: a
-            variant supplied today is accepted and ignored, and the write applies to the agent.
 
         parent_charter_id : typing.Optional[EntityId]
             The fully-qualified ID of the parent charter. Send null to place this charter at the
@@ -736,6 +743,13 @@ class AsyncChartersClient:
             existing sibling, siblings at that rank and above are shifted up by 1
             (like linked list semantics). When omitted on create, auto-assigned as
             `max(siblings.userRank) + 1` (0 if no siblings).
+
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            ID of the agent variant this charter belongs to, if applicable.
+
+            On a write this is validated -- an unknown variant is rejected, as is any
+            variant while variant scoping is off for charters -- but not yet applied: the
+            write reaches the agent's live configuration either way.
 
         description : typing.Optional[str]
             A plain text description of this charter. If not set, existing description is preserved if present.
@@ -802,11 +816,11 @@ class AsyncChartersClient:
             status=status,
             references=references,
             name=name,
-            variant_id=variant_id,
             parent_charter_id=parent_charter_id,
             precondition=precondition,
             type=type,
             user_rank=user_rank,
+            variant_id=variant_id,
             description=description,
             manual=manual,
             request_options=request_options,
@@ -818,6 +832,8 @@ class AsyncChartersClient:
         charter_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        variant_reference_id: typing.Optional[str] = None,
+        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> CharterResponse:
         """
@@ -830,6 +846,12 @@ class AsyncChartersClient:
 
         app_id : typing.Optional[str]
             The App ID of the charter to get. If not provided, the ID of the calling app will be used.
+
+        variant_reference_id : typing.Optional[str]
+            The agent variant reference ID to resolve the charter's version through. If not provided, defaults to the agent's production variant. Currently, validated but not applied.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -860,7 +882,13 @@ class AsyncChartersClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get(charter_reference_id, app_id=app_id, request_options=request_options)
+        _response = await self._raw_client.get(
+            charter_reference_id,
+            app_id=app_id,
+            variant_reference_id=variant_reference_id,
+            variant_app_id=variant_app_id,
+            request_options=request_options,
+        )
         return _response.data
 
     async def patch(
@@ -950,7 +978,7 @@ class AsyncChartersClient:
             variant's working set instead of being applied to the agent's live configuration.
 
             Omit this field to patch the agent directly. Variant scoping is not active yet:
-            a variant supplied today is accepted and ignored, and the patch applies to the
+            a variant supplied today is validated but not applied, and the patch applies to the
             agent.
 
         request_options : typing.Optional[RequestOptions]
@@ -1043,7 +1071,7 @@ class AsyncChartersClient:
             agent's live configuration.
 
             Omit this parameter to delete directly from the agent. Variant scoping is not
-            active yet: a variant supplied today is accepted and ignored, and the delete applies
+            active yet: a variant supplied today is validated but not applied, and the delete applies
             to the agent.
 
         variant_app_id : typing.Optional[str]

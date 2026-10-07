@@ -3,7 +3,6 @@
 import typing
 
 from ..commons.types.entity_id_base import EntityIdBase
-from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.precondition import Precondition
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
@@ -91,7 +90,6 @@ class SegmentsClient:
         segment_id: EntityIdBase,
         precondition: Precondition,
         name: str,
-        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -109,13 +107,6 @@ class SegmentsClient:
 
         name : str
             The name of the segment.
-
-        variant_id : typing.Optional[EntityIdWithoutAgent]
-            The agent variant this write is scoped to. When set, the segment content is staged in
-            that variant's working set instead of being applied to the agent's live configuration.
-
-            Omit this field to write directly to the agent. Variant scoping is not active yet: a
-            variant supplied today is accepted and ignored, and the write applies to the agent.
 
         status : typing.Optional[SegmentStatus]
             Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -159,7 +150,6 @@ class SegmentsClient:
             segment_id=segment_id,
             precondition=precondition,
             name=name,
-            variant_id=variant_id,
             status=status,
             description=description,
             request_options=request_options,
@@ -217,7 +207,6 @@ class SegmentsClient:
         description: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
-        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SegmentResponse:
         """
@@ -245,13 +234,6 @@ class SegmentsClient:
 
         status : typing.Optional[SegmentStatus]
             The status of the segment. Segments can only be deactivated if they are not set on any actions or active knowledge bases.
-
-        variant_id : typing.Optional[EntityIdWithoutAgent]
-            The agent variant this patch is scoped to. When set, the patch is staged in that
-            variant's working set instead of being applied to the agent's live configuration.
-
-            Omit this field to patch the agent directly. Variant scoping is not active yet: a
-            variant supplied today is accepted and ignored, and the patch applies to the agent.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -282,7 +264,6 @@ class SegmentsClient:
             description=description,
             precondition=precondition,
             status=status,
-            variant_id=variant_id,
             request_options=request_options,
         )
         return _response.data
@@ -292,8 +273,6 @@ class SegmentsClient:
         segment_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
-        variant_reference_id: typing.Optional[str] = None,
-        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SegmentResponse:
         """
@@ -310,18 +289,6 @@ class SegmentsClient:
 
         app_id : typing.Optional[str]
             The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
-
-        variant_reference_id : typing.Optional[str]
-            The reference ID of the agent variant this delete is scoped to. When set, the
-            deletion is staged in that variant's working set instead of being applied to the
-            agent's live configuration.
-
-            Omit this parameter to delete directly from the agent. Variant scoping is not
-            active yet: a variant supplied today is accepted and ignored, and the delete applies
-            to the agent.
-
-        variant_app_id : typing.Optional[str]
-            The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -344,13 +311,7 @@ class SegmentsClient:
             segment_reference_id="segmentReferenceId",
         )
         """
-        _response = self._raw_client.delete(
-            segment_reference_id,
-            app_id=app_id,
-            variant_reference_id=variant_reference_id,
-            variant_app_id=variant_app_id,
-            request_options=request_options,
-        )
+        _response = self._raw_client.delete(segment_reference_id, app_id=app_id, request_options=request_options)
         return _response.data
 
 
@@ -435,7 +396,6 @@ class AsyncSegmentsClient:
         segment_id: EntityIdBase,
         precondition: Precondition,
         name: str,
-        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -453,13 +413,6 @@ class AsyncSegmentsClient:
 
         name : str
             The name of the segment.
-
-        variant_id : typing.Optional[EntityIdWithoutAgent]
-            The agent variant this write is scoped to. When set, the segment content is staged in
-            that variant's working set instead of being applied to the agent's live configuration.
-
-            Omit this field to write directly to the agent. Variant scoping is not active yet: a
-            variant supplied today is accepted and ignored, and the write applies to the agent.
 
         status : typing.Optional[SegmentStatus]
             Desired status for the segment. If omitted, defaults to ACTIVE. In the future this will become required, so specify ACTIVE or INACTIVE if possible.
@@ -511,7 +464,6 @@ class AsyncSegmentsClient:
             segment_id=segment_id,
             precondition=precondition,
             name=name,
-            variant_id=variant_id,
             status=status,
             description=description,
             request_options=request_options,
@@ -577,7 +529,6 @@ class AsyncSegmentsClient:
         description: typing.Optional[str] = OMIT,
         precondition: typing.Optional[Precondition] = OMIT,
         status: typing.Optional[SegmentStatus] = OMIT,
-        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SegmentResponse:
         """
@@ -605,13 +556,6 @@ class AsyncSegmentsClient:
 
         status : typing.Optional[SegmentStatus]
             The status of the segment. Segments can only be deactivated if they are not set on any actions or active knowledge bases.
-
-        variant_id : typing.Optional[EntityIdWithoutAgent]
-            The agent variant this patch is scoped to. When set, the patch is staged in that
-            variant's working set instead of being applied to the agent's live configuration.
-
-            Omit this field to patch the agent directly. Variant scoping is not active yet: a
-            variant supplied today is accepted and ignored, and the patch applies to the agent.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -650,7 +594,6 @@ class AsyncSegmentsClient:
             description=description,
             precondition=precondition,
             status=status,
-            variant_id=variant_id,
             request_options=request_options,
         )
         return _response.data
@@ -660,8 +603,6 @@ class AsyncSegmentsClient:
         segment_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
-        variant_reference_id: typing.Optional[str] = None,
-        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SegmentResponse:
         """
@@ -678,18 +619,6 @@ class AsyncSegmentsClient:
 
         app_id : typing.Optional[str]
             The App ID of the segment to delete. If not provided, the ID of the calling app will be used.
-
-        variant_reference_id : typing.Optional[str]
-            The reference ID of the agent variant this delete is scoped to. When set, the
-            deletion is staged in that variant's working set instead of being applied to the
-            agent's live configuration.
-
-            Omit this parameter to delete directly from the agent. Variant scoping is not
-            active yet: a variant supplied today is accepted and ignored, and the delete applies
-            to the agent.
-
-        variant_app_id : typing.Optional[str]
-            The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -720,11 +649,5 @@ class AsyncSegmentsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.delete(
-            segment_reference_id,
-            app_id=app_id,
-            variant_reference_id=variant_reference_id,
-            variant_app_id=variant_app_id,
-            request_options=request_options,
-        )
+        _response = await self._raw_client.delete(segment_reference_id, app_id=app_id, request_options=request_options)
         return _response.data

@@ -4,17 +4,23 @@ import typing
 
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .intelligent_field_search_condition import IntelligentFieldSearchCondition
+from .string_membership_operator import StringMembershipOperator
+from .user_event_name import UserEventName
 
 
-class IntelligentFieldFilter(UniversalBaseModel):
+class UserEventNameCondition(UniversalBaseModel):
     """
-    Filter conversations by intelligent field values. All conditions are ANDed.
+    A condition on the name of a user event. Matches user events only.
     """
 
-    conditions: typing.List[IntelligentFieldSearchCondition] = pydantic.Field()
+    operator: StringMembershipOperator = pydantic.Field()
     """
-    List of conditions to filter by. All conditions must match (AND logic).
+    The membership operator to apply.
+    """
+
+    names: typing.List[UserEventName] = pydantic.Field()
+    """
+    The user event names to match, at most 50. At least one is required.
     """
 
     if IS_PYDANTIC_V2:

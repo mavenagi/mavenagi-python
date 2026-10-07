@@ -4,6 +4,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.intelligent_field_filter import IntelligentFieldFilter
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 
@@ -34,6 +35,13 @@ class AgentUserFilter(UniversalBaseModel):
     """
     Filter by anonymous users. When true, only anonymous users are returned.
     When false, only non-anonymous users are returned. An anonymous user is one without any identifiers or name data.
+    """
+
+    intelligent_fields: typing_extensions.Annotated[
+        typing.Optional[IntelligentFieldFilter], FieldMetadata(alias="intelligentFields")
+    ] = pydantic.Field(default=None)
+    """
+    Filter by intelligent field values. All conditions are ANDed together.
     """
 
     if IS_PYDANTIC_V2:

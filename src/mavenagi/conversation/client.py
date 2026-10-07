@@ -208,6 +208,9 @@ class ConversationClient:
         The `appId` field can be provided to update a conversation owned by a different app.
         All other fields will overwrite the existing value on the conversation only if provided.
 
+        A closed conversation (`open` set to false) cannot be reopened: a patch setting `open` to true
+        returns a 400. Its other fields can still be patched.
+
         Parameters
         ----------
         conversation_id : str
@@ -217,7 +220,7 @@ class ConversationClient:
             The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
 
         open : typing.Optional[bool]
-            Whether the conversation is able to receive asynchronous messages. Only valid for conversations with the `ASYNC` capability.
+            Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages.
 
         llm_enabled : typing.Optional[bool]
             Whether the LLM is enabled for this conversation.
@@ -374,6 +377,8 @@ class ConversationClient:
         """
         Append messages to an existing conversation. The conversation must be initialized first. If a message with the same ID already exists, it will be ignored. Messages do not allow modification.
 
+        A closed conversation (`open` set to false) takes no new messages and returns a 400.
+
         Parameters
         ----------
         conversation_id : str
@@ -450,6 +455,8 @@ class ConversationClient:
         """
         Get an answer from Maven for a given user question. If the user question or its answer already exists,
         they will be reused and will not be updated. Messages do not allow modification once generated.
+
+        A closed conversation (`open` set to false) takes no new questions and returns a 400.
 
         Concurrency Behavior:
         - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
@@ -600,6 +607,8 @@ class ConversationClient:
 
         If the user question or its answer already exists, they will be reused and will not be updated.
         Messages do not allow modification once generated.
+
+        A closed conversation (`open` set to false) takes no new questions and returns a 400.
 
         Concurrency Behavior:
         - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
@@ -865,6 +874,8 @@ class ConversationClient:
         Additionally, form submission is only allowed when the form is the last message in the conversation.
         Forms should be disabled in surface UI if a conversation continues and they remain unsubmitted.
 
+        A form cannot be submitted on a closed conversation (`open` set to false): that returns a 400.
+
         Parameters
         ----------
         conversation_id : str
@@ -923,6 +934,8 @@ class ConversationClient:
 
         Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
 
+        A closed conversation (`open` set to false) takes no new metadata and returns a 400.
+
         Parameters
         ----------
         conversation_id : str
@@ -974,6 +987,8 @@ class ConversationClient:
         If it does not exist, it will be added. Will not remove metadata fields.
 
         Returns all metadata saved by any app on the conversation.
+
+        A closed conversation (`open` set to false) takes no new metadata and returns a 400.
 
         Parameters
         ----------
@@ -1034,8 +1049,8 @@ class ConversationClient:
         Parameters
         ----------
         sort : typing.Optional[ConversationField]
-            Field to sort results by. `IntelligentField` is not supported here - sorting conversations
-            by an intelligent field value is not available. Intelligent fields can be filtered on via
+            Field to sort results by. `IntelligentField` and `IntelligentFields` are not supported
+            here - sorting conversations by an intelligent field value is not available. Intelligent fields can be filtered on via
             `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
 
         filter : typing.Optional[ConversationFilter]
@@ -1157,8 +1172,8 @@ class ConversationClient:
         Parameters
         ----------
         sort : typing.Optional[ConversationField]
-            Field to sort results by. `IntelligentField` is not supported here - sorting conversations
-            by an intelligent field value is not available. Intelligent fields can be filtered on via
+            Field to sort results by. `IntelligentField` and `IntelligentFields` are not supported
+            here - sorting conversations by an intelligent field value is not available. Intelligent fields can be filtered on via
             `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
 
         filter : typing.Optional[ConversationFilter]
@@ -1476,6 +1491,9 @@ class AsyncConversationClient:
         The `appId` field can be provided to update a conversation owned by a different app.
         All other fields will overwrite the existing value on the conversation only if provided.
 
+        A closed conversation (`open` set to false) cannot be reopened: a patch setting `open` to true
+        returns a 400. Its other fields can still be patched.
+
         Parameters
         ----------
         conversation_id : str
@@ -1485,7 +1503,7 @@ class AsyncConversationClient:
             The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
 
         open : typing.Optional[bool]
-            Whether the conversation is able to receive asynchronous messages. Only valid for conversations with the `ASYNC` capability.
+            Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages.
 
         llm_enabled : typing.Optional[bool]
             Whether the LLM is enabled for this conversation.
@@ -1666,6 +1684,8 @@ class AsyncConversationClient:
         """
         Append messages to an existing conversation. The conversation must be initialized first. If a message with the same ID already exists, it will be ignored. Messages do not allow modification.
 
+        A closed conversation (`open` set to false) takes no new messages and returns a 400.
+
         Parameters
         ----------
         conversation_id : str
@@ -1750,6 +1770,8 @@ class AsyncConversationClient:
         """
         Get an answer from Maven for a given user question. If the user question or its answer already exists,
         they will be reused and will not be updated. Messages do not allow modification once generated.
+
+        A closed conversation (`open` set to false) takes no new questions and returns a 400.
 
         Concurrency Behavior:
         - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
@@ -1908,6 +1930,8 @@ class AsyncConversationClient:
 
         If the user question or its answer already exists, they will be reused and will not be updated.
         Messages do not allow modification once generated.
+
+        A closed conversation (`open` set to false) takes no new questions and returns a 400.
 
         Concurrency Behavior:
         - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
@@ -2198,6 +2222,8 @@ class AsyncConversationClient:
         Additionally, form submission is only allowed when the form is the last message in the conversation.
         Forms should be disabled in surface UI if a conversation continues and they remain unsubmitted.
 
+        A form cannot be submitted on a closed conversation (`open` set to false): that returns a 400.
+
         Parameters
         ----------
         conversation_id : str
@@ -2264,6 +2290,8 @@ class AsyncConversationClient:
 
         Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
 
+        A closed conversation (`open` set to false) takes no new metadata and returns a 400.
+
         Parameters
         ----------
         conversation_id : str
@@ -2323,6 +2351,8 @@ class AsyncConversationClient:
         If it does not exist, it will be added. Will not remove metadata fields.
 
         Returns all metadata saved by any app on the conversation.
+
+        A closed conversation (`open` set to false) takes no new metadata and returns a 400.
 
         Parameters
         ----------
@@ -2391,8 +2421,8 @@ class AsyncConversationClient:
         Parameters
         ----------
         sort : typing.Optional[ConversationField]
-            Field to sort results by. `IntelligentField` is not supported here - sorting conversations
-            by an intelligent field value is not available. Intelligent fields can be filtered on via
+            Field to sort results by. `IntelligentField` and `IntelligentFields` are not supported
+            here - sorting conversations by an intelligent field value is not available. Intelligent fields can be filtered on via
             `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
 
         filter : typing.Optional[ConversationFilter]
@@ -2530,8 +2560,8 @@ class AsyncConversationClient:
         Parameters
         ----------
         sort : typing.Optional[ConversationField]
-            Field to sort results by. `IntelligentField` is not supported here - sorting conversations
-            by an intelligent field value is not available. Intelligent fields can be filtered on via
+            Field to sort results by. `IntelligentField` and `IntelligentFields` are not supported
+            here - sorting conversations by an intelligent field value is not available. Intelligent fields can be filtered on via
             `filter.intelligentFields`, and grouped or aggregated through the analytics APIs.
 
         filter : typing.Optional[ConversationFilter]

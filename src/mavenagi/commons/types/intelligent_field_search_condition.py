@@ -4,9 +4,9 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...commons.types.entity_id_filter import EntityIdFilter
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .entity_id_filter import EntityIdFilter
 from .intelligent_field_operator import IntelligentFieldOperator
 
 

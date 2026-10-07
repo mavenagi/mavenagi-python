@@ -4,6 +4,7 @@ import typing
 
 from ..commons.types.capability_status import CapabilityStatus
 from ..commons.types.capability_type import CapabilityType
+from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawCapabilitiesClient, RawCapabilitiesClient
@@ -261,6 +262,7 @@ class CapabilitiesClient:
         description: typing.Optional[str] = OMIT,
         user_interaction_required: typing.Optional[bool] = OMIT,
         sort_id: typing.Optional[CapabilitySortField] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         variant_reference_id: typing.Optional[str] = OMIT,
         variant_app_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
@@ -304,14 +306,17 @@ class CapabilitiesClient:
         sort_id : typing.Optional[CapabilitySortField]
             The field to sort by. Defaults to when the capability was created.
 
-        variant_reference_id : typing.Optional[str]
+        variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to read intelligent field versions through. Required on an agent
             with versioned intelligent fields unless `capabilityTypes` excludes them; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
             if omitted, the agent's only variant is used.
 
+        variant_reference_id : typing.Optional[str]
+            Deprecated, use `variantId`, which wins when both are set.
+
         variant_app_id : typing.Optional[str]
-            The app that owns the agent variant. Defaults to the calling app.
+            Deprecated, use `variantId`, which wins when both are set.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -349,6 +354,7 @@ class CapabilitiesClient:
             description=description,
             user_interaction_required=user_interaction_required,
             sort_id=sort_id,
+            variant_id=variant_id,
             variant_reference_id=variant_reference_id,
             variant_app_id=variant_app_id,
             page=page,
@@ -629,6 +635,7 @@ class AsyncCapabilitiesClient:
         description: typing.Optional[str] = OMIT,
         user_interaction_required: typing.Optional[bool] = OMIT,
         sort_id: typing.Optional[CapabilitySortField] = OMIT,
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         variant_reference_id: typing.Optional[str] = OMIT,
         variant_app_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
@@ -672,14 +679,17 @@ class AsyncCapabilitiesClient:
         sort_id : typing.Optional[CapabilitySortField]
             The field to sort by. Defaults to when the capability was created.
 
-        variant_reference_id : typing.Optional[str]
+        variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to read intelligent field versions through. Required on an agent
             with versioned intelligent fields unless `capabilityTypes` excludes them; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
             if omitted, the agent's only variant is used.
 
+        variant_reference_id : typing.Optional[str]
+            Deprecated, use `variantId`, which wins when both are set.
+
         variant_app_id : typing.Optional[str]
-            The app that owns the agent variant. Defaults to the calling app.
+            Deprecated, use `variantId`, which wins when both are set.
 
         page : typing.Optional[int]
             Page number to return, defaults to 0
@@ -725,6 +735,7 @@ class AsyncCapabilitiesClient:
             description=description,
             user_interaction_required=user_interaction_required,
             sort_id=sort_id,
+            variant_id=variant_id,
             variant_reference_id=variant_reference_id,
             variant_app_id=variant_app_id,
             page=page,

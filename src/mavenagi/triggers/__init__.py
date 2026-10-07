@@ -9,7 +9,6 @@ from .types import (
     EventTriggersSearchRequest,
     EventTriggersSearchResponse,
     TriggerField,
-    TriggerPartialUpdate,
 )
 
 __all__ = [
@@ -19,5 +18,4 @@ __all__ = [
     "EventTriggersSearchRequest",
     "EventTriggersSearchResponse",
     "TriggerField",
-    "TriggerPartialUpdate",
 ]

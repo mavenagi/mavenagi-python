@@ -10,6 +10,7 @@ from ..commons.errors.server_error import ServerError
 from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
+from ..commons.types.event_condition import EventCondition
 from ..commons.types.event_trigger_type import EventTriggerType
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -154,6 +155,7 @@ class RawTriggersClient:
         trigger_id: EntityIdBase,
         type: EventTriggerType,
         name: typing.Optional[str] = OMIT,
+        condition: typing.Optional[EventCondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[EventTriggerResponse]:
         """
@@ -180,6 +182,13 @@ class RawTriggersClient:
         name : typing.Optional[str]
             The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
 
+        condition : typing.Optional[EventCondition]
+            Narrows which events fire this trigger. Without one the trigger fires for every event on
+            the agent. Re-registering writes whatever condition the request carries, so omitting it
+            removes one; PATCH changes or removes a condition without re-registering.
+
+            Only allowed on `EVENT_CREATED`; the other trigger types reject it.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -197,6 +206,9 @@ class RawTriggersClient:
                     object_=trigger_id, annotation=EntityIdBase, direction="write"
                 ),
                 "type": type,
+                "condition": convert_and_respect_annotation_metadata(
+                    object_=condition, annotation=EventCondition, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,
@@ -462,13 +474,14 @@ class RawTriggersClient:
         *,
         app_id: typing.Optional[str] = None,
         enabled: typing.Optional[bool] = OMIT,
+        condition: typing.Optional[EventCondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[EventTriggerResponse]:
         """
-        Deprecated. Use `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status`, which
-        publishes and unpublishes any kind of capability the same way.
+        Updates an event trigger. `enabled` and `condition` are the editable fields.
 
-        Updates an event trigger. Only the enabled field is editable.
+        `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status` also turns a trigger on and
+        off, the same way it publishes and unpublishes any kind of capability.
 
         Parameters
         ----------
@@ -480,6 +493,9 @@ class RawTriggersClient:
 
         enabled : typing.Optional[bool]
             Whether the trigger will be called by Maven.
+
+        condition : typing.Optional[EventCondition]
+            Narrows which events fire this trigger. Omitted leaves the current condition alone; an explicit null removes it, so the trigger fires for every event again.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -497,6 +513,12 @@ class RawTriggersClient:
             },
             json={
                 "enabled": enabled,
+                "condition": convert_and_respect_annotation_metadata(
+                    object_=condition, annotation=typing.Optional[EventCondition], direction="write"
+                ),
+            },
+            headers={
+                "content-type": "application/merge-patch+json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -700,6 +722,7 @@ class AsyncRawTriggersClient:
         trigger_id: EntityIdBase,
         type: EventTriggerType,
         name: typing.Optional[str] = OMIT,
+        condition: typing.Optional[EventCondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[EventTriggerResponse]:
         """
@@ -726,6 +749,13 @@ class AsyncRawTriggersClient:
         name : typing.Optional[str]
             The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
 
+        condition : typing.Optional[EventCondition]
+            Narrows which events fire this trigger. Without one the trigger fires for every event on
+            the agent. Re-registering writes whatever condition the request carries, so omitting it
+            removes one; PATCH changes or removes a condition without re-registering.
+
+            Only allowed on `EVENT_CREATED`; the other trigger types reject it.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -743,6 +773,9 @@ class AsyncRawTriggersClient:
                     object_=trigger_id, annotation=EntityIdBase, direction="write"
                 ),
                 "type": type,
+                "condition": convert_and_respect_annotation_metadata(
+                    object_=condition, annotation=EventCondition, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,
@@ -1008,13 +1041,14 @@ class AsyncRawTriggersClient:
         *,
         app_id: typing.Optional[str] = None,
         enabled: typing.Optional[bool] = OMIT,
+        condition: typing.Optional[EventCondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[EventTriggerResponse]:
         """
-        Deprecated. Use `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status`, which
-        publishes and unpublishes any kind of capability the same way.
+        Updates an event trigger. `enabled` and `condition` are the editable fields.
 
-        Updates an event trigger. Only the enabled field is editable.
+        `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status` also turns a trigger on and
+        off, the same way it publishes and unpublishes any kind of capability.
 
         Parameters
         ----------
@@ -1026,6 +1060,9 @@ class AsyncRawTriggersClient:
 
         enabled : typing.Optional[bool]
             Whether the trigger will be called by Maven.
+
+        condition : typing.Optional[EventCondition]
+            Narrows which events fire this trigger. Omitted leaves the current condition alone; an explicit null removes it, so the trigger fires for every event again.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1043,6 +1080,12 @@ class AsyncRawTriggersClient:
             },
             json={
                 "enabled": enabled,
+                "condition": convert_and_respect_annotation_metadata(
+                    object_=condition, annotation=typing.Optional[EventCondition], direction="write"
+                ),
+            },
+            headers={
+                "content-type": "application/merge-patch+json",
             },
             request_options=request_options,
             omit=OMIT,

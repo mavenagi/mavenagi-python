@@ -35,7 +35,7 @@ class RawEventsClient:
         self, *, request: EventRequest, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[EventResponse]:
         """
-        Create a new event
+        Create a new event. Events are immutable, so a create that reuses the `referenceId` of an existing event in the same app is rejected with a 409 and leaves that event unchanged.
 
         Parameters
         ----------
@@ -482,7 +482,7 @@ class AsyncRawEventsClient:
         self, *, request: EventRequest, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[EventResponse]:
         """
-        Create a new event
+        Create a new event. Events are immutable, so a create that reuses the `referenceId` of an existing event in the same app is rejected with a 409 and leaves that event unchanged.
 
         Parameters
         ----------

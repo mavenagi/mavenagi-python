@@ -7,6 +7,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .entity_id import EntityId
+from .entity_id_without_agent import EntityIdWithoutAgent
 from .llm_persona import LlmPersona
 
 
@@ -30,6 +31,21 @@ class SimulationContext(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     If provided, knowledge search will be restricted to the provided list of knowledge bases. Otherwise, all active knowledge bases will be used. An empty list means no knowledge bases will be used.
+    """
+
+    variant_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="variantId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The agent variant to run the simulation on, instead of the one the agent's traffic rules
+    would choose. Any ACTIVE variant of the agent with no staged edits can be named, including
+    one with no traffic. The conversation is pinned to it when created, like any other
+    conversation; the conversation's `variantId` reports it, and this field is not returned.
+    
+    Rejected with reason `VARIANT_NOT_ACTIVE` for an archived or deleted variant, and
+    `VARIANT_HAS_STAGED_EDITS` for one with staged edits (publish them first). Rejected too
+    while agent variants aren't enabled for the agent. A conversation that already exists
+    keeps the variant it was created with.
     """
 
     if IS_PYDANTIC_V2:

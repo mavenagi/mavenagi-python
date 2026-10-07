@@ -3,6 +3,7 @@
 import typing
 
 from ..commons.types.entity_id_base import EntityIdBase
+from ..commons.types.event_condition import EventCondition
 from ..commons.types.event_trigger_type import EventTriggerType
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
@@ -89,6 +90,7 @@ class TriggersClient:
         trigger_id: EntityIdBase,
         type: EventTriggerType,
         name: typing.Optional[str] = OMIT,
+        condition: typing.Optional[EventCondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> EventTriggerResponse:
         """
@@ -114,6 +116,13 @@ class TriggersClient:
 
         name : typing.Optional[str]
             The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
+
+        condition : typing.Optional[EventCondition]
+            Narrows which events fire this trigger. Without one the trigger fires for every event on
+            the agent. Re-registering writes whatever condition the request carries, so omitting it
+            removes one; PATCH changes or removes a condition without re-registering.
+
+            Only allowed on `EVENT_CREATED`; the other trigger types reject it.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -142,7 +151,12 @@ class TriggersClient:
         )
         """
         _response = self._raw_client.create_or_update(
-            description=description, trigger_id=trigger_id, type=type, name=name, request_options=request_options
+            description=description,
+            trigger_id=trigger_id,
+            type=type,
+            name=name,
+            condition=condition,
+            request_options=request_options,
         )
         return _response.data
 
@@ -226,13 +240,14 @@ class TriggersClient:
         *,
         app_id: typing.Optional[str] = None,
         enabled: typing.Optional[bool] = OMIT,
+        condition: typing.Optional[EventCondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> EventTriggerResponse:
         """
-        Deprecated. Use `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status`, which
-        publishes and unpublishes any kind of capability the same way.
+        Updates an event trigger. `enabled` and `condition` are the editable fields.
 
-        Updates an event trigger. Only the enabled field is editable.
+        `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status` also turns a trigger on and
+        off, the same way it publishes and unpublishes any kind of capability.
 
         Parameters
         ----------
@@ -244,6 +259,9 @@ class TriggersClient:
 
         enabled : typing.Optional[bool]
             Whether the trigger will be called by Maven.
+
+        condition : typing.Optional[EventCondition]
+            Narrows which events fire this trigger. Omitted leaves the current condition alone; an explicit null removes it, so the trigger fires for every event again.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -268,7 +286,7 @@ class TriggersClient:
         )
         """
         _response = self._raw_client.partial_update(
-            trigger_reference_id, app_id=app_id, enabled=enabled, request_options=request_options
+            trigger_reference_id, app_id=app_id, enabled=enabled, condition=condition, request_options=request_options
         )
         return _response.data
 
@@ -355,6 +373,7 @@ class AsyncTriggersClient:
         trigger_id: EntityIdBase,
         type: EventTriggerType,
         name: typing.Optional[str] = OMIT,
+        condition: typing.Optional[EventCondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> EventTriggerResponse:
         """
@@ -380,6 +399,13 @@ class AsyncTriggersClient:
 
         name : typing.Optional[str]
             The name of the trigger, displayed to end users. If not set, a name is derived from the app ID and trigger type.
+
+        condition : typing.Optional[EventCondition]
+            Narrows which events fire this trigger. Without one the trigger fires for every event on
+            the agent. Re-registering writes whatever condition the request carries, so omitting it
+            removes one; PATCH changes or removes a condition without re-registering.
+
+            Only allowed on `EVENT_CREATED`; the other trigger types reject it.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -416,7 +442,12 @@ class AsyncTriggersClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.create_or_update(
-            description=description, trigger_id=trigger_id, type=type, name=name, request_options=request_options
+            description=description,
+            trigger_id=trigger_id,
+            type=type,
+            name=name,
+            condition=condition,
+            request_options=request_options,
         )
         return _response.data
 
@@ -518,13 +549,14 @@ class AsyncTriggersClient:
         *,
         app_id: typing.Optional[str] = None,
         enabled: typing.Optional[bool] = OMIT,
+        condition: typing.Optional[EventCondition] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> EventTriggerResponse:
         """
-        Deprecated. Use `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status`, which
-        publishes and unpublishes any kind of capability the same way.
+        Updates an event trigger. `enabled` and `condition` are the editable fields.
 
-        Updates an event trigger. Only the enabled field is editable.
+        `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status` also turns a trigger on and
+        off, the same way it publishes and unpublishes any kind of capability.
 
         Parameters
         ----------
@@ -536,6 +568,9 @@ class AsyncTriggersClient:
 
         enabled : typing.Optional[bool]
             Whether the trigger will be called by Maven.
+
+        condition : typing.Optional[EventCondition]
+            Narrows which events fire this trigger. Omitted leaves the current condition alone; an explicit null removes it, so the trigger fires for every event again.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -568,6 +603,6 @@ class AsyncTriggersClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.partial_update(
-            trigger_reference_id, app_id=app_id, enabled=enabled, request_options=request_options
+            trigger_reference_id, app_id=app_id, enabled=enabled, condition=condition, request_options=request_options
         )
         return _response.data

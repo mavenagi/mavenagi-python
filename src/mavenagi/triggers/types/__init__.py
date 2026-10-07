@@ -8,7 +8,6 @@ from .event_trigger_response import EventTriggerResponse
 from .event_triggers_search_request import EventTriggersSearchRequest
 from .event_triggers_search_response import EventTriggersSearchResponse
 from .trigger_field import TriggerField
-from .trigger_partial_update import TriggerPartialUpdate
 
 __all__ = [
     "EventTriggerBase",
@@ -17,5 +16,4 @@ __all__ = [
     "EventTriggersSearchRequest",
     "EventTriggersSearchResponse",
     "TriggerField",
-    "TriggerPartialUpdate",
 ]

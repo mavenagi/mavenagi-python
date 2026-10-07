@@ -34,7 +34,7 @@ class EventsClient:
         self, *, request: EventRequest, request_options: typing.Optional[RequestOptions] = None
     ) -> EventResponse:
         """
-        Create a new event
+        Create a new event. Events are immutable, so a create that reuses the `referenceId` of an existing event in the same app is rejected with a 409 and leaves that event unchanged.
 
         Parameters
         ----------
@@ -247,7 +247,7 @@ class AsyncEventsClient:
         self, *, request: EventRequest, request_options: typing.Optional[RequestOptions] = None
     ) -> EventResponse:
         """
-        Create a new event
+        Create a new event. Events are immutable, so a create that reuses the `referenceId` of an existing event in the same app is rejected with a 409 and leaves that event unchanged.
 
         Parameters
         ----------
