@@ -1058,7 +1058,25 @@ client.agents.patch(
 <dl>
 <dd>
 
-**category_generation_prompt_text:** `typing.Optional[str]` — LLM prompt for category generation.
+**category_generation_prompt_text:** `typing.Optional[str]` 
+
+Deprecated. Use `categoryIntelligentFieldId` instead. Not supported on new agents, and ignored while `categoryIntelligentFieldId` is set.
+
+LLM prompt for category generation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**category_intelligent_field_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+The intelligent field whose value becomes each conversation's category. Send null to clear it.
+
+Must be a `STRING` conversation field on this agent. Giving the field `enumOptions` is highly recommended, so the category comes from a fixed list.
+
+The field must be `ACTIVE` to produce values. While it is inactive, conversations get no category. With agent variants, a conversation gets a category only if the field is active in its variant. Categories are capped at 280 characters.
     
 </dd>
 </dl>
@@ -3110,7 +3128,10 @@ managing its own capabilities wants.
 The agent variant to read an intelligent field through, by reference ID.
 Required for an intelligent field on an agent with versioned intelligent fields; a
 request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-if omitted, the agent's only variant is used.
+if omitted, the agent's only variant is used, as its snapshot has it. When a variant
+is named, its staged edits are included: a field with a staged edit is returned at
+that edit, a field created in the variant is returned, and a field deleted in the
+variant, whether the delete is staged or already in its snapshot, returns 404.
 The other capability types aren't versioned and are the same in every variant,
 though a named variant must still exist.
     
@@ -3511,7 +3532,10 @@ can require it, so filtering on true returns Actions alone.
 The agent variant to read intelligent field versions through. Required on an agent
 with versioned intelligent fields unless `capabilityTypes` excludes them; a
 request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-if omitted, the agent's only variant is used.
+if omitted, the agent's only variant is used, as its snapshot has it. When a
+variant is named, its staged edits are included: each field is listed once, at its
+staged edit if it has one, and a field deleted in the variant, whether the delete is
+staged or already in its snapshot, is left out.
     
 </dd>
 </dl>
@@ -3528,6 +3552,157 @@ if omitted, the agent's only variant is used.
 <dd>
 
 **variant_app_id:** `typing.Optional[str]` — Deprecated, use `variantId`, which wins when both are set.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**page:** `typing.Optional[int]` — Page number to return, defaults to 0
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**size:** `typing.Optional[int]` — The size of the page to return, defaults to 20. Max 1000.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sort_desc:** `typing.Optional[bool]` — Whether to sort descending, defaults to true
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.capabilities.<a href="src/mavenagi/capabilities/client.py">search_capability_executions</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search the recorded runs of an agent's capabilities, newest first by default. An execution
+is one run of one capability for one subject, with its outcome and timing: an Event
+Trigger notifying its app, or a Conversation Kickoff running when a conversation started.
+
+Pass a conversation in `subjectIds` to get the executions recorded against it. An
+`EVENT_CREATED` trigger records the event as its subject, so pass the event's ID to find
+those.
+
+Results can trail a run by a few seconds. Executions are searchable for 90 days.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.commons import EntityId
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.capabilities.search_capability_executions(
+    subject_ids=[
+        EntityId(
+            reference_id="conversation-123",
+            app_id="zendesk",
+            organization_id="acme",
+            agent_id="support",
+            type="CONVERSATION",
+        )
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**subject_ids:** `typing.Optional[typing.Sequence[EntityId]]` 
+
+Only return executions for these subjects: conversations, inbox items or events.
+Same shape as the `subjectId` on a returned execution. At most 100 ids.
+
+Filtering by feedback is not supported and is rejected with a 400. Feedback
+subjects come only from deprecated `FEEDBACK_CREATED` triggers; switch those to
+`EVENT_CREATED` triggers, whose event subjects can be filtered on.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**capability_types:** `typing.Optional[typing.Sequence[CapabilityType]]` 
+
+Only return executions of these kinds of capability. Event Triggers and
+Conversation Kickoffs record executions today.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**capability_ids:** `typing.Optional[typing.Sequence[EntityId]]` 
+
+Only return executions of these capabilities. Same shape as the `capabilityId` on
+a returned execution. At most 100 ids.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**statuses:** `typing.Optional[typing.Sequence[CapabilityExecutionStatus]]` — Only return executions in these states.
     
 </dd>
 </dl>
@@ -3765,9 +3940,10 @@ existing sibling, siblings at that rank and above are shifted up by 1
 
 ID of the agent variant this charter belongs to, if applicable.
 
-On a write this is validated -- an unknown variant is rejected, as is any
-variant while variant scoping is off for charters -- but not yet applied: the
-write reaches the agent's live configuration either way.
+While charters are versioned for the agent, a write is staged in this variant's
+working set rather than applied to the agent's live configuration, and a write that
+names no variant is rejected with `VARIANT_REQUIRED`. While they aren't, a write that
+names a variant is rejected. An unknown variant is a 404.
     
 </dd>
 </dl>
@@ -3878,7 +4054,15 @@ client.charters.get(
 <dl>
 <dd>
 
-**variant_reference_id:** `typing.Optional[str]` — The agent variant reference ID to resolve the charter's version through. If not provided, defaults to the agent's production variant. Currently, validated but not applied.
+**variant_reference_id:** `typing.Optional[str]` 
+
+The agent variant reference ID to read the charter through. Its staged edits are
+included: a charter with a staged edit is read at that edit, a charter created in the
+variant is included, and a charter deleted in the variant, whether the delete is
+staged or already in its snapshot, is a 404, as is one the variant doesn't carry. If
+not provided, the request is rejected with `VARIANT_REQUIRED` while charters are
+versioned for the agent, and otherwise reads through the agent's single variant, as
+its snapshot has it, or the published charters while variant reads are off.
     
 </dd>
 </dl>
@@ -4096,12 +4280,11 @@ Each sub-field is independently optional — omit to leave unchanged.
 
 **variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
 
-The agent variant this patch is scoped to. When set, the patch is staged in that
-variant's working set instead of being applied to the agent's live configuration.
-
-Omit this field to patch the agent directly. Variant scoping is not active yet:
-a variant supplied today is validated but not applied, and the patch applies to the
-agent.
+The agent variant this patch is scoped to. While charters are versioned for the
+agent, the patch is applied to the charter as this variant sees it and staged in
+its working set rather than applied to the agent's live configuration, and a patch
+that names no variant is rejected with `VARIANT_REQUIRED`. While they aren't, a
+patch that names a variant is rejected. An unknown variant is a 404.
     
 </dd>
 </dl>
@@ -4200,13 +4383,13 @@ client.charters.delete(
 
 **variant_reference_id:** `typing.Optional[str]` 
 
-The reference ID of the agent variant this delete is scoped to. When set, the
-deletion is staged in that variant's working set instead of being applied to the
-agent's live configuration.
+The reference ID of the agent variant this delete is scoped to. While charters are
+versioned for the agent, the deletion is staged in that variant's working set
+instead of being applied to the agent's live configuration, and a delete that names
+no variant is rejected with `VARIANT_REQUIRED`.
 
-Omit this parameter to delete directly from the agent. Variant scoping is not
-active yet: a variant supplied today is validated but not applied, and the delete applies
-to the agent.
+While they aren't, omit this parameter to delete directly from the agent; naming a
+variant then is rejected.
     
 </dd>
 </dl>
@@ -4426,6 +4609,30 @@ client.charters.get_ancestors(
 <dl>
 <dd>
 
+**variant_reference_id:** `typing.Optional[str]` 
+
+The agent variant reference ID to read the ancestors through. Its staged edits are
+included: a charter with a staged edit is read at that edit, a charter created in the
+variant is included, and a charter deleted in the variant, whether the delete is
+staged or already in its snapshot, is a 404, as is one the variant doesn't carry. If
+not provided, the request is rejected with `VARIANT_REQUIRED` while charters are
+versioned for the agent, and otherwise reads through the agent's single variant, as
+its snapshot has it, or the published charters while variant reads are off.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_app_id:** `typing.Optional[str]` — The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -4505,6 +4712,22 @@ client.charters.list_children(
 Parents whose direct children to return. Pass an empty list to fetch root
 charters for the agent. Roots and specific parents cannot be mixed in one request.
 Maximum 50 parent IDs per request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
+
+List the charters as this agent variant sees them, parents and children alike. Its staged
+edits are included: a charter with a staged edit is read at that edit, a charter created
+in the variant is included, and a charter deleted in the variant, whether the delete is
+staged or already in its snapshot, is left out; naming one as a parent is rejected with a
+400. A parent the variant doesn't carry has no children. If not provided, the request is rejected with `VARIANT_REQUIRED` while charters
+are versioned for the agent, and otherwise reads through the agent's single variant, as
+its snapshot has it, or the published charters while variant reads are off.
     
 </dd>
 </dl>
@@ -5722,7 +5945,11 @@ with a maximum length of 500 characters each.
 <dl>
 <dd>
 
-Uses an LLM flow to categorize the conversation. Experimental.
+Deprecated. Set the agent's `categoryIntelligentFieldId` and read that intelligent field's value instead.
+
+Uses an LLM flow to categorize the conversation.
+
+Returns a 400 for new agents and for any agent with a `categoryIntelligentFieldId`. Their conversation categories come only from that intelligent field: read the field's value, or react to it changing with an `EVENT_CREATED` trigger on the `INTELLIGENT_FIELD_VALUE_CHANGED` system event.
 </dd>
 </dl>
 </dd>
@@ -8721,7 +8948,15 @@ client.intelligent_fields.get(
 <dl>
 <dd>
 
-**variant_reference_id:** `typing.Optional[str]` — The agent variant reference ID to resolve the intelligent field's version through. Required on an agent with versioned intelligent fields; a request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise, if omitted, the agent's only variant is used.
+**variant_reference_id:** `typing.Optional[str]` 
+
+The agent variant reference ID to resolve the intelligent field's version through.
+Required on an agent with versioned intelligent fields; a request that omits it there
+is rejected with reason `VARIANT_REQUIRED`. Otherwise, if omitted, the agent's only
+variant is used, as its snapshot has it. When a variant is named, its staged edits
+are included: a field with a staged edit is returned at that edit, a field created in
+the variant is returned, and a field deleted in the variant, whether the delete is
+staged or already in its snapshot, returns 404.
     
 </dd>
 </dl>
@@ -8908,7 +9143,7 @@ deletes any kind of capability the same way. That endpoint returns no body.
 
 Soft delete an intelligent field. Only INACTIVE fields can be deleted.
 
-Deleted fields are excluded from search results but can still be retrieved by ID.
+Deleted fields are excluded from search results, and getting one by ID returns 404.
 Creating a new field with the same referenceId as a deleted field will overwrite
 the deleted field and restore it with the status a new field gets.
 
@@ -9135,10 +9370,11 @@ client.intelligent_fields.search_values(
 
 **variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
 
-Returns values of the fields in this agent variant's scope: its published snapshot plus
-its staged edits, matched by field. A value is included whichever variant's conversation
-produced it, and is named as this variant names the field. If not provided, returns
-values from all variants.
+Returns values of the fields in this agent variant's scope: its snapshot with its staged
+edits applied, matched by field, so a field deleted in the variant, by a staged edit or in
+its snapshot, is left out. A
+value is included whichever variant's conversation produced it, and is named as this
+variant names the field. If not provided, returns values from all variants.
 
 To see values from the conversations pinned to a variant, filter conversations by
 `variantIds` in conversation search or the analytics APIs.

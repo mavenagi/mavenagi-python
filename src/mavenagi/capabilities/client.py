@@ -4,11 +4,14 @@ import typing
 
 from ..commons.types.capability_status import CapabilityStatus
 from ..commons.types.capability_type import CapabilityType
+from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawCapabilitiesClient, RawCapabilitiesClient
 from .types.capabilities_search_response import CapabilitiesSearchResponse
+from .types.capability_execution_status import CapabilityExecutionStatus
+from .types.capability_executions_search_response import CapabilityExecutionsSearchResponse
 from .types.capability_response import CapabilityResponse
 from .types.capability_sort_field import CapabilitySortField
 
@@ -65,7 +68,10 @@ class CapabilitiesClient:
             The agent variant to read an intelligent field through, by reference ID.
             Required for an intelligent field on an agent with versioned intelligent fields; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-            if omitted, the agent's only variant is used.
+            if omitted, the agent's only variant is used, as its snapshot has it. When a variant
+            is named, its staged edits are included: a field with a staged edit is returned at
+            that edit, a field created in the variant is returned, and a field deleted in the
+            variant, whether the delete is staged or already in its snapshot, returns 404.
             The other capability types aren't versioned and are the same in every variant,
             though a named variant must still exist.
 
@@ -310,7 +316,10 @@ class CapabilitiesClient:
             The agent variant to read intelligent field versions through. Required on an agent
             with versioned intelligent fields unless `capabilityTypes` excludes them; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-            if omitted, the agent's only variant is used.
+            if omitted, the agent's only variant is used, as its snapshot has it. When a
+            variant is named, its staged edits are included: each field is listed once, at its
+            staged edit if it has one, and a field deleted in the variant, whether the delete is
+            staged or already in its snapshot, is left out.
 
         variant_reference_id : typing.Optional[str]
             Deprecated, use `variantId`, which wins when both are set.
@@ -357,6 +366,101 @@ class CapabilitiesClient:
             variant_id=variant_id,
             variant_reference_id=variant_reference_id,
             variant_app_id=variant_app_id,
+            page=page,
+            size=size,
+            sort_desc=sort_desc,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def search_capability_executions(
+        self,
+        *,
+        subject_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
+        capability_types: typing.Optional[typing.Sequence[CapabilityType]] = OMIT,
+        capability_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
+        statuses: typing.Optional[typing.Sequence[CapabilityExecutionStatus]] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> CapabilityExecutionsSearchResponse:
+        """
+        Search the recorded runs of an agent's capabilities, newest first by default. An execution
+        is one run of one capability for one subject, with its outcome and timing: an Event
+        Trigger notifying its app, or a Conversation Kickoff running when a conversation started.
+
+        Pass a conversation in `subjectIds` to get the executions recorded against it. An
+        `EVENT_CREATED` trigger records the event as its subject, so pass the event's ID to find
+        those.
+
+        Results can trail a run by a few seconds. Executions are searchable for 90 days.
+
+        Parameters
+        ----------
+        subject_ids : typing.Optional[typing.Sequence[EntityId]]
+            Only return executions for these subjects: conversations, inbox items or events.
+            Same shape as the `subjectId` on a returned execution. At most 100 ids.
+
+            Filtering by feedback is not supported and is rejected with a 400. Feedback
+            subjects come only from deprecated `FEEDBACK_CREATED` triggers; switch those to
+            `EVENT_CREATED` triggers, whose event subjects can be filtered on.
+
+        capability_types : typing.Optional[typing.Sequence[CapabilityType]]
+            Only return executions of these kinds of capability. Event Triggers and
+            Conversation Kickoffs record executions today.
+
+        capability_ids : typing.Optional[typing.Sequence[EntityId]]
+            Only return executions of these capabilities. Same shape as the `capabilityId` on
+            a returned execution. At most 100 ids.
+
+        statuses : typing.Optional[typing.Sequence[CapabilityExecutionStatus]]
+            Only return executions in these states.
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 1000.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        CapabilityExecutionsSearchResponse
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.commons import EntityId
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.capabilities.search_capability_executions(
+            subject_ids=[
+                EntityId(
+                    reference_id="conversation-123",
+                    app_id="zendesk",
+                    organization_id="acme",
+                    agent_id="support",
+                    type="CONVERSATION",
+                )
+            ],
+        )
+        """
+        _response = self._raw_client.search_capability_executions(
+            subject_ids=subject_ids,
+            capability_types=capability_types,
+            capability_ids=capability_ids,
+            statuses=statuses,
             page=page,
             size=size,
             sort_desc=sort_desc,
@@ -414,7 +518,10 @@ class AsyncCapabilitiesClient:
             The agent variant to read an intelligent field through, by reference ID.
             Required for an intelligent field on an agent with versioned intelligent fields; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-            if omitted, the agent's only variant is used.
+            if omitted, the agent's only variant is used, as its snapshot has it. When a variant
+            is named, its staged edits are included: a field with a staged edit is returned at
+            that edit, a field created in the variant is returned, and a field deleted in the
+            variant, whether the delete is staged or already in its snapshot, returns 404.
             The other capability types aren't versioned and are the same in every variant,
             though a named variant must still exist.
 
@@ -683,7 +790,10 @@ class AsyncCapabilitiesClient:
             The agent variant to read intelligent field versions through. Required on an agent
             with versioned intelligent fields unless `capabilityTypes` excludes them; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-            if omitted, the agent's only variant is used.
+            if omitted, the agent's only variant is used, as its snapshot has it. When a
+            variant is named, its staged edits are included: each field is listed once, at its
+            staged edit if it has one, and a field deleted in the variant, whether the delete is
+            staged or already in its snapshot, is left out.
 
         variant_reference_id : typing.Optional[str]
             Deprecated, use `variantId`, which wins when both are set.
@@ -738,6 +848,109 @@ class AsyncCapabilitiesClient:
             variant_id=variant_id,
             variant_reference_id=variant_reference_id,
             variant_app_id=variant_app_id,
+            page=page,
+            size=size,
+            sort_desc=sort_desc,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def search_capability_executions(
+        self,
+        *,
+        subject_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
+        capability_types: typing.Optional[typing.Sequence[CapabilityType]] = OMIT,
+        capability_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
+        statuses: typing.Optional[typing.Sequence[CapabilityExecutionStatus]] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> CapabilityExecutionsSearchResponse:
+        """
+        Search the recorded runs of an agent's capabilities, newest first by default. An execution
+        is one run of one capability for one subject, with its outcome and timing: an Event
+        Trigger notifying its app, or a Conversation Kickoff running when a conversation started.
+
+        Pass a conversation in `subjectIds` to get the executions recorded against it. An
+        `EVENT_CREATED` trigger records the event as its subject, so pass the event's ID to find
+        those.
+
+        Results can trail a run by a few seconds. Executions are searchable for 90 days.
+
+        Parameters
+        ----------
+        subject_ids : typing.Optional[typing.Sequence[EntityId]]
+            Only return executions for these subjects: conversations, inbox items or events.
+            Same shape as the `subjectId` on a returned execution. At most 100 ids.
+
+            Filtering by feedback is not supported and is rejected with a 400. Feedback
+            subjects come only from deprecated `FEEDBACK_CREATED` triggers; switch those to
+            `EVENT_CREATED` triggers, whose event subjects can be filtered on.
+
+        capability_types : typing.Optional[typing.Sequence[CapabilityType]]
+            Only return executions of these kinds of capability. Event Triggers and
+            Conversation Kickoffs record executions today.
+
+        capability_ids : typing.Optional[typing.Sequence[EntityId]]
+            Only return executions of these capabilities. Same shape as the `capabilityId` on
+            a returned execution. At most 100 ids.
+
+        statuses : typing.Optional[typing.Sequence[CapabilityExecutionStatus]]
+            Only return executions in these states.
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 1000.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        CapabilityExecutionsSearchResponse
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.commons import EntityId
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.capabilities.search_capability_executions(
+                subject_ids=[
+                    EntityId(
+                        reference_id="conversation-123",
+                        app_id="zendesk",
+                        organization_id="acme",
+                        agent_id="support",
+                        type="CONVERSATION",
+                    )
+                ],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search_capability_executions(
+            subject_ids=subject_ids,
+            capability_types=capability_types,
+            capability_ids=capability_ids,
+            statuses=statuses,
             page=page,
             size=size,
             sort_desc=sort_desc,

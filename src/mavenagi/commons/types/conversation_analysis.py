@@ -37,7 +37,7 @@ class ConversationAnalysis(UniversalBaseModel):
 
     category: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Generated category of the conversation
+    Generated category of the conversation. For agents with a `categoryIntelligentFieldId`, this is that intelligent field's value. New agents without one have no category.
     """
 
     sentiment: typing.Optional[Sentiment] = pydantic.Field(default=None)

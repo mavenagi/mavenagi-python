@@ -3,6 +3,16 @@
 # isort: skip_file
 
 from .capabilities_search_response import CapabilitiesSearchResponse
+from .capability_execution import (
+    CapabilityExecution,
+    CapabilityExecution_ConversationKickoff,
+    CapabilityExecution_Trigger,
+)
+from .capability_execution_base import CapabilityExecutionBase
+from .capability_execution_completion_reason import CapabilityExecutionCompletionReason
+from .capability_execution_retryability import CapabilityExecutionRetryability
+from .capability_execution_status import CapabilityExecutionStatus
+from .capability_executions_search_response import CapabilityExecutionsSearchResponse
 from .capability_response import (
     CapabilityResponse,
     CapabilityResponse_Action,
@@ -12,9 +22,19 @@ from .capability_response import (
 )
 from .capability_sort_field import CapabilitySortField
 from .capability_summary import CapabilitySummary
+from .conversation_kickoff_capability_execution import ConversationKickoffCapabilityExecution
+from .trigger_capability_execution import TriggerCapabilityExecution
 
 __all__ = [
     "CapabilitiesSearchResponse",
+    "CapabilityExecution",
+    "CapabilityExecutionBase",
+    "CapabilityExecutionCompletionReason",
+    "CapabilityExecutionRetryability",
+    "CapabilityExecutionStatus",
+    "CapabilityExecution_ConversationKickoff",
+    "CapabilityExecution_Trigger",
+    "CapabilityExecutionsSearchResponse",
     "CapabilityResponse",
     "CapabilityResponse_Action",
     "CapabilityResponse_ConversationKickoff",
@@ -22,4 +42,6 @@ __all__ = [
     "CapabilityResponse_Trigger",
     "CapabilitySortField",
     "CapabilitySummary",
+    "ConversationKickoffCapabilityExecution",
+    "TriggerCapabilityExecution",
 ]

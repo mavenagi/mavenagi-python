@@ -10,6 +10,7 @@ from ..commons.errors.server_error import ServerError
 from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.capability_status import CapabilityStatus
 from ..commons.types.capability_type import CapabilityType
+from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.error_message import ErrorMessage
 from ..core.api_error import ApiError
@@ -20,6 +21,8 @@ from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from .types.capabilities_search_response import CapabilitiesSearchResponse
+from .types.capability_execution_status import CapabilityExecutionStatus
+from .types.capability_executions_search_response import CapabilityExecutionsSearchResponse
 from .types.capability_response import CapabilityResponse
 from .types.capability_sort_field import CapabilitySortField
 
@@ -65,7 +68,10 @@ class RawCapabilitiesClient:
             The agent variant to read an intelligent field through, by reference ID.
             Required for an intelligent field on an agent with versioned intelligent fields; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-            if omitted, the agent's only variant is used.
+            if omitted, the agent's only variant is used, as its snapshot has it. When a variant
+            is named, its staged edits are included: a field with a staged edit is returned at
+            that edit, a field created in the variant is returned, and a field deleted in the
+            variant, whether the delete is staged or already in its snapshot, returns 404.
             The other capability types aren't versioned and are the same in every variant,
             though a named variant must still exist.
 
@@ -474,7 +480,10 @@ class RawCapabilitiesClient:
             The agent variant to read intelligent field versions through. Required on an agent
             with versioned intelligent fields unless `capabilityTypes` excludes them; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-            if omitted, the agent's only variant is used.
+            if omitted, the agent's only variant is used, as its snapshot has it. When a
+            variant is named, its staged edits are included: each field is listed once, at its
+            staged edit if it has one, and a field deleted in the variant, whether the delete is
+            staged or already in its snapshot, is left out.
 
         variant_reference_id : typing.Optional[str]
             Deprecated, use `variantId`, which wins when both are set.
@@ -591,6 +600,155 @@ class RawCapabilitiesClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def search_capability_executions(
+        self,
+        *,
+        subject_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
+        capability_types: typing.Optional[typing.Sequence[CapabilityType]] = OMIT,
+        capability_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
+        statuses: typing.Optional[typing.Sequence[CapabilityExecutionStatus]] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[CapabilityExecutionsSearchResponse]:
+        """
+        Search the recorded runs of an agent's capabilities, newest first by default. An execution
+        is one run of one capability for one subject, with its outcome and timing: an Event
+        Trigger notifying its app, or a Conversation Kickoff running when a conversation started.
+
+        Pass a conversation in `subjectIds` to get the executions recorded against it. An
+        `EVENT_CREATED` trigger records the event as its subject, so pass the event's ID to find
+        those.
+
+        Results can trail a run by a few seconds. Executions are searchable for 90 days.
+
+        Parameters
+        ----------
+        subject_ids : typing.Optional[typing.Sequence[EntityId]]
+            Only return executions for these subjects: conversations, inbox items or events.
+            Same shape as the `subjectId` on a returned execution. At most 100 ids.
+
+            Filtering by feedback is not supported and is rejected with a 400. Feedback
+            subjects come only from deprecated `FEEDBACK_CREATED` triggers; switch those to
+            `EVENT_CREATED` triggers, whose event subjects can be filtered on.
+
+        capability_types : typing.Optional[typing.Sequence[CapabilityType]]
+            Only return executions of these kinds of capability. Event Triggers and
+            Conversation Kickoffs record executions today.
+
+        capability_ids : typing.Optional[typing.Sequence[EntityId]]
+            Only return executions of these capabilities. Same shape as the `capabilityId` on
+            a returned execution. At most 100 ids.
+
+        statuses : typing.Optional[typing.Sequence[CapabilityExecutionStatus]]
+            Only return executions in these states.
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 1000.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[CapabilityExecutionsSearchResponse]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/capabilities/executions/search",
+            method="POST",
+            json={
+                "subjectIds": convert_and_respect_annotation_metadata(
+                    object_=subject_ids, annotation=typing.Sequence[EntityId], direction="write"
+                ),
+                "capabilityTypes": capability_types,
+                "capabilityIds": convert_and_respect_annotation_metadata(
+                    object_=capability_ids, annotation=typing.Sequence[EntityId], direction="write"
+                ),
+                "statuses": statuses,
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    CapabilityExecutionsSearchResponse,
+                    parse_obj_as(
+                        type_=CapabilityExecutionsSearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawCapabilitiesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -630,7 +788,10 @@ class AsyncRawCapabilitiesClient:
             The agent variant to read an intelligent field through, by reference ID.
             Required for an intelligent field on an agent with versioned intelligent fields; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-            if omitted, the agent's only variant is used.
+            if omitted, the agent's only variant is used, as its snapshot has it. When a variant
+            is named, its staged edits are included: a field with a staged edit is returned at
+            that edit, a field created in the variant is returned, and a field deleted in the
+            variant, whether the delete is staged or already in its snapshot, returns 404.
             The other capability types aren't versioned and are the same in every variant,
             though a named variant must still exist.
 
@@ -1039,7 +1200,10 @@ class AsyncRawCapabilitiesClient:
             The agent variant to read intelligent field versions through. Required on an agent
             with versioned intelligent fields unless `capabilityTypes` excludes them; a
             request that omits it there is rejected with reason `VARIANT_REQUIRED`. Otherwise,
-            if omitted, the agent's only variant is used.
+            if omitted, the agent's only variant is used, as its snapshot has it. When a
+            variant is named, its staged edits are included: each field is listed once, at its
+            staged edit if it has one, and a field deleted in the variant, whether the delete is
+            staged or already in its snapshot, is left out.
 
         variant_reference_id : typing.Optional[str]
             Deprecated, use `variantId`, which wins when both are set.
@@ -1092,6 +1256,155 @@ class AsyncRawCapabilitiesClient:
                     CapabilitiesSearchResponse,
                     parse_obj_as(
                         type_=CapabilitiesSearchResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def search_capability_executions(
+        self,
+        *,
+        subject_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
+        capability_types: typing.Optional[typing.Sequence[CapabilityType]] = OMIT,
+        capability_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
+        statuses: typing.Optional[typing.Sequence[CapabilityExecutionStatus]] = OMIT,
+        page: typing.Optional[int] = OMIT,
+        size: typing.Optional[int] = OMIT,
+        sort_desc: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[CapabilityExecutionsSearchResponse]:
+        """
+        Search the recorded runs of an agent's capabilities, newest first by default. An execution
+        is one run of one capability for one subject, with its outcome and timing: an Event
+        Trigger notifying its app, or a Conversation Kickoff running when a conversation started.
+
+        Pass a conversation in `subjectIds` to get the executions recorded against it. An
+        `EVENT_CREATED` trigger records the event as its subject, so pass the event's ID to find
+        those.
+
+        Results can trail a run by a few seconds. Executions are searchable for 90 days.
+
+        Parameters
+        ----------
+        subject_ids : typing.Optional[typing.Sequence[EntityId]]
+            Only return executions for these subjects: conversations, inbox items or events.
+            Same shape as the `subjectId` on a returned execution. At most 100 ids.
+
+            Filtering by feedback is not supported and is rejected with a 400. Feedback
+            subjects come only from deprecated `FEEDBACK_CREATED` triggers; switch those to
+            `EVENT_CREATED` triggers, whose event subjects can be filtered on.
+
+        capability_types : typing.Optional[typing.Sequence[CapabilityType]]
+            Only return executions of these kinds of capability. Event Triggers and
+            Conversation Kickoffs record executions today.
+
+        capability_ids : typing.Optional[typing.Sequence[EntityId]]
+            Only return executions of these capabilities. Same shape as the `capabilityId` on
+            a returned execution. At most 100 ids.
+
+        statuses : typing.Optional[typing.Sequence[CapabilityExecutionStatus]]
+            Only return executions in these states.
+
+        page : typing.Optional[int]
+            Page number to return, defaults to 0
+
+        size : typing.Optional[int]
+            The size of the page to return, defaults to 20. Max 1000.
+
+        sort_desc : typing.Optional[bool]
+            Whether to sort descending, defaults to true
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[CapabilityExecutionsSearchResponse]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/capabilities/executions/search",
+            method="POST",
+            json={
+                "subjectIds": convert_and_respect_annotation_metadata(
+                    object_=subject_ids, annotation=typing.Sequence[EntityId], direction="write"
+                ),
+                "capabilityTypes": capability_types,
+                "capabilityIds": convert_and_respect_annotation_metadata(
+                    object_=capability_ids, annotation=typing.Sequence[EntityId], direction="write"
+                ),
+                "statuses": statuses,
+                "page": page,
+                "size": size,
+                "sortDesc": sort_desc,
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    CapabilityExecutionsSearchResponse,
+                    parse_obj_as(
+                        type_=CapabilityExecutionsSearchResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

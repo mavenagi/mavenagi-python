@@ -129,9 +129,10 @@ class RawChartersClient:
         variant_id : typing.Optional[EntityIdWithoutAgent]
             ID of the agent variant this charter belongs to, if applicable.
 
-            On a write this is validated -- an unknown variant is rejected, as is any
-            variant while variant scoping is off for charters -- but not yet applied: the
-            write reaches the agent's live configuration either way.
+            While charters are versioned for the agent, a write is staged in this variant's
+            working set rather than applied to the agent's live configuration, and a write that
+            names no variant is rejected with `VARIANT_REQUIRED`. While they aren't, a write that
+            names a variant is rejected. An unknown variant is a 404.
 
         description : typing.Optional[str]
             A plain text description of this charter. If not set, existing description is preserved if present.
@@ -270,7 +271,13 @@ class RawChartersClient:
             The App ID of the charter to get. If not provided, the ID of the calling app will be used.
 
         variant_reference_id : typing.Optional[str]
-            The agent variant reference ID to resolve the charter's version through. If not provided, defaults to the agent's production variant. Currently, validated but not applied.
+            The agent variant reference ID to read the charter through. Its staged edits are
+            included: a charter with a staged edit is read at that edit, a charter created in the
+            variant is included, and a charter deleted in the variant, whether the delete is
+            staged or already in its snapshot, is a 404, as is one the variant doesn't carry. If
+            not provided, the request is rejected with `VARIANT_REQUIRED` while charters are
+            versioned for the agent, and otherwise reads through the agent's single variant, as
+            its snapshot has it, or the published charters while variant reads are off.
 
         variant_app_id : typing.Optional[str]
             The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
@@ -445,12 +452,11 @@ class RawChartersClient:
             Each sub-field is independently optional — omit to leave unchanged.
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
-            The agent variant this patch is scoped to. When set, the patch is staged in that
-            variant's working set instead of being applied to the agent's live configuration.
-
-            Omit this field to patch the agent directly. Variant scoping is not active yet:
-            a variant supplied today is validated but not applied, and the patch applies to the
-            agent.
+            The agent variant this patch is scoped to. While charters are versioned for the
+            agent, the patch is applied to the charter as this variant sees it and staged in
+            its working set rather than applied to the agent's live configuration, and a patch
+            that names no variant is rejected with `VARIANT_REQUIRED`. While they aren't, a
+            patch that names a variant is rejected. An unknown variant is a 404.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -588,13 +594,13 @@ class RawChartersClient:
             The App ID of the charter to delete. If not provided, the ID of the calling app will be used.
 
         variant_reference_id : typing.Optional[str]
-            The reference ID of the agent variant this delete is scoped to. When set, the
-            deletion is staged in that variant's working set instead of being applied to the
-            agent's live configuration.
+            The reference ID of the agent variant this delete is scoped to. While charters are
+            versioned for the agent, the deletion is staged in that variant's working set
+            instead of being applied to the agent's live configuration, and a delete that names
+            no variant is rejected with `VARIANT_REQUIRED`.
 
-            Omit this parameter to delete directly from the agent. Variant scoping is not
-            active yet: a variant supplied today is validated but not applied, and the delete applies
-            to the agent.
+            While they aren't, omit this parameter to delete directly from the agent; naming a
+            variant then is rejected.
 
         variant_app_id : typing.Optional[str]
             The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
@@ -819,6 +825,8 @@ class RawChartersClient:
         charter_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        variant_reference_id: typing.Optional[str] = None,
+        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[CharterAncestorsResponse]:
         """
@@ -841,6 +849,18 @@ class RawChartersClient:
         app_id : typing.Optional[str]
             The App ID of the charter. If not provided, the ID of the calling app will be used.
 
+        variant_reference_id : typing.Optional[str]
+            The agent variant reference ID to read the ancestors through. Its staged edits are
+            included: a charter with a staged edit is read at that edit, a charter created in the
+            variant is included, and a charter deleted in the variant, whether the delete is
+            staged or already in its snapshot, is a 404, as is one the variant doesn't carry. If
+            not provided, the request is rejected with `VARIANT_REQUIRED` while charters are
+            versioned for the agent, and otherwise reads through the agent's single variant, as
+            its snapshot has it, or the published charters while variant reads are off.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -853,6 +873,8 @@ class RawChartersClient:
             method="GET",
             params={
                 "appId": app_id,
+                "variantReferenceId": variant_reference_id,
+                "variantAppId": variant_app_id,
             },
             request_options=request_options,
         )
@@ -930,6 +952,7 @@ class RawChartersClient:
         self,
         *,
         parent_ids: typing.Sequence[EntityId],
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -954,6 +977,15 @@ class RawChartersClient:
             charters for the agent. Roots and specific parents cannot be mixed in one request.
             Maximum 50 parent IDs per request.
 
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            List the charters as this agent variant sees them, parents and children alike. Its staged
+            edits are included: a charter with a staged edit is read at that edit, a charter created
+            in the variant is included, and a charter deleted in the variant, whether the delete is
+            staged or already in its snapshot, is left out; naming one as a parent is rejected with a
+            400. A parent the variant doesn't carry has no children. If not provided, the request is rejected with `VARIANT_REQUIRED` while charters
+            are versioned for the agent, and otherwise reads through the agent's single variant, as
+            its snapshot has it, or the published charters while variant reads are off.
+
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -976,6 +1008,9 @@ class RawChartersClient:
             json={
                 "parentIds": convert_and_respect_annotation_metadata(
                     object_=parent_ids, annotation=typing.Sequence[EntityId], direction="write"
+                ),
+                "variantId": convert_and_respect_annotation_metadata(
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "page": page,
                 "size": size,
@@ -1148,9 +1183,10 @@ class AsyncRawChartersClient:
         variant_id : typing.Optional[EntityIdWithoutAgent]
             ID of the agent variant this charter belongs to, if applicable.
 
-            On a write this is validated -- an unknown variant is rejected, as is any
-            variant while variant scoping is off for charters -- but not yet applied: the
-            write reaches the agent's live configuration either way.
+            While charters are versioned for the agent, a write is staged in this variant's
+            working set rather than applied to the agent's live configuration, and a write that
+            names no variant is rejected with `VARIANT_REQUIRED`. While they aren't, a write that
+            names a variant is rejected. An unknown variant is a 404.
 
         description : typing.Optional[str]
             A plain text description of this charter. If not set, existing description is preserved if present.
@@ -1289,7 +1325,13 @@ class AsyncRawChartersClient:
             The App ID of the charter to get. If not provided, the ID of the calling app will be used.
 
         variant_reference_id : typing.Optional[str]
-            The agent variant reference ID to resolve the charter's version through. If not provided, defaults to the agent's production variant. Currently, validated but not applied.
+            The agent variant reference ID to read the charter through. Its staged edits are
+            included: a charter with a staged edit is read at that edit, a charter created in the
+            variant is included, and a charter deleted in the variant, whether the delete is
+            staged or already in its snapshot, is a 404, as is one the variant doesn't carry. If
+            not provided, the request is rejected with `VARIANT_REQUIRED` while charters are
+            versioned for the agent, and otherwise reads through the agent's single variant, as
+            its snapshot has it, or the published charters while variant reads are off.
 
         variant_app_id : typing.Optional[str]
             The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
@@ -1464,12 +1506,11 @@ class AsyncRawChartersClient:
             Each sub-field is independently optional — omit to leave unchanged.
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
-            The agent variant this patch is scoped to. When set, the patch is staged in that
-            variant's working set instead of being applied to the agent's live configuration.
-
-            Omit this field to patch the agent directly. Variant scoping is not active yet:
-            a variant supplied today is validated but not applied, and the patch applies to the
-            agent.
+            The agent variant this patch is scoped to. While charters are versioned for the
+            agent, the patch is applied to the charter as this variant sees it and staged in
+            its working set rather than applied to the agent's live configuration, and a patch
+            that names no variant is rejected with `VARIANT_REQUIRED`. While they aren't, a
+            patch that names a variant is rejected. An unknown variant is a 404.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1607,13 +1648,13 @@ class AsyncRawChartersClient:
             The App ID of the charter to delete. If not provided, the ID of the calling app will be used.
 
         variant_reference_id : typing.Optional[str]
-            The reference ID of the agent variant this delete is scoped to. When set, the
-            deletion is staged in that variant's working set instead of being applied to the
-            agent's live configuration.
+            The reference ID of the agent variant this delete is scoped to. While charters are
+            versioned for the agent, the deletion is staged in that variant's working set
+            instead of being applied to the agent's live configuration, and a delete that names
+            no variant is rejected with `VARIANT_REQUIRED`.
 
-            Omit this parameter to delete directly from the agent. Variant scoping is not
-            active yet: a variant supplied today is validated but not applied, and the delete applies
-            to the agent.
+            While they aren't, omit this parameter to delete directly from the agent; naming a
+            variant then is rejected.
 
         variant_app_id : typing.Optional[str]
             The App ID of the agent variant named by `variantReferenceId`. If not provided, the ID of the calling app will be used.
@@ -1838,6 +1879,8 @@ class AsyncRawChartersClient:
         charter_reference_id: str,
         *,
         app_id: typing.Optional[str] = None,
+        variant_reference_id: typing.Optional[str] = None,
+        variant_app_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[CharterAncestorsResponse]:
         """
@@ -1860,6 +1903,18 @@ class AsyncRawChartersClient:
         app_id : typing.Optional[str]
             The App ID of the charter. If not provided, the ID of the calling app will be used.
 
+        variant_reference_id : typing.Optional[str]
+            The agent variant reference ID to read the ancestors through. Its staged edits are
+            included: a charter with a staged edit is read at that edit, a charter created in the
+            variant is included, and a charter deleted in the variant, whether the delete is
+            staged or already in its snapshot, is a 404, as is one the variant doesn't carry. If
+            not provided, the request is rejected with `VARIANT_REQUIRED` while charters are
+            versioned for the agent, and otherwise reads through the agent's single variant, as
+            its snapshot has it, or the published charters while variant reads are off.
+
+        variant_app_id : typing.Optional[str]
+            The App ID of the agent variant reference. If not provided, the ID of the calling app will be used.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -1872,6 +1927,8 @@ class AsyncRawChartersClient:
             method="GET",
             params={
                 "appId": app_id,
+                "variantReferenceId": variant_reference_id,
+                "variantAppId": variant_app_id,
             },
             request_options=request_options,
         )
@@ -1949,6 +2006,7 @@ class AsyncRawChartersClient:
         self,
         *,
         parent_ids: typing.Sequence[EntityId],
+        variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -1973,6 +2031,15 @@ class AsyncRawChartersClient:
             charters for the agent. Roots and specific parents cannot be mixed in one request.
             Maximum 50 parent IDs per request.
 
+        variant_id : typing.Optional[EntityIdWithoutAgent]
+            List the charters as this agent variant sees them, parents and children alike. Its staged
+            edits are included: a charter with a staged edit is read at that edit, a charter created
+            in the variant is included, and a charter deleted in the variant, whether the delete is
+            staged or already in its snapshot, is left out; naming one as a parent is rejected with a
+            400. A parent the variant doesn't carry has no children. If not provided, the request is rejected with `VARIANT_REQUIRED` while charters
+            are versioned for the agent, and otherwise reads through the agent's single variant, as
+            its snapshot has it, or the published charters while variant reads are off.
+
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -1995,6 +2062,9 @@ class AsyncRawChartersClient:
             json={
                 "parentIds": convert_and_respect_annotation_metadata(
                     object_=parent_ids, annotation=typing.Sequence[EntityId], direction="write"
+                ),
+                "variantId": convert_and_respect_annotation_metadata(
+                    object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "page": page,
                 "size": size,

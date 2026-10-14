@@ -742,7 +742,11 @@ class ConversationClient:
         self, conversation_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> CategorizationResponse:
         """
-        Uses an LLM flow to categorize the conversation. Experimental.
+        Deprecated. Set the agent's `categoryIntelligentFieldId` and read that intelligent field's value instead.
+
+        Uses an LLM flow to categorize the conversation.
+
+        Returns a 400 for new agents and for any agent with a `categoryIntelligentFieldId`. Their conversation categories come only from that intelligent field: read the field's value, or react to it changing with an `EVENT_CREATED` trigger on the `INTELLIGENT_FIELD_VALUE_CHANGED` system event.
 
         Parameters
         ----------
@@ -2074,7 +2078,11 @@ class AsyncConversationClient:
         self, conversation_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> CategorizationResponse:
         """
-        Uses an LLM flow to categorize the conversation. Experimental.
+        Deprecated. Set the agent's `categoryIntelligentFieldId` and read that intelligent field's value instead.
+
+        Uses an LLM flow to categorize the conversation.
+
+        Returns a 400 for new agents and for any agent with a `categoryIntelligentFieldId`. Their conversation categories come only from that intelligent field: read the field's value, or react to it changing with an `EVENT_CREATED` trigger on the `INTELLIGENT_FIELD_VALUE_CHANGED` system event.
 
         Parameters
         ----------

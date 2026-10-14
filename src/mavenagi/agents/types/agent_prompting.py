@@ -26,9 +26,11 @@ class AgentPrompting(UniversalBaseModel):
         typing.Optional[str], FieldMetadata(alias="categoryGenerationPromptText")
     ] = pydantic.Field(default=None)
     """
-    LLM prompt for category generation. 
+    Deprecated. Use `categoryIntelligentFieldId` instead. Not supported on new agents, and ignored while `categoryIntelligentFieldId` is set.
     
-    Use this to specify a fixed set of categories that an LLM should choose from when analyzing a conversation. 
+    LLM prompt for category generation.
+    
+    Use this to specify a fixed set of categories that an LLM should choose from when analyzing a conversation.
     When not set uses a default prompt which gives the LLM flexibility to determine appropriate categories on its own.
     """
 

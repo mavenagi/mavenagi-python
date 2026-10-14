@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ...commons.types.base_capped_paginated_request import BaseCappedPaginatedRequest
 from ...commons.types.entity_id import EntityId
+from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 
@@ -29,6 +30,19 @@ class CharterListChildrenRequest(BaseCappedPaginatedRequest):
     Parents whose direct children to return. Pass an empty list to fetch root
     charters for the agent. Roots and specific parents cannot be mixed in one request.
     Maximum 50 parent IDs per request.
+    """
+
+    variant_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="variantId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    List the charters as this agent variant sees them, parents and children alike. Its staged
+    edits are included: a charter with a staged edit is read at that edit, a charter created
+    in the variant is included, and a charter deleted in the variant, whether the delete is
+    staged or already in its snapshot, is left out; naming one as a parent is rejected with a
+    400. A parent the variant doesn't carry has no children. If not provided, the request is rejected with `VARIANT_REQUIRED` while charters
+    are versioned for the agent, and otherwise reads through the agent's single variant, as
+    its snapshot has it, or the published charters while variant reads are off.
     """
 
     if IS_PYDANTIC_V2:

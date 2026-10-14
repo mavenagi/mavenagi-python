@@ -28,7 +28,7 @@ class BotLogicCharterDetail(UniversalBaseModel):
         pydantic.Field(default=None)
     )
     """
-    The segment that gates this charter, if any. Absent for wildcard charters.
+    Deprecated, read the charter's `precondition` from the charters API instead.
     """
 
     parent_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="parentId")] = (

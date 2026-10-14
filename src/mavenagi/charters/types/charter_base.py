@@ -21,9 +21,10 @@ class CharterBase(UniversalBaseModel):
     """
     ID of the agent variant this charter belongs to, if applicable.
     
-    On a write this is validated -- an unknown variant is rejected, as is any
-    variant while variant scoping is off for charters -- but not yet applied: the
-    write reaches the agent's live configuration either way.
+    While charters are versioned for the agent, a write is staged in this variant's
+    working set rather than applied to the agent's live configuration, and a write that
+    names no variant is rejected with `VARIANT_REQUIRED`. While they aren't, a write that
+    names a variant is rejected. An unknown variant is a 404.
     """
 
     description: typing.Optional[str] = pydantic.Field(default=None)

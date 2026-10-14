@@ -14,6 +14,7 @@ ErrorReason = typing.Union[
         "VARIANT_HAS_STAGED_EDITS",
         "VARIANT_REQUIRED",
         "INTELLIGENT_FIELD_TYPE_CHANGED",
+        "WORKING_SET_HAS_UNVERSIONED_EDITS",
     ],
     typing.Any,
 ]

@@ -2,6 +2,7 @@
 
 import typing
 
+from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.llm_persona import LlmPersona
 from ..commons.types.pii_category import PiiCategory
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -244,6 +245,7 @@ class AgentsClient:
         persona: typing.Optional[LlmPersona] = OMIT,
         additional_prompt_text: typing.Optional[str] = OMIT,
         category_generation_prompt_text: typing.Optional[str] = OMIT,
+        category_intelligent_field_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         content_safety_violation_response_prompt_text: typing.Optional[str] = OMIT,
         reject_questions_without_knowledge: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -286,7 +288,16 @@ class AgentsClient:
             Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
         category_generation_prompt_text : typing.Optional[str]
+            Deprecated. Use `categoryIntelligentFieldId` instead. Not supported on new agents, and ignored while `categoryIntelligentFieldId` is set.
+
             LLM prompt for category generation.
+
+        category_intelligent_field_id : typing.Optional[EntityIdWithoutAgent]
+            The intelligent field whose value becomes each conversation's category. Send null to clear it.
+
+            Must be a `STRING` conversation field on this agent. Giving the field `enumOptions` is highly recommended, so the category comes from a fixed list.
+
+            The field must be `ACTIVE` to produce values. While it is inactive, conversations get no category. With agent variants, a conversation gets a category only if the field is active in its variant. Categories are capped at 280 characters.
 
         content_safety_violation_response_prompt_text : typing.Optional[str]
             LLM prompt for generating a response when the user's question has been detected as unsafe.
@@ -329,6 +340,7 @@ class AgentsClient:
             persona=persona,
             additional_prompt_text=additional_prompt_text,
             category_generation_prompt_text=category_generation_prompt_text,
+            category_intelligent_field_id=category_intelligent_field_id,
             content_safety_violation_response_prompt_text=content_safety_violation_response_prompt_text,
             reject_questions_without_knowledge=reject_questions_without_knowledge,
             request_options=request_options,
@@ -646,6 +658,7 @@ class AsyncAgentsClient:
         persona: typing.Optional[LlmPersona] = OMIT,
         additional_prompt_text: typing.Optional[str] = OMIT,
         category_generation_prompt_text: typing.Optional[str] = OMIT,
+        category_intelligent_field_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         content_safety_violation_response_prompt_text: typing.Optional[str] = OMIT,
         reject_questions_without_knowledge: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -688,7 +701,16 @@ class AsyncAgentsClient:
             Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
         category_generation_prompt_text : typing.Optional[str]
+            Deprecated. Use `categoryIntelligentFieldId` instead. Not supported on new agents, and ignored while `categoryIntelligentFieldId` is set.
+
             LLM prompt for category generation.
+
+        category_intelligent_field_id : typing.Optional[EntityIdWithoutAgent]
+            The intelligent field whose value becomes each conversation's category. Send null to clear it.
+
+            Must be a `STRING` conversation field on this agent. Giving the field `enumOptions` is highly recommended, so the category comes from a fixed list.
+
+            The field must be `ACTIVE` to produce values. While it is inactive, conversations get no category. With agent variants, a conversation gets a category only if the field is active in its variant. Categories are capped at 280 characters.
 
         content_safety_violation_response_prompt_text : typing.Optional[str]
             LLM prompt for generating a response when the user's question has been detected as unsafe.
@@ -739,6 +761,7 @@ class AsyncAgentsClient:
             persona=persona,
             additional_prompt_text=additional_prompt_text,
             category_generation_prompt_text=category_generation_prompt_text,
+            category_intelligent_field_id=category_intelligent_field_id,
             content_safety_violation_response_prompt_text=content_safety_violation_response_prompt_text,
             reject_questions_without_knowledge=reject_questions_without_knowledge,
             request_options=request_options,

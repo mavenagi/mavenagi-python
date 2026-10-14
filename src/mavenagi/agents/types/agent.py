@@ -6,6 +6,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id import EntityId
+from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...commons.types.pii_category import PiiCategory
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
@@ -64,6 +65,15 @@ class Agent(UniversalBaseModel):
     prompting: AgentPrompting = pydantic.Field()
     """
     Agent prompting settings.
+    """
+
+    category_intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="categoryIntelligentFieldId")
+    ] = pydantic.Field(default=None)
+    """
+    The intelligent field whose value becomes each conversation's category.
+    When set, its value replaces the category generated from `prompting.categoryGenerationPromptText`.
+    An inactive field produces no values, so conversations get no category until it is activated.
     """
 
     if IS_PYDANTIC_V2:

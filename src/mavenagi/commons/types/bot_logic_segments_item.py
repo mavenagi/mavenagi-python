@@ -10,6 +10,10 @@ from .entity_id import EntityId
 
 
 class BotLogicSegmentsItem(UniversalBaseModel):
+    """
+    Segments that matched this bot response. Omitted when the agent is in charter mode.
+    """
+
     matching_segment_ids: typing_extensions.Annotated[typing.List[EntityId], FieldMetadata(alias="matchingSegmentIds")]
 
     if IS_PYDANTIC_V2:

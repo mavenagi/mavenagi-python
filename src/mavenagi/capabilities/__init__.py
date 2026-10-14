@@ -4,6 +4,14 @@
 
 from .types import (
     CapabilitiesSearchResponse,
+    CapabilityExecution,
+    CapabilityExecutionBase,
+    CapabilityExecutionCompletionReason,
+    CapabilityExecutionRetryability,
+    CapabilityExecutionStatus,
+    CapabilityExecution_ConversationKickoff,
+    CapabilityExecution_Trigger,
+    CapabilityExecutionsSearchResponse,
     CapabilityResponse,
     CapabilityResponse_Action,
     CapabilityResponse_ConversationKickoff,
@@ -11,10 +19,20 @@ from .types import (
     CapabilityResponse_Trigger,
     CapabilitySortField,
     CapabilitySummary,
+    ConversationKickoffCapabilityExecution,
+    TriggerCapabilityExecution,
 )
 
 __all__ = [
     "CapabilitiesSearchResponse",
+    "CapabilityExecution",
+    "CapabilityExecutionBase",
+    "CapabilityExecutionCompletionReason",
+    "CapabilityExecutionRetryability",
+    "CapabilityExecutionStatus",
+    "CapabilityExecution_ConversationKickoff",
+    "CapabilityExecution_Trigger",
+    "CapabilityExecutionsSearchResponse",
     "CapabilityResponse",
     "CapabilityResponse_Action",
     "CapabilityResponse_ConversationKickoff",
@@ -22,4 +40,6 @@ __all__ = [
     "CapabilityResponse_Trigger",
     "CapabilitySortField",
     "CapabilitySummary",
+    "ConversationKickoffCapabilityExecution",
+    "TriggerCapabilityExecution",
 ]
