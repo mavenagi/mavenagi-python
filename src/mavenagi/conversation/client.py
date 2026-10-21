@@ -220,7 +220,7 @@ class ConversationClient:
             The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
 
         open : typing.Optional[bool]
-            Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages.
+            Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages. Close a conversation only after its ask calls have returned. An answer still being generated when the conversation closes is saved anyway, and the `CONVERSATION_CLOSED` event can then go out before that answer is in the conversation's data.
 
         llm_enabled : typing.Optional[bool]
             Whether the LLM is enabled for this conversation.
@@ -317,17 +317,19 @@ class ConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
-        Wipes a conversation of all user data.
-        The conversation ID will still exist and non-user specific data will still be retained.
-        Attempts to modify or add messages to the conversation will throw an error.
-        The conversation is sealed against further writes as soon as this call returns. A `202 Accepted` response means the wipe is still completing and will finish on its own.
+        Wipes the user content from a conversation.
+        The conversation and its ID still exist afterwards, and so does its non-content data, so it still counts in metrics.
+        The conversation is sealed against further writes as soon as this call returns: adding or changing messages fails with `409 Conflict`, and so does deleting it again once the wipe has finished.
+        A `202 Accepted` response means the wipe is still completing and will finish on its own.
 
         Simulation conversations will no longer be visible in search results nor metrics.
-        Non-simulation conversations will remain visible - they can not be fully removed from the system.
+        Non-simulation conversations remain visible; they cannot be fully removed from the system.
 
         <Warning>This is a destructive operation and cannot be undone. <br/><br/>
-        The exact fields cleared include: the conversation subject, userRequest, agentResponse.
-        As well as the text response, followup questions, and backend LLM prompt of all messages.</Warning>
+        What is wiped: the conversation's `subject` and `analysis.agentResponse` are cleared, and `analysis.userRequest` is replaced with `reason`.
+        Every message's text, from the user and the agent alike, is replaced with `reason`, and its attachments, follow-up questions, backend LLM prompt and history, the data actions returned, and action arguments are cleared.
+        Evaluation results for the conversation are deleted, and the payloads recorded on its trigger and action executions are cleared. <br/><br/>
+        What is kept: the conversation's metadata, each message's charts, structured answer and app-supplied metadata, the conversation's intelligent field values, its feedback and events, and the users who took part. To wipe a user's data, use `DELETE /users/{userId}` or `DELETE /agentusers/{agentUserId}`.</Warning>
 
         Parameters
         ----------
@@ -335,7 +337,7 @@ class ConversationClient:
             The ID of the conversation to delete
 
         reason : str
-            The reason for deleting the conversation. This message will replace all user messages in the conversation.
+            The reason for deleting the conversation. It replaces the text of every message in the conversation, and the conversation's `analysis.userRequest`.
 
         app_id : typing.Optional[str]
             The App ID of the conversation to delete. If not provided the ID of the calling app will be used.
@@ -1232,6 +1234,8 @@ class ConversationClient:
         This API is offered for backwards compatibility.
         Most API callers should create simulations programmatically to allow for more flexibility.
 
+        Shown in Agent Designer as "Import questions".
+
         Parameters
         ----------
         file : core.File
@@ -1507,7 +1511,7 @@ class AsyncConversationClient:
             The App ID of the conversation to patch. If not provided the ID of the calling app will be used.
 
         open : typing.Optional[bool]
-            Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages.
+            Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages. Close a conversation only after its ask calls have returned. An answer still being generated when the conversation closes is saved anyway, and the `CONVERSATION_CLOSED` event can then go out before that answer is in the conversation's data.
 
         llm_enabled : typing.Optional[bool]
             Whether the LLM is enabled for this conversation.
@@ -1620,17 +1624,19 @@ class AsyncConversationClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
-        Wipes a conversation of all user data.
-        The conversation ID will still exist and non-user specific data will still be retained.
-        Attempts to modify or add messages to the conversation will throw an error.
-        The conversation is sealed against further writes as soon as this call returns. A `202 Accepted` response means the wipe is still completing and will finish on its own.
+        Wipes the user content from a conversation.
+        The conversation and its ID still exist afterwards, and so does its non-content data, so it still counts in metrics.
+        The conversation is sealed against further writes as soon as this call returns: adding or changing messages fails with `409 Conflict`, and so does deleting it again once the wipe has finished.
+        A `202 Accepted` response means the wipe is still completing and will finish on its own.
 
         Simulation conversations will no longer be visible in search results nor metrics.
-        Non-simulation conversations will remain visible - they can not be fully removed from the system.
+        Non-simulation conversations remain visible; they cannot be fully removed from the system.
 
         <Warning>This is a destructive operation and cannot be undone. <br/><br/>
-        The exact fields cleared include: the conversation subject, userRequest, agentResponse.
-        As well as the text response, followup questions, and backend LLM prompt of all messages.</Warning>
+        What is wiped: the conversation's `subject` and `analysis.agentResponse` are cleared, and `analysis.userRequest` is replaced with `reason`.
+        Every message's text, from the user and the agent alike, is replaced with `reason`, and its attachments, follow-up questions, backend LLM prompt and history, the data actions returned, and action arguments are cleared.
+        Evaluation results for the conversation are deleted, and the payloads recorded on its trigger and action executions are cleared. <br/><br/>
+        What is kept: the conversation's metadata, each message's charts, structured answer and app-supplied metadata, the conversation's intelligent field values, its feedback and events, and the users who took part. To wipe a user's data, use `DELETE /users/{userId}` or `DELETE /agentusers/{agentUserId}`.</Warning>
 
         Parameters
         ----------
@@ -1638,7 +1644,7 @@ class AsyncConversationClient:
             The ID of the conversation to delete
 
         reason : str
-            The reason for deleting the conversation. This message will replace all user messages in the conversation.
+            The reason for deleting the conversation. It replaces the text of every message in the conversation, and the conversation's `analysis.userRequest`.
 
         app_id : typing.Optional[str]
             The App ID of the conversation to delete. If not provided the ID of the calling app will be used.
@@ -2632,6 +2638,8 @@ class AsyncConversationClient:
 
         This API is offered for backwards compatibility.
         Most API callers should create simulations programmatically to allow for more flexibility.
+
+        Shown in Agent Designer as "Import questions".
 
         Parameters
         ----------

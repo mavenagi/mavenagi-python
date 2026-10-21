@@ -19,7 +19,9 @@ class CharterBase(UniversalBaseModel):
         pydantic.Field(default=None)
     )
     """
-    ID of the agent variant this charter belongs to, if applicable.
+    On a write request, the agent variant to stage the write in. On a response, it is set
+    only on each side of a working-set diff, naming the variant that side comes from; every
+    other charter response, and every staged-edit payload, leaves it unset.
     
     While charters are versioned for the agent, a write is staged in this variant's
     working set rather than applied to the agent's live configuration, and a write that
@@ -39,6 +41,8 @@ class CharterBase(UniversalBaseModel):
     before delivery.
     
     If not set, existing manual is preserved if present.
+    
+    Shown in Agent Designer as "Manual", or "Return text" when `type` is `STRICT_RETURN`.
     """
 
     if IS_PYDANTIC_V2:

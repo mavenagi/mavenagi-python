@@ -3,6 +3,7 @@
 # isort: skip_file
 
 from .types import (
+    ActionSimulationInput,
     CapabilitiesSearchResponse,
     CapabilityExecution,
     CapabilityExecutionBase,
@@ -17,13 +18,21 @@ from .types import (
     CapabilityResponse_ConversationKickoff,
     CapabilityResponse_IntelligentField,
     CapabilityResponse_Trigger,
+    CapabilitySimulationInput,
+    CapabilitySimulationInput_Action,
+    CapabilitySimulationResult,
+    CapabilitySimulationResult_Action,
     CapabilitySortField,
     CapabilitySummary,
+    ConversationContextSimulationInput,
     ConversationKickoffCapabilityExecution,
+    SimulatedUser,
+    SimulatedUserData,
     TriggerCapabilityExecution,
 )
 
 __all__ = [
+    "ActionSimulationInput",
     "CapabilitiesSearchResponse",
     "CapabilityExecution",
     "CapabilityExecutionBase",
@@ -38,8 +47,15 @@ __all__ = [
     "CapabilityResponse_ConversationKickoff",
     "CapabilityResponse_IntelligentField",
     "CapabilityResponse_Trigger",
+    "CapabilitySimulationInput",
+    "CapabilitySimulationInput_Action",
+    "CapabilitySimulationResult",
+    "CapabilitySimulationResult_Action",
     "CapabilitySortField",
     "CapabilitySummary",
+    "ConversationContextSimulationInput",
     "ConversationKickoffCapabilityExecution",
+    "SimulatedUser",
+    "SimulatedUserData",
     "TriggerCapabilityExecution",
 ]

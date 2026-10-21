@@ -27,6 +27,11 @@ EntityType = typing.Union[
         "AGENT_VARIANT",
         "ASSET",
         "TRAFFIC_CONFIG",
+        "SCENARIO",
+        "SCENARIO_SUITE",
+        "SCENARIO_RUN",
+        "FUNCTION",
+        "FUNCTION_VERSION",
     ],
     typing.Any,
 ]

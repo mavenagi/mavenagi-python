@@ -43,6 +43,8 @@ class ConversationFilter(UniversalBaseModel):
     - `tags:myvalue OR anothervalue` - matches conversations with a tag of `myvalue` or `anothervalue`
     - `-tags:myvalue` - matches conversations that do not have the tag `myvalue`
     - `_exists_:tags` - matches conversations that have any tags field set
+    
+    Shown in Agent Designer as "Content includes".
     """
 
     created_after: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAfter")] = (
@@ -94,6 +96,8 @@ class ConversationFilter(UniversalBaseModel):
     `BUTTON_CLICKED` events by their `feedbackInfo.thumbUp` value, and `Insert` matches
     `TEXT_INSERTED` events. `Handoff` matches bot responses that returned the system fallback
     message.
+    
+    Shown in Agent Designer as "Event".
     """
 
     human_agents: typing_extensions.Annotated[typing.Optional[typing.List[str]], FieldMetadata(alias="humanAgents")] = (
@@ -165,7 +169,7 @@ class ConversationFilter(UniversalBaseModel):
         typing.Optional[typing.List[str]], FieldMetadata(alias="agentUserIds")
     ] = pydantic.Field(default=None)
     """
-    Filter by agent user IDs associated with the conversation
+    Filter by agent user IDs associated with the conversation. Shown in Agent Designer as "Users", where the user enters identifiers such as an email.
     """
 
     resolution_status: typing_extensions.Annotated[
@@ -276,6 +280,8 @@ class ConversationFilter(UniversalBaseModel):
     
     If billable is `null` or `[]` then defaults to all eligible conversations,
     which means ELIGIBLE_AND_BILLABLE and ELIGIBLE_AND_NOT_BILLABLE.
+    
+    Shown in Agent Designer as "Billing status".
     """
 
     if IS_PYDANTIC_V2:

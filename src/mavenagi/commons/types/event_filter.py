@@ -26,7 +26,11 @@ class EventFilter(UniversalBaseModel):
     ] = None
     user_event_names: typing_extensions.Annotated[
         typing.Optional[typing.List[UserEventName]], FieldMetadata(alias="userEventNames")
-    ] = None
+    ] = pydantic.Field(default=None)
+    """
+    Shown in Agent Designer as "Event type".
+    """
+
     system_event_names: typing_extensions.Annotated[
         typing.Optional[typing.List[SystemEventName]], FieldMetadata(alias="systemEventNames")
     ] = None

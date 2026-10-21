@@ -31,7 +31,7 @@ class UserEvent(EventBaseNoId):
 
     event_name: typing_extensions.Annotated[UserEventName, FieldMetadata(alias="eventName")] = pydantic.Field()
     """
-    The name of the event
+    The name of the event. Shown in Agent Designer as "Event type".
     """
 
     user_info: typing_extensions.Annotated[EventUserInfo, FieldMetadata(alias="userInfo")] = pydantic.Field()

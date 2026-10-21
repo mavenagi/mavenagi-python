@@ -67,7 +67,7 @@ class ConversationSummary(UniversalBaseModel):
 
     user_message_count: typing_extensions.Annotated[int, FieldMetadata(alias="userMessageCount")] = pydantic.Field()
     """
-    The number of messages of type `USER` in the conversation.
+    The number of messages of type `USER` in the conversation. Shown in Agent Designer as "Customer interactions".
     """
 
     bot_message_count: typing_extensions.Annotated[int, FieldMetadata(alias="botMessageCount")] = pydantic.Field()
@@ -97,18 +97,20 @@ class ConversationSummary(UniversalBaseModel):
     minus the timestamp of the first message in the conversation.
     
     Will not be provided if the conversation does not have a message of type `HUMAN_AGENT`.
+    
+    Shown in Agent Designer as "First response time".
     """
 
     human_agents: typing_extensions.Annotated[typing.List[str], FieldMetadata(alias="humanAgents")] = pydantic.Field()
     """
-    The names of all users that have a message of type `HUMAN_AGENT` on the conversation.
+    The names of all users that have a message of type `HUMAN_AGENT` on the conversation. Shown in Agent Designer as "Agents involved".
     """
 
     human_agents_with_inserts: typing_extensions.Annotated[
         typing.List[str], FieldMetadata(alias="humanAgentsWithInserts")
     ] = pydantic.Field()
     """
-    The names of all users that have an associated insert event on the conversation.
+    The names of all users that have an associated insert event on the conversation. Shown in Agent Designer as "Inserted by".
     """
 
     users: typing.List[str] = pydantic.Field()

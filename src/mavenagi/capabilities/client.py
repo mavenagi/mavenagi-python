@@ -13,6 +13,8 @@ from .types.capabilities_search_response import CapabilitiesSearchResponse
 from .types.capability_execution_status import CapabilityExecutionStatus
 from .types.capability_executions_search_response import CapabilityExecutionsSearchResponse
 from .types.capability_response import CapabilityResponse
+from .types.capability_simulation_input import CapabilitySimulationInput
+from .types.capability_simulation_result import CapabilitySimulationResult
 from .types.capability_sort_field import CapabilitySortField
 
 # this is used as the default value for optional parameters
@@ -255,6 +257,68 @@ class CapabilitiesClient:
             variant_reference_id=variant_reference_id,
             variant_app_id=variant_app_id,
             request_options=request_options,
+        )
+        return _response.data
+
+    def simulate_capability(
+        self,
+        capability_type: CapabilityType,
+        reference_id: str,
+        *,
+        request: CapabilitySimulationInput,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> CapabilitySimulationResult:
+        """
+        Run one of an agent's capabilities once, as a simulation, and return what it produced.
+
+        The caller supplies everything the capability reads, so it runs in isolation: no
+        conversation or agent user has to exist first. The capability is told its mode is
+        `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
+        effects in real systems. Nothing here runs a capability live.
+
+        Only actions can be simulated today. Triggers and conversation kickoffs are rejected with a
+        400 until they can run as simulations. Intelligent fields cannot be simulated.
+
+        Parameters
+        ----------
+        capability_type : CapabilityType
+            Which kind of capability to simulate. Must match the body's `capabilityType`.
+
+        reference_id : str
+            The capability's reference ID, unique within its type and app.
+
+        request : CapabilitySimulationInput
+
+        app_id : typing.Optional[str]
+            The app that owns the capability. Defaults to the calling app.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        CapabilitySimulationResult
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+        from mavenagi.capabilities import CapabilitySimulationInput_Action
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.capabilities.simulate_capability(
+            capability_type="ACTION",
+            reference_id="referenceId",
+            request=CapabilitySimulationInput_Action(),
+        )
+        """
+        _response = self._raw_client.simulate_capability(
+            capability_type, reference_id, request=request, app_id=app_id, request_options=request_options
         )
         return _response.data
 
@@ -729,6 +793,76 @@ class AsyncCapabilitiesClient:
             variant_reference_id=variant_reference_id,
             variant_app_id=variant_app_id,
             request_options=request_options,
+        )
+        return _response.data
+
+    async def simulate_capability(
+        self,
+        capability_type: CapabilityType,
+        reference_id: str,
+        *,
+        request: CapabilitySimulationInput,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> CapabilitySimulationResult:
+        """
+        Run one of an agent's capabilities once, as a simulation, and return what it produced.
+
+        The caller supplies everything the capability reads, so it runs in isolation: no
+        conversation or agent user has to exist first. The capability is told its mode is
+        `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
+        effects in real systems. Nothing here runs a capability live.
+
+        Only actions can be simulated today. Triggers and conversation kickoffs are rejected with a
+        400 until they can run as simulations. Intelligent fields cannot be simulated.
+
+        Parameters
+        ----------
+        capability_type : CapabilityType
+            Which kind of capability to simulate. Must match the body's `capabilityType`.
+
+        reference_id : str
+            The capability's reference ID, unique within its type and app.
+
+        request : CapabilitySimulationInput
+
+        app_id : typing.Optional[str]
+            The app that owns the capability. Defaults to the calling app.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        CapabilitySimulationResult
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+        from mavenagi.capabilities import CapabilitySimulationInput_Action
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.capabilities.simulate_capability(
+                capability_type="ACTION",
+                reference_id="referenceId",
+                request=CapabilitySimulationInput_Action(),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.simulate_capability(
+            capability_type, reference_id, request=request, app_id=app_id, request_options=request_options
         )
         return _response.data
 

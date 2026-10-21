@@ -5,6 +5,7 @@ import typing
 from ..commons.types.app_user_identifier import AppUserIdentifier
 from ..commons.types.app_user_response import AppUserResponse
 from ..commons.types.entity_id_base import EntityIdBase
+from ..commons.types.execution_mode import ExecutionMode
 from ..commons.types.user_data import UserData
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
@@ -124,12 +125,61 @@ class UsersClient:
         _response = self._raw_client.get_agent_user(agent_user_id, request_options=request_options)
         return _response.data
 
+    def delete_agent_user(self, agent_user_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
+        """
+        Deletes the identifiers and user data that every app has saved for an agent user.
+        This is the same as calling `DELETE /users/{userId}` for each of the agent user's app users.
+
+        The agent user and its app users still exist afterwards, with no identifiers or user data.
+        Apps can keep writing to them; a later create or update adds data back to the same users.
+
+        Conversations, their messages and events are not modified, apart from the intelligent field values below. To wipe a conversation, use `DELETE /conversations/{conversationId}`.
+
+        If the ID belongs to an agent user that has been merged into another, the agent user it was merged into is wiped.
+
+        <Warning>This is a destructive operation and cannot be undone.</Warning>
+
+        ### Intelligent fields
+
+        The agent user's intelligent field values are deleted too, and removed from their `INTELLIGENT_FIELD_VALUE_CHANGED` events; the events themselves are kept.
+        Unlike `DELETE /users/{userId}`, the wipe does not recompute the values. They can be computed again later from the user's remaining conversations, for example after the user sends another message; wipe those conversations first to prevent that.
+
+        Parameters
+        ----------
+        agent_user_id : str
+            The ID of the agent user to wipe.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        from mavenagi import MavenAGI
+
+        client = MavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+        client.users.delete_agent_user(
+            agent_user_id="aus_1234567890",
+        )
+        """
+        _response = self._raw_client.delete_agent_user(agent_user_id, request_options=request_options)
+        return _response.data
+
     def create_or_update(
         self,
         *,
         user_id: EntityIdBase,
         identifiers: typing.Sequence[AppUserIdentifier],
         data: typing.Dict[str, UserData],
+        execution_mode: typing.Optional[ExecutionMode] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AppUserResponse:
         """
@@ -144,6 +194,16 @@ class UsersClient:
             Used to determine whether two users from different apps are the same
 
         data : typing.Dict[str, UserData]
+
+        execution_mode : typing.Optional[ExecutionMode]
+            The execution mode the user lives in. Defaults to `LIVE` for a new user, and to the existing
+            user's execution mode on update; an update can't move a user to a different one.
+
+            A `SIMULATION` user is only linked to other `SIMULATION` users, is excluded from user search
+            unless `simulationFilter` asks for it, and may only talk in simulation conversations. A `LIVE`
+            user can't talk in a simulation conversation either, so give each simulation its own user ids
+            rather than reusing live ones.
+            Creating one needs the same permission as creating a simulation conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -182,7 +242,11 @@ class UsersClient:
         )
         """
         _response = self._raw_client.create_or_update(
-            user_id=user_id, identifiers=identifiers, data=data, request_options=request_options
+            user_id=user_id,
+            identifiers=identifiers,
+            data=data,
+            execution_mode=execution_mode,
+            request_options=request_options,
         )
         return _response.data
 
@@ -236,8 +300,13 @@ class UsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
-        Deletes all identifiers and user data saved by the specified app.
+        Deletes all identifiers and user data saved by the specified app for this user.
         Does not modify data or identifiers saved by other apps.
+
+        The app user still exists afterwards, with no identifiers or user data, and the app can keep writing to it.
+        Conversations, their messages and events are not modified.
+        The agent user's intelligent field values are not deleted; they are recomputed without this app's data.
+        To wipe a conversation, use `DELETE /conversations/{conversationId}`. To wipe every app's data for a user, use `DELETE /agentusers/{agentUserId}`.
 
         If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
 
@@ -398,12 +467,71 @@ class AsyncUsersClient:
         _response = await self._raw_client.get_agent_user(agent_user_id, request_options=request_options)
         return _response.data
 
+    async def delete_agent_user(
+        self, agent_user_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> None:
+        """
+        Deletes the identifiers and user data that every app has saved for an agent user.
+        This is the same as calling `DELETE /users/{userId}` for each of the agent user's app users.
+
+        The agent user and its app users still exist afterwards, with no identifiers or user data.
+        Apps can keep writing to them; a later create or update adds data back to the same users.
+
+        Conversations, their messages and events are not modified, apart from the intelligent field values below. To wipe a conversation, use `DELETE /conversations/{conversationId}`.
+
+        If the ID belongs to an agent user that has been merged into another, the agent user it was merged into is wiped.
+
+        <Warning>This is a destructive operation and cannot be undone.</Warning>
+
+        ### Intelligent fields
+
+        The agent user's intelligent field values are deleted too, and removed from their `INTELLIGENT_FIELD_VALUE_CHANGED` events; the events themselves are kept.
+        Unlike `DELETE /users/{userId}`, the wipe does not recompute the values. They can be computed again later from the user's remaining conversations, for example after the user sends another message; wipe those conversations first to prevent that.
+
+        Parameters
+        ----------
+        agent_user_id : str
+            The ID of the agent user to wipe.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        import asyncio
+
+        from mavenagi import AsyncMavenAGI
+
+        client = AsyncMavenAGI(
+            organization_id="YOUR_ORGANIZATION_ID",
+            agent_id="YOUR_AGENT_ID",
+            app_id="YOUR_APP_ID",
+            app_secret="YOUR_APP_SECRET",
+        )
+
+
+        async def main() -> None:
+            await client.users.delete_agent_user(
+                agent_user_id="aus_1234567890",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.delete_agent_user(agent_user_id, request_options=request_options)
+        return _response.data
+
     async def create_or_update(
         self,
         *,
         user_id: EntityIdBase,
         identifiers: typing.Sequence[AppUserIdentifier],
         data: typing.Dict[str, UserData],
+        execution_mode: typing.Optional[ExecutionMode] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AppUserResponse:
         """
@@ -418,6 +546,16 @@ class AsyncUsersClient:
             Used to determine whether two users from different apps are the same
 
         data : typing.Dict[str, UserData]
+
+        execution_mode : typing.Optional[ExecutionMode]
+            The execution mode the user lives in. Defaults to `LIVE` for a new user, and to the existing
+            user's execution mode on update; an update can't move a user to a different one.
+
+            A `SIMULATION` user is only linked to other `SIMULATION` users, is excluded from user search
+            unless `simulationFilter` asks for it, and may only talk in simulation conversations. A `LIVE`
+            user can't talk in a simulation conversation either, so give each simulation its own user ids
+            rather than reusing live ones.
+            Creating one needs the same permission as creating a simulation conversation.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -464,7 +602,11 @@ class AsyncUsersClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.create_or_update(
-            user_id=user_id, identifiers=identifiers, data=data, request_options=request_options
+            user_id=user_id,
+            identifiers=identifiers,
+            data=data,
+            execution_mode=execution_mode,
+            request_options=request_options,
         )
         return _response.data
 
@@ -526,8 +668,13 @@ class AsyncUsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> None:
         """
-        Deletes all identifiers and user data saved by the specified app.
+        Deletes all identifiers and user data saved by the specified app for this user.
         Does not modify data or identifiers saved by other apps.
+
+        The app user still exists afterwards, with no identifiers or user data, and the app can keep writing to it.
+        Conversations, their messages and events are not modified.
+        The agent user's intelligent field values are not deleted; they are recomputed without this app's data.
+        To wipe a conversation, use `DELETE /conversations/{conversationId}`. To wipe every app's data for a user, use `DELETE /agentusers/{agentUserId}`.
 
         If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
 

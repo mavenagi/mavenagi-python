@@ -6,6 +6,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.app_user_identifier import AppUserIdentifier
+from ...commons.types.execution_mode import ExecutionMode
 from ...commons.types.intelligent_field_value_response import IntelligentFieldValueResponse
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
@@ -36,6 +37,7 @@ class AgentUser(UniversalBaseModel):
             )
         ],
         default_name="Joe",
+        execution_mode="LIVE",
         users=[
             AppUserSummary(
                 user_id=EntityId(
@@ -107,6 +109,11 @@ class AgentUser(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Latest successful values of the agent user's intelligent fields.
+    """
+
+    execution_mode: typing_extensions.Annotated[ExecutionMode, FieldMetadata(alias="executionMode")] = pydantic.Field()
+    """
+    The execution mode the agent user lives in. Its app users all share it.
     """
 
     if IS_PYDANTIC_V2:

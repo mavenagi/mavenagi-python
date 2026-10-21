@@ -12,6 +12,7 @@ from ...core.serialization import FieldMetadata
 from .attachment_response import AttachmentResponse
 from .bot_conversation_message_type import BotConversationMessageType
 from .bot_logic import BotLogic
+from .bot_message_status_reason import BotMessageStatusReason
 from .bot_response import BotResponse
 from .bot_response_metadata import BotResponseMetadata
 from .entity_id import EntityId
@@ -60,6 +61,9 @@ class ConversationMessageResponse_Bot(UniversalBaseModel):
     metadata: BotResponseMetadata
     status: MessageStatus
     logic: typing.Optional[BotLogic] = None
+    status_reason: typing_extensions.Annotated[
+        typing.Optional[BotMessageStatusReason], FieldMetadata(alias="statusReason")
+    ] = None
     created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = None
     updated_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="updatedAt")] = None
     app_metadata: typing_extensions.Annotated[

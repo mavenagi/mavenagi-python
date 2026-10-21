@@ -8,24 +8,28 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
 from ...core.serialization import FieldMetadata
+from .conversation_value_source import ConversationValueSource
 from .metadata_condition import MetadataCondition
 from .precondition_group_operator import PreconditionGroupOperator
 
 
 class MetadataFilter_Entry(UniversalBaseModel):
     """
-    A predicate over a string-to-string metadata map: either a condition on the value
-    under one key, or a group of predicates combined with a logical operator.
+    A predicate over a string-to-string metadata map: a condition on the value under one
+    key, a match against a value read from the conversation, or a group of predicates
+    combined with a logical operator.
 
-    Kept small on purpose: at most 3 levels of nesting and 10 nodes in total, counting
-    groups as well as entries. A filter is meant to narrow a knowledge base to a
-    recognisable slice, not to encode a query language. Exceeding either is a 400.
+    Kept small on purpose: by default at most 3 levels of nesting and 10 nodes in total,
+    counting every group, entry and conversation value. A filter is meant to narrow a
+    knowledge base to a recognisable slice, not to encode a query language. Exceeding
+    either is a 400.
 
     Examples
     --------
     from mavenagi.commons import (
+        ConversationValueSource_ConversationMetadata,
         MetadataCondition_Comparison,
-        MetadataCondition_Membership,
+        MetadataFilter_ConversationValue,
         MetadataFilter_Entry,
         MetadataFilter_Group,
     )
@@ -33,18 +37,17 @@ class MetadataFilter_Entry(UniversalBaseModel):
     MetadataFilter_Group(
         operator="OR",
         filters=[
-            MetadataFilter_Entry(
-                key="category",
-                condition=MetadataCondition_Comparison(
-                    operator="EQ",
-                    value="billing",
+            MetadataFilter_ConversationValue(
+                key="state",
+                source=ConversationValueSource_ConversationMetadata(
+                    key="case_state",
                 ),
             ),
             MetadataFilter_Entry(
-                key="locale",
-                condition=MetadataCondition_Membership(
-                    operator="IN",
-                    values=["en-US", "en-GB"],
+                key="state",
+                condition=MetadataCondition_Comparison(
+                    operator="EQ",
+                    value="All",
                 ),
             ),
         ],
@@ -67,20 +70,23 @@ class MetadataFilter_Entry(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-class MetadataFilter_Group(UniversalBaseModel):
+class MetadataFilter_ConversationValue(UniversalBaseModel):
     """
-    A predicate over a string-to-string metadata map: either a condition on the value
-    under one key, or a group of predicates combined with a logical operator.
+    A predicate over a string-to-string metadata map: a condition on the value under one
+    key, a match against a value read from the conversation, or a group of predicates
+    combined with a logical operator.
 
-    Kept small on purpose: at most 3 levels of nesting and 10 nodes in total, counting
-    groups as well as entries. A filter is meant to narrow a knowledge base to a
-    recognisable slice, not to encode a query language. Exceeding either is a 400.
+    Kept small on purpose: by default at most 3 levels of nesting and 10 nodes in total,
+    counting every group, entry and conversation value. A filter is meant to narrow a
+    knowledge base to a recognisable slice, not to encode a query language. Exceeding
+    either is a 400.
 
     Examples
     --------
     from mavenagi.commons import (
+        ConversationValueSource_ConversationMetadata,
         MetadataCondition_Comparison,
-        MetadataCondition_Membership,
+        MetadataFilter_ConversationValue,
         MetadataFilter_Entry,
         MetadataFilter_Group,
     )
@@ -88,18 +94,74 @@ class MetadataFilter_Group(UniversalBaseModel):
     MetadataFilter_Group(
         operator="OR",
         filters=[
-            MetadataFilter_Entry(
-                key="category",
-                condition=MetadataCondition_Comparison(
-                    operator="EQ",
-                    value="billing",
+            MetadataFilter_ConversationValue(
+                key="state",
+                source=ConversationValueSource_ConversationMetadata(
+                    key="case_state",
                 ),
             ),
             MetadataFilter_Entry(
-                key="locale",
-                condition=MetadataCondition_Membership(
-                    operator="IN",
-                    values=["en-US", "en-GB"],
+                key="state",
+                condition=MetadataCondition_Comparison(
+                    operator="EQ",
+                    value="All",
+                ),
+            ),
+        ],
+    )
+    """
+
+    metadata_filter_type: typing_extensions.Annotated[
+        typing.Literal["conversationValue"], FieldMetadata(alias="metadataFilterType")
+    ] = "conversationValue"
+    key: str
+    source: ConversationValueSource
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class MetadataFilter_Group(UniversalBaseModel):
+    """
+    A predicate over a string-to-string metadata map: a condition on the value under one
+    key, a match against a value read from the conversation, or a group of predicates
+    combined with a logical operator.
+
+    Kept small on purpose: by default at most 3 levels of nesting and 10 nodes in total,
+    counting every group, entry and conversation value. A filter is meant to narrow a
+    knowledge base to a recognisable slice, not to encode a query language. Exceeding
+    either is a 400.
+
+    Examples
+    --------
+    from mavenagi.commons import (
+        ConversationValueSource_ConversationMetadata,
+        MetadataCondition_Comparison,
+        MetadataFilter_ConversationValue,
+        MetadataFilter_Entry,
+        MetadataFilter_Group,
+    )
+
+    MetadataFilter_Group(
+        operator="OR",
+        filters=[
+            MetadataFilter_ConversationValue(
+                key="state",
+                source=ConversationValueSource_ConversationMetadata(
+                    key="case_state",
+                ),
+            ),
+            MetadataFilter_Entry(
+                key="state",
+                condition=MetadataCondition_Comparison(
+                    operator="EQ",
+                    value="All",
                 ),
             ),
         ],
@@ -126,8 +188,9 @@ from .metadata_filter_group import MetadataFilterGroup  # noqa: E402, F401, I001
 
 """
 from mavenagi.commons import (
+    ConversationValueSource_ConversationMetadata,
     MetadataCondition_Comparison,
-    MetadataCondition_Membership,
+    MetadataFilter_ConversationValue,
     MetadataFilter_Entry,
     MetadataFilter_Group,
 )
@@ -135,22 +198,21 @@ from mavenagi.commons import (
 MetadataFilter_Group(
     operator="OR",
     filters=[
-        MetadataFilter_Entry(
-            key="category",
-            condition=MetadataCondition_Comparison(
-                operator="EQ",
-                value="billing",
+        MetadataFilter_ConversationValue(
+            key="state",
+            source=ConversationValueSource_ConversationMetadata(
+                key="case_state",
             ),
         ),
         MetadataFilter_Entry(
-            key="locale",
-            condition=MetadataCondition_Membership(
-                operator="IN",
-                values=["en-US", "en-GB"],
+            key="state",
+            condition=MetadataCondition_Comparison(
+                operator="EQ",
+                value="All",
             ),
         ),
     ],
 )
 """
-MetadataFilter = typing.Union[MetadataFilter_Entry, MetadataFilter_Group]
+MetadataFilter = typing.Union[MetadataFilter_Entry, MetadataFilter_ConversationValue, MetadataFilter_Group]
 update_forward_refs(MetadataFilter_Group)

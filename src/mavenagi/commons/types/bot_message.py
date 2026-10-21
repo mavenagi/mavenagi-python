@@ -8,6 +8,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .bot_conversation_message_type import BotConversationMessageType
 from .bot_logic import BotLogic
+from .bot_message_status_reason import BotMessageStatusReason
 from .bot_response import BotResponse
 from .bot_response_metadata import BotResponseMetadata
 from .conversation_message_base import ConversationMessageBase
@@ -30,6 +31,14 @@ class BotMessage(ConversationMessageBase):
     logic: typing.Optional[BotLogic] = pydantic.Field(default=None)
     """
     The logic that was used to generate the response. Response size may be large; only present on the getConversation request.
+    """
+
+    status_reason: typing_extensions.Annotated[
+        typing.Optional[BotMessageStatusReason], FieldMetadata(alias="statusReason")
+    ] = pydantic.Field(default=None)
+    """
+    Why the agent could not answer. Present only when `status` is `REJECTED` or `FAILED`, and absent for every other status.
+    A `FAILED` message without a reason failed for some other cause, such as the model returning no answer.
     """
 
     if IS_PYDANTIC_V2:

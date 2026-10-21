@@ -197,7 +197,7 @@ client.actions.create_or_update(
 <dl>
 <dd>
 
-**user_interaction_required:** `bool` — Whether the action requires user interaction to execute. If false, and all of the required action parameters are known, the LLM may call the action automatically. If true, an conversations ask call will return a BotActionFormResponse which must be submitted by an API caller. API callers must display a button with the buttonName label to confirm the user's intent.
+**user_interaction_required:** `bool` — Whether the action requires user interaction to execute. If false, and all of the required action parameters are known, the LLM may call the action automatically. If true, an conversations ask call will return a BotActionFormResponse which must be submitted by an API caller. API callers must display a button with the buttonName label to confirm the user's intent. Shown in Agent Designer as "User Confirmation".
     
 </dd>
 </dl>
@@ -1034,7 +1034,11 @@ client.agents.patch(
 <dl>
 <dd>
 
-**system_fallback_message:** `typing.Optional[str]` — The system fallback message.
+**system_fallback_message:** `typing.Optional[str]` 
+
+The system fallback message.
+
+Rejected with reason `VARIANT_REQUIRED` while `SYSTEM_FALLBACK_MESSAGE` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
     
 </dd>
 </dl>
@@ -1084,7 +1088,11 @@ The field must be `ACTIVE` to produce values. While it is inactive, conversation
 <dl>
 <dd>
 
-**content_safety_violation_response_prompt_text:** `typing.Optional[str]` — LLM prompt for generating a response when the user's question has been detected as unsafe.
+**content_safety_violation_response_prompt_text:** `typing.Optional[str]` 
+
+LLM prompt for generating a response when the user's question has been detected as unsafe.
+
+Rejected with reason `VARIANT_REQUIRED` while `CONTENT_SAFETY_VIOLATION_RESPONSE_PROMPT_TEXT` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
     
 </dd>
 </dl>
@@ -3406,6 +3414,114 @@ though a named variant must still exist.
 </dl>
 </details>
 
+<details><summary><code>client.capabilities.<a href="src/mavenagi/capabilities/client.py">simulate_capability</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Run one of an agent's capabilities once, as a simulation, and return what it produced.
+
+The caller supplies everything the capability reads, so it runs in isolation: no
+conversation or agent user has to exist first. The capability is told its mode is
+`SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
+effects in real systems. Nothing here runs a capability live.
+
+Only actions can be simulated today. Triggers and conversation kickoffs are rejected with a
+400 until they can run as simulations. Intelligent fields cannot be simulated.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+from mavenagi.capabilities import CapabilitySimulationInput_Action
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.capabilities.simulate_capability(
+    capability_type="ACTION",
+    reference_id="referenceId",
+    request=CapabilitySimulationInput_Action(),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**capability_type:** `CapabilityType` — Which kind of capability to simulate. Must match the body's `capabilityType`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**reference_id:** `str` — The capability's reference ID, unique within its type and app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `CapabilitySimulationInput` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**app_id:** `typing.Optional[str]` — The app that owns the capability. Defaults to the calling app.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.capabilities.<a href="src/mavenagi/capabilities/client.py">search_capabilities</a>(...)</code></summary>
 <dl>
 <dd>
@@ -3891,6 +4007,8 @@ ancestor charters are AND'd together with this charter's own
 precondition to determine whether there is a match. When null, the
 charter is a wildcard and always matches (subject to ancestor
 preconditions still combining with AND logic).
+
+Shown in Agent Designer as the charter's "Segment". A null precondition shows as "All conversations".
     
 </dd>
 </dl>
@@ -3938,7 +4056,9 @@ existing sibling, siblings at that rank and above are shifted up by 1
 
 **variant_id:** `typing.Optional[EntityIdWithoutAgent]` 
 
-ID of the agent variant this charter belongs to, if applicable.
+On a write request, the agent variant to stage the write in. On a response, it is set
+only on each side of a working-set diff, naming the variant that side comes from; every
+other charter response, and every staged-edit payload, leaves it unset.
 
 While charters are versioned for the agent, a write is staged in this variant's
 working set rather than applied to the agent's live configuration, and a write that
@@ -3966,6 +4086,8 @@ charter matches. Manuals concatenate with ancestor charter manuals
 before delivery.
 
 If not set, existing manual is preserved if present.
+
+Shown in Agent Designer as "Manual", or "Return text" when `type` is `STRICT_RETURN`.
     
 </dd>
 </dl>
@@ -5163,7 +5285,7 @@ client.conversation.patch(
 <dl>
 <dd>
 
-**open:** `typing.Optional[bool]` — Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages.
+**open:** `typing.Optional[bool]` — Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages. Close a conversation only after its ask calls have returned. An answer still being generated when the conversation closes is saved anyway, and the `CONVERSATION_CLOSED` event can then go out before that answer is in the conversation's data.
     
 </dd>
 </dl>
@@ -5300,17 +5422,19 @@ client.conversation.get(
 <dl>
 <dd>
 
-Wipes a conversation of all user data.
-The conversation ID will still exist and non-user specific data will still be retained.
-Attempts to modify or add messages to the conversation will throw an error.
-The conversation is sealed against further writes as soon as this call returns. A `202 Accepted` response means the wipe is still completing and will finish on its own.
+Wipes the user content from a conversation.
+The conversation and its ID still exist afterwards, and so does its non-content data, so it still counts in metrics.
+The conversation is sealed against further writes as soon as this call returns: adding or changing messages fails with `409 Conflict`, and so does deleting it again once the wipe has finished.
+A `202 Accepted` response means the wipe is still completing and will finish on its own.
 
 Simulation conversations will no longer be visible in search results nor metrics.
-Non-simulation conversations will remain visible - they can not be fully removed from the system.
+Non-simulation conversations remain visible; they cannot be fully removed from the system.
 
 <Warning>This is a destructive operation and cannot be undone. <br/><br/>
-The exact fields cleared include: the conversation subject, userRequest, agentResponse.
-As well as the text response, followup questions, and backend LLM prompt of all messages.</Warning>
+What is wiped: the conversation's `subject` and `analysis.agentResponse` are cleared, and `analysis.userRequest` is replaced with `reason`.
+Every message's text, from the user and the agent alike, is replaced with `reason`, and its attachments, follow-up questions, backend LLM prompt and history, the data actions returned, and action arguments are cleared.
+Evaluation results for the conversation are deleted, and the payloads recorded on its trigger and action executions are cleared. <br/><br/>
+What is kept: the conversation's metadata, each message's charts, structured answer and app-supplied metadata, the conversation's intelligent field values, its feedback and events, and the users who took part. To wipe a user's data, use `DELETE /users/{userId}` or `DELETE /agentusers/{agentUserId}`.</Warning>
 </dd>
 </dl>
 </dd>
@@ -5360,7 +5484,7 @@ client.conversation.delete(
 <dl>
 <dd>
 
-**reason:** `str` — The reason for deleting the conversation. This message will replace all user messages in the conversation.
+**reason:** `str` — The reason for deleting the conversation. It replaces the text of every message in the conversation, and the conversation's `analysis.userRequest`.
     
 </dd>
 </dl>
@@ -8802,7 +8926,7 @@ caller and is how the field is addressed on every other endpoint.
 <dl>
 <dd>
 
-**entity_type:** `EntityType` — Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types.
+**entity_type:** `EntityType` — Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types. Shown in Agent Designer as "Target", with `CONVERSATION` as "On conversations" and `AGENT_USER` as "On users".
     
 </dd>
 </dl>
@@ -8821,6 +8945,8 @@ and the JSON type of the computed `value`.
 - NUMBER: a number
 
 For a single select, use STRING or NUMBER together with `enumOptions`.
+
+Shown in Agent Designer as "Value format" or "Field type".
     
 </dd>
 </dl>
@@ -8828,7 +8954,7 @@ For a single select, use STRING or NUMBER together with `enumOptions`.
 <dl>
 <dd>
 
-**definition:** `str` — Definition used by the LLM when generating this field's value
+**definition:** `str` — Definition used by the LLM when generating this field's value. Shown in Agent Designer as "Define this field" (the evaluation instructions).
     
 </dd>
 </dl>
@@ -8856,6 +8982,8 @@ For a single select, use STRING or NUMBER together with `enumOptions`.
 
 The finite set of values this field may take. Omit to let the LLM produce any value of
 the `validationType`. Options may be added later with the patch endpoint, but not removed.
+
+Shown in Agent Designer as "Select Options".
     
 </dd>
 </dl>
@@ -9144,8 +9272,9 @@ deletes any kind of capability the same way. That endpoint returns no body.
 Soft delete an intelligent field. Only INACTIVE fields can be deleted.
 
 Deleted fields are excluded from search results, and getting one by ID returns 404.
-Creating a new field with the same referenceId as a deleted field will overwrite
-the deleted field and restore it with the status a new field gets.
+Creating a field with the same referenceId as a deleted field reclaims it: the field keeps
+its identity and entityType, every other setting comes from the request, and it gets the
+status a new field gets.
 
 Deleted fields cannot be modified.
 </dd>
@@ -12159,7 +12288,7 @@ client.segments.patch(
 
 Soft delete a segment. Only INACTIVE segments can be deleted.
 
-Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a new segment with the same referenceId as a deleted segment will overwrite the deleted segment and restore it to ACTIVE status.
+Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a segment with the same referenceId as a deleted segment reclaims it: the segment keeps its identity, and every other setting comes from the request.
 
 Deleted segments cannot be modified.
 </dd>
@@ -12517,6 +12646,8 @@ the agent. Re-registering writes whatever condition the request carries, so omit
 removes one; PATCH changes or removes a condition without re-registering.
 
 Only allowed on `EVENT_CREATED`; the other trigger types reject it.
+
+Shown in Agent Designer as "When".
     
 </dd>
 </dl>
@@ -12969,6 +13100,94 @@ client.users.get_agent_user(
 </dl>
 </details>
 
+<details><summary><code>client.users.<a href="src/mavenagi/users/client.py">delete_agent_user</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deletes the identifiers and user data that every app has saved for an agent user.
+This is the same as calling `DELETE /users/{userId}` for each of the agent user's app users.
+
+The agent user and its app users still exist afterwards, with no identifiers or user data.
+Apps can keep writing to them; a later create or update adds data back to the same users.
+
+Conversations, their messages and events are not modified, apart from the intelligent field values below. To wipe a conversation, use `DELETE /conversations/{conversationId}`.
+
+If the ID belongs to an agent user that has been merged into another, the agent user it was merged into is wiped.
+
+<Warning>This is a destructive operation and cannot be undone.</Warning>
+
+### Intelligent fields
+
+The agent user's intelligent field values are deleted too, and removed from their `INTELLIGENT_FIELD_VALUE_CHANGED` events; the events themselves are kept.
+Unlike `DELETE /users/{userId}`, the wipe does not recompute the values. They can be computed again later from the user's remaining conversations, for example after the user sends another message; wipe those conversations first to prevent that.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from mavenagi import MavenAGI
+
+client = MavenAGI(
+    organization_id="YOUR_ORGANIZATION_ID",
+    agent_id="YOUR_AGENT_ID",
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+)
+client.users.delete_agent_user(
+    agent_user_id="aus_1234567890",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**agent_user_id:** `str` — The ID of the agent user to wipe.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.users.<a href="src/mavenagi/users/client.py">create_or_update</a>(...)</code></summary>
 <dl>
 <dd>
@@ -13054,6 +13273,23 @@ client.users.create_or_update(
 <dd>
 
 **data:** `typing.Dict[str, UserData]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**execution_mode:** `typing.Optional[ExecutionMode]` 
+
+The execution mode the user lives in. Defaults to `LIVE` for a new user, and to the existing
+user's execution mode on update; an update can't move a user to a different one.
+
+A `SIMULATION` user is only linked to other `SIMULATION` users, is excluded from user search
+unless `simulationFilter` asks for it, and may only talk in simulation conversations. A `LIVE`
+user can't talk in a simulation conversation either, so give each simulation its own user ids
+rather than reusing live ones.
+Creating one needs the same permission as creating a simulation conversation.
     
 </dd>
 </dl>
@@ -13166,8 +13402,13 @@ client.users.get(
 <dl>
 <dd>
 
-Deletes all identifiers and user data saved by the specified app.
+Deletes all identifiers and user data saved by the specified app for this user.
 Does not modify data or identifiers saved by other apps.
+
+The app user still exists afterwards, with no identifiers or user data, and the app can keep writing to it.
+Conversations, their messages and events are not modified.
+The agent user's intelligent field values are not deleted; they are recomputed without this app's data.
+To wipe a conversation, use `DELETE /conversations/{conversationId}`. To wipe every app's data for a user, use `DELETE /agentusers/{agentUserId}`.
 
 If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
 

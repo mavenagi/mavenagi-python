@@ -20,7 +20,6 @@ from .charter_search_request import CharterSearchRequest
 from .charter_search_response import CharterSearchResponse
 from .charter_status import CharterStatus
 from .charter_summary import CharterSummary
-from .charter_type import CharterType
 
 __all__ = [
     "CharterAncestorsResponse",
@@ -41,5 +40,4 @@ __all__ = [
     "CharterSearchResponse",
     "CharterStatus",
     "CharterSummary",
-    "CharterType",
 ]

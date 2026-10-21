@@ -28,11 +28,13 @@ class IntelligentFieldCore(UniversalBaseModel):
     - NUMBER: a number
     
     For a single select, use STRING or NUMBER together with `enumOptions`.
+    
+    Shown in Agent Designer as "Value format" or "Field type".
     """
 
     definition: str = pydantic.Field()
     """
-    Definition used by the LLM when generating this field's value
+    Definition used by the LLM when generating this field's value. Shown in Agent Designer as "Define this field" (the evaluation instructions).
     """
 
     enum_options: typing_extensions.Annotated[
@@ -41,6 +43,8 @@ class IntelligentFieldCore(UniversalBaseModel):
     """
     The finite set of values this field may take. Omit to let the LLM produce any value of
     the `validationType`. Options may be added later with the patch endpoint, but not removed.
+    
+    Shown in Agent Designer as "Select Options".
     """
 
     if IS_PYDANTIC_V2:

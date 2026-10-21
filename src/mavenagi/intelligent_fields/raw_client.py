@@ -77,7 +77,7 @@ class RawIntelligentFieldsClient:
             caller and is how the field is addressed on every other endpoint.
 
         entity_type : EntityType
-            Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types.
+            Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types. Shown in Agent Designer as "Target", with `CONVERSATION` as "On conversations" and `AGENT_USER` as "On users".
 
         validation_type : IntelligentFieldType
             The type of value this field holds. It constrains the schema the LLM is asked to fill
@@ -90,8 +90,10 @@ class RawIntelligentFieldsClient:
 
             For a single select, use STRING or NUMBER together with `enumOptions`.
 
+            Shown in Agent Designer as "Value format" or "Field type".
+
         definition : str
-            Definition used by the LLM when generating this field's value
+            Definition used by the LLM when generating this field's value. Shown in Agent Designer as "Define this field" (the evaluation instructions).
 
         description : typing.Optional[str]
             A plain text description of the intelligent field.
@@ -102,6 +104,8 @@ class RawIntelligentFieldsClient:
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
             The finite set of values this field may take. Omit to let the LLM produce any value of
             the `validationType`. Options may be added later with the patch endpoint, but not removed.
+
+            Shown in Agent Designer as "Select Options".
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -492,8 +496,9 @@ class RawIntelligentFieldsClient:
         Soft delete an intelligent field. Only INACTIVE fields can be deleted.
 
         Deleted fields are excluded from search results, and getting one by ID returns 404.
-        Creating a new field with the same referenceId as a deleted field will overwrite
-        the deleted field and restore it with the status a new field gets.
+        Creating a field with the same referenceId as a deleted field reclaims it: the field keeps
+        its identity and entityType, every other setting comes from the request, and it gets the
+        status a new field gets.
 
         Deleted fields cannot be modified.
 
@@ -805,7 +810,7 @@ class AsyncRawIntelligentFieldsClient:
             caller and is how the field is addressed on every other endpoint.
 
         entity_type : EntityType
-            Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types.
+            Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types. Shown in Agent Designer as "Target", with `CONVERSATION` as "On conversations" and `AGENT_USER` as "On users".
 
         validation_type : IntelligentFieldType
             The type of value this field holds. It constrains the schema the LLM is asked to fill
@@ -818,8 +823,10 @@ class AsyncRawIntelligentFieldsClient:
 
             For a single select, use STRING or NUMBER together with `enumOptions`.
 
+            Shown in Agent Designer as "Value format" or "Field type".
+
         definition : str
-            Definition used by the LLM when generating this field's value
+            Definition used by the LLM when generating this field's value. Shown in Agent Designer as "Define this field" (the evaluation instructions).
 
         description : typing.Optional[str]
             A plain text description of the intelligent field.
@@ -830,6 +837,8 @@ class AsyncRawIntelligentFieldsClient:
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
             The finite set of values this field may take. Omit to let the LLM produce any value of
             the `validationType`. Options may be added later with the patch endpoint, but not removed.
+
+            Shown in Agent Designer as "Select Options".
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1220,8 +1229,9 @@ class AsyncRawIntelligentFieldsClient:
         Soft delete an intelligent field. Only INACTIVE fields can be deleted.
 
         Deleted fields are excluded from search results, and getting one by ID returns 404.
-        Creating a new field with the same referenceId as a deleted field will overwrite
-        the deleted field and restore it with the status a new field gets.
+        Creating a field with the same referenceId as a deleted field reclaims it: the field keeps
+        its identity and entityType, every other setting comes from the request, and it gets the
+        status a new field gets.
 
         Deleted fields cannot be modified.
 

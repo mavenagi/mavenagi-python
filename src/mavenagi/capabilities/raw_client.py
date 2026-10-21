@@ -24,6 +24,8 @@ from .types.capabilities_search_response import CapabilitiesSearchResponse
 from .types.capability_execution_status import CapabilityExecutionStatus
 from .types.capability_executions_search_response import CapabilityExecutionsSearchResponse
 from .types.capability_response import CapabilityResponse
+from .types.capability_simulation_input import CapabilitySimulationInput
+from .types.capability_simulation_result import CapabilitySimulationResult
 from .types.capability_sort_field import CapabilitySortField
 
 # this is used as the default value for optional parameters
@@ -362,6 +364,128 @@ class RawCapabilitiesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return HttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def simulate_capability(
+        self,
+        capability_type: CapabilityType,
+        reference_id: str,
+        *,
+        request: CapabilitySimulationInput,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[CapabilitySimulationResult]:
+        """
+        Run one of an agent's capabilities once, as a simulation, and return what it produced.
+
+        The caller supplies everything the capability reads, so it runs in isolation: no
+        conversation or agent user has to exist first. The capability is told its mode is
+        `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
+        effects in real systems. Nothing here runs a capability live.
+
+        Only actions can be simulated today. Triggers and conversation kickoffs are rejected with a
+        400 until they can run as simulations. Intelligent fields cannot be simulated.
+
+        Parameters
+        ----------
+        capability_type : CapabilityType
+            Which kind of capability to simulate. Must match the body's `capabilityType`.
+
+        reference_id : str
+            The capability's reference ID, unique within its type and app.
+
+        request : CapabilitySimulationInput
+
+        app_id : typing.Optional[str]
+            The app that owns the capability. Defaults to the calling app.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[CapabilitySimulationResult]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/capabilities/{jsonable_encoder(capability_type)}/{jsonable_encoder(reference_id)}/simulate",
+            method="POST",
+            params={
+                "appId": app_id,
+            },
+            json=convert_and_respect_annotation_metadata(
+                object_=request, annotation=CapabilitySimulationInput, direction="write"
+            ),
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    CapabilitySimulationResult,
+                    parse_obj_as(
+                        type_=CapabilitySimulationResult,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),
@@ -1082,6 +1206,128 @@ class AsyncRawCapabilitiesClient:
         try:
             if 200 <= _response.status_code < 300:
                 return AsyncHttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def simulate_capability(
+        self,
+        capability_type: CapabilityType,
+        reference_id: str,
+        *,
+        request: CapabilitySimulationInput,
+        app_id: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[CapabilitySimulationResult]:
+        """
+        Run one of an agent's capabilities once, as a simulation, and return what it produced.
+
+        The caller supplies everything the capability reads, so it runs in isolation: no
+        conversation or agent user has to exist first. The capability is told its mode is
+        `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
+        effects in real systems. Nothing here runs a capability live.
+
+        Only actions can be simulated today. Triggers and conversation kickoffs are rejected with a
+        400 until they can run as simulations. Intelligent fields cannot be simulated.
+
+        Parameters
+        ----------
+        capability_type : CapabilityType
+            Which kind of capability to simulate. Must match the body's `capabilityType`.
+
+        reference_id : str
+            The capability's reference ID, unique within its type and app.
+
+        request : CapabilitySimulationInput
+
+        app_id : typing.Optional[str]
+            The app that owns the capability. Defaults to the calling app.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[CapabilitySimulationResult]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/capabilities/{jsonable_encoder(capability_type)}/{jsonable_encoder(reference_id)}/simulate",
+            method="POST",
+            params={
+                "appId": app_id,
+            },
+            json=convert_and_respect_annotation_metadata(
+                object_=request, annotation=CapabilitySimulationInput, direction="write"
+            ),
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    CapabilitySimulationResult,
+                    parse_obj_as(
+                        type_=CapabilitySimulationResult,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
             if _response.status_code == 404:
                 raise NotFoundError(
                     headers=dict(_response.headers),

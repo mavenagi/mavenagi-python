@@ -22,6 +22,8 @@ class ResponseConfig(UniversalBaseModel):
     - `CHARTS_HIGHCHARTS_TS`: Whether the response should include a Highcharts typescript chart if applicable.
     - `ASYNC`: Whether the app that created this conversation supports asynchronous message delivery. If provided, messages may be sent to the app via the `handleMessage` function.
     - `OAUTH_BUTTONS`: Whether the response should include OAuth buttons. If provided, the caller needs to render OAuth buttons when returned from the ask API and allow the user to click the buttons to initiate the OAuth flow. If not provided, then actions which require OAuth authorization will not be considered by the LLM. This capability is not recommended for surfaces which can not display links (e.g. voice).
+    
+    Shown in Agent Designer as "Response type".
     """
 
     is_copilot: typing_extensions.Annotated[bool, FieldMetadata(alias="isCopilot")] = pydantic.Field()

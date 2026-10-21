@@ -189,6 +189,8 @@ class RawTriggersClient:
 
             Only allowed on `EVENT_CREATED`; the other trigger types reject it.
 
+            Shown in Agent Designer as "When".
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -755,6 +757,8 @@ class AsyncRawTriggersClient:
             removes one; PATCH changes or removes a condition without re-registering.
 
             Only allowed on `EVENT_CREATED`; the other trigger types reject it.
+
+            Shown in Agent Designer as "When".
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

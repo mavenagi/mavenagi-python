@@ -14,7 +14,7 @@ from .intelligent_field_core import IntelligentFieldCore
 class IntelligentFieldBase(IntelligentFieldCore):
     entity_type: typing_extensions.Annotated[EntityType, FieldMetadata(alias="entityType")] = pydantic.Field()
     """
-    Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types.
+    Target entity type for evaluation. CONVERSATION is supported, and AGENT_USER is supported for agents with user-level intelligent fields enabled. The backend will return an error for other types. Shown in Agent Designer as "Target", with `CONVERSATION` as "On conversations" and `AGENT_USER` as "On users".
     """
 
     variant_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="variantId")] = (

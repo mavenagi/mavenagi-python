@@ -14,6 +14,7 @@ AdditionalDataKey = typing.Union[
         "url",
         "query",
         "position",
+        "botMessageType",
         "amount",
         "currency",
         "channel",

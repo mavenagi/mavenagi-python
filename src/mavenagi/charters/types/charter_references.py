@@ -34,6 +34,8 @@ class CharterReferences(UniversalBaseModel):
     """
     The IDs of actions this charter makes available.
     Maximum 50 actions per charter.
+    
+    Shown in Agent Designer as "Capabilities".
     """
 
     if IS_PYDANTIC_V2:

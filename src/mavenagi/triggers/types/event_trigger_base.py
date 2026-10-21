@@ -29,6 +29,8 @@ class EventTriggerBase(UniversalBaseModel):
     removes one; PATCH changes or removes a condition without re-registering.
     
     Only allowed on `EVENT_CREATED`; the other trigger types reject it.
+    
+    Shown in Agent Designer as "When".
     """
 
     if IS_PYDANTIC_V2:

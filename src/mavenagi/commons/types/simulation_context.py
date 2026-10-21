@@ -9,9 +9,15 @@ from ...core.serialization import FieldMetadata
 from .entity_id import EntityId
 from .entity_id_without_agent import EntityIdWithoutAgent
 from .llm_persona import LlmPersona
+from .simulation_action_behavior import SimulationActionBehavior
+from .simulation_action_mock import SimulationActionMock
 
 
 class SimulationContext(UniversalBaseModel):
+    """
+    Conversations with a simulation context are the runs on the Agent Designer "Simulator" page.
+    """
+
     additional_prompt_text: typing_extensions.Annotated[
         typing.Optional[str], FieldMetadata(alias="additionalPromptText")
     ] = pydantic.Field(default=None)
@@ -19,6 +25,8 @@ class SimulationContext(UniversalBaseModel):
     Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
     
     If provided, overrides the agent's default additional prompt text during the simulation.
+    
+    Shown in Agent Designer as "Additional persona instructions".
     """
 
     persona: typing.Optional[LlmPersona] = pydantic.Field(default=None)
@@ -46,6 +54,26 @@ class SimulationContext(UniversalBaseModel):
     `VARIANT_HAS_STAGED_EDITS` for one with staged edits (publish them first). Rejected too
     while agent variants aren't enabled for the agent. A conversation that already exists
     keeps the variant it was created with.
+    """
+
+    action_mocks: typing_extensions.Annotated[
+        typing.Optional[typing.List[SimulationActionMock]], FieldMetadata(alias="actionMocks")
+    ] = pydantic.Field(default=None)
+    """
+    What the platform does when the agent executes each action during this simulation. At
+    most one entry per action; a request that names an action twice is rejected. An action
+    with no entry follows `defaultActionBehavior`. A conversation that already exists keeps
+    the mocks and default it was created with.
+    """
+
+    default_action_behavior: typing_extensions.Annotated[
+        typing.Optional[SimulationActionBehavior], FieldMetadata(alias="defaultActionBehavior")
+    ] = pydantic.Field(default=None)
+    """
+    What the platform does when the agent executes an action that has no `actionMocks`
+    entry. When absent, the action's app is called as usual. A `fixedResponse` here keeps the
+    simulation from calling any action's app that `actionMocks` doesn't name with `callApp`;
+    its templates are rendered over the parameters of whichever action was called.
     """
 
     if IS_PYDANTIC_V2:

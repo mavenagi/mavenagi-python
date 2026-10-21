@@ -8,6 +8,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .app_user import AppUser
 from .entity_id_base import EntityIdBase
+from .execution_mode import ExecutionMode
 
 
 class AppUserRequest(AppUser):
@@ -43,6 +44,20 @@ class AppUserRequest(AppUser):
     user_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="userId")] = pydantic.Field()
     """
     ID that uniquely identifies this app user
+    """
+
+    execution_mode: typing_extensions.Annotated[
+        typing.Optional[ExecutionMode], FieldMetadata(alias="executionMode")
+    ] = pydantic.Field(default=None)
+    """
+    The execution mode the user lives in. Defaults to `LIVE` for a new user, and to the existing
+    user's execution mode on update; an update can't move a user to a different one.
+    
+    A `SIMULATION` user is only linked to other `SIMULATION` users, is excluded from user search
+    unless `simulationFilter` asks for it, and may only talk in simulation conversations. A `LIVE`
+    user can't talk in a simulation conversation either, so give each simulation its own user ids
+    rather than reusing live ones.
+    Creating one needs the same permission as creating a simulation conversation.
     """
 
     if IS_PYDANTIC_V2:

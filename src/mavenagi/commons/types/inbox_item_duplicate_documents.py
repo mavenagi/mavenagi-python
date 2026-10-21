@@ -30,7 +30,7 @@ class InboxItemDuplicateDocuments(InboxItemBase):
         pydantic.Field()
     )
     """
-    Information about the source document associated with the inbox item.
+    Information about the source document associated with the inbox item. Shown in Agent Designer as "Reference Document".
     """
 
     documents: typing.List[DocumentInformation] = pydantic.Field()

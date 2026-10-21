@@ -2,6 +2,7 @@
 
 # isort: skip_file
 
+from .action_simulation_input import ActionSimulationInput
 from .capabilities_search_response import CapabilitiesSearchResponse
 from .capability_execution import (
     CapabilityExecution,
@@ -20,12 +21,18 @@ from .capability_response import (
     CapabilityResponse_IntelligentField,
     CapabilityResponse_Trigger,
 )
+from .capability_simulation_input import CapabilitySimulationInput, CapabilitySimulationInput_Action
+from .capability_simulation_result import CapabilitySimulationResult, CapabilitySimulationResult_Action
 from .capability_sort_field import CapabilitySortField
 from .capability_summary import CapabilitySummary
+from .conversation_context_simulation_input import ConversationContextSimulationInput
 from .conversation_kickoff_capability_execution import ConversationKickoffCapabilityExecution
+from .simulated_user import SimulatedUser
+from .simulated_user_data import SimulatedUserData
 from .trigger_capability_execution import TriggerCapabilityExecution
 
 __all__ = [
+    "ActionSimulationInput",
     "CapabilitiesSearchResponse",
     "CapabilityExecution",
     "CapabilityExecutionBase",
@@ -40,8 +47,15 @@ __all__ = [
     "CapabilityResponse_ConversationKickoff",
     "CapabilityResponse_IntelligentField",
     "CapabilityResponse_Trigger",
+    "CapabilitySimulationInput",
+    "CapabilitySimulationInput_Action",
+    "CapabilitySimulationResult",
+    "CapabilitySimulationResult_Action",
     "CapabilitySortField",
     "CapabilitySummary",
+    "ConversationContextSimulationInput",
     "ConversationKickoffCapabilityExecution",
+    "SimulatedUser",
+    "SimulatedUserData",
     "TriggerCapabilityExecution",
 ]

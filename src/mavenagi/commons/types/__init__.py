@@ -9,6 +9,7 @@ from .action_execution_param_value import (
     ActionExecutionParamValue_Attachment,
     ActionExecutionParamValue_Primitive,
 )
+from .action_execution_status import ActionExecutionStatus
 from .action_form_field import ActionFormField
 from .action_o_auth_configuration import ActionOAuthConfiguration
 from .action_parameter import ActionParameter
@@ -66,6 +67,7 @@ from .bot_logic_segments_item import BotLogicSegmentsItem
 from .bot_logic_steering_item import BotLogicSteeringItem
 from .bot_logic_user_item import BotLogicUserItem
 from .bot_message import BotMessage
+from .bot_message_status_reason import BotMessageStatusReason
 from .bot_o_auth_button_response import BotOAuthButtonResponse
 from .bot_object_response import BotObjectResponse
 from .bot_response import (
@@ -85,6 +87,7 @@ from .capability_base import CapabilityBase
 from .capability_status import CapabilityStatus
 from .capability_type import CapabilityType
 from .chart_spec_schema import ChartSpecSchema
+from .charter_type import CharterType
 from .checkbox_settings_schema_entry import CheckboxSettingsSchemaEntry
 from .color_settings_schema_entry import ColorSettingsSchemaEntry
 from .complex_array_settings_schema_entry import ComplexArraySettingsSchemaEntry
@@ -100,6 +103,7 @@ from .conversation_message_response import (
     ConversationMessageResponse_Bot,
     ConversationMessageResponse_User,
 )
+from .conversation_metadata_value_source import ConversationMetadataValueSource
 from .conversation_mode import ConversationMode
 from .conversation_mode_precondition import ConversationModePrecondition
 from .conversation_precondition import (
@@ -130,6 +134,7 @@ from .conversation_round import ConversationRound
 from .conversation_state import ConversationState
 from .conversation_state_precondition import ConversationStatePrecondition
 from .conversation_summary import ConversationSummary
+from .conversation_value_source import ConversationValueSource, ConversationValueSource_ConversationMetadata
 from .csat_info import CsatInfo
 from .cursor_page import CursorPage
 from .device_info import DeviceInfo
@@ -165,6 +170,8 @@ from .event_user_info import EventUserInfo
 from .event_user_info_base import EventUserInfoBase
 from .events_search_request import EventsSearchRequest
 from .events_search_response import EventsSearchResponse
+from .execute_action_response import ExecuteActionResponse
+from .execution_mode import ExecutionMode
 from .feedback import Feedback
 from .feedback_base import FeedbackBase
 from .feedback_info import FeedbackInfo
@@ -177,6 +184,7 @@ from .field_condition import (
     FieldCondition_String,
     FieldCondition_Universal,
 )
+from .function_version_binding import FunctionVersionBinding
 from .geo_info import GeoInfo
 from .harmful_content_analysis import HarmfulContentAnalysis
 from .image_settings_schema_entry import ImageSettingsSchemaEntry
@@ -221,8 +229,14 @@ from .metadata_condition import (
     MetadataCondition_Membership,
     MetadataCondition_Presence,
 )
+from .metadata_conversation_value_filter import MetadataConversationValueFilter
 from .metadata_entry_condition import MetadataEntryCondition
-from .metadata_filter import MetadataFilter, MetadataFilter_Entry, MetadataFilter_Group
+from .metadata_filter import (
+    MetadataFilter,
+    MetadataFilter_ConversationValue,
+    MetadataFilter_Entry,
+    MetadataFilter_Group,
+)
 from .metadata_filter_group import MetadataFilterGroup
 from .metadata_precondition import MetadataPrecondition
 from .multiline_settings_schema_entry import MultilineSettingsSchemaEntry
@@ -299,6 +313,13 @@ from .settings_schema_entry import (
 from .settings_schema_entry_base import SettingsSchemaEntryBase
 from .settings_schema_validation import SettingsSchemaValidation
 from .side_effects import SideEffects
+from .simulation_action_behavior import (
+    SimulationActionBehavior,
+    SimulationActionBehavior_CallApp,
+    SimulationActionBehavior_FixedResponse,
+)
+from .simulation_action_call_app import SimulationActionCallApp
+from .simulation_action_mock import SimulationActionMock
 from .simulation_context import SimulationContext
 from .source import Source
 from .source_info import SourceInfo
@@ -336,6 +357,7 @@ __all__ = [
     "ActionExecutionParamValue",
     "ActionExecutionParamValue_Attachment",
     "ActionExecutionParamValue_Primitive",
+    "ActionExecutionStatus",
     "ActionFormField",
     "ActionOAuthConfiguration",
     "ActionParameter",
@@ -391,6 +413,7 @@ __all__ = [
     "BotLogicSteeringItem",
     "BotLogicUserItem",
     "BotMessage",
+    "BotMessageStatusReason",
     "BotOAuthButtonResponse",
     "BotObjectResponse",
     "BotResponse",
@@ -408,6 +431,7 @@ __all__ = [
     "CapabilityStatus",
     "CapabilityType",
     "ChartSpecSchema",
+    "CharterType",
     "CheckboxSettingsSchemaEntry",
     "ColorSettingsSchemaEntry",
     "ComplexArraySettingsSchemaEntry",
@@ -421,6 +445,7 @@ __all__ = [
     "ConversationMessageResponse",
     "ConversationMessageResponse_Bot",
     "ConversationMessageResponse_User",
+    "ConversationMetadataValueSource",
     "ConversationMode",
     "ConversationModePrecondition",
     "ConversationPrecondition",
@@ -447,6 +472,8 @@ __all__ = [
     "ConversationState",
     "ConversationStatePrecondition",
     "ConversationSummary",
+    "ConversationValueSource",
+    "ConversationValueSource_ConversationMetadata",
     "CsatInfo",
     "CursorPage",
     "DeviceInfo",
@@ -484,6 +511,8 @@ __all__ = [
     "EventUserInfoBase",
     "EventsSearchRequest",
     "EventsSearchResponse",
+    "ExecuteActionResponse",
+    "ExecutionMode",
     "Feedback",
     "FeedbackBase",
     "FeedbackInfo",
@@ -494,6 +523,7 @@ __all__ = [
     "FieldCondition_Set",
     "FieldCondition_String",
     "FieldCondition_Universal",
+    "FunctionVersionBinding",
     "GeoInfo",
     "HarmfulContentAnalysis",
     "ImageSettingsSchemaEntry",
@@ -539,9 +569,11 @@ __all__ = [
     "MetadataCondition_Comparison",
     "MetadataCondition_Membership",
     "MetadataCondition_Presence",
+    "MetadataConversationValueFilter",
     "MetadataEntryCondition",
     "MetadataFilter",
     "MetadataFilterGroup",
+    "MetadataFilter_ConversationValue",
     "MetadataFilter_Entry",
     "MetadataFilter_Group",
     "MetadataPrecondition",
@@ -623,6 +655,11 @@ __all__ = [
     "SettingsSchemaEntry_Text",
     "SettingsSchemaValidation",
     "SideEffects",
+    "SimulationActionBehavior",
+    "SimulationActionBehavior_CallApp",
+    "SimulationActionBehavior_FixedResponse",
+    "SimulationActionCallApp",
+    "SimulationActionMock",
     "SimulationContext",
     "Source",
     "SourceInfo",

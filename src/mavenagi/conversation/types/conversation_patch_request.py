@@ -29,7 +29,7 @@ class ConversationPatchRequest(UniversalBaseModel):
 
     open: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages.
+    Whether the conversation is open. Set it to false to close the conversation, which records a `CONVERSATION_CLOSED` system event. Closing is final: a closed conversation cannot be reopened and takes no new questions, form submissions, messages or metadata. It can still be read, deleted, and patched otherwise, for example to add attachments. For a conversation with the `ASYNC` capability, only an open conversation can receive asynchronous messages. Close a conversation only after its ask calls have returned. An answer still being generated when the conversation closes is saved anyway, and the `CONVERSATION_CLOSED` event can then go out before that answer is in the conversation's data.
     """
 
     llm_enabled: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="llmEnabled")] = pydantic.Field(

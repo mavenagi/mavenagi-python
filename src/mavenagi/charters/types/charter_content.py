@@ -6,13 +6,13 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.charter_type import CharterType
 from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, update_forward_refs
 from ...core.serialization import FieldMetadata
 from .charter_base import CharterBase
 from .charter_references import CharterReferences
 from .charter_status import CharterStatus
-from .charter_type import CharterType
 
 
 class CharterContent(CharterBase):
@@ -43,6 +43,8 @@ class CharterContent(CharterBase):
     precondition to determine whether there is a match. When null, the
     charter is a wildcard and always matches (subject to ancestor
     preconditions still combining with AND logic).
+    
+    Shown in Agent Designer as the charter's "Segment". A null precondition shows as "All conversations".
     """
 
     status: CharterStatus = pydantic.Field()

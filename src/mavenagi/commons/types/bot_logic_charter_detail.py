@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .charter_type import CharterType
 from .entity_id_without_agent import EntityIdWithoutAgent
 
 
@@ -36,6 +37,11 @@ class BotLogicCharterDetail(UniversalBaseModel):
     )
     """
     The parent charter in the hierarchy, if any. Absent for root-level charters.
+    """
+
+    type: typing.Optional[CharterType] = pydantic.Field(default=None)
+    """
+    The charter's type when the response was generated. A matched `STRICT_RETURN` charter's manual is the whole response.
     """
 
     if IS_PYDANTIC_V2:

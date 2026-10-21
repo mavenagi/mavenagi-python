@@ -518,6 +518,8 @@ class RawAgentsClient:
         system_fallback_message : typing.Optional[str]
             The system fallback message.
 
+            Rejected with reason `VARIANT_REQUIRED` while `SYSTEM_FALLBACK_MESSAGE` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
+
         persona : typing.Optional[LlmPersona]
             Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
@@ -538,6 +540,8 @@ class RawAgentsClient:
 
         content_safety_violation_response_prompt_text : typing.Optional[str]
             LLM prompt for generating a response when the user's question has been detected as unsafe.
+
+            Rejected with reason `VARIANT_REQUIRED` while `CONTENT_SAFETY_VIOLATION_RESPONSE_PROMPT_TEXT` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
 
         reject_questions_without_knowledge : typing.Optional[bool]
             Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
@@ -1234,6 +1238,8 @@ class AsyncRawAgentsClient:
         system_fallback_message : typing.Optional[str]
             The system fallback message.
 
+            Rejected with reason `VARIANT_REQUIRED` while `SYSTEM_FALLBACK_MESSAGE` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
+
         persona : typing.Optional[LlmPersona]
             Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.
 
@@ -1254,6 +1260,8 @@ class AsyncRawAgentsClient:
 
         content_safety_violation_response_prompt_text : typing.Optional[str]
             LLM prompt for generating a response when the user's question has been detected as unsafe.
+
+            Rejected with reason `VARIANT_REQUIRED` while `CONTENT_SAFETY_VIOLATION_RESPONSE_PROMPT_TEXT` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
 
         reject_questions_without_knowledge : typing.Optional[bool]
             Deprecated. Superseded by charters, which determine agent behavior per round. Has no effect for agents using charters.

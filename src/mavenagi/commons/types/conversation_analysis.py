@@ -18,7 +18,7 @@ class ConversationAnalysis(UniversalBaseModel):
         pydantic.Field(default=None)
     )
     """
-    Generated user request summary of the conversation
+    Generated user request summary of the conversation. Shown in Agent Designer as "Subject" in the conversations table and "Customer request" on a conversation.
     """
 
     agent_response: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="agentResponse")] = (

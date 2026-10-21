@@ -12,6 +12,7 @@ from ..commons.types.app_user_identifier import AppUserIdentifier
 from ..commons.types.app_user_response import AppUserResponse
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.error_message import ErrorMessage
+from ..commons.types.execution_mode import ExecutionMode
 from ..commons.types.user_data import UserData
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
@@ -250,12 +251,114 @@ class RawUsersClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def delete_agent_user(
+        self, agent_user_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[None]:
+        """
+        Deletes the identifiers and user data that every app has saved for an agent user.
+        This is the same as calling `DELETE /users/{userId}` for each of the agent user's app users.
+
+        The agent user and its app users still exist afterwards, with no identifiers or user data.
+        Apps can keep writing to them; a later create or update adds data back to the same users.
+
+        Conversations, their messages and events are not modified, apart from the intelligent field values below. To wipe a conversation, use `DELETE /conversations/{conversationId}`.
+
+        If the ID belongs to an agent user that has been merged into another, the agent user it was merged into is wiped.
+
+        <Warning>This is a destructive operation and cannot be undone.</Warning>
+
+        ### Intelligent fields
+
+        The agent user's intelligent field values are deleted too, and removed from their `INTELLIGENT_FIELD_VALUE_CHANGED` events; the events themselves are kept.
+        Unlike `DELETE /users/{userId}`, the wipe does not recompute the values. They can be computed again later from the user's remaining conversations, for example after the user sends another message; wipe those conversations first to prevent that.
+
+        Parameters
+        ----------
+        agent_user_id : str
+            The ID of the agent user to wipe.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[None]
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/agentusers/{jsonable_encoder(agent_user_id)}",
+            method="DELETE",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return HttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def create_or_update(
         self,
         *,
         user_id: EntityIdBase,
         identifiers: typing.Sequence[AppUserIdentifier],
         data: typing.Dict[str, UserData],
+        execution_mode: typing.Optional[ExecutionMode] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[AppUserResponse]:
         """
@@ -271,6 +374,16 @@ class RawUsersClient:
 
         data : typing.Dict[str, UserData]
 
+        execution_mode : typing.Optional[ExecutionMode]
+            The execution mode the user lives in. Defaults to `LIVE` for a new user, and to the existing
+            user's execution mode on update; an update can't move a user to a different one.
+
+            A `SIMULATION` user is only linked to other `SIMULATION` users, is excluded from user search
+            unless `simulationFilter` asks for it, and may only talk in simulation conversations. A `LIVE`
+            user can't talk in a simulation conversation either, so give each simulation its own user ids
+            rather than reusing live ones.
+            Creating one needs the same permission as creating a simulation conversation.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -285,6 +398,7 @@ class RawUsersClient:
                 "userId": convert_and_respect_annotation_metadata(
                     object_=user_id, annotation=EntityIdBase, direction="write"
                 ),
+                "executionMode": execution_mode,
                 "identifiers": convert_and_respect_annotation_metadata(
                     object_=identifiers, annotation=typing.Sequence[AppUserIdentifier], direction="write"
                 ),
@@ -476,8 +590,13 @@ class RawUsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[None]:
         """
-        Deletes all identifiers and user data saved by the specified app.
+        Deletes all identifiers and user data saved by the specified app for this user.
         Does not modify data or identifiers saved by other apps.
+
+        The app user still exists afterwards, with no identifiers or user data, and the app can keep writing to it.
+        Conversations, their messages and events are not modified.
+        The agent user's intelligent field values are not deleted; they are recomputed without this app's data.
+        To wipe a conversation, use `DELETE /conversations/{conversationId}`. To wipe every app's data for a user, use `DELETE /agentusers/{agentUserId}`.
 
         If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
 
@@ -791,12 +910,114 @@ class AsyncRawUsersClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    async def delete_agent_user(
+        self, agent_user_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[None]:
+        """
+        Deletes the identifiers and user data that every app has saved for an agent user.
+        This is the same as calling `DELETE /users/{userId}` for each of the agent user's app users.
+
+        The agent user and its app users still exist afterwards, with no identifiers or user data.
+        Apps can keep writing to them; a later create or update adds data back to the same users.
+
+        Conversations, their messages and events are not modified, apart from the intelligent field values below. To wipe a conversation, use `DELETE /conversations/{conversationId}`.
+
+        If the ID belongs to an agent user that has been merged into another, the agent user it was merged into is wiped.
+
+        <Warning>This is a destructive operation and cannot be undone.</Warning>
+
+        ### Intelligent fields
+
+        The agent user's intelligent field values are deleted too, and removed from their `INTELLIGENT_FIELD_VALUE_CHANGED` events; the events themselves are kept.
+        Unlike `DELETE /users/{userId}`, the wipe does not recompute the values. They can be computed again later from the user's remaining conversations, for example after the user sends another message; wipe those conversations first to prevent that.
+
+        Parameters
+        ----------
+        agent_user_id : str
+            The ID of the agent user to wipe.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[None]
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/agentusers/{jsonable_encoder(agent_user_id)}",
+            method="DELETE",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                return AsyncHttpResponse(response=_response, data=None)
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 413:
+                raise PayloadTooLargeError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 429:
+                raise TooManyRequestsError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise ServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorMessage,
+                        parse_obj_as(
+                            type_=ErrorMessage,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def create_or_update(
         self,
         *,
         user_id: EntityIdBase,
         identifiers: typing.Sequence[AppUserIdentifier],
         data: typing.Dict[str, UserData],
+        execution_mode: typing.Optional[ExecutionMode] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[AppUserResponse]:
         """
@@ -812,6 +1033,16 @@ class AsyncRawUsersClient:
 
         data : typing.Dict[str, UserData]
 
+        execution_mode : typing.Optional[ExecutionMode]
+            The execution mode the user lives in. Defaults to `LIVE` for a new user, and to the existing
+            user's execution mode on update; an update can't move a user to a different one.
+
+            A `SIMULATION` user is only linked to other `SIMULATION` users, is excluded from user search
+            unless `simulationFilter` asks for it, and may only talk in simulation conversations. A `LIVE`
+            user can't talk in a simulation conversation either, so give each simulation its own user ids
+            rather than reusing live ones.
+            Creating one needs the same permission as creating a simulation conversation.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -826,6 +1057,7 @@ class AsyncRawUsersClient:
                 "userId": convert_and_respect_annotation_metadata(
                     object_=user_id, annotation=EntityIdBase, direction="write"
                 ),
+                "executionMode": execution_mode,
                 "identifiers": convert_and_respect_annotation_metadata(
                     object_=identifiers, annotation=typing.Sequence[AppUserIdentifier], direction="write"
                 ),
@@ -1017,8 +1249,13 @@ class AsyncRawUsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[None]:
         """
-        Deletes all identifiers and user data saved by the specified app.
+        Deletes all identifiers and user data saved by the specified app for this user.
         Does not modify data or identifiers saved by other apps.
+
+        The app user still exists afterwards, with no identifiers or user data, and the app can keep writing to it.
+        Conversations, their messages and events are not modified.
+        The agent user's intelligent field values are not deleted; they are recomputed without this app's data.
+        To wipe a conversation, use `DELETE /conversations/{conversationId}`. To wipe every app's data for a user, use `DELETE /agentusers/{agentUserId}`.
 
         If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
 

@@ -2,6 +2,7 @@
 
 import typing
 
+from ..commons.types.charter_type import CharterType
 from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_base import EntityIdBase
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
@@ -19,7 +20,6 @@ from .types.charter_search_field import CharterSearchField
 from .types.charter_search_filter import CharterSearchFilter
 from .types.charter_search_response import CharterSearchResponse
 from .types.charter_status import CharterStatus
-from .types.charter_type import CharterType
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -102,6 +102,8 @@ class ChartersClient:
             charter is a wildcard and always matches (subject to ancestor
             preconditions still combining with AND logic).
 
+            Shown in Agent Designer as the charter's "Segment". A null precondition shows as "All conversations".
+
         type : typing.Optional[CharterType]
             The behavioral mode for this charter. Defaults to STANDARD when omitted.
 
@@ -127,7 +129,9 @@ class ChartersClient:
             `max(siblings.userRank) + 1` (0 if no siblings).
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
-            ID of the agent variant this charter belongs to, if applicable.
+            On a write request, the agent variant to stage the write in. On a response, it is set
+            only on each side of a working-set diff, naming the variant that side comes from; every
+            other charter response, and every staged-edit payload, leaves it unset.
 
             While charters are versioned for the agent, a write is staged in this variant's
             working set rather than applied to the agent's live configuration, and a write that
@@ -143,6 +147,8 @@ class ChartersClient:
             before delivery.
 
             If not set, existing manual is preserved if present.
+
+            Shown in Agent Designer as "Manual", or "Return text" when `type` is `STRICT_RETURN`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -761,6 +767,8 @@ class AsyncChartersClient:
             charter is a wildcard and always matches (subject to ancestor
             preconditions still combining with AND logic).
 
+            Shown in Agent Designer as the charter's "Segment". A null precondition shows as "All conversations".
+
         type : typing.Optional[CharterType]
             The behavioral mode for this charter. Defaults to STANDARD when omitted.
 
@@ -786,7 +794,9 @@ class AsyncChartersClient:
             `max(siblings.userRank) + 1` (0 if no siblings).
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
-            ID of the agent variant this charter belongs to, if applicable.
+            On a write request, the agent variant to stage the write in. On a response, it is set
+            only on each side of a working-set diff, naming the variant that side comes from; every
+            other charter response, and every staged-edit payload, leaves it unset.
 
             While charters are versioned for the agent, a write is staged in this variant's
             working set rather than applied to the agent's live configuration, and a write that
@@ -802,6 +812,8 @@ class AsyncChartersClient:
             before delivery.
 
             If not set, existing manual is preserved if present.
+
+            Shown in Agent Designer as "Manual", or "Return text" when `type` is `STRICT_RETURN`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

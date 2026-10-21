@@ -22,6 +22,8 @@ class CustomerFilter(UniversalBaseModel):
     - `metadata.mykey:*` - matches customers with a metadata field `mykey`
     - `-metadata:myvalue` - matches customers that do not have any metadata field set to `myvalue`
     - `_exists_:metadata` - matches customers that have any metadata field set
+    
+    Shown in Agent Designer as "Name or description".
     """
 
     statuses: typing.Optional[typing.List[CustomerStatus]] = pydantic.Field(default=None)

@@ -44,12 +44,12 @@ class CustomerResponse(CustomerBase):
 
     assignees: typing.Set[str] = pydantic.Field()
     """
-    Set of agent user IDs assigned to this customer
+    Set of agent user IDs assigned to this customer. Shown in Agent Designer under "People", together with `members`.
     """
 
     members: typing.Set[str] = pydantic.Field()
     """
-    Set of agent user IDs who are members of this customer
+    Set of agent user IDs who are members of this customer. Shown in Agent Designer under "People", together with `assignees`.
     """
 
     if IS_PYDANTIC_V2:

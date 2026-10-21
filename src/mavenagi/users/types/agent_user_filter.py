@@ -5,6 +5,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.intelligent_field_filter import IntelligentFieldFilter
+from ...conversation.types.simulation_filter import SimulationFilter
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 
@@ -14,6 +15,8 @@ class AgentUserFilter(UniversalBaseModel):
     """
     Full-text search query for matching agent users by content.
     When you search with this parameter, you're performing a full-text search across the user identifiers.
+    
+    Shown in Agent Designer as "Content includes".
     """
 
     identifiers: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
@@ -42,6 +45,13 @@ class AgentUserFilter(UniversalBaseModel):
     ] = pydantic.Field(default=None)
     """
     Filter by intelligent field values. All conditions are ANDed together.
+    """
+
+    simulation_filter: typing_extensions.Annotated[
+        typing.Optional[SimulationFilter], FieldMetadata(alias="simulationFilter")
+    ] = pydantic.Field(default=None)
+    """
+    Whether to include simulation users in search results. Defaults to only non-simulation users.
     """
 
     if IS_PYDANTIC_V2:

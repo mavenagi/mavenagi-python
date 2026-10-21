@@ -7,6 +7,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.charter_type import CharterType
 from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, update_forward_refs
 from ...core.serialization import FieldMetadata
@@ -14,7 +15,6 @@ from .charter_base import CharterBase
 from .charter_children_exclusion_policy import CharterChildrenExclusionPolicy
 from .charter_references import CharterReferences
 from .charter_status import CharterStatus
-from .charter_type import CharterType
 
 
 class CharterResponse(CharterBase):
@@ -88,6 +88,8 @@ class CharterResponse(CharterBase):
     precondition: typing.Optional["PreconditionResponse"] = pydantic.Field(default=None)
     """
     The rule controlling when this charter applies. Empty means wildcard (always matches).
+    
+    Shown in Agent Designer as the charter's "Segment". A null precondition shows as "All conversations".
     """
 
     status: CharterStatus = pydantic.Field()

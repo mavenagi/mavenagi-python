@@ -21,7 +21,6 @@ from .types import (
     CharterSearchResponse,
     CharterStatus,
     CharterSummary,
-    CharterType,
 )
 
 __all__ = [
@@ -43,5 +42,4 @@ __all__ = [
     "CharterSearchResponse",
     "CharterStatus",
     "CharterSummary",
-    "CharterType",
 ]

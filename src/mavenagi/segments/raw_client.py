@@ -522,7 +522,7 @@ class RawSegmentsClient:
         """
         Soft delete a segment. Only INACTIVE segments can be deleted.
 
-        Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a new segment with the same referenceId as a deleted segment will overwrite the deleted segment and restore it to ACTIVE status.
+        Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a segment with the same referenceId as a deleted segment reclaims it: the segment keeps its identity, and every other setting comes from the request.
 
         Deleted segments cannot be modified.
 
@@ -1114,7 +1114,7 @@ class AsyncRawSegmentsClient:
         """
         Soft delete a segment. Only INACTIVE segments can be deleted.
 
-        Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a new segment with the same referenceId as a deleted segment will overwrite the deleted segment and restore it to ACTIVE status.
+        Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a segment with the same referenceId as a deleted segment reclaims it: the segment keeps its identity, and every other setting comes from the request.
 
         Deleted segments cannot be modified.
 

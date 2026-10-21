@@ -20,7 +20,7 @@ class EnumOption(UniversalBaseModel):
 
     label: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Display label for the option
+    Display label for the option. Shown in Agent Designer as "Option Name".
     """
 
     description: typing.Optional[str] = pydantic.Field(default=None)
