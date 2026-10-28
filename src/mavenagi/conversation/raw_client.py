@@ -371,6 +371,7 @@ class RawConversationClient:
         *,
         app_id: typing.Optional[str] = None,
         translation_language: typing.Optional[str] = None,
+        include_logic: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ConversationResponse]:
         """
@@ -387,6 +388,9 @@ class RawConversationClient:
         translation_language : typing.Optional[str]
             The language to translate the conversation analysis into
 
+        include_logic : typing.Optional[bool]
+            Whether to return `logic` on each bot message. Defaults to `true`. Pass `false` to leave it out, which makes the response much smaller.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -400,6 +404,7 @@ class RawConversationClient:
             params={
                 "appId": app_id,
                 "translationLanguage": translation_language,
+                "includeLogic": include_logic,
             },
             request_options=request_options,
         )
@@ -2195,9 +2200,11 @@ class RawConversationClient:
         """
         Deliver a message to a user or conversation.
 
+        A closed conversation (`open` set to false) takes no new messages and returns a 400.
+
         <Warning>
-        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
-        User message delivery is not yet supported.
+        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability.
+        User message delivery is not yet supported and returns a 400.
         </Warning>
 
         Parameters
@@ -2614,6 +2621,7 @@ class AsyncRawConversationClient:
         *,
         app_id: typing.Optional[str] = None,
         translation_language: typing.Optional[str] = None,
+        include_logic: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ConversationResponse]:
         """
@@ -2630,6 +2638,9 @@ class AsyncRawConversationClient:
         translation_language : typing.Optional[str]
             The language to translate the conversation analysis into
 
+        include_logic : typing.Optional[bool]
+            Whether to return `logic` on each bot message. Defaults to `true`. Pass `false` to leave it out, which makes the response much smaller.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -2643,6 +2654,7 @@ class AsyncRawConversationClient:
             params={
                 "appId": app_id,
                 "translationLanguage": translation_language,
+                "includeLogic": include_logic,
             },
             request_options=request_options,
         )
@@ -4439,9 +4451,11 @@ class AsyncRawConversationClient:
         """
         Deliver a message to a user or conversation.
 
+        A closed conversation (`open` set to false) takes no new messages and returns a 400.
+
         <Warning>
-        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
-        User message delivery is not yet supported.
+        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability.
+        User message delivery is not yet supported and returns a 400.
         </Warning>
 
         Parameters

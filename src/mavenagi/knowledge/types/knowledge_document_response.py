@@ -66,7 +66,7 @@ class KnowledgeDocumentResponse(KnowledgeDocumentSearchResponse):
 
     content: typing.Optional[str] = pydantic.Field(default=None)
     """
-    The content of the document in markdown format. Not shown directly to users. May be absent for asset-backed documents that have not yet been processed.
+    The content of the document in markdown format. Not shown directly to users. May be absent for asset-backed documents that have not yet been processed, or on a document GET when the document's processed form is larger than 20,000,000 bytes. When content is absent, asset.url (if present) links to the original uploaded file.
     """
 
     asset: typing.Optional[AttachmentResponse] = pydantic.Field(default=None)

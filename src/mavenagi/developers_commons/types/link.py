@@ -23,7 +23,7 @@ class Link(UniversalBaseModel):
 
     url: str = pydantic.Field()
     """
-    Destination URL.
+    Destination URL. May use [placeholders](https://developers.mavenagi.com/docs/documentation/configuration-and-integration/placeholders) such as `${appHost}`.
     """
 
     if IS_PYDANTIC_V2:

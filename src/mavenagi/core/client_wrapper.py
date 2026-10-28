@@ -12,6 +12,7 @@ class BaseClientWrapper:
         *,
         organization_id: str,
         agent_id: str,
+        token: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         app_id: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         app_secret: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -20,6 +21,7 @@ class BaseClientWrapper:
     ):
         self._organization_id = organization_id
         self._agent_id = agent_id
+        self._token = token
         self._app_id = app_id
         self._app_secret = app_secret
         self._headers = headers
@@ -28,10 +30,10 @@ class BaseClientWrapper:
 
     def get_headers(self) -> typing.Dict[str, str]:
         headers: typing.Dict[str, str] = {
-            "User-Agent": "mavenagi/1.2.65",
+            "User-Agent": "mavenagi/1.2.66",
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "mavenagi",
-            "X-Fern-SDK-Version": "1.2.65",
+            "X-Fern-SDK-Version": "1.2.66",
             **(self.get_custom_headers() or {}),
         }
         app_id = self._get_app_id()
@@ -40,7 +42,16 @@ class BaseClientWrapper:
             headers["Authorization"] = httpx.BasicAuth(app_id, app_secret)._auth_header
         headers["X-Organization-Id"] = self._organization_id
         headers["X-Agent-Id"] = self._agent_id
+        token = self._get_token()
+        if token is not None:
+            headers["Authorization"] = f"Bearer {token}"
         return headers
+
+    def _get_token(self) -> typing.Optional[str]:
+        if isinstance(self._token, str) or self._token is None:
+            return self._token
+        else:
+            return self._token()
 
     def _get_app_id(self) -> typing.Optional[str]:
         if isinstance(self._app_id, str) or self._app_id is None:
@@ -70,6 +81,7 @@ class SyncClientWrapper(BaseClientWrapper):
         *,
         organization_id: str,
         agent_id: str,
+        token: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         app_id: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         app_secret: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -80,6 +92,7 @@ class SyncClientWrapper(BaseClientWrapper):
         super().__init__(
             organization_id=organization_id,
             agent_id=agent_id,
+            token=token,
             app_id=app_id,
             app_secret=app_secret,
             headers=headers,
@@ -100,6 +113,7 @@ class AsyncClientWrapper(BaseClientWrapper):
         *,
         organization_id: str,
         agent_id: str,
+        token: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         app_id: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         app_secret: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = None,
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -110,6 +124,7 @@ class AsyncClientWrapper(BaseClientWrapper):
         super().__init__(
             organization_id=organization_id,
             agent_id=agent_id,
+            token=token,
             app_id=app_id,
             app_secret=app_secret,
             headers=headers,

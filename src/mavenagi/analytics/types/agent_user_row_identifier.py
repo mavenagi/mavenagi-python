@@ -3,7 +3,10 @@
 import typing
 
 import pydantic
+import typing_extensions
+from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from ...core.serialization import FieldMetadata
 from ...users.types.agent_user_field import AgentUserField
 from .row_identifier_base import RowIdentifierBase
 
@@ -12,6 +15,13 @@ class AgentUserRowIdentifier(RowIdentifierBase):
     field: AgentUserField = pydantic.Field()
     """
     Field this grouping was on.
+    """
+
+    intelligent_field_id: typing_extensions.Annotated[
+        typing.Optional[EntityId], FieldMetadata(alias="intelligentFieldId")
+    ] = pydantic.Field(default=None)
+    """
+    Which intelligent field this grouping was on, set when `field` is `IntelligentField`.
     """
 
     if IS_PYDANTIC_V2:

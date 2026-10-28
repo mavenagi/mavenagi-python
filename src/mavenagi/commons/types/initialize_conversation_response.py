@@ -15,6 +15,54 @@ class InitializeConversationResponse(ConversationResponse):
     A conversation as returned by the `initialize` endpoint. Extends the shared
     ConversationResponse with the Conversation Kickoff result, which is only available at
     initialization time.
+
+    Examples
+    --------
+    from mavenagi.commons import (
+        ConversationAnalysis,
+        ConversationSummary,
+        EntityId,
+        InitializeConversationResponse,
+    )
+
+    InitializeConversationResponse(
+        conversation_id=EntityId(
+            reference_id="conversation-0",
+            app_id="myapp",
+            organization_id="acme",
+            agent_id="support",
+            type="CONVERSATION",
+        ),
+        deleted=False,
+        open=True,
+        llm_enabled=True,
+        conversation_mode="TEXT",
+        analysis=ConversationAnalysis(),
+        summary=ConversationSummary(
+            action_ids=[],
+            incomplete_action_ids=[],
+            matched_charter_ids=[],
+            matched_charter_names=[],
+            matched_segmented_charter_names=[],
+            insert_count=0,
+            thumbs_up_count=0,
+            thumbs_down_count=0,
+            handoff_count=0,
+            user_message_count=0,
+            bot_message_count=0,
+            human_agents=[],
+            human_agents_with_inserts=[],
+            users=[],
+            user_identifiers=[],
+            involved_app_ids={"myapp"},
+        ),
+        metadata={},
+        all_metadata={},
+        attachments=[],
+        messages=[],
+        execution_mode="LIVE",
+        conversation_kickoff_results=[],
+    )
     """
 
     conversation_kickoff_results: typing_extensions.Annotated[

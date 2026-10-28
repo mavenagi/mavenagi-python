@@ -34,6 +34,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -138,6 +139,7 @@ from mavenagi.commons import EntityIdBase, Precondition_Group
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -301,6 +303,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -386,6 +389,7 @@ from mavenagi.commons import EntityId
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -519,6 +523,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -597,6 +602,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -700,6 +706,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -777,6 +784,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -877,6 +885,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -964,6 +973,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -1160,6 +1170,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -1251,6 +1262,7 @@ from mavenagi.conversation import ConversationFilter
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -1398,6 +1410,7 @@ from mavenagi.conversation import ConversationFilter
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -1489,6 +1502,7 @@ from mavenagi.analytics import (
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -1588,150 +1602,6 @@ otherwise UTC is used.
 </dl>
 </details>
 
-<details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_feedback_table</a>(...)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Deprecated. Use `getEventTable` instead, which reports the same thumbs up/down and insert
-activity as user events.
-
-Retrieves structured feedback data formatted as a table, allowing users to group, filter,
-and define specific metrics to display as columns.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from mavenagi import MavenAGI
-from mavenagi.analytics import (
-    FeedbackColumnDefinition,
-    FeedbackGroupBy,
-    FeedbackMetric_Count,
-)
-from mavenagi.conversation import FeedbackFilter
-
-client = MavenAGI(
-    organization_id="YOUR_ORGANIZATION_ID",
-    agent_id="YOUR_AGENT_ID",
-    app_id="YOUR_APP_ID",
-    app_secret="YOUR_APP_SECRET",
-)
-client.analytics.get_feedback_table(
-    feedback_filter=FeedbackFilter(
-        types=["THUMBS_UP", "INSERT"],
-    ),
-    field_groupings=[
-        FeedbackGroupBy(
-            field="CreatedBy",
-        )
-    ],
-    column_definitions=[
-        FeedbackColumnDefinition(
-            header="feedback_count",
-            metric=FeedbackMetric_Count(),
-        )
-    ],
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**field_groupings:** `typing.Sequence[FeedbackGroupBy]` 
-
-Specifies the fields by which data should be grouped. Each unique combination forms a row. 
-If multiple fields are provided, the result is grouped by their unique value combinations. 
-If empty, all data is aggregated into a single row. 
-Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**column_definitions:** `typing.Sequence[FeedbackColumnDefinition]` 
-
-Specifies the metrics to be displayed as columns.
-Column headers act as keys, with computed metric values as their mapped values.
-There needs to be at least one column definition in the table request.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**time_grouping:** `typing.Optional[TimeInterval]` 
-
-Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
- Example: If set to "DAY," data will be aggregated by day.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**feedback_filter:** `typing.Optional[FeedbackFilter]` — Optional filter applied to refine the feedback data before processing.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**timezone:** `typing.Optional[str]` 
-
-IANA timezone identifier (e.g., "America/Los_Angeles").
-When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
-otherwise UTC is used.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.analytics.<a href="src/mavenagi/analytics/client.py">get_agent_user_table</a>(...)</code></summary>
 <dl>
 <dd>
@@ -1766,6 +1636,7 @@ from mavenagi.users import AgentUserFilter
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -1810,6 +1681,19 @@ Only the `count` metric is supported for agent user tables, so each table will h
 
 Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
  Example: If set to "DAY," data will be aggregated by day.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**field_groupings:** `typing.Optional[typing.Sequence[AgentUserGroupBy]]` 
+
+Specifies the fields by which data should be grouped. Each unique combination forms a row.
+If multiple fields are provided, the result is grouped by their unique value combinations.
+If omitted or empty, all data is aggregated into a single row.
+`CreatedAt` and `UpdatedAt` are rejected here; group by time with `timeGrouping`.
     
 </dd>
 </dl>
@@ -1887,6 +1771,7 @@ from mavenagi.commons import EventFilter
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2027,6 +1912,7 @@ from mavenagi.commons import EventFilter
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2112,6 +1998,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2215,6 +2102,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2288,6 +2176,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2410,6 +2299,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2483,6 +2373,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2565,6 +2456,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2670,6 +2562,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2743,6 +2636,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2812,6 +2706,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2887,6 +2782,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -2995,6 +2891,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -3082,6 +2979,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -3205,6 +3103,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -3334,6 +3233,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -3455,6 +3355,7 @@ from mavenagi.capabilities import CapabilitySimulationInput_Action
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -3562,6 +3463,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -3659,22 +3561,6 @@ staged or already in its snapshot, is left out.
 <dl>
 <dd>
 
-**variant_reference_id:** `typing.Optional[str]` — Deprecated, use `variantId`, which wins when both are set.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**variant_app_id:** `typing.Optional[str]` — Deprecated, use `variantId`, which wins when both are set.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **page:** `typing.Optional[int]` — Page number to return, defaults to 0
     
 </dd>
@@ -3752,6 +3638,7 @@ from mavenagi.commons import EntityId
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -3819,6 +3706,17 @@ a returned execution. At most 100 ids.
 <dd>
 
 **statuses:** `typing.Optional[typing.Sequence[CapabilityExecutionStatus]]` — Only return executions in these states.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**simulation_filter:** `typing.Optional[SimulationFilter]` 
+
+Whether to include executions from simulations. Defaults to `ALL`, so a
+simulation conversation's executions are found by its ID like any other.
     
 </dd>
 </dl>
@@ -3914,6 +3812,7 @@ from mavenagi.commons import (
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -4139,6 +4038,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -4263,6 +4163,7 @@ from mavenagi.commons import (
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -4466,6 +4367,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -4579,6 +4481,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -4694,6 +4597,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -4808,6 +4712,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -4934,6 +4839,7 @@ from mavenagi.commons import EntityIdBase
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -5034,41 +4940,54 @@ After initialization,
 
 ```python
 from mavenagi import MavenAGI
-from mavenagi.commons import EntityIdBase
-from mavenagi.conversation import ConversationMessageRequest
+from mavenagi.commons import (
+    EntityIdBase,
+    EntityIdWithoutAgent,
+    SimulationActionBehavior_CallApp,
+    SimulationActionBehavior_FixedResponse,
+    SimulationActionMock,
+    SimulationContext,
+)
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
 client.conversation.initialize(
     conversation_id=EntityIdBase(
-        reference_id="x",
+        reference_id="simulation-0",
     ),
-    messages=[
-        ConversationMessageRequest(
-            conversation_message_id=EntityIdBase(
-                reference_id="x",
+    simulation_context=SimulationContext(
+        action_mocks=[
+            SimulationActionMock(
+                action_id=EntityIdWithoutAgent(
+                    type="ACTION",
+                    app_id="my-app",
+                    reference_id="refund-order",
+                ),
+                behavior=SimulationActionBehavior_FixedResponse(
+                    response="Refunded order {{orderId}}",
+                ),
             ),
-            user_id=EntityIdBase(
-                reference_id="x",
+            SimulationActionMock(
+                action_id=EntityIdWithoutAgent(
+                    type="ACTION",
+                    app_id="my-app",
+                    reference_id="get-order-status",
+                ),
+                behavior=SimulationActionBehavior_FixedResponse(
+                    status="ERROR",
+                    response="Order {{orderId}} was not found",
+                    error_message="No order with ID {{orderId}}",
+                ),
             ),
-            text="text",
-            user_message_type="USER",
-        ),
-        ConversationMessageRequest(
-            conversation_message_id=EntityIdBase(
-                reference_id="x",
-            ),
-            user_id=EntityIdBase(
-                reference_id="x",
-            ),
-            text="text",
-            user_message_type="USER",
-        ),
-    ],
+        ],
+        default_action_behavior=SimulationActionBehavior_CallApp(),
+    ),
+    messages=[],
 )
 
 ```
@@ -5247,6 +5166,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -5353,6 +5273,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -5391,6 +5312,14 @@ client.conversation.get(
 <dd>
 
 **translation_language:** `typing.Optional[str]` — The language to translate the conversation analysis into
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include_logic:** `typing.Optional[bool]` — Whether to return `logic` on each bot message. Defaults to `true`. Pass `false` to leave it out, which makes the response much smaller.
     
 </dd>
 </dl>
@@ -5454,6 +5383,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -5548,6 +5478,7 @@ from mavenagi.conversation import ConversationMessageRequest
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -5662,6 +5593,7 @@ from mavenagi.commons import AttachmentRequest, EntityIdBase
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -5882,6 +5814,7 @@ from mavenagi.commons import AttachmentRequest, EntityIdBase
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6093,6 +6026,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6171,6 +6105,7 @@ from mavenagi.commons import EntityIdBase
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6303,6 +6238,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6406,6 +6342,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6496,6 +6433,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6593,6 +6531,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6710,6 +6649,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6816,6 +6756,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -6905,9 +6846,11 @@ here - sorting conversations by an intelligent field value is not available. Int
 
 Deliver a message to a user or conversation.
 
+A closed conversation (`open` set to false) takes no new messages and returns a 400.
+
 <Warning>
-Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
-User message delivery is not yet supported.
+Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability.
+User message delivery is not yet supported and returns a 400.
 </Warning>
 </dd>
 </dl>
@@ -6933,6 +6876,7 @@ from mavenagi.conversation import (
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7009,6 +6953,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7113,6 +7058,7 @@ from mavenagi.commons import EntityIdBase
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7197,6 +7143,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7281,6 +7228,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7429,6 +7377,7 @@ from mavenagi.commons import (
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7512,6 +7461,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7615,6 +7565,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7699,6 +7650,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7803,6 +7755,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -7907,6 +7860,7 @@ from mavenagi.commons import EntityId, EntityIdBase, ScopedEntity
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -8080,6 +8034,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -8194,6 +8149,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -8284,6 +8240,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -8366,6 +8323,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -8448,6 +8406,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -8547,6 +8506,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -8630,6 +8590,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -8864,6 +8825,7 @@ from mavenagi.intelligent_fields import EnumOption
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9039,6 +9001,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9149,6 +9112,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9234,14 +9198,6 @@ cannot be deactivated.
 <dl>
 <dd>
 
-**variant_app_id:** `typing.Optional[str]` — Deprecated, use `variantId.appId`, which wins when both are set.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -9296,6 +9252,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9403,6 +9360,7 @@ from mavenagi.intelligent_fields import (
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9583,6 +9541,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9687,6 +9646,7 @@ from mavenagi.commons import EntityIdBase
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9798,6 +9758,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9882,6 +9843,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -9970,6 +9932,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -10059,6 +10022,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -10136,6 +10100,7 @@ from mavenagi.commons import EntityId
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -10307,6 +10272,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -10390,6 +10356,7 @@ from mavenagi.commons import EntityIdWithoutAgent
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -10499,6 +10466,7 @@ from mavenagi.knowledge import KnowledgeBaseVersionProgress
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -10606,6 +10574,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -10687,6 +10656,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -10797,6 +10767,7 @@ from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11024,6 +10995,7 @@ from mavenagi.commons import EntityIdWithoutAgent
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11119,6 +11091,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11215,6 +11188,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11297,9 +11271,9 @@ client.knowledge.patch_knowledge_document(
 
 Create a new organization.
 
-<Tip>
-This endpoint requires additional permissions. Contact support to request access.
-</Tip>
+Only Maven staff hold this permission.
+
+<Note>**Required permission:** `create:organization`</Note>
 </dd>
 </dl>
 </dd>
@@ -11319,6 +11293,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11391,6 +11366,8 @@ client.organizations.create(
 <dd>
 
 Get an organization by ID
+
+<Note>**Required permission:** `read:organization`</Note>
 </dd>
 </dl>
 </dd>
@@ -11410,6 +11387,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11466,9 +11444,7 @@ client.organizations.get(
 Update mutable organization fields.
 All fields will overwrite the existing value on the organization only if provided.
 
-<Tip>
-This endpoint requires additional permissions. Contact support to request access.
-</Tip>
+<Note>**Required permission:** `edit:organization`</Note>
 </dd>
 </dl>
 </dd>
@@ -11488,6 +11464,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11559,9 +11536,7 @@ client.organizations.patch(
 
 Delete an organization.
 
-<Tip>
-This endpoint requires additional permissions. Contact support to request access.
-</Tip>
+<Note>**Required permission:** `delete:organization`</Note>
 </dd>
 </dl>
 </dd>
@@ -11581,6 +11556,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11637,9 +11613,9 @@ client.organizations.delete(
 Retrieves structured conversation data across all organizations, formatted as a table, 
 allowing users to group, filter, and define specific metrics to display as columns.
 
-<Tip>
-This endpoint requires additional permissions. Contact support to request access.
-</Tip>
+Only Maven staff hold this permission.
+
+<Note>**Required permission:** `read:all-organizations`</Note>
 </dd>
 </dl>
 </dd>
@@ -11667,6 +11643,7 @@ from mavenagi.conversation import ConversationFilter
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11791,9 +11768,9 @@ otherwise UTC is used.
 Fetches conversation data across all organizations, visualized in a chart format. 
 Supported chart types include pie chart, date histogram, and stacked bar charts.
 
-<Tip>
-This endpoint requires additional permissions. Contact support to request access.
-</Tip>
+Only Maven staff hold this permission.
+
+<Note>**Required permission:** `read:all-organizations`</Note>
 </dd>
 </dl>
 </dd>
@@ -11819,6 +11796,7 @@ from mavenagi.conversation import ConversationFilter
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11890,6 +11868,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -11994,6 +11973,7 @@ from mavenagi.commons import EntityIdBase, Precondition_Group
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12109,6 +12089,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12193,6 +12174,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12310,6 +12292,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12392,6 +12375,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12477,6 +12461,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12573,6 +12558,7 @@ from mavenagi.commons import EntityIdBase
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12702,6 +12688,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12778,6 +12765,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12854,6 +12842,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12954,6 +12943,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -12974,6 +12964,9 @@ client.users.search()
 <dd>
 
 **sort:** `typing.Optional[AgentUserField]` 
+
+Field to sort results by. `IntelligentField` is not supported here; intelligent fields
+can be filtered on via `filter.intelligentFields` and grouped through the analytics APIs.
     
 </dd>
 </dl>
@@ -13059,6 +13052,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -13147,6 +13141,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -13221,6 +13216,7 @@ from mavenagi.commons import AppUserIdentifier, EntityIdBase, UserData
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -13341,6 +13337,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -13432,6 +13429,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -13520,6 +13518,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )

@@ -52,6 +52,8 @@ class RawUsersClient:
         Parameters
         ----------
         sort : typing.Optional[AgentUserField]
+            Field to sort results by. `IntelligentField` is not supported here; intelligent fields
+            can be filtered on via `filter.intelligentFields` and grouped through the analytics APIs.
 
         filter : typing.Optional[AgentUserFilter]
 
@@ -711,6 +713,8 @@ class AsyncRawUsersClient:
         Parameters
         ----------
         sort : typing.Optional[AgentUserField]
+            Field to sort results by. `IntelligentField` is not supported here; intelligent fields
+            can be filtered on via `filter.intelligentFields` and grouped through the analytics APIs.
 
         filter : typing.Optional[AgentUserFilter]
 

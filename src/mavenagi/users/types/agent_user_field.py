@@ -2,4 +2,4 @@
 
 import typing
 
-AgentUserField = typing.Union[typing.Literal["CreatedAt", "UpdatedAt"], typing.Any]
+AgentUserField = typing.Union[typing.Literal["CreatedAt", "UpdatedAt", "Anonymous", "IntelligentField"], typing.Any]

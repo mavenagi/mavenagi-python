@@ -5,7 +5,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.intelligent_field_filter import IntelligentFieldFilter
-from ...conversation.types.simulation_filter import SimulationFilter
+from ...commons.types.simulation_filter import SimulationFilter
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 

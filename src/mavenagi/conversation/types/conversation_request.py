@@ -15,6 +15,20 @@ from .conversation_message_request import ConversationMessageRequest
 
 
 class ConversationRequest(UniversalBaseModel):
+    """
+    Examples
+    --------
+    from mavenagi.commons import EntityIdBase
+    from mavenagi.conversation import ConversationRequest
+
+    ConversationRequest(
+        conversation_id=EntityIdBase(
+            reference_id="conversation-0",
+        ),
+        messages=[],
+    )
+    """
+
     conversation_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="conversationId")] = pydantic.Field()
     """
     An externally supplied ID to uniquely identify this conversation

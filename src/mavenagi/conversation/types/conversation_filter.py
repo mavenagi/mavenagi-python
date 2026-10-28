@@ -15,10 +15,10 @@ from ...commons.types.quality_reason import QualityReason
 from ...commons.types.resolution_status import ResolutionStatus
 from ...commons.types.response_length import ResponseLength
 from ...commons.types.sentiment import Sentiment
+from ...commons.types.simulation_filter import SimulationFilter
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .billable_filter_field import BillableFilterField
-from .simulation_filter import SimulationFilter
 
 
 class ConversationFilter(UniversalBaseModel):

@@ -339,7 +339,6 @@ class RawIntelligentFieldsClient:
         description: typing.Optional[str] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
         variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        variant_app_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[IntelligentFieldResponse]:
         """
@@ -378,9 +377,6 @@ class RawIntelligentFieldsClient:
         variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
 
-        variant_app_id : typing.Optional[str]
-            Deprecated, use `variantId.appId`, which wins when both are set.
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -402,7 +398,6 @@ class RawIntelligentFieldsClient:
                 "variantId": convert_and_respect_annotation_metadata(
                     object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
-                "variantAppId": variant_app_id,
             },
             headers={
                 "content-type": "application/merge-patch+json",
@@ -1072,7 +1067,6 @@ class AsyncRawIntelligentFieldsClient:
         description: typing.Optional[str] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
         variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        variant_app_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[IntelligentFieldResponse]:
         """
@@ -1111,9 +1105,6 @@ class AsyncRawIntelligentFieldsClient:
         variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
 
-        variant_app_id : typing.Optional[str]
-            Deprecated, use `variantId.appId`, which wins when both are set.
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -1135,7 +1126,6 @@ class AsyncRawIntelligentFieldsClient:
                 "variantId": convert_and_respect_annotation_metadata(
                     object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
-                "variantAppId": variant_app_id,
             },
             headers={
                 "content-type": "application/merge-patch+json",

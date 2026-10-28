@@ -77,6 +77,7 @@ class InboxClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -153,6 +154,7 @@ class InboxClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -252,6 +254,7 @@ class InboxClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -307,6 +310,7 @@ class InboxClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -349,6 +353,7 @@ class InboxClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -389,6 +394,7 @@ class InboxClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -440,6 +446,7 @@ class InboxClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -486,6 +493,7 @@ class InboxClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -558,6 +566,7 @@ class AsyncInboxClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -642,6 +651,7 @@ class AsyncInboxClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -749,6 +759,7 @@ class AsyncInboxClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -812,6 +823,7 @@ class AsyncInboxClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -862,6 +874,7 @@ class AsyncInboxClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -910,6 +923,7 @@ class AsyncInboxClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -969,6 +983,7 @@ class AsyncInboxClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1023,6 +1038,7 @@ class AsyncInboxClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )

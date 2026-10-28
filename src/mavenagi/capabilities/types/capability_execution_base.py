@@ -6,6 +6,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id import EntityId
+from ...commons.types.execution_mode import ExecutionMode
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .capability_execution_completion_reason import CapabilityExecutionCompletionReason
@@ -64,6 +65,12 @@ class CapabilityExecutionBase(UniversalBaseModel):
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")] = pydantic.Field()
     """
     When the execution was recorded. Results are ordered by this field.
+    """
+
+    execution_mode: typing_extensions.Annotated[ExecutionMode, FieldMetadata(alias="executionMode")] = pydantic.Field()
+    """
+    Whether the execution ran on live data or in a simulation. A Conversation Kickoff takes
+    its conversation's mode, and an Event Trigger its event's.
     """
 
     if IS_PYDANTIC_V2:

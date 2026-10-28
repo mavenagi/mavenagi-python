@@ -8,6 +8,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .agent_user_analytics_request import AgentUserAnalyticsRequest
 from .agent_user_column_definition import AgentUserColumnDefinition
+from .agent_user_group_by import AgentUserGroupBy
 from .time_interval import TimeInterval
 
 
@@ -41,6 +42,16 @@ class AgentUserTableRequest(AgentUserAnalyticsRequest):
     """
     Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
      Example: If set to "DAY," data will be aggregated by day.
+    """
+
+    field_groupings: typing_extensions.Annotated[
+        typing.Optional[typing.List[AgentUserGroupBy]], FieldMetadata(alias="fieldGroupings")
+    ] = pydantic.Field(default=None)
+    """
+    Specifies the fields by which data should be grouped. Each unique combination forms a row.
+    If multiple fields are provided, the result is grouped by their unique value combinations.
+    If omitted or empty, all data is aggregated into a single row.
+    `CreatedAt` and `UpdatedAt` are rejected here; group by time with `timeGrouping`.
     """
 
     column_definitions: typing_extensions.Annotated[

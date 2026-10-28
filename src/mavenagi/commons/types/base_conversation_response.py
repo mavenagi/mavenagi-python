@@ -11,6 +11,7 @@ from .conversation_analysis import ConversationAnalysis
 from .conversation_mode import ConversationMode
 from .conversation_summary import ConversationSummary
 from .entity_id import EntityId
+from .execution_mode import ExecutionMode
 from .relationship_type import RelationshipType
 from .response_config import ResponseConfig
 from .simulation_context import SimulationContext
@@ -104,6 +105,13 @@ class BaseConversationResponse(UniversalBaseModel):
     """
     Additional context used for simulation runs. When present, this conversation is treated as a simulation.
     Simulation conversations are excluded from normal search results unless explicitly included via the `simulationFilter` field.
+    """
+
+    execution_mode: typing_extensions.Annotated[ExecutionMode, FieldMetadata(alias="executionMode")] = pydantic.Field()
+    """
+    Whether the conversation runs on live data or is a simulation. A conversation created
+    with a `simulationContext` is a `SIMULATION`, and so are the conversations Maven runs
+    itself, such as evaluations, which have no `simulationContext`.
     """
 
     related_entities: typing_extensions.Annotated[

@@ -13,7 +13,8 @@ from .base_detail_app import BaseDetailApp
 class MarketplaceAppDetail(BaseDetailApp):
     """
     A detailed app definition used when rendering an app detail page within the app directory.
-    The instructions, installationInstructions, previewUrl have their templated values substituted with appropriate values.
+    The installationInstructions and links have their placeholders filled in for the agent, and, once the
+    app is installed, so do the instructions and previewUrl. See [Placeholders](https://developers.mavenagi.com/docs/documentation/configuration-and-integration/placeholders).
     """
 
     installed: AppInstalled = pydantic.Field()

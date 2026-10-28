@@ -26,4 +26,22 @@ class ConversationValueSource_ConversationMetadata(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-ConversationValueSource = ConversationValueSource_ConversationMetadata
+class ConversationValueSource_UserData(UniversalBaseModel):
+    """
+    Where on a conversation a value is read from.
+    """
+
+    type: typing.Literal["userData"] = "userData"
+    key: str
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+ConversationValueSource = typing.Union[ConversationValueSource_ConversationMetadata, ConversationValueSource_UserData]

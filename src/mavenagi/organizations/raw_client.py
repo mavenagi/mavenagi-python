@@ -44,9 +44,9 @@ class RawOrganizationsClient:
         """
         Create a new organization.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `create:organization`</Note>
 
         Parameters
         ----------
@@ -152,6 +152,8 @@ class RawOrganizationsClient:
         """
         Get an organization by ID
 
+        <Note>**Required permission:** `read:organization`</Note>
+
         Parameters
         ----------
         organization_reference_id : str
@@ -251,9 +253,7 @@ class RawOrganizationsClient:
         Update mutable organization fields.
         All fields will overwrite the existing value on the organization only if provided.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `edit:organization`</Note>
 
         Parameters
         ----------
@@ -359,9 +359,7 @@ class RawOrganizationsClient:
         """
         Delete an organization.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `delete:organization`</Note>
 
         Parameters
         ----------
@@ -457,9 +455,9 @@ class RawOrganizationsClient:
         Retrieves structured conversation data across all organizations, formatted as a table,
         allowing users to group, filter, and define specific metrics to display as columns.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -588,9 +586,9 @@ class RawOrganizationsClient:
         Fetches conversation data across all organizations, visualized in a chart format.
         Supported chart types include pie chart, date histogram, and stacked bar charts.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -698,9 +696,9 @@ class AsyncRawOrganizationsClient:
         """
         Create a new organization.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `create:organization`</Note>
 
         Parameters
         ----------
@@ -806,6 +804,8 @@ class AsyncRawOrganizationsClient:
         """
         Get an organization by ID
 
+        <Note>**Required permission:** `read:organization`</Note>
+
         Parameters
         ----------
         organization_reference_id : str
@@ -905,9 +905,7 @@ class AsyncRawOrganizationsClient:
         Update mutable organization fields.
         All fields will overwrite the existing value on the organization only if provided.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `edit:organization`</Note>
 
         Parameters
         ----------
@@ -1013,9 +1011,7 @@ class AsyncRawOrganizationsClient:
         """
         Delete an organization.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `delete:organization`</Note>
 
         Parameters
         ----------
@@ -1111,9 +1107,9 @@ class AsyncRawOrganizationsClient:
         Retrieves structured conversation data across all organizations, formatted as a table,
         allowing users to group, filter, and define specific metrics to display as columns.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -1242,9 +1238,9 @@ class AsyncRawOrganizationsClient:
         Fetches conversation data across all organizations, visualized in a chart format.
         Supported chart types include pie chart, date histogram, and stacked bar charts.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------

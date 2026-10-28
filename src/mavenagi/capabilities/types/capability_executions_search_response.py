@@ -54,6 +54,7 @@ class CapabilityExecutionsSearchResponse(Page):
                 created_at=datetime.datetime.fromisoformat(
                     "2026-08-31 10:30:05+00:00",
                 ),
+                execution_mode="LIVE",
                 event_type="CONVERSATION_CREATED",
                 attempt=1,
             ),
@@ -85,6 +86,7 @@ class CapabilityExecutionsSearchResponse(Page):
                 created_at=datetime.datetime.fromisoformat(
                     "2026-08-31 10:30:00+00:00",
                 ),
+                execution_mode="LIVE",
             ),
         ],
     )

@@ -8,6 +8,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .context_info import ContextInfo
+from .execution_mode import ExecutionMode
 from .scoped_entity import ScopedEntity
 from .session_info import SessionInfo
 from .source_info import SourceInfo
@@ -19,6 +20,14 @@ class EventBaseNoId(UniversalBaseModel):
     source_info: typing_extensions.Annotated[typing.Optional[SourceInfo], FieldMetadata(alias="sourceInfo")] = None
     session_info: typing_extensions.Annotated[typing.Optional[SessionInfo], FieldMetadata(alias="sessionInfo")] = None
     context_info: typing_extensions.Annotated[typing.Optional[ContextInfo], FieldMetadata(alias="contextInfo")] = None
+    execution_mode: typing_extensions.Annotated[
+        typing.Optional[ExecutionMode], FieldMetadata(alias="executionMode")
+    ] = pydantic.Field(default=None)
+    """
+    Whether the event happened on live data or in a simulation. Defaults to `LIVE` when
+    creating an event, and is always set on a returned event. Creating a `SIMULATION` event
+    requires the `create:simulations` permission.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

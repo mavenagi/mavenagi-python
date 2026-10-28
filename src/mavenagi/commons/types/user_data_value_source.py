@@ -3,15 +3,18 @@
 import typing
 
 import pydantic
-from ...conversation.types.feedback_field import FeedbackField
-from ...core.pydantic_utilities import IS_PYDANTIC_V2
-from .row_identifier_base import RowIdentifierBase
+from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class FeedbackRowIdentifier(RowIdentifierBase):
-    field: FeedbackField = pydantic.Field()
+class UserDataValueSource(UniversalBaseModel):
     """
-    Field this grouping was on.
+    A value from the data of the user the conversation is with. User data set by different apps
+    is read together, the same way a segment's `user` condition reads it.
+    """
+
+    key: str = pydantic.Field()
+    """
+    The user data key to read.
     """
 
     if IS_PYDANTIC_V2:

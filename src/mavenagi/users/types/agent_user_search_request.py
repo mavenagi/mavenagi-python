@@ -10,7 +10,12 @@ from .agent_user_filter import AgentUserFilter
 
 
 class AgentUserSearchRequest(BasePaginatedRequest):
-    sort: typing.Optional[AgentUserField] = None
+    sort: typing.Optional[AgentUserField] = pydantic.Field(default=None)
+    """
+    Field to sort results by. `IntelligentField` is not supported here; intelligent fields
+    can be filtered on via `filter.intelligentFields` and grouped through the analytics APIs.
+    """
+
     filter: typing.Optional[AgentUserFilter] = None
 
     if IS_PYDANTIC_V2:

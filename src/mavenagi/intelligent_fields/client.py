@@ -123,6 +123,7 @@ class IntelligentFieldsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -215,6 +216,7 @@ class IntelligentFieldsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -241,7 +243,6 @@ class IntelligentFieldsClient:
         description: typing.Optional[str] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
         variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        variant_app_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldResponse:
         """
@@ -280,9 +281,6 @@ class IntelligentFieldsClient:
         variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
 
-        variant_app_id : typing.Optional[str]
-            Deprecated, use `variantId.appId`, which wins when both are set.
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -297,6 +295,7 @@ class IntelligentFieldsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -313,7 +312,6 @@ class IntelligentFieldsClient:
             description=description,
             enum_options=enum_options,
             variant_id=variant_id,
-            variant_app_id=variant_app_id,
             request_options=request_options,
         )
         return _response.data
@@ -368,6 +366,7 @@ class IntelligentFieldsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -465,6 +464,7 @@ class IntelligentFieldsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -615,6 +615,7 @@ class AsyncIntelligentFieldsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -715,6 +716,7 @@ class AsyncIntelligentFieldsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -747,7 +749,6 @@ class AsyncIntelligentFieldsClient:
         description: typing.Optional[str] = OMIT,
         enum_options: typing.Optional[typing.Sequence[EnumOption]] = OMIT,
         variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        variant_app_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> IntelligentFieldResponse:
         """
@@ -786,9 +787,6 @@ class AsyncIntelligentFieldsClient:
         variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
 
-        variant_app_id : typing.Optional[str]
-            Deprecated, use `variantId.appId`, which wins when both are set.
-
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -805,6 +803,7 @@ class AsyncIntelligentFieldsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -827,7 +826,6 @@ class AsyncIntelligentFieldsClient:
             description=description,
             enum_options=enum_options,
             variant_id=variant_id,
-            variant_app_id=variant_app_id,
             request_options=request_options,
         )
         return _response.data
@@ -884,6 +882,7 @@ class AsyncIntelligentFieldsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -989,6 +988,7 @@ class AsyncIntelligentFieldsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )

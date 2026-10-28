@@ -140,40 +140,19 @@ class ConversationClient:
         --------
         from mavenagi import MavenAGI
         from mavenagi.commons import EntityIdBase
-        from mavenagi.conversation import ConversationMessageRequest
 
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.initialize(
             conversation_id=EntityIdBase(
-                reference_id="x",
+                reference_id="conversation-0",
             ),
-            messages=[
-                ConversationMessageRequest(
-                    conversation_message_id=EntityIdBase(
-                        reference_id="x",
-                    ),
-                    user_id=EntityIdBase(
-                        reference_id="x",
-                    ),
-                    text="text",
-                    user_message_type="USER",
-                ),
-                ConversationMessageRequest(
-                    conversation_message_id=EntityIdBase(
-                        reference_id="x",
-                    ),
-                    user_id=EntityIdBase(
-                        reference_id="x",
-                    ),
-                    text="text",
-                    user_message_type="USER",
-                ),
-            ],
+            messages=[],
         )
         """
         _response = self._raw_client.initialize(
@@ -242,6 +221,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -266,6 +246,7 @@ class ConversationClient:
         *,
         app_id: typing.Optional[str] = None,
         translation_language: typing.Optional[str] = None,
+        include_logic: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -282,6 +263,9 @@ class ConversationClient:
         translation_language : typing.Optional[str]
             The language to translate the conversation analysis into
 
+        include_logic : typing.Optional[bool]
+            Whether to return `logic` on each bot message. Defaults to `true`. Pass `false` to leave it out, which makes the response much smaller.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -296,6 +280,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -304,7 +289,11 @@ class ConversationClient:
         )
         """
         _response = self._raw_client.get(
-            conversation_id, app_id=app_id, translation_language=translation_language, request_options=request_options
+            conversation_id,
+            app_id=app_id,
+            translation_language=translation_language,
+            include_logic=include_logic,
+            request_options=request_options,
         )
         return _response.data
 
@@ -356,6 +345,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -405,6 +395,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -550,6 +541,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -701,6 +693,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -770,6 +763,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -833,6 +827,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -910,6 +905,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -964,6 +960,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1025,6 +1022,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1084,6 +1082,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1147,6 +1146,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1208,6 +1208,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1262,9 +1263,11 @@ class ConversationClient:
         """
         Deliver a message to a user or conversation.
 
+        A closed conversation (`open` set to false) takes no new messages and returns a 400.
+
         <Warning>
-        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
-        User message delivery is not yet supported.
+        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability.
+        User message delivery is not yet supported and returns a 400.
         </Warning>
 
         Parameters
@@ -1290,6 +1293,7 @@ class ConversationClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1425,11 +1429,11 @@ class AsyncConversationClient:
 
         from mavenagi import AsyncMavenAGI
         from mavenagi.commons import EntityIdBase
-        from mavenagi.conversation import ConversationMessageRequest
 
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1438,30 +1442,9 @@ class AsyncConversationClient:
         async def main() -> None:
             await client.conversation.initialize(
                 conversation_id=EntityIdBase(
-                    reference_id="x",
+                    reference_id="conversation-0",
                 ),
-                messages=[
-                    ConversationMessageRequest(
-                        conversation_message_id=EntityIdBase(
-                            reference_id="x",
-                        ),
-                        user_id=EntityIdBase(
-                            reference_id="x",
-                        ),
-                        text="text",
-                        user_message_type="USER",
-                    ),
-                    ConversationMessageRequest(
-                        conversation_message_id=EntityIdBase(
-                            reference_id="x",
-                        ),
-                        user_id=EntityIdBase(
-                            reference_id="x",
-                        ),
-                        text="text",
-                        user_message_type="USER",
-                    ),
-                ],
+                messages=[],
             )
 
 
@@ -1535,6 +1518,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1565,6 +1549,7 @@ class AsyncConversationClient:
         *,
         app_id: typing.Optional[str] = None,
         translation_language: typing.Optional[str] = None,
+        include_logic: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ConversationResponse:
         """
@@ -1580,6 +1565,9 @@ class AsyncConversationClient:
 
         translation_language : typing.Optional[str]
             The language to translate the conversation analysis into
+
+        include_logic : typing.Optional[bool]
+            Whether to return `logic` on each bot message. Defaults to `true`. Pass `false` to leave it out, which makes the response much smaller.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1597,6 +1585,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1611,7 +1600,11 @@ class AsyncConversationClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get(
-            conversation_id, app_id=app_id, translation_language=translation_language, request_options=request_options
+            conversation_id,
+            app_id=app_id,
+            translation_language=translation_language,
+            include_logic=include_logic,
+            request_options=request_options,
         )
         return _response.data
 
@@ -1665,6 +1658,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1722,6 +1716,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1875,6 +1870,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2034,6 +2030,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2112,6 +2109,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2183,6 +2181,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2268,6 +2267,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2330,6 +2330,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2399,6 +2400,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2466,6 +2468,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2537,6 +2540,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2606,6 +2610,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -2667,9 +2672,11 @@ class AsyncConversationClient:
         """
         Deliver a message to a user or conversation.
 
+        A closed conversation (`open` set to false) takes no new messages and returns a 400.
+
         <Warning>
-        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
-        User message delivery is not yet supported.
+        Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability.
+        User message delivery is not yet supported and returns a 400.
         </Warning>
 
         Parameters
@@ -2697,6 +2704,7 @@ class AsyncConversationClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )

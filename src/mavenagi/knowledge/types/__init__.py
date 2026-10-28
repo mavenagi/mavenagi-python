@@ -8,6 +8,7 @@ from .finalize_knowledge_base_version_request import FinalizeKnowledgeBaseVersio
 from .knowledge_base_document_deltas import KnowledgeBaseDocumentDeltas
 from .knowledge_base_field import KnowledgeBaseField
 from .knowledge_base_filter import KnowledgeBaseFilter
+from .knowledge_base_function_bindings import KnowledgeBaseFunctionBindings
 from .knowledge_base_indexing_progress_state import KnowledgeBaseIndexingProgressState
 from .knowledge_base_indexing_status import KnowledgeBaseIndexingStatus
 from .knowledge_base_properties import KnowledgeBaseProperties
@@ -44,6 +45,7 @@ __all__ = [
     "KnowledgeBaseDocumentDeltas",
     "KnowledgeBaseField",
     "KnowledgeBaseFilter",
+    "KnowledgeBaseFunctionBindings",
     "KnowledgeBaseIndexingProgressState",
     "KnowledgeBaseIndexingStatus",
     "KnowledgeBaseProperties",

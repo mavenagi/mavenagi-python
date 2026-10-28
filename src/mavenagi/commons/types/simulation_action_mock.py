@@ -13,10 +13,13 @@ from .simulation_action_behavior import SimulationActionBehavior
 class SimulationActionMock(UniversalBaseModel):
     action_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="actionId")] = pydantic.Field()
     """
-    The action this entry applies to.
+    The action this entry applies to. Its `type` must be `ACTION`.
     """
 
-    behavior: SimulationActionBehavior
+    behavior: SimulationActionBehavior = pydantic.Field()
+    """
+    What the platform does when the agent executes this action.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

@@ -40,6 +40,7 @@ from mavenagi import MavenAGI
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -58,6 +59,7 @@ from mavenagi import AsyncMavenAGI
 client = AsyncMavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )
@@ -96,6 +98,7 @@ from mavenagi.commons import AttachmentRequest, EntityIdBase
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
     agent_id="YOUR_AGENT_ID",
+    token="YOUR_TOKEN",
     app_id="YOUR_APP_ID",
     app_secret="YOUR_APP_SECRET",
 )

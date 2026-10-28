@@ -22,23 +22,26 @@ class BaseDetailApp(BaseApp):
     ] = pydantic.Field(default=None)
     """
     Guidance shown while installing the app, for example how to obtain the credentials it asks for.
+    May use [placeholders](https://developers.mavenagi.com/docs/documentation/configuration-and-integration/placeholders) such as `${agentId}`.
     """
 
     instructions: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Guidance shown once the app is installed.
+    Guidance shown once the app is installed. May use [placeholders](https://developers.mavenagi.com/docs/documentation/configuration-and-integration/placeholders), settings included.
     """
 
     preview_url: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="previewUrl")] = pydantic.Field(
         default=None
     )
     """
-    URL of a preview image or demo for the app's detail page.
+    URL of a preview image or demo for the app's detail page. May use [placeholders](https://developers.mavenagi.com/docs/documentation/configuration-and-integration/placeholders) such as
+    `${appHost}` and `${settings.region}`.
     """
 
     links: typing.List[Link] = pydantic.Field()
     """
-    Supporting links published by the author, such as documentation or a privacy policy.
+    Supporting links published by the author, such as documentation or a privacy policy. Their URLs
+    may use [placeholders](https://developers.mavenagi.com/docs/documentation/configuration-and-integration/placeholders) such as `${appHost}`, but never settings: links are public.
     """
 
     settings_schema: typing_extensions.Annotated["SettingsSchema", FieldMetadata(alias="settingsSchema")] = (

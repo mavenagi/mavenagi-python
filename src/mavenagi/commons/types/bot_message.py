@@ -30,7 +30,7 @@ class BotMessage(ConversationMessageBase):
     status: MessageStatus
     logic: typing.Optional[BotLogic] = pydantic.Field(default=None)
     """
-    The logic that was used to generate the response. Response size may be large; only present on the getConversation request.
+    The logic that was used to generate the response. Response size may be large; only present on the getConversation request, unless it passes `includeLogic=false`.
     """
 
     status_reason: typing_extensions.Annotated[

@@ -134,7 +134,11 @@ from .conversation_round import ConversationRound
 from .conversation_state import ConversationState
 from .conversation_state_precondition import ConversationStatePrecondition
 from .conversation_summary import ConversationSummary
-from .conversation_value_source import ConversationValueSource, ConversationValueSource_ConversationMetadata
+from .conversation_value_source import (
+    ConversationValueSource,
+    ConversationValueSource_ConversationMetadata,
+    ConversationValueSource_UserData,
+)
 from .csat_info import CsatInfo
 from .cursor_page import CursorPage
 from .device_info import DeviceInfo
@@ -321,6 +325,7 @@ from .simulation_action_behavior import (
 from .simulation_action_call_app import SimulationActionCallApp
 from .simulation_action_mock import SimulationActionMock
 from .simulation_context import SimulationContext
+from .simulation_filter import SimulationFilter
 from .source import Source
 from .source_info import SourceInfo
 from .source_type import SourceType
@@ -342,6 +347,7 @@ from .text_settings_schema_entry import TextSettingsSchemaEntry
 from .universal_condition import UniversalCondition, UniversalCondition_Presence
 from .user_conversation_message_type import UserConversationMessageType
 from .user_data import UserData
+from .user_data_value_source import UserDataValueSource
 from .user_data_with_reference import UserDataWithReference
 from .user_event import UserEvent
 from .user_event_name import UserEventName
@@ -474,6 +480,7 @@ __all__ = [
     "ConversationSummary",
     "ConversationValueSource",
     "ConversationValueSource_ConversationMetadata",
+    "ConversationValueSource_UserData",
     "CsatInfo",
     "CursorPage",
     "DeviceInfo",
@@ -661,6 +668,7 @@ __all__ = [
     "SimulationActionCallApp",
     "SimulationActionMock",
     "SimulationContext",
+    "SimulationFilter",
     "Source",
     "SourceInfo",
     "SourceType",
@@ -687,6 +695,7 @@ __all__ = [
     "UniversalCondition_Presence",
     "UserConversationMessageType",
     "UserData",
+    "UserDataValueSource",
     "UserDataWithReference",
     "UserEvent",
     "UserEventName",

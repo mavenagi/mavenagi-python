@@ -13,6 +13,7 @@ from .context_info import ContextInfo
 from .csat_info import CsatInfo
 from .entity_id import EntityId
 from .event_user_info import EventUserInfo
+from .execution_mode import ExecutionMode
 from .feedback_info import FeedbackInfo
 from .page_info import PageInfo
 from .scoped_entity import ScopedEntity
@@ -38,6 +39,9 @@ class EventResponse_UserEvent(UniversalBaseModel):
     source_info: typing_extensions.Annotated[typing.Optional[SourceInfo], FieldMetadata(alias="sourceInfo")] = None
     session_info: typing_extensions.Annotated[typing.Optional[SessionInfo], FieldMetadata(alias="sessionInfo")] = None
     context_info: typing_extensions.Annotated[typing.Optional[ContextInfo], FieldMetadata(alias="contextInfo")] = None
+    execution_mode: typing_extensions.Annotated[
+        typing.Optional[ExecutionMode], FieldMetadata(alias="executionMode")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -60,6 +64,9 @@ class EventResponse_SystemEvent(UniversalBaseModel):
     source_info: typing_extensions.Annotated[typing.Optional[SourceInfo], FieldMetadata(alias="sourceInfo")] = None
     session_info: typing_extensions.Annotated[typing.Optional[SessionInfo], FieldMetadata(alias="sessionInfo")] = None
     context_info: typing_extensions.Annotated[typing.Optional[ContextInfo], FieldMetadata(alias="contextInfo")] = None
+    execution_mode: typing_extensions.Annotated[
+        typing.Optional[ExecutionMode], FieldMetadata(alias="executionMode")
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

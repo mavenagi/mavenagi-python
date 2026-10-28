@@ -12,7 +12,6 @@ from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.error_message import ErrorMessage
 from ..commons.types.event_filter import EventFilter
 from ..conversation.types.conversation_filter import ConversationFilter
-from ..conversation.types.feedback_filter import FeedbackFilter
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
@@ -21,6 +20,7 @@ from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..users.types.agent_user_filter import AgentUserFilter
 from .types.agent_user_column_definition import AgentUserColumnDefinition
+from .types.agent_user_group_by import AgentUserGroupBy
 from .types.agent_user_table_response import AgentUserTableResponse
 from .types.chart_response import ChartResponse
 from .types.conversation_chart_request import ConversationChartRequest
@@ -31,9 +31,6 @@ from .types.event_chart_request import EventChartRequest
 from .types.event_column_definition import EventColumnDefinition
 from .types.event_group_by import EventGroupBy
 from .types.event_table_response import EventTableResponse
-from .types.feedback_column_definition import FeedbackColumnDefinition
-from .types.feedback_group_by import FeedbackGroupBy
-from .types.feedback_table_response import FeedbackTableResponse
 from .types.time_interval import TimeInterval
 
 # this is used as the default value for optional parameters
@@ -413,149 +410,12 @@ class RawAnalyticsClient:
 
             yield _stream()
 
-    def get_feedback_table(
-        self,
-        *,
-        field_groupings: typing.Sequence[FeedbackGroupBy],
-        column_definitions: typing.Sequence[FeedbackColumnDefinition],
-        time_grouping: typing.Optional[TimeInterval] = OMIT,
-        feedback_filter: typing.Optional[FeedbackFilter] = OMIT,
-        timezone: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[FeedbackTableResponse]:
-        """
-        Deprecated. Use `getEventTable` instead, which reports the same thumbs up/down and insert
-        activity as user events.
-
-        Retrieves structured feedback data formatted as a table, allowing users to group, filter,
-        and define specific metrics to display as columns.
-
-        Parameters
-        ----------
-        field_groupings : typing.Sequence[FeedbackGroupBy]
-            Specifies the fields by which data should be grouped. Each unique combination forms a row.
-            If multiple fields are provided, the result is grouped by their unique value combinations.
-            If empty, all data is aggregated into a single row.
-            Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
-
-        column_definitions : typing.Sequence[FeedbackColumnDefinition]
-            Specifies the metrics to be displayed as columns.
-            Column headers act as keys, with computed metric values as their mapped values.
-            There needs to be at least one column definition in the table request.
-
-        time_grouping : typing.Optional[TimeInterval]
-            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
-             Example: If set to "DAY," data will be aggregated by day.
-
-        feedback_filter : typing.Optional[FeedbackFilter]
-            Optional filter applied to refine the feedback data before processing.
-
-        timezone : typing.Optional[str]
-            IANA timezone identifier (e.g., "America/Los_Angeles").
-            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
-            otherwise UTC is used.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[FeedbackTableResponse]
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "v1/tables/feedback",
-            method="POST",
-            json={
-                "timeGrouping": time_grouping,
-                "fieldGroupings": convert_and_respect_annotation_metadata(
-                    object_=field_groupings, annotation=typing.Sequence[FeedbackGroupBy], direction="write"
-                ),
-                "columnDefinitions": convert_and_respect_annotation_metadata(
-                    object_=column_definitions, annotation=typing.Sequence[FeedbackColumnDefinition], direction="write"
-                ),
-                "feedbackFilter": convert_and_respect_annotation_metadata(
-                    object_=feedback_filter, annotation=FeedbackFilter, direction="write"
-                ),
-                "timezone": timezone,
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    FeedbackTableResponse,
-                    parse_obj_as(
-                        type_=FeedbackTableResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 413:
-                raise PayloadTooLargeError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise ServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
     def get_agent_user_table(
         self,
         *,
         column_definitions: typing.Sequence[AgentUserColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
+        field_groupings: typing.Optional[typing.Sequence[AgentUserGroupBy]] = OMIT,
         agent_user_filter: typing.Optional[AgentUserFilter] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -572,6 +432,12 @@ class RawAnalyticsClient:
         time_grouping : typing.Optional[TimeInterval]
             Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
              Example: If set to "DAY," data will be aggregated by day.
+
+        field_groupings : typing.Optional[typing.Sequence[AgentUserGroupBy]]
+            Specifies the fields by which data should be grouped. Each unique combination forms a row.
+            If multiple fields are provided, the result is grouped by their unique value combinations.
+            If omitted or empty, all data is aggregated into a single row.
+            `CreatedAt` and `UpdatedAt` are rejected here; group by time with `timeGrouping`.
 
         agent_user_filter : typing.Optional[AgentUserFilter]
             Optional filter applied to refine the agent user data before processing.
@@ -593,6 +459,9 @@ class RawAnalyticsClient:
             method="POST",
             json={
                 "timeGrouping": time_grouping,
+                "fieldGroupings": convert_and_respect_annotation_metadata(
+                    object_=field_groupings, annotation=typing.Sequence[AgentUserGroupBy], direction="write"
+                ),
                 "columnDefinitions": convert_and_respect_annotation_metadata(
                     object_=column_definitions, annotation=typing.Sequence[AgentUserColumnDefinition], direction="write"
                 ),
@@ -1279,149 +1148,12 @@ class AsyncRawAnalyticsClient:
 
             yield await _stream()
 
-    async def get_feedback_table(
-        self,
-        *,
-        field_groupings: typing.Sequence[FeedbackGroupBy],
-        column_definitions: typing.Sequence[FeedbackColumnDefinition],
-        time_grouping: typing.Optional[TimeInterval] = OMIT,
-        feedback_filter: typing.Optional[FeedbackFilter] = OMIT,
-        timezone: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[FeedbackTableResponse]:
-        """
-        Deprecated. Use `getEventTable` instead, which reports the same thumbs up/down and insert
-        activity as user events.
-
-        Retrieves structured feedback data formatted as a table, allowing users to group, filter,
-        and define specific metrics to display as columns.
-
-        Parameters
-        ----------
-        field_groupings : typing.Sequence[FeedbackGroupBy]
-            Specifies the fields by which data should be grouped. Each unique combination forms a row.
-            If multiple fields are provided, the result is grouped by their unique value combinations.
-            If empty, all data is aggregated into a single row.
-            Note: The field CreatedAt should not be used here, all the time-based grouping should be done using the timeGrouping field.
-
-        column_definitions : typing.Sequence[FeedbackColumnDefinition]
-            Specifies the metrics to be displayed as columns.
-            Column headers act as keys, with computed metric values as their mapped values.
-            There needs to be at least one column definition in the table request.
-
-        time_grouping : typing.Optional[TimeInterval]
-            Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
-             Example: If set to "DAY," data will be aggregated by day.
-
-        feedback_filter : typing.Optional[FeedbackFilter]
-            Optional filter applied to refine the feedback data before processing.
-
-        timezone : typing.Optional[str]
-            IANA timezone identifier (e.g., "America/Los_Angeles").
-            When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
-            otherwise UTC is used.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[FeedbackTableResponse]
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "v1/tables/feedback",
-            method="POST",
-            json={
-                "timeGrouping": time_grouping,
-                "fieldGroupings": convert_and_respect_annotation_metadata(
-                    object_=field_groupings, annotation=typing.Sequence[FeedbackGroupBy], direction="write"
-                ),
-                "columnDefinitions": convert_and_respect_annotation_metadata(
-                    object_=column_definitions, annotation=typing.Sequence[FeedbackColumnDefinition], direction="write"
-                ),
-                "feedbackFilter": convert_and_respect_annotation_metadata(
-                    object_=feedback_filter, annotation=FeedbackFilter, direction="write"
-                ),
-                "timezone": timezone,
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    FeedbackTableResponse,
-                    parse_obj_as(
-                        type_=FeedbackTableResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 413:
-                raise PayloadTooLargeError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise ServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorMessage,
-                        parse_obj_as(
-                            type_=ErrorMessage,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
     async def get_agent_user_table(
         self,
         *,
         column_definitions: typing.Sequence[AgentUserColumnDefinition],
         time_grouping: typing.Optional[TimeInterval] = OMIT,
+        field_groupings: typing.Optional[typing.Sequence[AgentUserGroupBy]] = OMIT,
         agent_user_filter: typing.Optional[AgentUserFilter] = OMIT,
         timezone: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1438,6 +1170,12 @@ class AsyncRawAnalyticsClient:
         time_grouping : typing.Optional[TimeInterval]
             Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
              Example: If set to "DAY," data will be aggregated by day.
+
+        field_groupings : typing.Optional[typing.Sequence[AgentUserGroupBy]]
+            Specifies the fields by which data should be grouped. Each unique combination forms a row.
+            If multiple fields are provided, the result is grouped by their unique value combinations.
+            If omitted or empty, all data is aggregated into a single row.
+            `CreatedAt` and `UpdatedAt` are rejected here; group by time with `timeGrouping`.
 
         agent_user_filter : typing.Optional[AgentUserFilter]
             Optional filter applied to refine the agent user data before processing.
@@ -1459,6 +1197,9 @@ class AsyncRawAnalyticsClient:
             method="POST",
             json={
                 "timeGrouping": time_grouping,
+                "fieldGroupings": convert_and_respect_annotation_metadata(
+                    object_=field_groupings, annotation=typing.Sequence[AgentUserGroupBy], direction="write"
+                ),
                 "columnDefinitions": convert_and_respect_annotation_metadata(
                     object_=column_definitions, annotation=typing.Sequence[AgentUserColumnDefinition], direction="write"
                 ),

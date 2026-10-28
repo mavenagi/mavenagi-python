@@ -6,6 +6,7 @@ from ..commons.types.capability_status import CapabilityStatus
 from ..commons.types.capability_type import CapabilityType
 from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
+from ..commons.types.simulation_filter import SimulationFilter
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawCapabilitiesClient, RawCapabilitiesClient
@@ -94,6 +95,7 @@ class CapabilitiesClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -169,6 +171,7 @@ class CapabilitiesClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -242,6 +245,7 @@ class CapabilitiesClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -308,6 +312,7 @@ class CapabilitiesClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -333,8 +338,6 @@ class CapabilitiesClient:
         user_interaction_required: typing.Optional[bool] = OMIT,
         sort_id: typing.Optional[CapabilitySortField] = OMIT,
         variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        variant_reference_id: typing.Optional[str] = OMIT,
-        variant_app_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -385,12 +388,6 @@ class CapabilitiesClient:
             staged edit if it has one, and a field deleted in the variant, whether the delete is
             staged or already in its snapshot, is left out.
 
-        variant_reference_id : typing.Optional[str]
-            Deprecated, use `variantId`, which wins when both are set.
-
-        variant_app_id : typing.Optional[str]
-            Deprecated, use `variantId`, which wins when both are set.
-
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -414,6 +411,7 @@ class CapabilitiesClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -428,8 +426,6 @@ class CapabilitiesClient:
             user_interaction_required=user_interaction_required,
             sort_id=sort_id,
             variant_id=variant_id,
-            variant_reference_id=variant_reference_id,
-            variant_app_id=variant_app_id,
             page=page,
             size=size,
             sort_desc=sort_desc,
@@ -444,6 +440,7 @@ class CapabilitiesClient:
         capability_types: typing.Optional[typing.Sequence[CapabilityType]] = OMIT,
         capability_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
         statuses: typing.Optional[typing.Sequence[CapabilityExecutionStatus]] = OMIT,
+        simulation_filter: typing.Optional[SimulationFilter] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -481,6 +478,10 @@ class CapabilitiesClient:
         statuses : typing.Optional[typing.Sequence[CapabilityExecutionStatus]]
             Only return executions in these states.
 
+        simulation_filter : typing.Optional[SimulationFilter]
+            Whether to include executions from simulations. Defaults to `ALL`, so a
+            simulation conversation's executions are found by its ID like any other.
+
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -505,6 +506,7 @@ class CapabilitiesClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -525,6 +527,7 @@ class CapabilitiesClient:
             capability_types=capability_types,
             capability_ids=capability_ids,
             statuses=statuses,
+            simulation_filter=simulation_filter,
             page=page,
             size=size,
             sort_desc=sort_desc,
@@ -608,6 +611,7 @@ class AsyncCapabilitiesClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -691,6 +695,7 @@ class AsyncCapabilitiesClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -772,6 +777,7 @@ class AsyncCapabilitiesClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -846,6 +852,7 @@ class AsyncCapabilitiesClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -877,8 +884,6 @@ class AsyncCapabilitiesClient:
         user_interaction_required: typing.Optional[bool] = OMIT,
         sort_id: typing.Optional[CapabilitySortField] = OMIT,
         variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        variant_reference_id: typing.Optional[str] = OMIT,
-        variant_app_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -929,12 +934,6 @@ class AsyncCapabilitiesClient:
             staged edit if it has one, and a field deleted in the variant, whether the delete is
             staged or already in its snapshot, is left out.
 
-        variant_reference_id : typing.Optional[str]
-            Deprecated, use `variantId`, which wins when both are set.
-
-        variant_app_id : typing.Optional[str]
-            Deprecated, use `variantId`, which wins when both are set.
-
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -960,6 +959,7 @@ class AsyncCapabilitiesClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -980,8 +980,6 @@ class AsyncCapabilitiesClient:
             user_interaction_required=user_interaction_required,
             sort_id=sort_id,
             variant_id=variant_id,
-            variant_reference_id=variant_reference_id,
-            variant_app_id=variant_app_id,
             page=page,
             size=size,
             sort_desc=sort_desc,
@@ -996,6 +994,7 @@ class AsyncCapabilitiesClient:
         capability_types: typing.Optional[typing.Sequence[CapabilityType]] = OMIT,
         capability_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
         statuses: typing.Optional[typing.Sequence[CapabilityExecutionStatus]] = OMIT,
+        simulation_filter: typing.Optional[SimulationFilter] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -1033,6 +1032,10 @@ class AsyncCapabilitiesClient:
         statuses : typing.Optional[typing.Sequence[CapabilityExecutionStatus]]
             Only return executions in these states.
 
+        simulation_filter : typing.Optional[SimulationFilter]
+            Whether to include executions from simulations. Defaults to `ALL`, so a
+            simulation conversation's executions are found by its ID like any other.
+
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -1059,6 +1062,7 @@ class AsyncCapabilitiesClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -1085,6 +1089,7 @@ class AsyncCapabilitiesClient:
             capability_types=capability_types,
             capability_ids=capability_ids,
             statuses=statuses,
+            simulation_filter=simulation_filter,
             page=page,
             size=size,
             sort_desc=sort_desc,

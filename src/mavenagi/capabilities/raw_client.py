@@ -13,6 +13,7 @@ from ..commons.types.capability_type import CapabilityType
 from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ..commons.types.error_message import ErrorMessage
+from ..commons.types.simulation_filter import SimulationFilter
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
@@ -557,8 +558,6 @@ class RawCapabilitiesClient:
         user_interaction_required: typing.Optional[bool] = OMIT,
         sort_id: typing.Optional[CapabilitySortField] = OMIT,
         variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        variant_reference_id: typing.Optional[str] = OMIT,
-        variant_app_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -609,12 +608,6 @@ class RawCapabilitiesClient:
             staged edit if it has one, and a field deleted in the variant, whether the delete is
             staged or already in its snapshot, is left out.
 
-        variant_reference_id : typing.Optional[str]
-            Deprecated, use `variantId`, which wins when both are set.
-
-        variant_app_id : typing.Optional[str]
-            Deprecated, use `variantId`, which wins when both are set.
-
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -645,8 +638,6 @@ class RawCapabilitiesClient:
                 "variantId": convert_and_respect_annotation_metadata(
                     object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
-                "variantReferenceId": variant_reference_id,
-                "variantAppId": variant_app_id,
                 "page": page,
                 "size": size,
                 "sortDesc": sort_desc,
@@ -731,6 +722,7 @@ class RawCapabilitiesClient:
         capability_types: typing.Optional[typing.Sequence[CapabilityType]] = OMIT,
         capability_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
         statuses: typing.Optional[typing.Sequence[CapabilityExecutionStatus]] = OMIT,
+        simulation_filter: typing.Optional[SimulationFilter] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -768,6 +760,10 @@ class RawCapabilitiesClient:
         statuses : typing.Optional[typing.Sequence[CapabilityExecutionStatus]]
             Only return executions in these states.
 
+        simulation_filter : typing.Optional[SimulationFilter]
+            Whether to include executions from simulations. Defaults to `ALL`, so a
+            simulation conversation's executions are found by its ID like any other.
+
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -796,6 +792,7 @@ class RawCapabilitiesClient:
                     object_=capability_ids, annotation=typing.Sequence[EntityId], direction="write"
                 ),
                 "statuses": statuses,
+                "simulationFilter": simulation_filter,
                 "page": page,
                 "size": size,
                 "sortDesc": sort_desc,
@@ -1399,8 +1396,6 @@ class AsyncRawCapabilitiesClient:
         user_interaction_required: typing.Optional[bool] = OMIT,
         sort_id: typing.Optional[CapabilitySortField] = OMIT,
         variant_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
-        variant_reference_id: typing.Optional[str] = OMIT,
-        variant_app_id: typing.Optional[str] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -1451,12 +1446,6 @@ class AsyncRawCapabilitiesClient:
             staged edit if it has one, and a field deleted in the variant, whether the delete is
             staged or already in its snapshot, is left out.
 
-        variant_reference_id : typing.Optional[str]
-            Deprecated, use `variantId`, which wins when both are set.
-
-        variant_app_id : typing.Optional[str]
-            Deprecated, use `variantId`, which wins when both are set.
-
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -1487,8 +1476,6 @@ class AsyncRawCapabilitiesClient:
                 "variantId": convert_and_respect_annotation_metadata(
                     object_=variant_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
-                "variantReferenceId": variant_reference_id,
-                "variantAppId": variant_app_id,
                 "page": page,
                 "size": size,
                 "sortDesc": sort_desc,
@@ -1573,6 +1560,7 @@ class AsyncRawCapabilitiesClient:
         capability_types: typing.Optional[typing.Sequence[CapabilityType]] = OMIT,
         capability_ids: typing.Optional[typing.Sequence[EntityId]] = OMIT,
         statuses: typing.Optional[typing.Sequence[CapabilityExecutionStatus]] = OMIT,
+        simulation_filter: typing.Optional[SimulationFilter] = OMIT,
         page: typing.Optional[int] = OMIT,
         size: typing.Optional[int] = OMIT,
         sort_desc: typing.Optional[bool] = OMIT,
@@ -1610,6 +1598,10 @@ class AsyncRawCapabilitiesClient:
         statuses : typing.Optional[typing.Sequence[CapabilityExecutionStatus]]
             Only return executions in these states.
 
+        simulation_filter : typing.Optional[SimulationFilter]
+            Whether to include executions from simulations. Defaults to `ALL`, so a
+            simulation conversation's executions are found by its ID like any other.
+
         page : typing.Optional[int]
             Page number to return, defaults to 0
 
@@ -1638,6 +1630,7 @@ class AsyncRawCapabilitiesClient:
                     object_=capability_ids, annotation=typing.Sequence[EntityId], direction="write"
                 ),
                 "statuses": statuses,
+                "simulationFilter": simulation_filter,
                 "page": page,
                 "size": size,
                 "sortDesc": sort_desc,

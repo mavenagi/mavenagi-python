@@ -10,12 +10,20 @@ from ...core.serialization import FieldMetadata
 from .event_type import EventType
 from .feedback_type import FeedbackType
 from .scoped_entity import ScopedEntity
+from .simulation_filter import SimulationFilter
 from .system_event_name import SystemEventName
 from .user_event_name import UserEventName
 
 
 class EventFilter(UniversalBaseModel):
     search: typing.Optional[str] = None
+    simulation_filter: typing_extensions.Annotated[
+        typing.Optional[SimulationFilter], FieldMetadata(alias="simulationFilter")
+    ] = pydantic.Field(default=None)
+    """
+    Whether to include simulation events in search results. Defaults to only non-simulation events.
+    """
+
     created_after: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAfter")] = None
     created_before: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdBefore")] = (
         None

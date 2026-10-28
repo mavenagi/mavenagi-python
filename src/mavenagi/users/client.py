@@ -52,6 +52,8 @@ class UsersClient:
         Parameters
         ----------
         sort : typing.Optional[AgentUserField]
+            Field to sort results by. `IntelligentField` is not supported here; intelligent fields
+            can be filtered on via `filter.intelligentFields` and grouped through the analytics APIs.
 
         filter : typing.Optional[AgentUserFilter]
 
@@ -78,6 +80,7 @@ class UsersClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -115,6 +118,7 @@ class UsersClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -163,6 +167,7 @@ class UsersClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -220,6 +225,7 @@ class UsersClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -282,6 +288,7 @@ class UsersClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -334,6 +341,7 @@ class UsersClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -378,6 +386,8 @@ class AsyncUsersClient:
         Parameters
         ----------
         sort : typing.Optional[AgentUserField]
+            Field to sort results by. `IntelligentField` is not supported here; intelligent fields
+            can be filtered on via `filter.intelligentFields` and grouped through the analytics APIs.
 
         filter : typing.Optional[AgentUserFilter]
 
@@ -406,6 +416,7 @@ class AsyncUsersClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -451,6 +462,7 @@ class AsyncUsersClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -509,6 +521,7 @@ class AsyncUsersClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -574,6 +587,7 @@ class AsyncUsersClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -644,6 +658,7 @@ class AsyncUsersClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -704,6 +719,7 @@ class AsyncUsersClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )

@@ -50,6 +50,7 @@ class MavenAGI:
 
     organization_id : str
     agent_id : str
+    token : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
     app_id : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
     app_secret : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
     headers : typing.Optional[typing.Dict[str, str]]
@@ -71,6 +72,7 @@ class MavenAGI:
     client = MavenAGI(
         organization_id="YOUR_ORGANIZATION_ID",
         agent_id="YOUR_AGENT_ID",
+        token="YOUR_TOKEN",
         app_id="YOUR_APP_ID",
         app_secret="YOUR_APP_SECRET",
     )
@@ -83,6 +85,7 @@ class MavenAGI:
         environment: MavenAGIEnvironment = MavenAGIEnvironment.PRODUCTION,
         organization_id: str,
         agent_id: str,
+        token: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("MAVENAGI_TOKEN"),
         app_id: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("MAVENAGI_APP_ID"),
         app_secret: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("MAVENAGI_APP_SECRET"),
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -97,6 +100,7 @@ class MavenAGI:
             base_url=_get_base_url(base_url=base_url, environment=environment),
             organization_id=organization_id,
             agent_id=agent_id,
+            token=token,
             app_id=app_id,
             app_secret=app_secret,
             headers=headers,
@@ -151,6 +155,7 @@ class AsyncMavenAGI:
 
     organization_id : str
     agent_id : str
+    token : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
     app_id : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
     app_secret : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
     headers : typing.Optional[typing.Dict[str, str]]
@@ -172,6 +177,7 @@ class AsyncMavenAGI:
     client = AsyncMavenAGI(
         organization_id="YOUR_ORGANIZATION_ID",
         agent_id="YOUR_AGENT_ID",
+        token="YOUR_TOKEN",
         app_id="YOUR_APP_ID",
         app_secret="YOUR_APP_SECRET",
     )
@@ -184,6 +190,7 @@ class AsyncMavenAGI:
         environment: MavenAGIEnvironment = MavenAGIEnvironment.PRODUCTION,
         organization_id: str,
         agent_id: str,
+        token: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("MAVENAGI_TOKEN"),
         app_id: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("MAVENAGI_APP_ID"),
         app_secret: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("MAVENAGI_APP_SECRET"),
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -198,6 +205,7 @@ class AsyncMavenAGI:
             base_url=_get_base_url(base_url=base_url, environment=environment),
             organization_id=organization_id,
             agent_id=agent_id,
+            token=token,
             app_id=app_id,
             app_secret=app_secret,
             headers=headers,

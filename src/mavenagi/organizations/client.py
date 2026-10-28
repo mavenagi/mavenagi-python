@@ -44,9 +44,9 @@ class OrganizationsClient:
         """
         Create a new organization.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `create:organization`</Note>
 
         Parameters
         ----------
@@ -73,6 +73,7 @@ class OrganizationsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -93,6 +94,8 @@ class OrganizationsClient:
         """
         Get an organization by ID
 
+        <Note>**Required permission:** `read:organization`</Note>
+
         Parameters
         ----------
         organization_reference_id : str
@@ -112,6 +115,7 @@ class OrganizationsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -134,9 +138,7 @@ class OrganizationsClient:
         Update mutable organization fields.
         All fields will overwrite the existing value on the organization only if provided.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `edit:organization`</Note>
 
         Parameters
         ----------
@@ -163,6 +165,7 @@ class OrganizationsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -181,9 +184,7 @@ class OrganizationsClient:
         """
         Delete an organization.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `delete:organization`</Note>
 
         Parameters
         ----------
@@ -204,6 +205,7 @@ class OrganizationsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -228,9 +230,9 @@ class OrganizationsClient:
         Retrieves structured conversation data across all organizations, formatted as a table,
         allowing users to group, filter, and define specific metrics to display as columns.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -276,6 +278,7 @@ class OrganizationsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -327,9 +330,9 @@ class OrganizationsClient:
         Fetches conversation data across all organizations, visualized in a chart format.
         Supported chart types include pie chart, date histogram, and stacked bar charts.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -355,6 +358,7 @@ class OrganizationsClient:
         client = MavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -400,9 +404,9 @@ class AsyncOrganizationsClient:
         """
         Create a new organization.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `create:organization`</Note>
 
         Parameters
         ----------
@@ -431,6 +435,7 @@ class AsyncOrganizationsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -457,6 +462,8 @@ class AsyncOrganizationsClient:
         """
         Get an organization by ID
 
+        <Note>**Required permission:** `read:organization`</Note>
+
         Parameters
         ----------
         organization_reference_id : str
@@ -478,6 +485,7 @@ class AsyncOrganizationsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -506,9 +514,7 @@ class AsyncOrganizationsClient:
         Update mutable organization fields.
         All fields will overwrite the existing value on the organization only if provided.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `edit:organization`</Note>
 
         Parameters
         ----------
@@ -537,6 +543,7 @@ class AsyncOrganizationsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -561,9 +568,7 @@ class AsyncOrganizationsClient:
         """
         Delete an organization.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `delete:organization`</Note>
 
         Parameters
         ----------
@@ -586,6 +591,7 @@ class AsyncOrganizationsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -616,9 +622,9 @@ class AsyncOrganizationsClient:
         Retrieves structured conversation data across all organizations, formatted as a table,
         allowing users to group, filter, and define specific metrics to display as columns.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -666,6 +672,7 @@ class AsyncOrganizationsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
@@ -723,9 +730,9 @@ class AsyncOrganizationsClient:
         Fetches conversation data across all organizations, visualized in a chart format.
         Supported chart types include pie chart, date histogram, and stacked bar charts.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -753,6 +760,7 @@ class AsyncOrganizationsClient:
         client = AsyncMavenAGI(
             organization_id="YOUR_ORGANIZATION_ID",
             agent_id="YOUR_AGENT_ID",
+            token="YOUR_TOKEN",
             app_id="YOUR_APP_ID",
             app_secret="YOUR_APP_SECRET",
         )
