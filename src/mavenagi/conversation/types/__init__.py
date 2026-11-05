@@ -5,6 +5,7 @@
 from .action_form_attachment import ActionFormAttachment
 from .action_form_request_param_value import ActionFormRequestParamValue
 from .ask_request import AskRequest
+from .ask_request_base import AskRequestBase
 from .ask_stream_action_event import AskStreamActionEvent
 from .ask_stream_chart_event import AskStreamChartEvent
 from .ask_stream_end_event import AskStreamEndEvent
@@ -54,6 +55,7 @@ __all__ = [
     "ActionFormAttachment",
     "ActionFormRequestParamValue",
     "AskRequest",
+    "AskRequestBase",
     "AskStreamActionEvent",
     "AskStreamChartEvent",
     "AskStreamEndEvent",

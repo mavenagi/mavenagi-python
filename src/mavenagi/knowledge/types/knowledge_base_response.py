@@ -101,11 +101,9 @@ class KnowledgeBaseResponse(KnowledgeBaseProperties):
         KnowledgeBaseVersionStatus, FieldMetadata(alias="mostRecentVersionStatus")
     ] = pydantic.Field()
     """
-    The status of the most recent version of the knowledge base.
-    The `activeVersionId` will only be populated if this status is `SUCCEEDED`.
-    Use the `listKnowledgeBaseVersions` endpoint to get the full list of versions.
-    
-    Shown in Agent Designer as "Refresh status".
+    Deprecated. Do not use this field: it is not the status of the most recent version and is
+    often inaccurate. To get the status of the latest refresh, call
+    `listKnowledgeBaseVersions` and read the first version.
     """
 
     type: KnowledgeBaseType = pydantic.Field()

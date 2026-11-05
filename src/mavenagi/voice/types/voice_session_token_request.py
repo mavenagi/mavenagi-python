@@ -14,6 +14,7 @@ class VoiceSessionTokenRequest(UniversalBaseModel):
     """
     The end user identity for the voice session.
     Must contain only alphanumeric characters, dots, hyphens, or underscores.
+    For "webrtc" tokens, at most 184 characters. A longer value fails with 400.
     """
 
     type: VoiceTokenType = pydantic.Field()
@@ -28,12 +29,13 @@ class VoiceSessionTokenRequest(UniversalBaseModel):
     """
     Arbitrary key-value metadata to associate with this session (e.g., conversationId, topic).
     
-    **Constraints**: at most 50 keys, each key up to 256 characters, each value up to 4096 characters.
+    **Constraints**: at most 10 keys, each key up to 256 characters, each value up to 500 characters.
+    A request that exceeds any limit fails with 400 and lists each field that exceeded it; values are never truncated.
+    For WebRTC calls, each key is stored in conversation metadata as `custom_<key>`.
     Values are stored as-is — for small data, embed the value directly (e.g., `"callerName": "John Doe"`).
     
     For WebRTC tokens, this data is stored server-side and referenced by a secure ID
     encoded in the token identity, ensuring it cannot be tampered with by the client.
-    For WebSocket tokens, clients can also pass data directly in the Config message.
     """
 
     if IS_PYDANTIC_V2:

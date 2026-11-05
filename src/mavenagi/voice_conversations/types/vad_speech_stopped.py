@@ -7,12 +7,12 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from .server_event_base import ServerEventBase
 
 
-class UserStartedSpeaking(ServerEventBase):
+class VadSpeechStopped(ServerEventBase):
     """
-    User started speaking
+    Voice activity detection heard the user stop speaking.
     """
 
-    type: typing.Literal["user_started_speaking"] = "user_started_speaking"
+    type: typing.Literal["vad_speech_stopped"] = "vad_speech_stopped"
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

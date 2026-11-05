@@ -202,7 +202,9 @@ class AppDirectoryClient:
 
     def uninstall(self, app_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
         """
-        Uninstalls the app from the agent.
+        Uninstalls the app from the agent, and deletes the actions and triggers it created.
+
+        <Note>**Required permission:** `install:apps`</Note>
 
         Parameters
         ----------
@@ -540,7 +542,9 @@ class AsyncAppDirectoryClient:
 
     async def uninstall(self, app_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
         """
-        Uninstalls the app from the agent.
+        Uninstalls the app from the agent, and deletes the actions and triggers it created.
+
+        <Note>**Required permission:** `install:apps`</Note>
 
         Parameters
         ----------

@@ -3,29 +3,31 @@
 # isort: skip_file
 
 from .agent_audio_chunk import AgentAudioChunk
-from .agent_transcript import AgentTranscript
 from .audio_format import AudioFormat
+from .client_mark import ClientMark
 from .config import Config
-from .conversation_ended import ConversationEnded
 from .conversation_ready import ConversationReady
 from .error import Error
+from .mark import Mark
 from .server_event_base import ServerEventBase
+from .transcript import Transcript
+from .transcript_role import TranscriptRole
 from .user_audio_chunk import UserAudioChunk
-from .user_finished_speaking import UserFinishedSpeaking
-from .user_started_speaking import UserStartedSpeaking
-from .user_transcript import UserTranscript
+from .vad_speech_started import VadSpeechStarted
+from .vad_speech_stopped import VadSpeechStopped
 
 __all__ = [
     "AgentAudioChunk",
-    "AgentTranscript",
     "AudioFormat",
+    "ClientMark",
     "Config",
-    "ConversationEnded",
     "ConversationReady",
     "Error",
+    "Mark",
     "ServerEventBase",
+    "Transcript",
+    "TranscriptRole",
     "UserAudioChunk",
-    "UserFinishedSpeaking",
-    "UserStartedSpeaking",
-    "UserTranscript",
+    "VadSpeechStarted",
+    "VadSpeechStopped",
 ]

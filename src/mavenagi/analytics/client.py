@@ -54,6 +54,8 @@ class AnalyticsClient:
         """
         Retrieves structured conversation data formatted as a table, allowing users to group, filter, and define specific metrics to display as columns.
 
+        <Note>**Required permission:** `read:conversations`</Note>
+
         Parameters
         ----------
         field_groupings : typing.Sequence[ConversationGroupBy]
@@ -149,6 +151,8 @@ class AnalyticsClient:
         """
         Fetches conversation data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
 
+        <Note>**Required permission:** `read:conversations`</Note>
+
         Parameters
         ----------
         request : ConversationChartRequest
@@ -206,6 +210,8 @@ class AnalyticsClient:
         Export the conversation analytics table to a CSV file.
 
         This outputs the current table view defined by the request. For most programmatic use cases, prefer `getConversationTable` and format client-side. The CSV format may change and should not be relied upon by code consumers. A maximum of 10,000 rows can be exported at a time.
+
+        <Note>**Required permission:** `read:conversations`</Note>
 
         Parameters
         ----------
@@ -296,6 +302,7 @@ class AnalyticsClient:
     ) -> AgentUserTableResponse:
         """
         Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -375,6 +382,7 @@ class AnalyticsClient:
     ) -> EventTableResponse:
         """
         Retrieves structured event data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+        <Note>**Required permission:** `read:events`</Note>
 
         Parameters
         ----------
@@ -458,6 +466,8 @@ class AnalyticsClient:
         """
         Fetches event data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
 
+        <Note>**Required permission:** `read:events`</Note>
+
         Parameters
         ----------
         request : EventChartRequest
@@ -529,6 +539,8 @@ class AsyncAnalyticsClient:
     ) -> ConversationTableResponse:
         """
         Retrieves structured conversation data formatted as a table, allowing users to group, filter, and define specific metrics to display as columns.
+
+        <Note>**Required permission:** `read:conversations`</Note>
 
         Parameters
         ----------
@@ -633,6 +645,8 @@ class AsyncAnalyticsClient:
         """
         Fetches conversation data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
 
+        <Note>**Required permission:** `read:conversations`</Note>
+
         Parameters
         ----------
         request : ConversationChartRequest
@@ -698,6 +712,8 @@ class AsyncAnalyticsClient:
         Export the conversation analytics table to a CSV file.
 
         This outputs the current table view defined by the request. For most programmatic use cases, prefer `getConversationTable` and format client-side. The CSV format may change and should not be relied upon by code consumers. A maximum of 10,000 rows can be exported at a time.
+
+        <Note>**Required permission:** `read:conversations`</Note>
 
         Parameters
         ----------
@@ -797,6 +813,7 @@ class AsyncAnalyticsClient:
     ) -> AgentUserTableResponse:
         """
         Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -884,6 +901,7 @@ class AsyncAnalyticsClient:
     ) -> EventTableResponse:
         """
         Retrieves structured event data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+        <Note>**Required permission:** `read:events`</Note>
 
         Parameters
         ----------
@@ -974,6 +992,8 @@ class AsyncAnalyticsClient:
     ) -> ChartResponse:
         """
         Fetches event data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+
+        <Note>**Required permission:** `read:events`</Note>
 
         Parameters
         ----------

@@ -15,7 +15,7 @@ class AgentAudioChunk(ServerEventBase):
     type: typing.Literal["agent_audio_chunk"] = "agent_audio_chunk"
     data: str = pydantic.Field()
     """
-    Base64-encoded AI audio data
+    Base64-encoded agent audio, in the `outputFormat` from the `Config` message.
     """
 
     if IS_PYDANTIC_V2:

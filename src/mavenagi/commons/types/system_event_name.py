@@ -17,6 +17,7 @@ SystemEventName = typing.Union[
         "SYNC_FAILED",
         "CONVERSATION_CLOSED",
         "BOT_REPLY_CREATED",
+        "USER_MESSAGE_CREATED",
         "INTELLIGENT_FIELD_VALUE_CHANGED",
     ],
     typing.Any,

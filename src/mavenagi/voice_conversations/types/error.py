@@ -14,7 +14,15 @@ class Error(ServerEventBase):
 
     type: typing.Literal["error"] = "error"
     message: str
-    code: str
+    code: str = pydantic.Field()
+    """
+    One of:
+    - `invalid_message`: the server could not parse a client message, or its `type` is unknown.
+    - `invalid_configuration`: `outputFormat` differs from `inputFormat`.
+    - `invalid_audio_format`: the format is not `PCM_8000` or `MULAW_8000`.
+    - `initialization_error`: the connection failed before the conversation started, including authentication and rate-limit failures.
+    - `internal_error`: the voice model reported an error during the conversation.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

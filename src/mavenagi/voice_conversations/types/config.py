@@ -17,22 +17,12 @@ class Config(UniversalBaseModel):
     type: typing.Literal["config"] = "config"
     input_format: typing_extensions.Annotated[AudioFormat, FieldMetadata(alias="inputFormat")] = pydantic.Field()
     """
-    The input audio format from the client.
+    The audio format the client sends. Must be `PCM_8000` or `MULAW_8000`.
     """
 
     output_format: typing_extensions.Annotated[AudioFormat, FieldMetadata(alias="outputFormat")] = pydantic.Field()
     """
-    The output audio format to send to the client.
-    """
-
-    conversation_id: typing_extensions.Annotated[str, FieldMetadata(alias="conversationId")] = pydantic.Field()
-    """
-    The conversation ID which was created prior to starting this conversation.
-    """
-
-    app_id: typing_extensions.Annotated[str, FieldMetadata(alias="appId")] = pydantic.Field()
-    """
-    The app ID this conversation ID is associated with.
+    The audio format the server sends. Must equal `inputFormat`, or the server returns an `invalid_configuration` error.
     """
 
     if IS_PYDANTIC_V2:

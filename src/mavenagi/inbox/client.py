@@ -47,6 +47,12 @@ class InboxClient:
         """
         Retrieve a paginated list of inbox items for an agent.
 
+        Pagination is limited to the first 10,000 matching inbox items: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`. A search whose results include a Duplicate Documents item also needs `read:documents`.</Note>
+
         Parameters
         ----------
         filter : typing.Optional[InboxFilter]
@@ -104,6 +110,8 @@ class InboxClient:
     ) -> InboxItem:
         """
         Update an inbox item or create it if it doesn't exist.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -218,6 +226,8 @@ class InboxClient:
         The `appId` field can be provided to update a inbox item owned by a different app.
         All other fields will overwrite the existing value on the inbox item only if provided.
 
+        <Note>**Required permission:** `edit:agents`. Patching a Duplicate Documents item also needs `read:documents`.</Note>
+
         Parameters
         ----------
         inbox_item_id : str
@@ -285,6 +295,8 @@ class InboxClient:
         """
         Update inbox item tag fields. All tags provided will overwrite the existing tags on the inbox item.
 
+        <Note>**Required permission:** `edit:agents`. Updating tags on a Missing Knowledge or Duplicate Documents item also needs `read:agents`, and on a Duplicate Documents item `read:documents` too.</Note>
+
         Parameters
         ----------
         inbox_item_id : str
@@ -330,6 +342,8 @@ class InboxClient:
         """
         Retrieve details of a specific inbox item by its ID.
 
+        <Note>**Required permission:** `read:agents`. Getting a Duplicate Documents item also needs `read:documents`.</Note>
+
         Parameters
         ----------
         inbox_item_id : str
@@ -370,6 +384,8 @@ class InboxClient:
     ) -> InboxItemFix:
         """
         Retrieve a suggested fix. Includes document information if the fix is a Missing Knowledge suggestion.
+
+        <Note>**Required permission:** `read:agents`. Getting a Duplicate Documents fix also needs `read:documents`.</Note>
 
         Parameters
         ----------
@@ -417,6 +433,8 @@ class InboxClient:
     ) -> None:
         """
         Apply a list of fixes belonging to an inbox item.
+
+        <Note>**Required permission:** `edit:agents`. Applying fixes also needs `read:agents`. A Missing Knowledge fix also needs `create:documents`, and a Duplicate Documents fix also needs `read:documents`, `edit:documents` and `create:documents`.</Note>
 
         Parameters
         ----------
@@ -470,6 +488,8 @@ class InboxClient:
     ) -> None:
         """
         Ignore a specific inbox item by its ID.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -533,6 +553,12 @@ class AsyncInboxClient:
     ) -> InboxSearchResponse:
         """
         Retrieve a paginated list of inbox items for an agent.
+
+        Pagination is limited to the first 10,000 matching inbox items: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`. A search whose results include a Duplicate Documents item also needs `read:documents`.</Note>
 
         Parameters
         ----------
@@ -599,6 +625,8 @@ class AsyncInboxClient:
     ) -> InboxItem:
         """
         Update an inbox item or create it if it doesn't exist.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -721,6 +749,8 @@ class AsyncInboxClient:
         The `appId` field can be provided to update a inbox item owned by a different app.
         All other fields will overwrite the existing value on the inbox item only if provided.
 
+        <Note>**Required permission:** `edit:agents`. Patching a Duplicate Documents item also needs `read:documents`.</Note>
+
         Parameters
         ----------
         inbox_item_id : str
@@ -796,6 +826,8 @@ class AsyncInboxClient:
         """
         Update inbox item tag fields. All tags provided will overwrite the existing tags on the inbox item.
 
+        <Note>**Required permission:** `edit:agents`. Updating tags on a Missing Knowledge or Duplicate Documents item also needs `read:agents`, and on a Duplicate Documents item `read:documents` too.</Note>
+
         Parameters
         ----------
         inbox_item_id : str
@@ -849,6 +881,8 @@ class AsyncInboxClient:
         """
         Retrieve details of a specific inbox item by its ID.
 
+        <Note>**Required permission:** `read:agents`. Getting a Duplicate Documents item also needs `read:documents`.</Note>
+
         Parameters
         ----------
         inbox_item_id : str
@@ -897,6 +931,8 @@ class AsyncInboxClient:
     ) -> InboxItemFix:
         """
         Retrieve a suggested fix. Includes document information if the fix is a Missing Knowledge suggestion.
+
+        <Note>**Required permission:** `read:agents`. Getting a Duplicate Documents fix also needs `read:documents`.</Note>
 
         Parameters
         ----------
@@ -952,6 +988,8 @@ class AsyncInboxClient:
     ) -> None:
         """
         Apply a list of fixes belonging to an inbox item.
+
+        <Note>**Required permission:** `edit:agents`. Applying fixes also needs `read:agents`. A Missing Knowledge fix also needs `create:documents`, and a Duplicate Documents fix also needs `read:documents`, `edit:documents` and `create:documents`.</Note>
 
         Parameters
         ----------
@@ -1013,6 +1051,8 @@ class AsyncInboxClient:
     ) -> None:
         """
         Ignore a specific inbox item by its ID.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------

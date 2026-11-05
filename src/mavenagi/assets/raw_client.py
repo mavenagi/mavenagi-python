@@ -32,6 +32,8 @@ class RawAssetsClient:
         Initiate an upload.
         Returns a pre-signed URL for direct file upload and an asset ID for subsequent operations.
 
+        <Note>**Required permission:** `ask:agent`</Note>
+
         Parameters
         ----------
         type : str
@@ -162,6 +164,8 @@ class RawAssetsClient:
         Commit an upload after successful file transfer.
         Updates the asset status and makes it available for use.
 
+        <Note>**Required permission:** `ask:agent`</Note>
+
         Parameters
         ----------
         asset_reference_id : str
@@ -260,6 +264,8 @@ class AsyncRawAssetsClient:
         """
         Initiate an upload.
         Returns a pre-signed URL for direct file upload and an asset ID for subsequent operations.
+
+        <Note>**Required permission:** `ask:agent`</Note>
 
         Parameters
         ----------
@@ -390,6 +396,8 @@ class AsyncRawAssetsClient:
         """
         Commit an upload after successful file transfer.
         Updates the asset status and makes it available for use.
+
+        <Note>**Required permission:** `ask:agent`</Note>
 
         Parameters
         ----------

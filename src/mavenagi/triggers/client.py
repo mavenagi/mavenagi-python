@@ -45,6 +45,8 @@ class TriggersClient:
         at once. It returns the fields every capability shares rather than the whole Event
         Trigger; fetch one by its kind and reference ID for the rest.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[TriggerField]
@@ -96,6 +98,8 @@ class TriggersClient:
     ) -> EventTriggerResponse:
         """
         Update an event trigger or create it if it doesn't exist.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -173,6 +177,8 @@ class TriggersClient:
 
         Get an event trigger by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         trigger_reference_id : str
@@ -209,6 +215,8 @@ class TriggersClient:
         of capability the same way.
 
         Delete an event trigger
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -254,6 +262,8 @@ class TriggersClient:
 
         `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status` also turns a trigger on and
         off, the same way it publishes and unpublishes any kind of capability.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -327,6 +337,8 @@ class AsyncTriggersClient:
         at once. It returns the fields every capability shares rather than the whole Event
         Trigger; fetch one by its kind and reference ID for the rest.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[TriggerField]
@@ -386,6 +398,8 @@ class AsyncTriggersClient:
     ) -> EventTriggerResponse:
         """
         Update an event trigger or create it if it doesn't exist.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -471,6 +485,8 @@ class AsyncTriggersClient:
 
         Get an event trigger by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         trigger_reference_id : str
@@ -517,6 +533,8 @@ class AsyncTriggersClient:
         of capability the same way.
 
         Delete an event trigger
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -570,6 +588,8 @@ class AsyncTriggersClient:
 
         `PATCH /v1/capabilities/TRIGGER/{referenceId}` with a `status` also turns a trigger on and
         off, the same way it publishes and unpublishes any kind of capability.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------

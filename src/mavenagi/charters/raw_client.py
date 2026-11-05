@@ -72,6 +72,8 @@ class RawChartersClient:
         pick only the highest ranked (lowest numerical value) leaf to include in
         the round. userRank may have gaps.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         charter_id : EntityIdBase
@@ -268,6 +270,8 @@ class RawChartersClient:
         """
         Get a charter by its reference ID.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -409,6 +413,8 @@ class RawChartersClient:
         **userRank conflict resolution**: When `userRank` is set to a value already held by a
         sibling, siblings at that rank and above are shifted up by 1 (like linked list semantics).
         The caller does not need to manage uniqueness explicitly.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -591,6 +597,8 @@ class RawChartersClient:
 
         Deleted charters cannot be modified.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -718,6 +726,12 @@ class RawChartersClient:
         Results are ordered by the `sort` field (defaults to CreatedAt). Use `sortDesc`
         to control direction (defaults to descending). An empty filter list is
         equivalent to omitting the field (no filter applied).
+
+        Pagination is limited to the first 10,000 matching charters: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -847,6 +861,8 @@ class RawChartersClient:
 
         Returns 404 if the charter does not exist or is deleted.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -975,6 +991,8 @@ class RawChartersClient:
         in one request.
 
         DELETED charters are never returned.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -1131,6 +1149,8 @@ class AsyncRawChartersClient:
         for leaf charters as we enforce mutual exclusion among the leafs and
         pick only the highest ranked (lowest numerical value) leaf to include in
         the round. userRank may have gaps.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -1328,6 +1348,8 @@ class AsyncRawChartersClient:
         """
         Get a charter by its reference ID.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -1469,6 +1491,8 @@ class AsyncRawChartersClient:
         **userRank conflict resolution**: When `userRank` is set to a value already held by a
         sibling, siblings at that rank and above are shifted up by 1 (like linked list semantics).
         The caller does not need to manage uniqueness explicitly.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -1651,6 +1675,8 @@ class AsyncRawChartersClient:
 
         Deleted charters cannot be modified.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -1778,6 +1804,12 @@ class AsyncRawChartersClient:
         Results are ordered by the `sort` field (defaults to CreatedAt). Use `sortDesc`
         to control direction (defaults to descending). An empty filter list is
         equivalent to omitting the field (no filter applied).
+
+        Pagination is limited to the first 10,000 matching charters: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -1907,6 +1939,8 @@ class AsyncRawChartersClient:
 
         Returns 404 if the charter does not exist or is deleted.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -2035,6 +2069,8 @@ class AsyncRawChartersClient:
         in one request.
 
         DELETED charters are never returned.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------

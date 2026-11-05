@@ -12,6 +12,7 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .base_knowledge_document import BaseKnowledgeDocument
 from .knowledge_document_content_type import KnowledgeDocumentContentType
+from .knowledge_document_metadata_value import KnowledgeDocumentMetadataValue
 
 
 class KnowledgeDocumentRequest(BaseKnowledgeDocument):
@@ -87,14 +88,20 @@ class KnowledgeDocumentRequest(BaseKnowledgeDocument):
     The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
     """
 
-    metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
+    metadata: typing.Optional[typing.Dict[str, KnowledgeDocumentMetadataValue]] = pydantic.Field(default=None)
     """
-    Set of 16 key-value pairs that can be attached to the knowledge document. This can be useful 
-    for storing additional information about the object in a structured format, and querying for 
+    Set of 16 key-value pairs that can be attached to the knowledge document. This can be useful
+    for storing additional information about the object in a structured format, and querying for
     objects via API or the dashboard.
     
-    Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
-    length of 512 characters.
+    Keys are strings with a maximum length of 64 characters. A value is a string, or a list of up
+    to 100 strings for a document with several values under one key (for example the states it
+    applies to). A list is a set: it is stored sorted and without duplicates, so reordering it
+    doesn't change the document. Each string has a maximum length of 512 characters.
+    
+    A charter document filter treats a list as "contains": `EQ` and `IN` match when any value in
+    the list matches, and `NEQ` and `NOT_IN` match when none does. An empty list is the same as
+    no value.
     """
 
     created_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="createdAt")] = (

@@ -72,6 +72,8 @@ class ChartersClient:
         pick only the highest ranked (lowest numerical value) leaf to include in
         the round. userRank may have gaps.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         charter_id : EntityIdBase
@@ -221,6 +223,8 @@ class ChartersClient:
         """
         Get a charter by its reference ID.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -306,6 +310,8 @@ class ChartersClient:
         **userRank conflict resolution**: When `userRank` is set to a value already held by a
         sibling, siblings at that rank and above are shifted up by 1 (like linked list semantics).
         The caller does not need to manage uniqueness explicitly.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -430,6 +436,8 @@ class ChartersClient:
 
         Deleted charters cannot be modified.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -502,6 +510,12 @@ class ChartersClient:
         to control direction (defaults to descending). An empty filter list is
         equivalent to omitting the field (no filter applied).
 
+        Pagination is limited to the first 10,000 matching charters: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[CharterSearchField]
@@ -565,6 +579,8 @@ class ChartersClient:
         ancestor and the walk to the root terminates.
 
         Returns 404 if the charter does not exist or is deleted.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -638,6 +654,8 @@ class ChartersClient:
         in one request.
 
         DELETED charters are never returned.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -743,6 +761,8 @@ class AsyncChartersClient:
         for leaf charters as we enforce mutual exclusion among the leafs and
         pick only the highest ranked (lowest numerical value) leaf to include in
         the round. userRank may have gaps.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -901,6 +921,8 @@ class AsyncChartersClient:
         """
         Get a charter by its reference ID.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -994,6 +1016,8 @@ class AsyncChartersClient:
         **userRank conflict resolution**: When `userRank` is set to a value already held by a
         sibling, siblings at that rank and above are shifted up by 1 (like linked list semantics).
         The caller does not need to manage uniqueness explicitly.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -1126,6 +1150,8 @@ class AsyncChartersClient:
 
         Deleted charters cannot be modified.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         charter_reference_id : str
@@ -1206,6 +1232,12 @@ class AsyncChartersClient:
         to control direction (defaults to descending). An empty filter list is
         equivalent to omitting the field (no filter applied).
 
+        Pagination is limited to the first 10,000 matching charters: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[CharterSearchField]
@@ -1277,6 +1309,8 @@ class AsyncChartersClient:
         ancestor and the walk to the root terminates.
 
         Returns 404 if the charter does not exist or is deleted.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -1358,6 +1392,8 @@ class AsyncChartersClient:
         in one request.
 
         DELETED charters are never returned.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------

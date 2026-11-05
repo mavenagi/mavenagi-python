@@ -45,6 +45,8 @@ class ConversationKickoffsClient:
         that is already live. Use the capability APIs to activate it, and to read, search or delete
         it afterwards.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         kickoff_id : EntityIdBase
@@ -122,6 +124,8 @@ class AsyncConversationKickoffsClient:
         its status alone, so re-registering on every install refresh never deactivates a kickoff
         that is already live. Use the capability APIs to activate it, and to read, search or delete
         it afterwards.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------

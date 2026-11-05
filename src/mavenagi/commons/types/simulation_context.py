@@ -56,6 +56,18 @@ class SimulationContext(UniversalBaseModel):
     keeps the variant it was created with.
     """
 
+    evaluate_with_charters: typing_extensions.Annotated[
+        typing.Optional[bool], FieldMetadata(alias="evaluateWithCharters")
+    ] = pydantic.Field(default=None)
+    """
+    When true, the simulation evaluates the agent's charters even if charter evaluation is
+    turned off for the agent. When absent or false, the simulation follows the agent's own
+    charter evaluation setting, like any other conversation. While charters are evaluated,
+    `additionalPromptText` has no effect. Not yet enabled for every agent: until it is, the
+    value is stored and returned, and the agent's own setting applies. A conversation that
+    already exists keeps the value it was created with.
+    """
+
     action_mocks: typing_extensions.Annotated[
         typing.Optional[typing.List[SimulationActionMock]], FieldMetadata(alias="actionMocks")
     ] = pydantic.Field(default=None)

@@ -10,7 +10,7 @@ from .conversation_value_source import ConversationValueSource
 class MetadataConversationValueFilter(UniversalBaseModel):
     """
     Matches documents whose value under `key` equals a value read from the conversation
-    being answered, so one filter follows each conversation instead of naming a fixed value.
+    being answered (or, when the document holds a list, contains it), so one filter follows each conversation instead of naming a fixed value.
 
     When the conversation has no value at `source`, nothing matches. For `userData`, that
     includes a conversation with no user. To also keep documents that apply everywhere,

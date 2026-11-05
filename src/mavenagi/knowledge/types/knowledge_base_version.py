@@ -17,7 +17,7 @@ from .knowledge_base_version_status import KnowledgeBaseVersionStatus
 
 class KnowledgeBaseVersion(KnowledgeBaseVersionRequest):
     """
-    Each version is one entry in the knowledge base's "Refresh Log" in Agent Designer.
+    Each version is one entry in the knowledge base's "Version history" in Agent Designer.
 
     Examples
     --------

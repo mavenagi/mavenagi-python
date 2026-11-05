@@ -30,6 +30,8 @@ class RawTranslationsClient:
         """
         Translate text from one language to another
 
+        <Note>**Required permission:** `ask:agent`</Note>
+
         Parameters
         ----------
         text : str
@@ -135,6 +137,8 @@ class AsyncRawTranslationsClient:
     ) -> AsyncHttpResponse[TranslationResponse]:
         """
         Translate text from one language to another
+
+        <Note>**Required permission:** `ask:agent`</Note>
 
         Parameters
         ----------

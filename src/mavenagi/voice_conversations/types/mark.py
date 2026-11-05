@@ -7,16 +7,14 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from .server_event_base import ServerEventBase
 
 
-class AgentTranscript(ServerEventBase):
+class Mark(ServerEventBase):
     """
-    Transcribed agent speech
+    Playback mark between agent audio chunks. The client must echo it as a `ClientMark` with the
+    same `name` once it has played all agent audio received before it.
     """
 
-    type: typing.Literal["agent_transcript"] = "agent_transcript"
-    text: str = pydantic.Field()
-    """
-    Transcribed agent speech
-    """
+    type: typing.Literal["mark"] = "mark"
+    name: str
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

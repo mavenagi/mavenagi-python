@@ -3,15 +3,22 @@
 import typing
 
 import pydantic
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+import typing_extensions
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
+from ...core.serialization import FieldMetadata
+from .server_event_base import ServerEventBase
 
 
-class ConversationReady(UniversalBaseModel):
+class ConversationReady(ServerEventBase):
     """
-    Conversation created successfully.
+    Conversation created successfully. The client may start sending audio.
     """
 
     type: typing.Literal["conversation_ready"] = "conversation_ready"
+    session_id: typing_extensions.Annotated[str, FieldMetadata(alias="sessionId")] = pydantic.Field()
+    """
+    The conversation ID the server created for this connection.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

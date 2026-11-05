@@ -31,6 +31,7 @@ from .knowledge_delete_request import KnowledgeDeleteRequest
 from .knowledge_document_content_type import KnowledgeDocumentContentType
 from .knowledge_document_field import KnowledgeDocumentField
 from .knowledge_document_filter import KnowledgeDocumentFilter
+from .knowledge_document_metadata_value import KnowledgeDocumentMetadataValue
 from .knowledge_document_request import KnowledgeDocumentRequest
 from .knowledge_document_response import KnowledgeDocumentResponse
 from .knowledge_document_search_request import KnowledgeDocumentSearchRequest
@@ -68,6 +69,7 @@ __all__ = [
     "KnowledgeDocumentContentType",
     "KnowledgeDocumentField",
     "KnowledgeDocumentFilter",
+    "KnowledgeDocumentMetadataValue",
     "KnowledgeDocumentRequest",
     "KnowledgeDocumentResponse",
     "KnowledgeDocumentSearchRequest",

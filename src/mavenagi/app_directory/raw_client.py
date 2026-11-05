@@ -381,7 +381,9 @@ class RawAppDirectoryClient:
 
     def uninstall(self, app_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[None]:
         """
-        Uninstalls the app from the agent.
+        Uninstalls the app from the agent, and deletes the actions and triggers it created.
+
+        <Note>**Required permission:** `install:apps`</Note>
 
         Parameters
         ----------
@@ -1022,7 +1024,9 @@ class AsyncRawAppDirectoryClient:
         self, app_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[None]:
         """
-        Uninstalls the app from the agent.
+        Uninstalls the app from the agent, and deletes the actions and triggers it created.
+
+        <Note>**Required permission:** `install:apps`</Note>
 
         Parameters
         ----------

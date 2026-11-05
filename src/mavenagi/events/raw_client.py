@@ -35,7 +35,10 @@ class RawEventsClient:
         self, *, request: EventRequest, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[EventResponse]:
         """
-        Create a new event. Events are immutable, so a create that reuses the `referenceId` of an existing event in the same app is rejected with a 409 and leaves that event unchanged.
+        Create a new event. Events are immutable, so a create that reuses the `referenceId` of an
+        existing event in the same app is rejected with a 409 and leaves that event unchanged.
+
+        <Note>**Required permission:** `ask:agent`. An event with `executionMode: SIMULATION` also needs `create:simulations`.</Note>
 
         Parameters
         ----------
@@ -137,7 +140,13 @@ class RawEventsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[EventsSearchResponse]:
         """
-        Search events
+        Search events.
+
+        Pagination is limited to the first 10,000 matching events: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:events`</Note>
 
         Parameters
         ----------
@@ -252,6 +261,8 @@ class RawEventsClient:
         """
         Retrieve details of a specific Event item by its ID.
 
+        <Note>**Required permission:** `read:events`</Note>
+
         Parameters
         ----------
         event_id : str
@@ -360,7 +371,9 @@ class RawEventsClient:
         """
         Export events to a CSV file.
 
-        This will output a summary of each event that matches the supplied filter. A maximum of 10,000 events can be exported at a time. For most use cases it is recommended to use the search API instead and convert the JSON response to your desired format. The CSV format may change over time and should not be relied upon by code consumers.
+        This will output a summary of each event that matches the supplied filter. Only the first 10,000 matching events can be exported: `(page + 1) * size` must not exceed 10,000, and a request beyond that is rejected with a 400. For most use cases it is recommended to use the search API instead and convert the JSON response to your desired format. The CSV format may change over time and should not be relied upon by code consumers.
+
+        <Note>**Required permission:** `read:events`</Note>
 
         Parameters
         ----------
@@ -482,7 +495,10 @@ class AsyncRawEventsClient:
         self, *, request: EventRequest, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[EventResponse]:
         """
-        Create a new event. Events are immutable, so a create that reuses the `referenceId` of an existing event in the same app is rejected with a 409 and leaves that event unchanged.
+        Create a new event. Events are immutable, so a create that reuses the `referenceId` of an
+        existing event in the same app is rejected with a 409 and leaves that event unchanged.
+
+        <Note>**Required permission:** `ask:agent`. An event with `executionMode: SIMULATION` also needs `create:simulations`.</Note>
 
         Parameters
         ----------
@@ -584,7 +600,13 @@ class AsyncRawEventsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[EventsSearchResponse]:
         """
-        Search events
+        Search events.
+
+        Pagination is limited to the first 10,000 matching events: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:events`</Note>
 
         Parameters
         ----------
@@ -699,6 +721,8 @@ class AsyncRawEventsClient:
         """
         Retrieve details of a specific Event item by its ID.
 
+        <Note>**Required permission:** `read:events`</Note>
+
         Parameters
         ----------
         event_id : str
@@ -807,7 +831,9 @@ class AsyncRawEventsClient:
         """
         Export events to a CSV file.
 
-        This will output a summary of each event that matches the supplied filter. A maximum of 10,000 events can be exported at a time. For most use cases it is recommended to use the search API instead and convert the JSON response to your desired format. The CSV format may change over time and should not be relied upon by code consumers.
+        This will output a summary of each event that matches the supplied filter. Only the first 10,000 matching events can be exported: `(page + 1) * size` must not exceed 10,000, and a request beyond that is rejected with a 400. For most use cases it is recommended to use the search API instead and convert the JSON response to your desired format. The CSV format may change over time and should not be relied upon by code consumers.
+
+        <Note>**Required permission:** `read:events`</Note>
 
         Parameters
         ----------

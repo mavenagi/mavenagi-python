@@ -7,16 +7,13 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from .server_event_base import ServerEventBase
 
 
-class UserTranscript(ServerEventBase):
+class VadSpeechStarted(ServerEventBase):
     """
-    Transcribed user speech
+    Voice activity detection heard the user start speaking. The client should stop playing and
+    drop any queued agent audio.
     """
 
-    type: typing.Literal["user_transcript"] = "user_transcript"
-    text: str = pydantic.Field()
-    """
-    Transcribed user speech
-    """
+    type: typing.Literal["vad_speech_started"] = "vad_speech_started"
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

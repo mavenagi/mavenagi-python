@@ -50,6 +50,12 @@ class ActionsClient:
         at once. It returns the fields every capability shares rather than the whole Action;
         fetch one by its kind and reference ID for the rest.
 
+        Pagination is limited to the first 10,000 matching actions: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[ActionField]
@@ -106,6 +112,8 @@ class ActionsClient:
     ) -> ActionResponse:
         """
         Update an action or create it if it doesn't exist
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -205,6 +213,8 @@ class ActionsClient:
 
         Get an action by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         action_reference_id : str
@@ -254,6 +264,8 @@ class ActionsClient:
 
         The `appId` field can be provided to update an action owned by a different app.
         All other fields will overwrite the existing value on the action only if provided.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -329,6 +341,8 @@ class ActionsClient:
 
         Delete an action
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         action_reference_id : str
@@ -389,6 +403,12 @@ class AsyncActionsClient:
         Deprecated. Use `POST /v1/capabilities/search`, which searches every kind of capability
         at once. It returns the fields every capability shares rather than the whole Action;
         fetch one by its kind and reference ID for the rest.
+
+        Pagination is limited to the first 10,000 matching actions: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -454,6 +474,8 @@ class AsyncActionsClient:
     ) -> ActionResponse:
         """
         Update an action or create it if it doesn't exist
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -561,6 +583,8 @@ class AsyncActionsClient:
 
         Get an action by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         action_reference_id : str
@@ -618,6 +642,8 @@ class AsyncActionsClient:
 
         The `appId` field can be provided to update an action owned by a different app.
         All other fields will overwrite the existing value on the action only if provided.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -702,6 +728,8 @@ class AsyncActionsClient:
         capability the same way.
 
         Delete an action
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------

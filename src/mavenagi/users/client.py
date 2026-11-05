@@ -49,6 +49,12 @@ class UsersClient:
 
         Agent users are a merged view of the users created by individual apps.
 
+        Pagination is limited to the first 10,000 matching agent users: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[AgentUserField]
@@ -99,6 +105,8 @@ class UsersClient:
 
         Agent users are a merged view of the users created by individual apps.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         agent_user_id : str
@@ -148,6 +156,8 @@ class UsersClient:
         The agent user's intelligent field values are deleted too, and removed from their `INTELLIGENT_FIELD_VALUE_CHANGED` events; the events themselves are kept.
         Unlike `DELETE /users/{userId}`, the wipe does not recompute the values. They can be computed again later from the user's remaining conversations, for example after the user sends another message; wipe those conversations first to prevent that.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         agent_user_id : str
@@ -189,6 +199,8 @@ class UsersClient:
     ) -> AppUserResponse:
         """
         Update an app user or create it if it doesn't exist.
+
+        <Note>**Required permission:** `edit:agents`. A user with `executionMode` `SIMULATION` also needs `create:simulations`.</Note>
 
         Parameters
         ----------
@@ -266,6 +278,8 @@ class UsersClient:
         """
         Get an app user by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         user_id : str
@@ -318,6 +332,8 @@ class UsersClient:
         If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
 
         <Warning>This is a destructive operation and cannot be undone.</Warning>
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -383,6 +399,12 @@ class AsyncUsersClient:
 
         Agent users are a merged view of the users created by individual apps.
 
+        Pagination is limited to the first 10,000 matching agent users: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[AgentUserField]
@@ -440,6 +462,8 @@ class AsyncUsersClient:
         Get an agent user by its supplied ID.
 
         Agent users are a merged view of the users created by individual apps.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -500,6 +524,8 @@ class AsyncUsersClient:
         The agent user's intelligent field values are deleted too, and removed from their `INTELLIGENT_FIELD_VALUE_CHANGED` events; the events themselves are kept.
         Unlike `DELETE /users/{userId}`, the wipe does not recompute the values. They can be computed again later from the user's remaining conversations, for example after the user sends another message; wipe those conversations first to prevent that.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         agent_user_id : str
@@ -549,6 +575,8 @@ class AsyncUsersClient:
     ) -> AppUserResponse:
         """
         Update an app user or create it if it doesn't exist.
+
+        <Note>**Required permission:** `edit:agents`. A user with `executionMode` `SIMULATION` also needs `create:simulations`.</Note>
 
         Parameters
         ----------
@@ -634,6 +662,8 @@ class AsyncUsersClient:
         """
         Get an app user by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         user_id : str
@@ -694,6 +724,8 @@ class AsyncUsersClient:
         If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
 
         <Warning>This is a destructive operation and cannot be undone.</Warning>
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------

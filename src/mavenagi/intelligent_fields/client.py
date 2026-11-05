@@ -67,6 +67,8 @@ class IntelligentFieldsClient:
         a different type, create a new field. A field deleted in the variant may be recreated
         with any type.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         name : str
@@ -103,7 +105,8 @@ class IntelligentFieldsClient:
 
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
             The finite set of values this field may take. Omit to let the LLM produce any value of
-            the `validationType`. Options may be added later with the patch endpoint, but not removed.
+            the `validationType`. Options may be added or removed later with the patch endpoint, as long
+            as at least one remains.
 
             Shown in Agent Designer as "Select Options".
 
@@ -182,6 +185,8 @@ class IntelligentFieldsClient:
 
         Get an intelligent field by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         field_reference_id : str
@@ -253,6 +258,8 @@ class IntelligentFieldsClient:
         start evaluating it, or `INACTIVE` to stop. `name`, `entityType`, and `validationType`
         cannot be changed after creation.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         field_reference_id : str
@@ -276,7 +283,7 @@ class IntelligentFieldsClient:
             A plain text description of the intelligent field.
 
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
-            Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
+            Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The list replaces the existing options: an option left out is removed and is no longer offered to the LLM, while values already computed with it are kept. A field that has options must keep at least one, so an empty list is rejected. An option kept from the existing list must keep its `label`; changing it is rejected.
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
@@ -337,6 +344,8 @@ class IntelligentFieldsClient:
         status a new field gets.
 
         Deleted fields cannot be modified.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -405,6 +414,8 @@ class IntelligentFieldsClient:
 
         Values only exist for fields that were ACTIVE when the entity was evaluated, so a
         newly activated field returns nothing until evaluation has run.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -557,6 +568,8 @@ class AsyncIntelligentFieldsClient:
         a different type, create a new field. A field deleted in the variant may be recreated
         with any type.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         name : str
@@ -593,7 +606,8 @@ class AsyncIntelligentFieldsClient:
 
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
             The finite set of values this field may take. Omit to let the LLM produce any value of
-            the `validationType`. Options may be added later with the patch endpoint, but not removed.
+            the `validationType`. Options may be added or removed later with the patch endpoint, as long
+            as at least one remains.
 
             Shown in Agent Designer as "Select Options".
 
@@ -680,6 +694,8 @@ class AsyncIntelligentFieldsClient:
 
         Get an intelligent field by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         field_reference_id : str
@@ -759,6 +775,8 @@ class AsyncIntelligentFieldsClient:
         start evaluating it, or `INACTIVE` to stop. `name`, `entityType`, and `validationType`
         cannot be changed after creation.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         field_reference_id : str
@@ -782,7 +800,7 @@ class AsyncIntelligentFieldsClient:
             A plain text description of the intelligent field.
 
         enum_options : typing.Optional[typing.Sequence[EnumOption]]
-            Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The new list must be a superset of the existing options (add-only; removals are rejected).
+            Updated enum options for fields that constrain the LLM to a finite set. Omit to leave unchanged. The list replaces the existing options: an option left out is removed and is no longer offered to the LLM, while values already computed with it are kept. A field that has options must keep at least one, so an empty list is rejected. An option kept from the existing list must keep its `label`; changing it is rejected.
 
         variant_id : typing.Optional[EntityIdWithoutAgent]
             The agent variant to stage this patch in. Required on an agent with versioned intelligent fields; a patch that omits it there is rejected with reason `VARIANT_REQUIRED`.
@@ -851,6 +869,8 @@ class AsyncIntelligentFieldsClient:
         status a new field gets.
 
         Deleted fields cannot be modified.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -927,6 +947,8 @@ class AsyncIntelligentFieldsClient:
 
         Values only exist for fields that were ACTIVE when the entity was evaluated, so a
         newly activated field returns nothing until evaluation has run.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------

@@ -5,14 +5,24 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from .server_event_base import ServerEventBase
+from .transcript_role import TranscriptRole
 
 
-class UserFinishedSpeaking(ServerEventBase):
+class Transcript(ServerEventBase):
     """
-    User finished speaking
+    Transcript of a completed user or agent utterance.
     """
 
-    type: typing.Literal["user_finished_speaking"] = "user_finished_speaking"
+    type: typing.Literal["transcript"] = "transcript"
+    role: TranscriptRole = pydantic.Field()
+    """
+    Who spoke.
+    """
+
+    text: str = pydantic.Field()
+    """
+    Transcribed speech.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

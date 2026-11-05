@@ -36,6 +36,7 @@ from .types.knowledge_bases_response import KnowledgeBasesResponse
 from .types.knowledge_document_content_type import KnowledgeDocumentContentType
 from .types.knowledge_document_field import KnowledgeDocumentField
 from .types.knowledge_document_filter import KnowledgeDocumentFilter
+from .types.knowledge_document_metadata_value import KnowledgeDocumentMetadataValue
 from .types.knowledge_document_response import KnowledgeDocumentResponse
 from .types.knowledge_documents_response import KnowledgeDocumentsResponse
 
@@ -59,6 +60,12 @@ class RawKnowledgeClient:
     ) -> HttpResponse[KnowledgeBasesResponse]:
         """
         Search knowledge bases
+
+        Pagination is limited to the first 10,000 matching knowledge bases: `(page + 1) * size` must
+        not exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to
+        reach later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -178,6 +185,8 @@ class RawKnowledgeClient:
     ) -> HttpResponse[KnowledgeBaseResponse]:
         """
         Update a knowledge base or create it if it doesn't exist.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -303,6 +312,8 @@ class RawKnowledgeClient:
         """
         Get an existing knowledge base by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -409,6 +420,8 @@ class RawKnowledgeClient:
         Knowledge bases refresh on a schedule determined by the `refreshFrequency` field.
         They can also be refreshed on demand by calling this endpoint.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -513,6 +526,8 @@ class RawKnowledgeClient:
         An app still refreshing that version finds out on its next write to it: adding or
         removing a document on a canceled version is rejected rather than succeeding.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -611,6 +626,8 @@ class RawKnowledgeClient:
     ) -> HttpResponse[None]:
         """
         Rolls the knowledge base back to its previous published version.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -711,6 +728,8 @@ class RawKnowledgeClient:
 
         The `appId` field can be provided to update a knowledge base owned by a different app.
         All other fields will overwrite the existing value on the knowledge base only if provided.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -870,6 +889,8 @@ class RawKnowledgeClient:
         If another version create for the same knowledge base is still in progress, this request may
         return 503 with a `Retry-After` header. Nothing is changed in that case, so it is safe to retry.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -975,6 +996,8 @@ class RawKnowledgeClient:
     ) -> HttpResponse[KnowledgeBaseVersion]:
         """
         Finalize the latest knowledge base version. Required to indicate the version is complete. Will throw an exception if the latest version is not in progress.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -1096,6 +1119,8 @@ class RawKnowledgeClient:
         version's entire progress state - no history is kept, only the most recent value is
         retained. Will throw an exception if the target version is not in progress.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -1212,6 +1237,8 @@ class RawKnowledgeClient:
         """
         List all active versions for a knowledge base. Returns the most recent versions first.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -1317,6 +1344,12 @@ class RawKnowledgeClient:
     ) -> HttpResponse[KnowledgeDocumentsResponse]:
         """
         Search knowledge documents
+
+        Pagination is limited to the first 10,000 matching knowledge documents: `(page + 1) * size`
+        must not exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter
+        to reach later results.
+
+        <Note>**Required permission:** `read:documents`</Note>
 
         Parameters
         ----------
@@ -1435,7 +1468,7 @@ class RawKnowledgeClient:
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         asset_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         content: typing.Optional[str] = OMIT,
-        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
+        metadata: typing.Optional[typing.Dict[str, KnowledgeDocumentMetadataValue]] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
         relevant_entities: typing.Optional[typing.Sequence[ScopedEntity]] = OMIT,
@@ -1452,6 +1485,8 @@ class RawKnowledgeClient:
         This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields
         have changed, a new document version will not be created. The existing version will be reused.
         </Tip>
+
+        <Note>**Required permission:** `create:documents`</Note>
 
         Parameters
         ----------
@@ -1488,13 +1523,19 @@ class RawKnowledgeClient:
         content : typing.Optional[str]
             The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
 
-        metadata : typing.Optional[typing.Dict[str, str]]
+        metadata : typing.Optional[typing.Dict[str, KnowledgeDocumentMetadataValue]]
             Set of 16 key-value pairs that can be attached to the knowledge document. This can be useful
             for storing additional information about the object in a structured format, and querying for
             objects via API or the dashboard.
 
-            Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
-            length of 512 characters.
+            Keys are strings with a maximum length of 64 characters. A value is a string, or a list of up
+            to 100 strings for a document with several values under one key (for example the states it
+            applies to). A list is a set: it is stored sorted and without duplicates, so reordering it
+            doesn't change the document. Each string has a maximum length of 512 characters.
+
+            A charter document filter treats a list as "contains": `EQ` and `IN` match when any value in
+            the list matches, and `NEQ` and `NOT_IN` match when none does. An empty list is the same as
+            no value.
 
         created_at : typing.Optional[dt.datetime]
             The time at which this document was created.
@@ -1550,7 +1591,9 @@ class RawKnowledgeClient:
                     object_=asset_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "content": content,
-                "metadata": metadata,
+                "metadata": convert_and_respect_annotation_metadata(
+                    object_=metadata, annotation=typing.Dict[str, KnowledgeDocumentMetadataValue], direction="write"
+                ),
                 "createdAt": created_at,
                 "updatedAt": updated_at,
                 "relevantEntities": convert_and_respect_annotation_metadata(
@@ -1644,6 +1687,8 @@ class RawKnowledgeClient:
         """
         Delete knowledge document from a specific version.
         Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
+
+        <Note>**Required permission:** `delete:documents`</Note>
 
         Parameters
         ----------
@@ -1747,6 +1792,8 @@ class RawKnowledgeClient:
     ) -> HttpResponse[KnowledgeDocumentResponse]:
         """
         Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
+
+        <Note>**Required permission:** `read:documents`</Note>
 
         Parameters
         ----------
@@ -1860,6 +1907,8 @@ class RawKnowledgeClient:
 
         The `knowledgeBaseAppId` field can be provided to update a knowledge document in a knowledge base owned by a different app.
         All other fields will overwrite the existing value on the knowledge document only if provided.
+
+        <Note>**Required permission:** `edit:documents`</Note>
 
         Parameters
         ----------
@@ -1983,6 +2032,12 @@ class AsyncRawKnowledgeClient:
         """
         Search knowledge bases
 
+        Pagination is limited to the first 10,000 matching knowledge bases: `(page + 1) * size` must
+        not exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to
+        reach later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[KnowledgeBaseField]
@@ -2101,6 +2156,8 @@ class AsyncRawKnowledgeClient:
     ) -> AsyncHttpResponse[KnowledgeBaseResponse]:
         """
         Update a knowledge base or create it if it doesn't exist.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -2226,6 +2283,8 @@ class AsyncRawKnowledgeClient:
         """
         Get an existing knowledge base by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -2332,6 +2391,8 @@ class AsyncRawKnowledgeClient:
         Knowledge bases refresh on a schedule determined by the `refreshFrequency` field.
         They can also be refreshed on demand by calling this endpoint.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -2436,6 +2497,8 @@ class AsyncRawKnowledgeClient:
         An app still refreshing that version finds out on its next write to it: adding or
         removing a document on a canceled version is rejected rather than succeeding.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -2534,6 +2597,8 @@ class AsyncRawKnowledgeClient:
     ) -> AsyncHttpResponse[None]:
         """
         Rolls the knowledge base back to its previous published version.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -2634,6 +2699,8 @@ class AsyncRawKnowledgeClient:
 
         The `appId` field can be provided to update a knowledge base owned by a different app.
         All other fields will overwrite the existing value on the knowledge base only if provided.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -2793,6 +2860,8 @@ class AsyncRawKnowledgeClient:
         If another version create for the same knowledge base is still in progress, this request may
         return 503 with a `Retry-After` header. Nothing is changed in that case, so it is safe to retry.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -2898,6 +2967,8 @@ class AsyncRawKnowledgeClient:
     ) -> AsyncHttpResponse[KnowledgeBaseVersion]:
         """
         Finalize the latest knowledge base version. Required to indicate the version is complete. Will throw an exception if the latest version is not in progress.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -3019,6 +3090,8 @@ class AsyncRawKnowledgeClient:
         version's entire progress state - no history is kept, only the most recent value is
         retained. Will throw an exception if the target version is not in progress.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -3135,6 +3208,8 @@ class AsyncRawKnowledgeClient:
         """
         List all active versions for a knowledge base. Returns the most recent versions first.
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         knowledge_base_reference_id : str
@@ -3240,6 +3315,12 @@ class AsyncRawKnowledgeClient:
     ) -> AsyncHttpResponse[KnowledgeDocumentsResponse]:
         """
         Search knowledge documents
+
+        Pagination is limited to the first 10,000 matching knowledge documents: `(page + 1) * size`
+        must not exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter
+        to reach later results.
+
+        <Note>**Required permission:** `read:documents`</Note>
 
         Parameters
         ----------
@@ -3358,7 +3439,7 @@ class AsyncRawKnowledgeClient:
         version_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         asset_id: typing.Optional[EntityIdWithoutAgent] = OMIT,
         content: typing.Optional[str] = OMIT,
-        metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
+        metadata: typing.Optional[typing.Dict[str, KnowledgeDocumentMetadataValue]] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
         relevant_entities: typing.Optional[typing.Sequence[ScopedEntity]] = OMIT,
@@ -3375,6 +3456,8 @@ class AsyncRawKnowledgeClient:
         This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields
         have changed, a new document version will not be created. The existing version will be reused.
         </Tip>
+
+        <Note>**Required permission:** `create:documents`</Note>
 
         Parameters
         ----------
@@ -3411,13 +3494,19 @@ class AsyncRawKnowledgeClient:
         content : typing.Optional[str]
             The content of the document. Not shown directly to users. May be provided in HTML or markdown. HTML will be converted to markdown automatically. Images are not currently supported and will be ignored. Either this or assetId is required, but not both
 
-        metadata : typing.Optional[typing.Dict[str, str]]
+        metadata : typing.Optional[typing.Dict[str, KnowledgeDocumentMetadataValue]]
             Set of 16 key-value pairs that can be attached to the knowledge document. This can be useful
             for storing additional information about the object in a structured format, and querying for
             objects via API or the dashboard.
 
-            Keys are strings with a maximum length of 64 characters. Values are strings with a maximum
-            length of 512 characters.
+            Keys are strings with a maximum length of 64 characters. A value is a string, or a list of up
+            to 100 strings for a document with several values under one key (for example the states it
+            applies to). A list is a set: it is stored sorted and without duplicates, so reordering it
+            doesn't change the document. Each string has a maximum length of 512 characters.
+
+            A charter document filter treats a list as "contains": `EQ` and `IN` match when any value in
+            the list matches, and `NEQ` and `NOT_IN` match when none does. An empty list is the same as
+            no value.
 
         created_at : typing.Optional[dt.datetime]
             The time at which this document was created.
@@ -3473,7 +3562,9 @@ class AsyncRawKnowledgeClient:
                     object_=asset_id, annotation=EntityIdWithoutAgent, direction="write"
                 ),
                 "content": content,
-                "metadata": metadata,
+                "metadata": convert_and_respect_annotation_metadata(
+                    object_=metadata, annotation=typing.Dict[str, KnowledgeDocumentMetadataValue], direction="write"
+                ),
                 "createdAt": created_at,
                 "updatedAt": updated_at,
                 "relevantEntities": convert_and_respect_annotation_metadata(
@@ -3567,6 +3658,8 @@ class AsyncRawKnowledgeClient:
         """
         Delete knowledge document from a specific version.
         Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
+
+        <Note>**Required permission:** `delete:documents`</Note>
 
         Parameters
         ----------
@@ -3670,6 +3763,8 @@ class AsyncRawKnowledgeClient:
     ) -> AsyncHttpResponse[KnowledgeDocumentResponse]:
         """
         Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
+
+        <Note>**Required permission:** `read:documents`</Note>
 
         Parameters
         ----------
@@ -3783,6 +3878,8 @@ class AsyncRawKnowledgeClient:
 
         The `knowledgeBaseAppId` field can be provided to update a knowledge document in a knowledge base owned by a different app.
         All other fields will overwrite the existing value on the knowledge document only if provided.
+
+        <Note>**Required permission:** `edit:documents`</Note>
 
         Parameters
         ----------

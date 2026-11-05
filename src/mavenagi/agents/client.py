@@ -46,9 +46,9 @@ class AgentsClient:
         """
         Search for agents across all organizations.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -96,6 +96,8 @@ class AgentsClient:
         """
         Lists all agents for an organization
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         organization_reference_id : str
@@ -139,9 +141,7 @@ class AgentsClient:
         """
         Create a new agent
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `create:agents`</Note>
 
         Parameters
         ----------
@@ -202,6 +202,8 @@ class AgentsClient:
         """
         Get an agent
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         organization_reference_id : str
@@ -258,9 +260,7 @@ class AgentsClient:
         Update mutable agent fields
         All fields will overwrite the existing value on the agent only if provided.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -366,9 +366,7 @@ class AgentsClient:
         """
         Delete an agent.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `delete:agents`</Note>
 
         Parameters
         ----------
@@ -435,9 +433,9 @@ class AsyncAgentsClient:
         """
         Search for agents across all organizations.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        Only Maven staff hold this permission.
+
+        <Note>**Required permission:** `read:all-organizations`</Note>
 
         Parameters
         ----------
@@ -493,6 +491,8 @@ class AsyncAgentsClient:
         """
         Lists all agents for an organization
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         organization_reference_id : str
@@ -544,9 +544,7 @@ class AsyncAgentsClient:
         """
         Create a new agent
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `create:agents`</Note>
 
         Parameters
         ----------
@@ -615,6 +613,8 @@ class AsyncAgentsClient:
         """
         Get an agent
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         organization_reference_id : str
@@ -681,9 +681,7 @@ class AsyncAgentsClient:
         Update mutable agent fields
         All fields will overwrite the existing value on the agent only if provided.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -797,9 +795,7 @@ class AsyncAgentsClient:
         """
         Delete an agent.
 
-        <Tip>
-        This endpoint requires additional permissions. Contact support to request access.
-        </Tip>
+        <Note>**Required permission:** `delete:agents`</Note>
 
         Parameters
         ----------

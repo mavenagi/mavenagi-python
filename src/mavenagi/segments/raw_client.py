@@ -43,6 +43,14 @@ class RawSegmentsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[SegmentsSearchResponse]:
         """
+        Search segments.
+
+        Pagination is limited to the first 10,000 matching segments: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[SegmentField]
@@ -165,6 +173,8 @@ class RawSegmentsClient:
         """
         Update a segment or create it if it doesn't exist.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         segment_id : EntityIdBase
@@ -286,6 +296,8 @@ class RawSegmentsClient:
         """
         Get a segment by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         segment_reference_id : str
@@ -395,6 +407,8 @@ class RawSegmentsClient:
 
         The `appId` field can be provided to update a segment owned by a different app.
         All other fields will overwrite the existing value on the segment only if provided.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -526,6 +540,8 @@ class RawSegmentsClient:
 
         Deleted segments cannot be modified.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         segment_reference_id : str
@@ -635,6 +651,14 @@ class AsyncRawSegmentsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[SegmentsSearchResponse]:
         """
+        Search segments.
+
+        Pagination is limited to the first 10,000 matching segments: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[SegmentField]
@@ -757,6 +781,8 @@ class AsyncRawSegmentsClient:
         """
         Update a segment or create it if it doesn't exist.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         segment_id : EntityIdBase
@@ -878,6 +904,8 @@ class AsyncRawSegmentsClient:
         """
         Get a segment by its supplied ID
 
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         segment_reference_id : str
@@ -987,6 +1015,8 @@ class AsyncRawSegmentsClient:
 
         The `appId` field can be provided to update a segment owned by a different app.
         All other fields will overwrite the existing value on the segment only if provided.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -1117,6 +1147,8 @@ class AsyncRawSegmentsClient:
         Deleted segments are excluded from search results but can still be retrieved by ID for archival purposes. Creating a segment with the same referenceId as a deleted segment reclaims it: the segment keeps its identity, and every other setting comes from the request.
 
         Deleted segments cannot be modified.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------

@@ -42,6 +42,14 @@ class CustomersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> CustomersSearchResponse:
         """
+        Search customers of an agent.
+
+        Pagination is limited to the first 10,000 matching customers: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[CustomerField]
@@ -90,6 +98,8 @@ class CustomersClient:
         """
         Update a customer of an agent or create it if it doesn't exist. In case of an update, fields not provided (e.g., description, status) will be preserved.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         customer_id : EntityIdBase
@@ -137,6 +147,8 @@ class CustomersClient:
     ) -> CustomerResponse:
         """
         Get a customer by its supplied ID
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -189,6 +201,8 @@ class CustomersClient:
 
         The `appId` field can be provided to update a customer owned by a different app.
         All other fields will overwrite the existing value on the customer only if provided.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
@@ -288,6 +302,14 @@ class AsyncCustomersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> CustomersSearchResponse:
         """
+        Search customers of an agent.
+
+        Pagination is limited to the first 10,000 matching customers: `(page + 1) * size` must not
+        exceed 10,000, and a request beyond that is rejected with a 400. Narrow the filter to reach
+        later results.
+
+        <Note>**Required permission:** `read:agents`</Note>
+
         Parameters
         ----------
         sort : typing.Optional[CustomerField]
@@ -344,6 +366,8 @@ class AsyncCustomersClient:
         """
         Update a customer of an agent or create it if it doesn't exist. In case of an update, fields not provided (e.g., description, status) will be preserved.
 
+        <Note>**Required permission:** `edit:agents`</Note>
+
         Parameters
         ----------
         customer_id : EntityIdBase
@@ -399,6 +423,8 @@ class AsyncCustomersClient:
     ) -> CustomerResponse:
         """
         Get a customer by its supplied ID
+
+        <Note>**Required permission:** `read:agents`</Note>
 
         Parameters
         ----------
@@ -459,6 +485,8 @@ class AsyncCustomersClient:
 
         The `appId` field can be provided to update a customer owned by a different app.
         All other fields will overwrite the existing value on the customer only if provided.
+
+        <Note>**Required permission:** `edit:agents`</Note>
 
         Parameters
         ----------
