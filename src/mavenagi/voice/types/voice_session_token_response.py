@@ -12,7 +12,9 @@ from .voice_token_type import VoiceTokenType
 class VoiceSessionTokenResponse(UniversalBaseModel):
     token: str = pydantic.Field()
     """
-    Opaque JWT session token. Pass this in the Authorization header when connecting.
+    Opaque session token. Pass this in the Authorization header when connecting.
+    For "websocket", the token is an ES256 JWT.
+    For "webrtc", the token format depends on `transport`.
     """
 
     identity: str = pydantic.Field()
@@ -28,6 +30,15 @@ class VoiceSessionTokenResponse(UniversalBaseModel):
     expires_in: typing_extensions.Annotated[int, FieldMetadata(alias="expiresIn")] = pydantic.Field()
     """
     Time in seconds until the token expires.
+    """
+
+    connect_url: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="connectUrl")] = pydantic.Field(
+        default=None
+    )
+    """
+    The URL that starts a "webrtc" call through the Maven telephony gateway.
+    The client sends `token` to this URL to start the call.
+    Present only when the request sets `transport` to "gateway".
     """
 
     if IS_PYDANTIC_V2:

@@ -13788,7 +13788,8 @@ client.users.delete(
 Creates a short-lived session token for authenticating voice connections.
 
 Supports two token types:
-- **webrtc**: A Twilio-compatible access token for browser-based WebRTC calls
+- **webrtc**: A token for browser-based WebRTC calls. The `transport` field selects the token format:
+  a token for the Maven telephony gateway (default) or a Twilio access token.
 - **websocket**: An ES256 JWT for direct WebSocket connections to /v1/realtime/conversations
 
 Session tokens are required before establishing any voice connection.
@@ -13849,7 +13850,22 @@ For "webrtc" tokens, at most 184 characters. A longer value fails with 400.
 **type:** `VoiceTokenType` 
 
 The type of session token to generate.
-Use "webrtc" for browser-based calls via Twilio, or "websocket" for direct WebSocket connections.
+Use "webrtc" for browser-based calls, or "websocket" for direct WebSocket connections.
+For "webrtc", `transport` selects the Maven telephony gateway (default) or Twilio.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**transport:** `typing.Optional[VoiceWebRtcTransport]` 
+
+The transport for a "webrtc" call. Default: "gateway".
+- "gateway": the response `token` is a token for the Maven telephony gateway, and the response includes `connectUrl`.
+- "twilio": the response `token` is a Twilio access token.
+
+The server ignores this field for "websocket" tokens.
     
 </dd>
 </dl>

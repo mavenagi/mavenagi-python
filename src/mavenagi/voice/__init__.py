@@ -2,6 +2,6 @@
 
 # isort: skip_file
 
-from .types import VoiceSessionTokenRequest, VoiceSessionTokenResponse, VoiceTokenType
+from .types import VoiceSessionTokenRequest, VoiceSessionTokenResponse, VoiceTokenType, VoiceWebRtcTransport
 
-__all__ = ["VoiceSessionTokenRequest", "VoiceSessionTokenResponse", "VoiceTokenType"]
+__all__ = ["VoiceSessionTokenRequest", "VoiceSessionTokenResponse", "VoiceTokenType", "VoiceWebRtcTransport"]

@@ -5,5 +5,6 @@
 from .voice_session_token_request import VoiceSessionTokenRequest
 from .voice_session_token_response import VoiceSessionTokenResponse
 from .voice_token_type import VoiceTokenType
+from .voice_web_rtc_transport import VoiceWebRtcTransport
 
-__all__ = ["VoiceSessionTokenRequest", "VoiceSessionTokenResponse", "VoiceTokenType"]
+__all__ = ["VoiceSessionTokenRequest", "VoiceSessionTokenResponse", "VoiceTokenType", "VoiceWebRtcTransport"]

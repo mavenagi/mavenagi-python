@@ -7,6 +7,7 @@ from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawVoiceClient, RawVoiceClient
 from .types.voice_session_token_response import VoiceSessionTokenResponse
 from .types.voice_token_type import VoiceTokenType
+from .types.voice_web_rtc_transport import VoiceWebRtcTransport
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -32,6 +33,7 @@ class VoiceClient:
         *,
         app_user_id: str,
         type: VoiceTokenType,
+        transport: typing.Optional[VoiceWebRtcTransport] = OMIT,
         custom_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> VoiceSessionTokenResponse:
@@ -39,7 +41,8 @@ class VoiceClient:
         Creates a short-lived session token for authenticating voice connections.
 
         Supports two token types:
-        - **webrtc**: A Twilio-compatible access token for browser-based WebRTC calls
+        - **webrtc**: A token for browser-based WebRTC calls. The `transport` field selects the token format:
+          a token for the Maven telephony gateway (default) or a Twilio access token.
         - **websocket**: An ES256 JWT for direct WebSocket connections to /v1/realtime/conversations
 
         Session tokens are required before establishing any voice connection.
@@ -53,7 +56,15 @@ class VoiceClient:
 
         type : VoiceTokenType
             The type of session token to generate.
-            Use "webrtc" for browser-based calls via Twilio, or "websocket" for direct WebSocket connections.
+            Use "webrtc" for browser-based calls, or "websocket" for direct WebSocket connections.
+            For "webrtc", `transport` selects the Maven telephony gateway (default) or Twilio.
+
+        transport : typing.Optional[VoiceWebRtcTransport]
+            The transport for a "webrtc" call. Default: "gateway".
+            - "gateway": the response `token` is a token for the Maven telephony gateway, and the response includes `connectUrl`.
+            - "twilio": the response `token` is a Twilio access token.
+
+            The server ignores this field for "websocket" tokens.
 
         custom_data : typing.Optional[typing.Dict[str, str]]
             Arbitrary key-value metadata to associate with this session (e.g., conversationId, topic).
@@ -90,7 +101,11 @@ class VoiceClient:
         )
         """
         _response = self._raw_client.session_token(
-            app_user_id=app_user_id, type=type, custom_data=custom_data, request_options=request_options
+            app_user_id=app_user_id,
+            type=type,
+            transport=transport,
+            custom_data=custom_data,
+            request_options=request_options,
         )
         return _response.data
 
@@ -115,6 +130,7 @@ class AsyncVoiceClient:
         *,
         app_user_id: str,
         type: VoiceTokenType,
+        transport: typing.Optional[VoiceWebRtcTransport] = OMIT,
         custom_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> VoiceSessionTokenResponse:
@@ -122,7 +138,8 @@ class AsyncVoiceClient:
         Creates a short-lived session token for authenticating voice connections.
 
         Supports two token types:
-        - **webrtc**: A Twilio-compatible access token for browser-based WebRTC calls
+        - **webrtc**: A token for browser-based WebRTC calls. The `transport` field selects the token format:
+          a token for the Maven telephony gateway (default) or a Twilio access token.
         - **websocket**: An ES256 JWT for direct WebSocket connections to /v1/realtime/conversations
 
         Session tokens are required before establishing any voice connection.
@@ -136,7 +153,15 @@ class AsyncVoiceClient:
 
         type : VoiceTokenType
             The type of session token to generate.
-            Use "webrtc" for browser-based calls via Twilio, or "websocket" for direct WebSocket connections.
+            Use "webrtc" for browser-based calls, or "websocket" for direct WebSocket connections.
+            For "webrtc", `transport` selects the Maven telephony gateway (default) or Twilio.
+
+        transport : typing.Optional[VoiceWebRtcTransport]
+            The transport for a "webrtc" call. Default: "gateway".
+            - "gateway": the response `token` is a token for the Maven telephony gateway, and the response includes `connectUrl`.
+            - "twilio": the response `token` is a Twilio access token.
+
+            The server ignores this field for "websocket" tokens.
 
         custom_data : typing.Optional[typing.Dict[str, str]]
             Arbitrary key-value metadata to associate with this session (e.g., conversationId, topic).
@@ -181,6 +206,10 @@ class AsyncVoiceClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.session_token(
-            app_user_id=app_user_id, type=type, custom_data=custom_data, request_options=request_options
+            app_user_id=app_user_id,
+            type=type,
+            transport=transport,
+            custom_data=custom_data,
+            request_options=request_options,
         )
         return _response.data

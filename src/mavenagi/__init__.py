@@ -713,7 +713,7 @@ from .users import (
     AppUserSummary,
 )
 from .version import __version__
-from .voice import VoiceSessionTokenRequest, VoiceSessionTokenResponse, VoiceTokenType
+from .voice import VoiceSessionTokenRequest, VoiceSessionTokenResponse, VoiceTokenType, VoiceWebRtcTransport
 from .voice_conversations import (
     AgentAudioChunk,
     AudioFormat,
@@ -1412,6 +1412,7 @@ __all__ = [
     "VoiceSessionTokenRequest",
     "VoiceSessionTokenResponse",
     "VoiceTokenType",
+    "VoiceWebRtcTransport",
     "__version__",
     "actions",
     "agents",
