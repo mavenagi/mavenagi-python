@@ -6,17 +6,14 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id import EntityId
-from ...commons.types.execution_mode import ExecutionMode
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
-from .capability_execution_completion_reason import CapabilityExecutionCompletionReason
-from .capability_execution_status import CapabilityExecutionStatus
+from .capability_run_base import CapabilityRunBase
 
 
-class CapabilityExecutionBase(UniversalBaseModel):
-    capability_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="capabilityId")] = pydantic.Field()
+class CapabilityExecutionBase(CapabilityRunBase):
     """
-    The capability that ran.
+    A recorded run, with the subject it ran for.
     """
 
     subject_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="subjectId")] = pydantic.Field()
@@ -28,49 +25,9 @@ class CapabilityExecutionBase(UniversalBaseModel):
     cannot filter on. Switch those triggers to `EVENT_CREATED`.
     """
 
-    status: CapabilityExecutionStatus
-    completion_reason: typing_extensions.Annotated[
-        typing.Optional[CapabilityExecutionCompletionReason], FieldMetadata(alias="completionReason")
-    ] = pydantic.Field(default=None)
-    """
-    Why the execution ended the way it did. Absent while RUNNING.
-    """
-
-    message: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Detail from the app, truncated. Cleared when the subject conversation is
-    wiped.
-    """
-
-    started_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="startedAt")] = pydantic.Field()
-    """
-    When the execution began.
-    """
-
-    completed_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="completedAt")] = (
-        pydantic.Field(default=None)
-    )
-    """
-    When it ended. Absent while RUNNING.
-    """
-
-    duration_ms: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="durationMs")] = pydantic.Field(
-        default=None
-    )
-    """
-    End-to-end duration in milliseconds. Includes Maven's own work, so it is not purely the
-    app's response time.
-    """
-
     created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")] = pydantic.Field()
     """
     When the execution was recorded. Results are ordered by this field.
-    """
-
-    execution_mode: typing_extensions.Annotated[ExecutionMode, FieldMetadata(alias="executionMode")] = pydantic.Field()
-    """
-    Whether the execution ran on live data or in a simulation. A Conversation Kickoff takes
-    its conversation's mode, and an Event Trigger its event's.
     """
 
     if IS_PYDANTIC_V2:

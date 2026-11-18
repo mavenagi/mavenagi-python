@@ -15,7 +15,18 @@ class UserData(UniversalBaseModel):
 
     visibility: VisibilityType = pydantic.Field()
     """
-    The visibility of the user metadata
+    Who sees the value.
+    
+    - `VISIBLE`: the agent (the LLM) is given the value.
+    - `PARTIALLY_VISIBLE`: the agent is not given the value. Agent user responses mask all
+      but its last 3 characters.
+    - `HIDDEN`: the agent is not given the value. Agent user responses show it as `********`.
+    
+    Visibility only controls what the agent is given and how agent user responses
+    (`visibleData`) mask the value. It is not encryption or access control. Every value,
+    whatever its visibility, is returned in full by `GET /users/{userId}` and
+    `PUT /users` (in `data`, `allUserData` and `agentUserData`) and is passed to the
+    actions and functions of every app that run for the user.
     """
 
     if IS_PYDANTIC_V2:

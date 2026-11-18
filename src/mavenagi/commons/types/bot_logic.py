@@ -8,6 +8,16 @@ from .bot_logic_item import BotLogicItem
 
 
 class BotLogic(UniversalBaseModel):
+    """
+    What the agent did to produce this response, in order.
+
+    The agent may reason more than once before it responds. When it runs an action, it
+    reasons again with the action's result, and each pass is one step. A step lists the
+    context the agent evaluated, in this order: intelligent fields, segments, user data,
+    charters and knowledge. An `actions` item follows. Steering and form-submission items appear
+    where they happened.
+    """
+
     items: typing.List[BotLogicItem]
 
     if IS_PYDANTIC_V2:

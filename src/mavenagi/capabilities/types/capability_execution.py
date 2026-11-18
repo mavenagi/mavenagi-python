@@ -26,12 +26,10 @@ class CapabilityExecution_Trigger(UniversalBaseModel):
     capability_type: typing_extensions.Annotated[typing.Literal["TRIGGER"], FieldMetadata(alias="capabilityType")] = (
         "TRIGGER"
     )
-    event_type: typing_extensions.Annotated[EventTriggerType, FieldMetadata(alias="eventType")]
     attempt: int
-    retryability: typing.Optional[CapabilityExecutionRetryability] = None
-    http_status: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="httpStatus")] = None
-    capability_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="capabilityId")]
     subject_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="subjectId")]
+    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
+    capability_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="capabilityId")]
     status: CapabilityExecutionStatus
     completion_reason: typing_extensions.Annotated[
         typing.Optional[CapabilityExecutionCompletionReason], FieldMetadata(alias="completionReason")
@@ -40,8 +38,10 @@ class CapabilityExecution_Trigger(UniversalBaseModel):
     started_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="startedAt")]
     completed_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="completedAt")] = None
     duration_ms: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="durationMs")] = None
-    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
     execution_mode: typing_extensions.Annotated[ExecutionMode, FieldMetadata(alias="executionMode")]
+    event_type: typing_extensions.Annotated[EventTriggerType, FieldMetadata(alias="eventType")]
+    retryability: typing.Optional[CapabilityExecutionRetryability] = None
+    http_status: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="httpStatus")] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -62,8 +62,9 @@ class CapabilityExecution_ConversationKickoff(UniversalBaseModel):
     capability_type: typing_extensions.Annotated[
         typing.Literal["CONVERSATION_KICKOFF"], FieldMetadata(alias="capabilityType")
     ] = "CONVERSATION_KICKOFF"
-    capability_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="capabilityId")]
     subject_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="subjectId")]
+    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
+    capability_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="capabilityId")]
     status: CapabilityExecutionStatus
     completion_reason: typing_extensions.Annotated[
         typing.Optional[CapabilityExecutionCompletionReason], FieldMetadata(alias="completionReason")
@@ -72,7 +73,6 @@ class CapabilityExecution_ConversationKickoff(UniversalBaseModel):
     started_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="startedAt")]
     completed_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="completedAt")] = None
     duration_ms: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="durationMs")] = None
-    created_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="createdAt")]
     execution_mode: typing_extensions.Annotated[ExecutionMode, FieldMetadata(alias="executionMode")]
 
     if IS_PYDANTIC_V2:

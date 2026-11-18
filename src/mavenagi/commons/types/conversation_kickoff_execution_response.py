@@ -12,7 +12,7 @@ from .conversation_kickoff_status import ConversationKickoffStatus
 
 class ConversationKickoffExecutionResponse(UniversalBaseModel):
     """
-    A single persisted Conversation Kickoff execution result, with timing.
+    One Conversation Kickoff execution result, with timing: one recorded when a conversation ran its kickoffs, or one from a simulation, which is not recorded.
     """
 
     reference_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="referenceId")] = (

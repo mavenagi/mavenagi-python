@@ -376,6 +376,10 @@ class RawUsersClient:
         """
         Update an app user or create it if it doesn't exist.
 
+        <Warning>User data is not secret storage, even with `HIDDEN` visibility: `HIDDEN` only keeps a value away from the agent and masks it in agent user responses. Do not store credentials, tokens or other secrets in user data. To pass a per-user credential to your actions, send it as `transientData` on each ask request instead.</Warning>
+
+        When a metadata size limit is enforced for the agent, each `data` entry may be at most 8,192 bytes by default, counting the key and value together, plus one byte, in UTF-8. A larger entry returns a 400 that names the key.
+
         <Note>**Required permission:** `edit:agents`. A user with `executionMode` `SIMULATION` also needs `create:simulations`.</Note>
 
         Parameters
@@ -387,6 +391,13 @@ class RawUsersClient:
             Used to determine whether two users from different apps are the same
 
         data : typing.Dict[str, UserData]
+            Data about the user, keyed by field name.
+
+            Do not store credentials, tokens or other secrets here, whatever their `visibility`.
+            User data is not secret storage: values are stored as given, and the users API returns
+            them in full to callers that can read users. To pass a per-user credential to your
+            app's actions, send it as `transientData` on the ask or submit-action-form request, which
+            is forwarded to the actions of that request and not stored.
 
         execution_mode : typing.Optional[ExecutionMode]
             The execution mode the user lives in. Defaults to `LIVE` for a new user, and to the existing
@@ -501,7 +512,9 @@ class RawUsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[AppUserResponse]:
         """
-        Get an app user by its supplied ID
+        Get an app user by its supplied ID.
+
+        Returns every user data value in full, including `HIDDEN` and `PARTIALLY_VISIBLE` ones.
 
         <Note>**Required permission:** `read:agents`</Note>
 
@@ -1053,6 +1066,10 @@ class AsyncRawUsersClient:
         """
         Update an app user or create it if it doesn't exist.
 
+        <Warning>User data is not secret storage, even with `HIDDEN` visibility: `HIDDEN` only keeps a value away from the agent and masks it in agent user responses. Do not store credentials, tokens or other secrets in user data. To pass a per-user credential to your actions, send it as `transientData` on each ask request instead.</Warning>
+
+        When a metadata size limit is enforced for the agent, each `data` entry may be at most 8,192 bytes by default, counting the key and value together, plus one byte, in UTF-8. A larger entry returns a 400 that names the key.
+
         <Note>**Required permission:** `edit:agents`. A user with `executionMode` `SIMULATION` also needs `create:simulations`.</Note>
 
         Parameters
@@ -1064,6 +1081,13 @@ class AsyncRawUsersClient:
             Used to determine whether two users from different apps are the same
 
         data : typing.Dict[str, UserData]
+            Data about the user, keyed by field name.
+
+            Do not store credentials, tokens or other secrets here, whatever their `visibility`.
+            User data is not secret storage: values are stored as given, and the users API returns
+            them in full to callers that can read users. To pass a per-user credential to your
+            app's actions, send it as `transientData` on the ask or submit-action-form request, which
+            is forwarded to the actions of that request and not stored.
 
         execution_mode : typing.Optional[ExecutionMode]
             The execution mode the user lives in. Defaults to `LIVE` for a new user, and to the existing
@@ -1178,7 +1202,9 @@ class AsyncRawUsersClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[AppUserResponse]:
         """
-        Get an app user by its supplied ID
+        Get an app user by its supplied ID.
+
+        Returns every user data value in full, including `HIDDEN` and `PARTIALLY_VISIBLE` ones.
 
         <Note>**Required permission:** `read:agents`</Note>
 

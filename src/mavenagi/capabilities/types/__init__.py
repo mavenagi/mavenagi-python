@@ -21,15 +21,30 @@ from .capability_response import (
     CapabilityResponse_IntelligentField,
     CapabilityResponse_Trigger,
 )
-from .capability_simulation_input import CapabilitySimulationInput, CapabilitySimulationInput_Action
-from .capability_simulation_result import CapabilitySimulationResult, CapabilitySimulationResult_Action
+from .capability_run_base import CapabilityRunBase
+from .capability_simulation_input import (
+    CapabilitySimulationInput,
+    CapabilitySimulationInput_Action,
+    CapabilitySimulationInput_ConversationKickoff,
+    CapabilitySimulationInput_Trigger,
+)
+from .capability_simulation_result import (
+    CapabilitySimulationResult,
+    CapabilitySimulationResult_Action,
+    CapabilitySimulationResult_ConversationKickoff,
+    CapabilitySimulationResult_Trigger,
+)
 from .capability_sort_field import CapabilitySortField
 from .capability_summary import CapabilitySummary
 from .conversation_context_simulation_input import ConversationContextSimulationInput
 from .conversation_kickoff_capability_execution import ConversationKickoffCapabilityExecution
+from .conversation_kickoff_simulation_input import ConversationKickoffSimulationInput
 from .simulated_user import SimulatedUser
 from .simulated_user_data import SimulatedUserData
 from .trigger_capability_execution import TriggerCapabilityExecution
+from .trigger_run_details import TriggerRunDetails
+from .trigger_simulation_input import TriggerSimulationInput
+from .trigger_simulation_result import TriggerSimulationResult
 
 __all__ = [
     "ActionSimulationInput",
@@ -47,15 +62,24 @@ __all__ = [
     "CapabilityResponse_ConversationKickoff",
     "CapabilityResponse_IntelligentField",
     "CapabilityResponse_Trigger",
+    "CapabilityRunBase",
     "CapabilitySimulationInput",
     "CapabilitySimulationInput_Action",
+    "CapabilitySimulationInput_ConversationKickoff",
+    "CapabilitySimulationInput_Trigger",
     "CapabilitySimulationResult",
     "CapabilitySimulationResult_Action",
+    "CapabilitySimulationResult_ConversationKickoff",
+    "CapabilitySimulationResult_Trigger",
     "CapabilitySortField",
     "CapabilitySummary",
     "ConversationContextSimulationInput",
     "ConversationKickoffCapabilityExecution",
+    "ConversationKickoffSimulationInput",
     "SimulatedUser",
     "SimulatedUserData",
     "TriggerCapabilityExecution",
+    "TriggerRunDetails",
+    "TriggerSimulationInput",
+    "TriggerSimulationResult",
 ]

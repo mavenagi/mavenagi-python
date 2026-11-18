@@ -306,7 +306,9 @@ class AgentsClient:
             The field must be `ACTIVE` to produce values. While it is inactive, conversations get no category. With agent variants, a conversation gets a category only if the field is active in its variant. Categories are capped at 280 characters.
 
         content_safety_violation_response_prompt_text : typing.Optional[str]
-            LLM prompt for generating a response when the user's question has been detected as unsafe.
+            Instructions to an LLM that writes the reply when the user's message is blocked for harmful content (hate, self-harm, sexual or violence). The LLM sees only these instructions and the blocked message, not the agent's charters, knowledge or earlier messages. To send fixed wording, say so in the instructions, for example `Always reply with exactly: "…"`.
+
+            A message flagged as a prompt attack always gets the default reply, even when it was also flagged for harmful content. So does every blocked message while this is not set.
 
             Rejected with reason `VARIANT_REQUIRED` while `CONTENT_SAFETY_VIOLATION_RESPONSE_PROMPT_TEXT` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
 
@@ -727,7 +729,9 @@ class AsyncAgentsClient:
             The field must be `ACTIVE` to produce values. While it is inactive, conversations get no category. With agent variants, a conversation gets a category only if the field is active in its variant. Categories are capped at 280 characters.
 
         content_safety_violation_response_prompt_text : typing.Optional[str]
-            LLM prompt for generating a response when the user's question has been detected as unsafe.
+            Instructions to an LLM that writes the reply when the user's message is blocked for harmful content (hate, self-harm, sexual or violence). The LLM sees only these instructions and the blocked message, not the agent's charters, knowledge or earlier messages. To send fixed wording, say so in the instructions, for example `Always reply with exactly: "…"`.
+
+            A message flagged as a prompt attack always gets the default reply, even when it was also flagged for harmful content. So does every blocked message while this is not set.
 
             Rejected with reason `VARIANT_REQUIRED` while `CONTENT_SAFETY_VIOLATION_RESPONSE_PROMPT_TEXT` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
 

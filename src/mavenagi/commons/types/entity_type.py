@@ -32,6 +32,7 @@ EntityType = typing.Union[
         "SCENARIO_RUN",
         "FUNCTION",
         "FUNCTION_VERSION",
+        "MAVEN_USER",
     ],
     typing.Any,
 ]

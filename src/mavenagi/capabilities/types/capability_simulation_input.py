@@ -6,6 +6,7 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.event_request import EventRequest
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .simulated_user import SimulatedUser
@@ -13,8 +14,8 @@ from .simulated_user import SimulatedUser
 
 class CapabilitySimulationInput_Action(UniversalBaseModel):
     """
-    What a capability is simulated with, by kind. Only actions can be simulated today; a variant
-    is added for each kind as it becomes simulation-aware.
+    What a capability is simulated with, by kind. A variant is added for each kind as it becomes
+    simulation-aware.
     """
 
     capability_type: typing_extensions.Annotated[typing.Literal["ACTION"], FieldMetadata(alias="capabilityType")] = (
@@ -39,4 +40,54 @@ class CapabilitySimulationInput_Action(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-CapabilitySimulationInput = CapabilitySimulationInput_Action
+class CapabilitySimulationInput_ConversationKickoff(UniversalBaseModel):
+    """
+    What a capability is simulated with, by kind. A variant is added for each kind as it becomes
+    simulation-aware.
+    """
+
+    capability_type: typing_extensions.Annotated[
+        typing.Literal["CONVERSATION_KICKOFF"], FieldMetadata(alias="capabilityType")
+    ] = "CONVERSATION_KICKOFF"
+    conversation_metadata: typing_extensions.Annotated[
+        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="conversationMetadata")
+    ] = None
+    user: typing.Optional[SimulatedUser] = None
+    transient_data: typing_extensions.Annotated[
+        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="transientData")
+    ] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class CapabilitySimulationInput_Trigger(UniversalBaseModel):
+    """
+    What a capability is simulated with, by kind. A variant is added for each kind as it becomes
+    simulation-aware.
+    """
+
+    capability_type: typing_extensions.Annotated[typing.Literal["TRIGGER"], FieldMetadata(alias="capabilityType")] = (
+        "TRIGGER"
+    )
+    event: EventRequest
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+CapabilitySimulationInput = typing.Union[
+    CapabilitySimulationInput_Action, CapabilitySimulationInput_ConversationKickoff, CapabilitySimulationInput_Trigger
+]

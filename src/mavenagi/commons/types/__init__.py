@@ -2,6 +2,7 @@
 
 # isort: skip_file
 
+from .absolute_time_window import AbsoluteTimeWindow
 from .action_base import ActionBase
 from .action_enum_option import ActionEnumOption
 from .action_execution_param_value import (
@@ -116,6 +117,7 @@ from .conversation_precondition import (
     ConversationPrecondition_Metadata,
     ConversationPrecondition_ResponseConfig,
     ConversationPrecondition_Tags,
+    ConversationPrecondition_Time,
 )
 from .conversation_precondition_response import (
     ConversationPreconditionResponse,
@@ -127,6 +129,7 @@ from .conversation_precondition_response import (
     ConversationPreconditionResponse_Metadata,
     ConversationPreconditionResponse_ResponseConfig,
     ConversationPreconditionResponse_Tags,
+    ConversationPreconditionResponse_Time,
 )
 from .conversation_preview import ConversationPreview
 from .conversation_response import ConversationResponse
@@ -141,6 +144,15 @@ from .conversation_value_source import (
 )
 from .csat_info import CsatInfo
 from .cursor_page import CursorPage
+from .day_of_month_day_selector import DayOfMonthDaySelector
+from .day_of_week import DayOfWeek
+from .day_selector import (
+    DaySelector,
+    DaySelector_DayOfMonth,
+    DaySelector_NthWeekday,
+    DaySelector_Weekdays,
+    DaySelector_YearlyDates,
+)
 from .device_info import DeviceInfo
 from .device_type import DeviceType
 from .document_information import DocumentInformation
@@ -243,10 +255,12 @@ from .metadata_filter import (
 )
 from .metadata_filter_group import MetadataFilterGroup
 from .metadata_precondition import MetadataPrecondition
+from .month import Month
 from .multiline_settings_schema_entry import MultilineSettingsSchemaEntry
 from .novel_system_event import NovelSystemEvent
 from .novel_system_event_no_id import NovelSystemEventNoId
 from .novel_user_event import NovelUserEvent
+from .nth_weekday_day_selector import NthWeekdayDaySelector
 from .number_range import NumberRange
 from .number_settings_schema_entry import NumberSettingsSchemaEntry
 from .numeric_comparison_condition import NumericComparisonCondition
@@ -257,6 +271,7 @@ from .numeric_membership_operator import NumericMembershipOperator
 from .o_auth_authentication_method import OAuthAuthenticationMethod
 from .o_auth_settings_schema_entry import OAuthSettingsSchemaEntry
 from .object_condition import ObjectCondition, ObjectCondition_Entry
+from .occurrence import Occurrence
 from .one_of_settings_schema_entry import OneOfSettingsSchemaEntry
 from .os_info import OsInfo
 from .os_type import OsType
@@ -279,6 +294,7 @@ from .presence_condition import PresenceCondition
 from .presence_operator import PresenceOperator
 from .quality import Quality
 from .quality_reason import QualityReason
+from .recurring_time_window import RecurringTimeWindow
 from .relationship_type import RelationshipType
 from .resolution_status import ResolutionStatus
 from .response_config import ResponseConfig
@@ -344,6 +360,9 @@ from .text_format import TextFormat, TextFormat_JsonSchema, TextFormat_Text
 from .text_format_json_schema import TextFormatJsonSchema
 from .text_format_text import TextFormatText
 from .text_settings_schema_entry import TextSettingsSchemaEntry
+from .time_of_day_range import TimeOfDayRange
+from .time_precondition import TimePrecondition
+from .time_window import TimeWindow, TimeWindow_Absolute, TimeWindow_Recurring, TimeWindow_Weekly
 from .universal_condition import UniversalCondition, UniversalCondition_Presence
 from .user_conversation_message_type import UserConversationMessageType
 from .user_data import UserData
@@ -355,9 +374,15 @@ from .user_event_name_condition import UserEventNameCondition
 from .user_message import UserMessage
 from .user_message_base import UserMessageBase
 from .user_message_response_state import UserMessageResponseState
+from .validated_settings_schema_entry_base import ValidatedSettingsSchemaEntryBase
 from .visibility_type import VisibilityType
+from .week_time import WeekTime
+from .weekdays_day_selector import WeekdaysDaySelector
+from .weekly_time_window import WeeklyTimeWindow
+from .yearly_dates_day_selector import YearlyDatesDaySelector
 
 __all__ = [
+    "AbsoluteTimeWindow",
     "ActionBase",
     "ActionEnumOption",
     "ActionExecutionParamValue",
@@ -464,6 +489,7 @@ __all__ = [
     "ConversationPreconditionResponse_Metadata",
     "ConversationPreconditionResponse_ResponseConfig",
     "ConversationPreconditionResponse_Tags",
+    "ConversationPreconditionResponse_Time",
     "ConversationPrecondition_ActionExecuted",
     "ConversationPrecondition_App",
     "ConversationPrecondition_ConversationMode",
@@ -472,6 +498,7 @@ __all__ = [
     "ConversationPrecondition_Metadata",
     "ConversationPrecondition_ResponseConfig",
     "ConversationPrecondition_Tags",
+    "ConversationPrecondition_Time",
     "ConversationPreview",
     "ConversationResponse",
     "ConversationRound",
@@ -483,6 +510,13 @@ __all__ = [
     "ConversationValueSource_UserData",
     "CsatInfo",
     "CursorPage",
+    "DayOfMonthDaySelector",
+    "DayOfWeek",
+    "DaySelector",
+    "DaySelector_DayOfMonth",
+    "DaySelector_NthWeekday",
+    "DaySelector_Weekdays",
+    "DaySelector_YearlyDates",
     "DeviceInfo",
     "DeviceType",
     "DocumentInformation",
@@ -584,10 +618,12 @@ __all__ = [
     "MetadataFilter_Entry",
     "MetadataFilter_Group",
     "MetadataPrecondition",
+    "Month",
     "MultilineSettingsSchemaEntry",
     "NovelSystemEvent",
     "NovelSystemEventNoId",
     "NovelUserEvent",
+    "NthWeekdayDaySelector",
     "NumberRange",
     "NumberSettingsSchemaEntry",
     "NumericComparisonCondition",
@@ -601,6 +637,7 @@ __all__ = [
     "OAuthSettingsSchemaEntry",
     "ObjectCondition",
     "ObjectCondition_Entry",
+    "Occurrence",
     "OneOfSettingsSchemaEntry",
     "OsInfo",
     "OsType",
@@ -624,6 +661,7 @@ __all__ = [
     "PresenceOperator",
     "Quality",
     "QualityReason",
+    "RecurringTimeWindow",
     "RelationshipType",
     "ResolutionStatus",
     "ResponseConfig",
@@ -691,6 +729,12 @@ __all__ = [
     "TextFormat_JsonSchema",
     "TextFormat_Text",
     "TextSettingsSchemaEntry",
+    "TimeOfDayRange",
+    "TimePrecondition",
+    "TimeWindow",
+    "TimeWindow_Absolute",
+    "TimeWindow_Recurring",
+    "TimeWindow_Weekly",
     "UniversalCondition",
     "UniversalCondition_Presence",
     "UserConversationMessageType",
@@ -703,5 +747,10 @@ __all__ = [
     "UserMessage",
     "UserMessageBase",
     "UserMessageResponseState",
+    "ValidatedSettingsSchemaEntryBase",
     "VisibilityType",
+    "WeekTime",
+    "WeekdaysDaySelector",
+    "WeeklyTimeWindow",
+    "YearlyDatesDaySelector",
 ]

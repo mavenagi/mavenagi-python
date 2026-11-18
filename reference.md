@@ -1114,7 +1114,9 @@ The field must be `ACTIVE` to produce values. While it is inactive, conversation
 
 **content_safety_violation_response_prompt_text:** `typing.Optional[str]` 
 
-LLM prompt for generating a response when the user's question has been detected as unsafe.
+Instructions to an LLM that writes the reply when the user's message is blocked for harmful content (hate, self-harm, sexual or violence). The LLM sees only these instructions and the blocked message, not the agent's charters, knowledge or earlier messages. To send fixed wording, say so in the instructions, for example `Always reply with exactly: "…"`.
+
+A message flagged as a prompt attack always gets the default reply, even when it was also flagged for harmful content. So does every blocked message while this is not set.
 
 Rejected with reason `VARIANT_REQUIRED` while `CONTENT_SAFETY_VIOLATION_RESPONSE_PROMPT_TEXT` is in `getVersionedEntityTypes`; set it through `patchVersionedSettings`.
     
@@ -2711,6 +2713,8 @@ Update app settings. Performs a merge of the provided settings with the existing
 - No keys will be removed.
 
 Note that if an array value is provided it will fully replace an existing value as arrays cannot be merged.
+
+Returns the full app settings after the merge, including keys that were not in the request. This is the same object that Get app settings returns.
 </dd>
 </dl>
 </dd>
@@ -2898,6 +2902,11 @@ The mime-type of the attachment. Supported types are:
 
 Commit an upload after successful file transfer.
 Updates the asset status and makes it available for use.
+
+An asset is committed once. Committing it again with the same checksum is safe while its file
+is unchanged, so a client can retry a commit; a different checksum returns a 409. Once
+committed, don't write to the upload URL again, even with the same bytes: committing after
+that may return a 409, and the file then has to be uploaded as a new asset.
 
 <Note>**Required permission:** `ask:agent`</Note>
 </dd>
@@ -3367,8 +3376,12 @@ conversation or agent user has to exist first. The capability is told its mode i
 `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
 effects in real systems. Nothing here runs a capability live.
 
-Only actions can be simulated today. Triggers and conversation kickoffs are rejected with a
-400 until they can run as simulations. Intelligent fields cannot be simulated.
+A simulated run is not recorded. It returns its result here and never appears in
+capability execution search.
+
+Actions, conversation kickoffs and event triggers can be simulated today. An event trigger
+is given one event the caller describes in full; the event is never stored, and its user
+does not have to exist. Intelligent fields cannot be simulated.
 
 <Note>**Required permission:** `create:simulations`</Note>
 </dd>
@@ -5452,7 +5465,7 @@ Non-simulation conversations remain visible; they cannot be fully removed from t
 <Warning>This is a destructive operation and cannot be undone. <br/><br/>
 What is wiped: the conversation's `subject` and `analysis.agentResponse` are cleared, and `analysis.userRequest` is replaced with `reason`.
 Every message's text, from the user and the agent alike, is replaced with `reason`, and its attachments, follow-up questions, backend LLM prompt and history, the data actions returned, and action arguments are cleared.
-Evaluation results for the conversation are deleted, and the payloads recorded on its trigger and action executions are cleared. <br/><br/>
+Evaluation results for the conversation are deleted, the payloads recorded on its trigger and action executions are cleared, and the message recorded on each of its Conversation Kickoff executions is cleared. <br/><br/>
 What is kept: the conversation's metadata, each message's charts, structured answer and app-supplied metadata, the conversation's intelligent field values, its feedback and events, and the users who took part. To wipe a user's data, use `DELETE /users/{userId}` or `DELETE /agentusers/{agentUserId}`.</Warning>
 
 <Note>**Required permission:** `delete:conversations`</Note>
@@ -5750,32 +5763,6 @@ client.conversation.ask(
 <dl>
 <dd>
 
-**type:** `typing.Optional[AskType]` 
-
-What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
-question — this is the backwards-compatible default. Use WELCOME for an agent-authored
-opener, or PROACTIVE for a message the user did not prompt.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**text:** `typing.Optional[str]` 
-
-For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
-is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
-agent's response (a directive to the agent, not the user's own words). (Changed from
-required to optional to support the non-user ask types — existing USER_MESSAGE callers
-are unaffected.)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **text_format:** `typing.Optional[TextFormat]` 
 
 What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
@@ -5802,6 +5789,32 @@ object on every round.
 A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
 charter's manual is returned exactly as written without consulting the agent, so there is
 nothing to shape into the requested schema — the round returns the manual as `text` alone.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `typing.Optional[AskType]` 
+
+What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
+question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+opener, or PROACTIVE for a message the user did not prompt.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**text:** `typing.Optional[str]` 
+
+For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+agent's response (a directive to the agent, not the user's own words). (Changed from
+required to optional to support the non-user ask types — existing USER_MESSAGE callers
+are unaffected.)
     
 </dd>
 </dl>
@@ -5975,32 +5988,6 @@ for chunk in response.data:
 <dl>
 <dd>
 
-**type:** `typing.Optional[AskType]` 
-
-What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
-question — this is the backwards-compatible default. Use WELCOME for an agent-authored
-opener, or PROACTIVE for a message the user did not prompt.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**text:** `typing.Optional[str]` 
-
-For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
-is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
-agent's response (a directive to the agent, not the user's own words). (Changed from
-required to optional to support the non-user ask types — existing USER_MESSAGE callers
-are unaffected.)
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **text_format:** `typing.Optional[TextFormat]` 
 
 What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
@@ -6027,6 +6014,32 @@ object on every round.
 A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
 charter's manual is returned exactly as written without consulting the agent, so there is
 nothing to shape into the requested schema — the round returns the manual as `text` alone.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**type:** `typing.Optional[AskType]` 
+
+What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
+question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+opener, or PROACTIVE for a message the user did not prompt.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**text:** `typing.Optional[str]` 
+
+For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+agent's response (a directive to the agent, not the user's own words). (Changed from
+required to optional to support the non-user ask types — existing USER_MESSAGE callers
+are unaffected.)
     
 </dd>
 </dl>
@@ -6421,6 +6434,8 @@ client.conversation.submit_action_form(
 Replaced by `updateConversationMetadata`.
 
 Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
+
+When a metadata size limit is enforced for the agent, each entry may be at most 8,192 bytes by default, counting the key and value together, plus one byte, in UTF-8. A larger entry returns a 400 that names the key.
 
 A closed conversation (`open` set to false) takes no new metadata and returns a 400.
 </dd>
@@ -6965,6 +6980,10 @@ here - sorting conversations by an intelligent field value is not available. Int
 
 Deliver a message to a user or conversation.
 
+Send `content` with `contentType: message` to deliver a message as written, or `contentType: ask`
+to have the agent take a `WELCOME` or `PROACTIVE` turn and deliver its reply. Either way the app
+that owns the conversation receives the message through its `handleMessage` hook.
+
 A closed conversation (`open` set to false) takes no new messages and returns a 400.
 
 <Warning>
@@ -6990,8 +7009,8 @@ User message delivery is not yet supported and returns a 400.
 from mavenagi import MavenAGI
 from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
 from mavenagi.conversation import (
-    ConversationMessageRequest,
-    DeliverMessageRequest_User,
+    DeliverContent_Ask,
+    DeliverMessageRequest_Conversation,
 )
 
 client = MavenAGI(
@@ -7002,21 +7021,21 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.conversation.deliver_message(
-    request=DeliverMessageRequest_User(
-        user_id=EntityIdWithoutAgent(
-            type="AGENT",
-            app_id="appId",
-            reference_id="x",
+    request=DeliverMessageRequest_Conversation(
+        conversation_id=EntityIdWithoutAgent(
+            type="CONVERSATION",
+            app_id="chat-app",
+            reference_id="conversation-0",
         ),
-        message=ConversationMessageRequest(
+        content=DeliverContent_Ask(
             conversation_message_id=EntityIdBase(
-                reference_id="x",
+                reference_id="message-1",
             ),
             user_id=EntityIdBase(
-                reference_id="x",
+                reference_id="system-live-support",
             ),
-            text="text",
-            user_message_type="USER",
+            type="PROACTIVE",
+            text="Tell the user their refund was approved.",
         ),
     ),
 )
@@ -13484,6 +13503,10 @@ client.users.delete_agent_user(
 
 Update an app user or create it if it doesn't exist.
 
+<Warning>User data is not secret storage, even with `HIDDEN` visibility: `HIDDEN` only keeps a value away from the agent and masks it in agent user responses. Do not store credentials, tokens or other secrets in user data. To pass a per-user credential to your actions, send it as `transientData` on each ask request instead.</Warning>
+
+When a metadata size limit is enforced for the agent, each `data` entry may be at most 8,192 bytes by default, counting the key and value together, plus one byte, in UTF-8. A larger entry returns a 400 that names the key.
+
 <Note>**Required permission:** `edit:agents`. A user with `executionMode` `SIMULATION` also needs `create:simulations`.</Note>
 </dd>
 </dl>
@@ -13558,6 +13581,14 @@ client.users.create_or_update(
 <dd>
 
 **data:** `typing.Dict[str, UserData]` 
+
+Data about the user, keyed by field name.
+
+Do not store credentials, tokens or other secrets here, whatever their `visibility`.
+User data is not secret storage: values are stored as given, and the users API returns
+them in full to callers that can read users. To pass a per-user credential to your
+app's actions, send it as `transientData` on the ask or submit-action-form request, which
+is forwarded to the actions of that request and not stored.
     
 </dd>
 </dl>
@@ -13606,7 +13637,9 @@ Creating one needs the same permission as creating a simulation conversation.
 <dl>
 <dd>
 
-Get an app user by its supplied ID
+Get an app user by its supplied ID.
+
+Returns every user data value in full, including `HIDDEN` and `PARTIALLY_VISIBLE` ones.
 
 <Note>**Required permission:** `read:agents`</Note>
 </dd>

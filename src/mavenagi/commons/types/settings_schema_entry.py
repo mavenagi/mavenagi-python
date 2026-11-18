@@ -17,6 +17,7 @@ class SettingsSchemaEntry_Text(UniversalBaseModel):
     type: typing.Literal["text"] = "text"
     default_value: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="defaultValue")] = None
     validation: typing.Optional[SettingsSchemaValidation] = None
+    validations: typing.Optional[typing.List[SettingsSchemaValidation]] = None
     key: str
     display_name: typing_extensions.Annotated[str, FieldMetadata(alias="displayName")]
     description: typing.Optional[str] = None
@@ -37,6 +38,7 @@ class SettingsSchemaEntry_Multiline(UniversalBaseModel):
     type: typing.Literal["multiline"] = "multiline"
     default_value: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="defaultValue")] = None
     validation: typing.Optional[SettingsSchemaValidation] = None
+    validations: typing.Optional[typing.List[SettingsSchemaValidation]] = None
     key: str
     display_name: typing_extensions.Annotated[str, FieldMetadata(alias="displayName")]
     description: typing.Optional[str] = None
@@ -59,6 +61,7 @@ class SettingsSchemaEntry_Array(UniversalBaseModel):
         typing.Optional[typing.List[str]], FieldMetadata(alias="defaultValue")
     ] = None
     validation: typing.Optional[SettingsSchemaValidation] = None
+    validations: typing.Optional[typing.List[SettingsSchemaValidation]] = None
     key: str
     display_name: typing_extensions.Annotated[str, FieldMetadata(alias="displayName")]
     description: typing.Optional[str] = None
@@ -98,6 +101,7 @@ class SettingsSchemaEntry_Color(UniversalBaseModel):
     type: typing.Literal["color"] = "color"
     default_value: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="defaultValue")] = None
     validation: typing.Optional[SettingsSchemaValidation] = None
+    validations: typing.Optional[typing.List[SettingsSchemaValidation]] = None
     key: str
     display_name: typing_extensions.Annotated[str, FieldMetadata(alias="displayName")]
     description: typing.Optional[str] = None
@@ -250,6 +254,7 @@ class SettingsSchemaEntry_Number(UniversalBaseModel):
     type: typing.Literal["number"] = "number"
     default_value: typing_extensions.Annotated[typing.Optional[float], FieldMetadata(alias="defaultValue")] = None
     validation: typing.Optional[SettingsSchemaValidation] = None
+    validations: typing.Optional[typing.List[SettingsSchemaValidation]] = None
     key: str
     display_name: typing_extensions.Annotated[str, FieldMetadata(alias="displayName")]
     description: typing.Optional[str] = None

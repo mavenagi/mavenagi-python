@@ -42,10 +42,11 @@ class AgentPrompting(UniversalBaseModel):
         typing.Optional[str], FieldMetadata(alias="contentSafetyViolationResponsePromptText")
     ] = pydantic.Field(default=None)
     """
-    LLM prompt for generating a response when the user's question has been detected as unsafe. 
+    Instructions to an LLM that writes the reply when the user's message is blocked for harmful content (hate, self-harm, sexual or violence). The LLM sees only these instructions and the blocked message, not the agent's charters, knowledge or earlier messages. To send fixed wording, say so in the instructions, for example `Always reply with exactly: "…"`.
     
-    Use this to provide custom LLM generated replies when dealing with content safety violations.
-    When not set, a default response is sent and replies will not be personalized by the LLM as it will not be involved.
+    A message flagged as a prompt attack always gets the default reply, even when it was also flagged for harmful content. So does every blocked message while this is not set.
+    
+    Shown in Agent Designer as "Content Safety Violation Message".
     
     Omitted while `CONTENT_SAFETY_VIOLATION_RESPONSE_PROMPT_TEXT` is in `getVersionedEntityTypes`; read it through `getVersionedSettings`.
     """

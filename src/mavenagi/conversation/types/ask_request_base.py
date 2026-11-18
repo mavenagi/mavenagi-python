@@ -4,40 +4,15 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...commons.types.ask_type import AskType
-from ...commons.types.attachment_request import AttachmentRequest
-from ...commons.types.entity_id_base import EntityIdBase
 from ...commons.types.text_format import TextFormat
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
+from .ask_request_fields import AskRequestFields
 
 
-class AskRequestBase(UniversalBaseModel):
+class AskRequestBase(AskRequestFields):
     """
     An ask without the user who asks, for endpoints that take the user from the caller's credentials.
-    """
-
-    conversation_message_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="conversationMessageId")] = (
-        pydantic.Field()
-    )
-    """
-    Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
-    """
-
-    type: typing.Optional[AskType] = pydantic.Field(default=None)
-    """
-    What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
-    question — this is the backwards-compatible default. Use WELCOME for an agent-authored
-    opener, or PROACTIVE for a message the user did not prompt.
-    """
-
-    text: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
-    is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
-    agent's response (a directive to the agent, not the user's own words). (Changed from
-    required to optional to support the non-user ask types — existing USER_MESSAGE callers
-    are unaffected.)
     """
 
     text_format: typing_extensions.Annotated[typing.Optional[TextFormat], FieldMetadata(alias="textFormat")] = (
@@ -68,36 +43,6 @@ class AskRequestBase(UniversalBaseModel):
     A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
     charter's manual is returned exactly as written without consulting the agent, so there is
     nothing to shape into the requested schema — the round returns the manual as `text` alone.
-    """
-
-    attachments: typing.Optional[typing.List[AttachmentRequest]] = pydantic.Field(default=None)
-    """
-    The attachments to the message. Image attachments will be sent to the LLM as additional data.
-    Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
-    """
-
-    transient_data: typing_extensions.Annotated[
-        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="transientData")
-    ] = pydantic.Field(default=None)
-    """
-    Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
-    """
-
-    timezone: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
-    """
-
-    app_metadata: typing_extensions.Annotated[
-        typing.Optional[typing.Dict[str, str]], FieldMetadata(alias="appMetadata")
-    ] = pydantic.Field(default=None)
-    """
-    Key-value metadata to persist on the user message created by this request. Unlike
-    `transientData` (which is never persisted) this is stored and returned when the message
-    is read back via the API or dashboard, and unlike user data it is not sent to the LLM.
-    Applied only when the message is first created — if `conversationMessageId` already
-    exists the message is reused and its metadata is not updated. Keys and values are strings
-    with a maximum length of 500 characters each.
     """
 
     if IS_PYDANTIC_V2:

@@ -14,7 +14,16 @@ class AppUser(UniversalBaseModel):
     Used to determine whether two users from different apps are the same
     """
 
-    data: typing.Dict[str, UserData]
+    data: typing.Dict[str, UserData] = pydantic.Field()
+    """
+    Data about the user, keyed by field name.
+    
+    Do not store credentials, tokens or other secrets here, whatever their `visibility`.
+    User data is not secret storage: values are stored as given, and the users API returns
+    them in full to callers that can read users. To pass a per-user credential to your
+    app's actions, send it as `transientData` on the ask or submit-action-form request, which
+    is forwarded to the actions of that request and not stored.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

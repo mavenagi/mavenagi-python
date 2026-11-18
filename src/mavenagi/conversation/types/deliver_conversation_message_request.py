@@ -5,22 +5,17 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
-from .conversation_message_request import ConversationMessageRequest
+from .deliver_message_base import DeliverMessageBase
 
 
-class DeliverConversationMessageRequest(UniversalBaseModel):
+class DeliverConversationMessageRequest(DeliverMessageBase):
     conversation_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="conversationId")] = (
         pydantic.Field()
     )
     """
     The ID of the conversation to deliver the message to. Message delivery will fail if the conversation does not have the `ASYNC` capability, and a closed conversation (`open` set to false) returns a 400.
-    """
-
-    message: ConversationMessageRequest = pydantic.Field()
-    """
-    The message to deliver.
     """
 
     if IS_PYDANTIC_V2:

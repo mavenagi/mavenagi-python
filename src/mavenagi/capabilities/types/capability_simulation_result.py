@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import typing
 
 import pydantic
 import typing_extensions
 from ...commons.types.action_execution_status import ActionExecutionStatus
+from ...commons.types.conversation_kickoff_status import ConversationKickoffStatus
+from ...commons.types.entity_id import EntityId
+from ...commons.types.event_trigger_type import EventTriggerType
+from ...commons.types.execution_mode import ExecutionMode
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .capability_execution_completion_reason import CapabilityExecutionCompletionReason
+from .capability_execution_retryability import CapabilityExecutionRetryability
+from .capability_execution_status import CapabilityExecutionStatus
 
 
 class CapabilitySimulationResult_Action(UniversalBaseModel):
@@ -34,4 +42,66 @@ class CapabilitySimulationResult_Action(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
-CapabilitySimulationResult = CapabilitySimulationResult_Action
+class CapabilitySimulationResult_ConversationKickoff(UniversalBaseModel):
+    """
+    What one simulated run of a capability produced, by kind.
+    """
+
+    capability_type: typing_extensions.Annotated[
+        typing.Literal["CONVERSATION_KICKOFF"], FieldMetadata(alias="capabilityType")
+    ] = "CONVERSATION_KICKOFF"
+    reference_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="referenceId")] = None
+    app_id: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="appId")] = None
+    status: ConversationKickoffStatus
+    message: typing.Optional[str] = None
+    started_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="startedAt")] = None
+    completed_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="completedAt")] = None
+    duration_ms: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="durationMs")] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class CapabilitySimulationResult_Trigger(UniversalBaseModel):
+    """
+    What one simulated run of a capability produced, by kind.
+    """
+
+    capability_type: typing_extensions.Annotated[typing.Literal["TRIGGER"], FieldMetadata(alias="capabilityType")] = (
+        "TRIGGER"
+    )
+    capability_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="capabilityId")]
+    status: CapabilityExecutionStatus
+    completion_reason: typing_extensions.Annotated[
+        typing.Optional[CapabilityExecutionCompletionReason], FieldMetadata(alias="completionReason")
+    ] = None
+    message: typing.Optional[str] = None
+    started_at: typing_extensions.Annotated[dt.datetime, FieldMetadata(alias="startedAt")]
+    completed_at: typing_extensions.Annotated[typing.Optional[dt.datetime], FieldMetadata(alias="completedAt")] = None
+    duration_ms: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="durationMs")] = None
+    execution_mode: typing_extensions.Annotated[ExecutionMode, FieldMetadata(alias="executionMode")]
+    event_type: typing_extensions.Annotated[EventTriggerType, FieldMetadata(alias="eventType")]
+    retryability: typing.Optional[CapabilityExecutionRetryability] = None
+    http_status: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="httpStatus")] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+CapabilitySimulationResult = typing.Union[
+    CapabilitySimulationResult_Action,
+    CapabilitySimulationResult_ConversationKickoff,
+    CapabilitySimulationResult_Trigger,
+]

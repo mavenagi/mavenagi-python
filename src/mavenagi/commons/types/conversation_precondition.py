@@ -16,6 +16,7 @@ from .field_condition import FieldCondition
 from .object_condition import ObjectCondition
 from .precondition_operator import PreconditionOperator
 from .response_length import ResponseLength
+from .time_window import TimeWindow
 
 
 class ConversationPrecondition_Tags(UniversalBaseModel):
@@ -171,6 +172,23 @@ class ConversationPrecondition_IntelligentField(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class ConversationPrecondition_Time(UniversalBaseModel):
+    conversation_precondition_type: typing_extensions.Annotated[
+        typing.Literal["time"], FieldMetadata(alias="conversationPreconditionType")
+    ] = "time"
+    window: TimeWindow
+    operator: typing.Optional[PreconditionOperator] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 ConversationPrecondition = typing.Union[
     ConversationPrecondition_Tags,
     ConversationPrecondition_Metadata,
@@ -180,4 +198,5 @@ ConversationPrecondition = typing.Union[
     ConversationPrecondition_ConversationState,
     ConversationPrecondition_ConversationMode,
     ConversationPrecondition_IntelligentField,
+    ConversationPrecondition_Time,
 ]

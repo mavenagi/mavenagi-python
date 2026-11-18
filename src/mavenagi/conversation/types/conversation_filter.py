@@ -176,22 +176,25 @@ class ConversationFilter(UniversalBaseModel):
         typing.Optional[typing.List[ResolutionStatus]], FieldMetadata(alias="resolutionStatus")
     ] = pydantic.Field(default=None)
     """
-    Filter by conversation resolution status which is determined by AI based on the conversation content.
+    Filter by conversation resolution status. Matches conversations with any of the listed
+    statuses. See `ResolutionStatus` for how each status is set.
     
     When `resolutionStatus`, `resolvedByMaven`, and `billable` are combined in a single filter,
-    precedence is applied in the following order: `resolutionStatus`, `resolvedByMaven`,
-    and then `billable`.          
+    only the first one set is applied, in this order: `resolutionStatus`, `resolvedByMaven`,
+    then `billable`. The others are ignored.
     """
 
     resolved_by_maven: typing_extensions.Annotated[typing.Optional[bool], FieldMetadata(alias="resolvedByMaven")] = (
         pydantic.Field(default=None)
     )
     """
-    Filter conversations based on whether they were resolved by Maven AI.
+    Filter conversations based on whether they were resolved by Maven. `true` is the same as
+    `billable: [ELIGIBLE_AND_BILLABLE]` and `false` the same as
+    `billable: [ELIGIBLE_AND_NOT_BILLABLE]`. Use `billable` or `resolutionStatus` instead.
     
     When `resolutionStatus`, `resolvedByMaven`, and `billable` are combined in a single filter,
-    precedence is applied in the following order: `resolutionStatus`, `resolvedByMaven`,
-    and then `billable`.          
+    only the first one set is applied, in this order: `resolutionStatus`, `resolvedByMaven`,
+    then `billable`. The others are ignored.
     """
 
     user_message_count: typing_extensions.Annotated[
@@ -275,8 +278,8 @@ class ConversationFilter(UniversalBaseModel):
     which means ELIGIBLE_AND_BILLABLE and ELIGIBLE_AND_NOT_BILLABLE.
     
     When `resolutionStatus`, `resolvedByMaven`, and `billable` are combined in a single filter,
-    precedence is applied in the following order: `resolutionStatus`, `resolvedByMaven`,
-    and then `billable`.
+    only the first one set is applied, in this order: `resolutionStatus`, `resolvedByMaven`,
+    then `billable`. The others are ignored.
     
     If billable is `null` or `[]` then defaults to all eligible conversations,
     which means ELIGIBLE_AND_BILLABLE and ELIGIBLE_AND_NOT_BILLABLE.

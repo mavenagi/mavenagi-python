@@ -10,12 +10,14 @@ from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
 from .conversation_message_request import ConversationMessageRequest
+from .deliver_content import DeliverContent
 
 
 class DeliverMessageRequest_User(UniversalBaseModel):
     type: typing.Literal["user"] = "user"
     user_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="userId")]
-    message: ConversationMessageRequest
+    message: typing.Optional[ConversationMessageRequest] = None
+    content: typing.Optional[DeliverContent] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -30,7 +32,8 @@ class DeliverMessageRequest_User(UniversalBaseModel):
 class DeliverMessageRequest_Conversation(UniversalBaseModel):
     type: typing.Literal["conversation"] = "conversation"
     conversation_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="conversationId")]
-    message: ConversationMessageRequest
+    message: typing.Optional[ConversationMessageRequest] = None
+    content: typing.Optional[DeliverContent] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

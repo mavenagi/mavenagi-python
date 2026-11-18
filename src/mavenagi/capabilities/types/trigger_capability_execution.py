@@ -3,23 +3,15 @@
 import typing
 
 import pydantic
-import typing_extensions
-from ...commons.types.event_trigger_type import EventTriggerType
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
-from ...core.serialization import FieldMetadata
 from .capability_execution_base import CapabilityExecutionBase
-from .capability_execution_retryability import CapabilityExecutionRetryability
+from .trigger_run_details import TriggerRunDetails
 
 
-class TriggerCapabilityExecution(CapabilityExecutionBase):
+class TriggerCapabilityExecution(CapabilityExecutionBase, TriggerRunDetails):
     """
     An Event Trigger notifying its app of an event. `SUCCESS` means the app's handler
     acknowledged the event, not that the app finished the work it was notified about.
-    """
-
-    event_type: typing_extensions.Annotated[EventTriggerType, FieldMetadata(alias="eventType")] = pydantic.Field()
-    """
-    The kind of event that caused this run.
     """
 
     attempt: int = pydantic.Field()
@@ -27,18 +19,6 @@ class TriggerCapabilityExecution(CapabilityExecutionBase):
     Which delivery attempt this is, starting at 1. Retries are recorded as further
     executions, so several executions for one trigger and subject with ascending attempts are
     one delivery retried, while several all at attempt 1 are separate fires.
-    """
-
-    retryability: typing.Optional[CapabilityExecutionRetryability] = pydantic.Field(default=None)
-    """
-    How a failure should be treated. Present only on FAILED executions.
-    """
-
-    http_status: typing_extensions.Annotated[typing.Optional[int], FieldMetadata(alias="httpStatus")] = pydantic.Field(
-        default=None
-    )
-    """
-    HTTP status returned by the app, when the failure carried one.
     """
 
     if IS_PYDANTIC_V2:

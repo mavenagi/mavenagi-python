@@ -32,7 +32,9 @@ class ConversationAnalysis(UniversalBaseModel):
         typing.Optional[ResolutionStatus], FieldMetadata(alias="resolutionStatus")
     ] = pydantic.Field(default=None)
     """
-    Generated resolution status of the conversation
+    Resolution status of the conversation. Code computes it from the messages, feedback,
+    CSAT and inserts. The one AI input is the transcript summary, which can report a
+    handoff and set `ESCALATED`. See `ResolutionStatus` for how each status is set.
     """
 
     category: typing.Optional[str] = pydantic.Field(default=None)
@@ -61,7 +63,9 @@ class ConversationAnalysis(UniversalBaseModel):
         pydantic.Field(default=None)
     )
     """
-    Whether the conversation was resolved by Maven
+    Whether the conversation was resolved by Maven: `true` exactly when `resolutionStatus`
+    is `RESOLVED`. These are the conversations billed under resolution-based pricing, and
+    the ones the `ELIGIBLE_AND_BILLABLE` billing status matches.
     """
 
     primary_language: typing_extensions.Annotated[typing.Optional[str], FieldMetadata(alias="primaryLanguage")] = (

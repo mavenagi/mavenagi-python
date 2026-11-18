@@ -323,7 +323,7 @@ class ConversationClient:
         <Warning>This is a destructive operation and cannot be undone. <br/><br/>
         What is wiped: the conversation's `subject` and `analysis.agentResponse` are cleared, and `analysis.userRequest` is replaced with `reason`.
         Every message's text, from the user and the agent alike, is replaced with `reason`, and its attachments, follow-up questions, backend LLM prompt and history, the data actions returned, and action arguments are cleared.
-        Evaluation results for the conversation are deleted, and the payloads recorded on its trigger and action executions are cleared. <br/><br/>
+        Evaluation results for the conversation are deleted, the payloads recorded on its trigger and action executions are cleared, and the message recorded on each of its Conversation Kickoff executions is cleared. <br/><br/>
         What is kept: the conversation's metadata, each message's charts, structured answer and app-supplied metadata, the conversation's intelligent field values, its feedback and events, and the users who took part. To wipe a user's data, use `DELETE /users/{userId}` or `DELETE /agentusers/{agentUserId}`.</Warning>
 
         <Note>**Required permission:** `delete:conversations`</Note>
@@ -446,9 +446,9 @@ class ConversationClient:
         *,
         user_id: EntityIdBase,
         conversation_message_id: EntityIdBase,
+        text_format: typing.Optional[TextFormat] = OMIT,
         type: typing.Optional[AskType] = OMIT,
         text: typing.Optional[str] = OMIT,
-        text_format: typing.Optional[TextFormat] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -481,18 +481,6 @@ class ConversationClient:
         conversation_message_id : EntityIdBase
             Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
 
-        type : typing.Optional[AskType]
-            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
-            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
-            opener, or PROACTIVE for a message the user did not prompt.
-
-        text : typing.Optional[str]
-            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
-            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
-            agent's response (a directive to the agent, not the user's own words). (Changed from
-            required to optional to support the non-user ask types — existing USER_MESSAGE callers
-            are unaffected.)
-
         text_format : typing.Optional[TextFormat]
             What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
             `BotObjectResponse` matching a schema you supply.
@@ -518,6 +506,18 @@ class ConversationClient:
             A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
             charter's manual is returned exactly as written without consulting the agent, so there is
             nothing to shape into the requested schema — the round returns the manual as `text` alone.
+
+        type : typing.Optional[AskType]
+            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
+            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+            opener, or PROACTIVE for a message the user did not prompt.
+
+        text : typing.Optional[str]
+            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+            agent's response (a directive to the agent, not the user's own words). (Changed from
+            required to optional to support the non-user ask types — existing USER_MESSAGE callers
+            are unaffected.)
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -580,9 +580,9 @@ class ConversationClient:
             conversation_id,
             user_id=user_id,
             conversation_message_id=conversation_message_id,
+            text_format=text_format,
             type=type,
             text=text,
-            text_format=text_format,
             attachments=attachments,
             transient_data=transient_data,
             timezone=timezone,
@@ -597,9 +597,9 @@ class ConversationClient:
         *,
         user_id: EntityIdBase,
         conversation_message_id: EntityIdBase,
+        text_format: typing.Optional[TextFormat] = OMIT,
         type: typing.Optional[AskType] = OMIT,
         text: typing.Optional[str] = OMIT,
-        text_format: typing.Optional[TextFormat] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -636,18 +636,6 @@ class ConversationClient:
         conversation_message_id : EntityIdBase
             Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
 
-        type : typing.Optional[AskType]
-            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
-            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
-            opener, or PROACTIVE for a message the user did not prompt.
-
-        text : typing.Optional[str]
-            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
-            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
-            agent's response (a directive to the agent, not the user's own words). (Changed from
-            required to optional to support the non-user ask types — existing USER_MESSAGE callers
-            are unaffected.)
-
         text_format : typing.Optional[TextFormat]
             What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
             `BotObjectResponse` matching a schema you supply.
@@ -673,6 +661,18 @@ class ConversationClient:
             A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
             charter's manual is returned exactly as written without consulting the agent, so there is
             nothing to shape into the requested schema — the round returns the manual as `text` alone.
+
+        type : typing.Optional[AskType]
+            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
+            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+            opener, or PROACTIVE for a message the user did not prompt.
+
+        text : typing.Optional[str]
+            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+            agent's response (a directive to the agent, not the user's own words). (Changed from
+            required to optional to support the non-user ask types — existing USER_MESSAGE callers
+            are unaffected.)
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -736,9 +736,9 @@ class ConversationClient:
             conversation_id,
             user_id=user_id,
             conversation_message_id=conversation_message_id,
+            text_format=text_format,
             type=type,
             text=text,
-            text_format=text_format,
             attachments=attachments,
             transient_data=transient_data,
             timezone=timezone,
@@ -951,6 +951,8 @@ class ConversationClient:
         Replaced by `updateConversationMetadata`.
 
         Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
+
+        When a metadata size limit is enforced for the agent, each entry may be at most 8,192 bytes by default, counting the key and value together, plus one byte, in UTF-8. A larger entry returns a 400 that names the key.
 
         A closed conversation (`open` set to false) takes no new metadata and returns a 400.
 
@@ -1300,6 +1302,10 @@ class ConversationClient:
         """
         Deliver a message to a user or conversation.
 
+        Send `content` with `contentType: message` to deliver a message as written, or `contentType: ask`
+        to have the agent take a `WELCOME` or `PROACTIVE` turn and deliver its reply. Either way the app
+        that owns the conversation receives the message through its `handleMessage` hook.
+
         A closed conversation (`open` set to false) takes no new messages and returns a 400.
 
         <Warning>
@@ -1325,8 +1331,8 @@ class ConversationClient:
         from mavenagi import MavenAGI
         from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
         from mavenagi.conversation import (
-            ConversationMessageRequest,
-            DeliverMessageRequest_User,
+            DeliverContent_Message,
+            DeliverMessageRequest_Conversation,
         )
 
         client = MavenAGI(
@@ -1337,21 +1343,21 @@ class ConversationClient:
             app_secret="YOUR_APP_SECRET",
         )
         client.conversation.deliver_message(
-            request=DeliverMessageRequest_User(
-                user_id=EntityIdWithoutAgent(
-                    type="AGENT",
-                    app_id="appId",
-                    reference_id="x",
+            request=DeliverMessageRequest_Conversation(
+                conversation_id=EntityIdWithoutAgent(
+                    type="CONVERSATION",
+                    app_id="chat-app",
+                    reference_id="conversation-0",
                 ),
-                message=ConversationMessageRequest(
+                content=DeliverContent_Message(
                     conversation_message_id=EntityIdBase(
-                        reference_id="x",
+                        reference_id="message-0",
                     ),
                     user_id=EntityIdBase(
-                        reference_id="x",
+                        reference_id="human-agent-0",
                     ),
-                    text="text",
-                    user_message_type="USER",
+                    text="Hi, I'm Priya. I can help with your refund.",
+                    user_message_type="HUMAN_AGENT",
                 ),
             ),
         )
@@ -1673,7 +1679,7 @@ class AsyncConversationClient:
         <Warning>This is a destructive operation and cannot be undone. <br/><br/>
         What is wiped: the conversation's `subject` and `analysis.agentResponse` are cleared, and `analysis.userRequest` is replaced with `reason`.
         Every message's text, from the user and the agent alike, is replaced with `reason`, and its attachments, follow-up questions, backend LLM prompt and history, the data actions returned, and action arguments are cleared.
-        Evaluation results for the conversation are deleted, and the payloads recorded on its trigger and action executions are cleared. <br/><br/>
+        Evaluation results for the conversation are deleted, the payloads recorded on its trigger and action executions are cleared, and the message recorded on each of its Conversation Kickoff executions is cleared. <br/><br/>
         What is kept: the conversation's metadata, each message's charts, structured answer and app-supplied metadata, the conversation's intelligent field values, its feedback and events, and the users who took part. To wipe a user's data, use `DELETE /users/{userId}` or `DELETE /agentusers/{agentUserId}`.</Warning>
 
         <Note>**Required permission:** `delete:conversations`</Note>
@@ -1812,9 +1818,9 @@ class AsyncConversationClient:
         *,
         user_id: EntityIdBase,
         conversation_message_id: EntityIdBase,
+        text_format: typing.Optional[TextFormat] = OMIT,
         type: typing.Optional[AskType] = OMIT,
         text: typing.Optional[str] = OMIT,
-        text_format: typing.Optional[TextFormat] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -1847,18 +1853,6 @@ class AsyncConversationClient:
         conversation_message_id : EntityIdBase
             Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
 
-        type : typing.Optional[AskType]
-            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
-            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
-            opener, or PROACTIVE for a message the user did not prompt.
-
-        text : typing.Optional[str]
-            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
-            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
-            agent's response (a directive to the agent, not the user's own words). (Changed from
-            required to optional to support the non-user ask types — existing USER_MESSAGE callers
-            are unaffected.)
-
         text_format : typing.Optional[TextFormat]
             What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
             `BotObjectResponse` matching a schema you supply.
@@ -1884,6 +1878,18 @@ class AsyncConversationClient:
             A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
             charter's manual is returned exactly as written without consulting the agent, so there is
             nothing to shape into the requested schema — the round returns the manual as `text` alone.
+
+        type : typing.Optional[AskType]
+            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
+            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+            opener, or PROACTIVE for a message the user did not prompt.
+
+        text : typing.Optional[str]
+            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+            agent's response (a directive to the agent, not the user's own words). (Changed from
+            required to optional to support the non-user ask types — existing USER_MESSAGE callers
+            are unaffected.)
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -1954,9 +1960,9 @@ class AsyncConversationClient:
             conversation_id,
             user_id=user_id,
             conversation_message_id=conversation_message_id,
+            text_format=text_format,
             type=type,
             text=text,
-            text_format=text_format,
             attachments=attachments,
             transient_data=transient_data,
             timezone=timezone,
@@ -1971,9 +1977,9 @@ class AsyncConversationClient:
         *,
         user_id: EntityIdBase,
         conversation_message_id: EntityIdBase,
+        text_format: typing.Optional[TextFormat] = OMIT,
         type: typing.Optional[AskType] = OMIT,
         text: typing.Optional[str] = OMIT,
-        text_format: typing.Optional[TextFormat] = OMIT,
         attachments: typing.Optional[typing.Sequence[AttachmentRequest]] = OMIT,
         transient_data: typing.Optional[typing.Dict[str, str]] = OMIT,
         timezone: typing.Optional[str] = OMIT,
@@ -2010,18 +2016,6 @@ class AsyncConversationClient:
         conversation_message_id : EntityIdBase
             Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
 
-        type : typing.Optional[AskType]
-            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
-            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
-            opener, or PROACTIVE for a message the user did not prompt.
-
-        text : typing.Optional[str]
-            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
-            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
-            agent's response (a directive to the agent, not the user's own words). (Changed from
-            required to optional to support the non-user ask types — existing USER_MESSAGE callers
-            are unaffected.)
-
         text_format : typing.Optional[TextFormat]
             What form the answer takes. Omit it for prose, or send `jsonSchema` to additionally get a
             `BotObjectResponse` matching a schema you supply.
@@ -2047,6 +2041,18 @@ class AsyncConversationClient:
             A round answered verbatim by a `STRICT_RETURN` charter also carries no object. That
             charter's manual is returned exactly as written without consulting the agent, so there is
             nothing to shape into the requested schema — the round returns the manual as `text` alone.
+
+        type : typing.Optional[AskType]
+            What prompts this assistant response. Omit (or send USER_MESSAGE) for a normal user
+            question — this is the backwards-compatible default. Use WELCOME for an agent-authored
+            opener, or PROACTIVE for a message the user did not prompt.
+
+        text : typing.Optional[str]
+            For USER_MESSAGE (the default) this is the user's message, in the user's own words, and
+            is required. For WELCOME and PROACTIVE it is optional and, when provided, steers the
+            agent's response (a directive to the agent, not the user's own words). (Changed from
+            required to optional to support the non-user ask types — existing USER_MESSAGE callers
+            are unaffected.)
 
         attachments : typing.Optional[typing.Sequence[AttachmentRequest]]
             The attachments to the message. Image attachments will be sent to the LLM as additional data.
@@ -2118,9 +2124,9 @@ class AsyncConversationClient:
             conversation_id,
             user_id=user_id,
             conversation_message_id=conversation_message_id,
+            text_format=text_format,
             type=type,
             text=text,
-            text_format=text_format,
             attachments=attachments,
             transient_data=transient_data,
             timezone=timezone,
@@ -2358,6 +2364,8 @@ class AsyncConversationClient:
         Replaced by `updateConversationMetadata`.
 
         Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
+
+        When a metadata size limit is enforced for the agent, each entry may be at most 8,192 bytes by default, counting the key and value together, plus one byte, in UTF-8. A larger entry returns a 400 that names the key.
 
         A closed conversation (`open` set to false) takes no new metadata and returns a 400.
 
@@ -2748,6 +2756,10 @@ class AsyncConversationClient:
         """
         Deliver a message to a user or conversation.
 
+        Send `content` with `contentType: message` to deliver a message as written, or `contentType: ask`
+        to have the agent take a `WELCOME` or `PROACTIVE` turn and deliver its reply. Either way the app
+        that owns the conversation receives the message through its `handleMessage` hook.
+
         A closed conversation (`open` set to false) takes no new messages and returns a 400.
 
         <Warning>
@@ -2775,8 +2787,8 @@ class AsyncConversationClient:
         from mavenagi import AsyncMavenAGI
         from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
         from mavenagi.conversation import (
-            ConversationMessageRequest,
-            DeliverMessageRequest_User,
+            DeliverContent_Message,
+            DeliverMessageRequest_Conversation,
         )
 
         client = AsyncMavenAGI(
@@ -2790,21 +2802,21 @@ class AsyncConversationClient:
 
         async def main() -> None:
             await client.conversation.deliver_message(
-                request=DeliverMessageRequest_User(
-                    user_id=EntityIdWithoutAgent(
-                        type="AGENT",
-                        app_id="appId",
-                        reference_id="x",
+                request=DeliverMessageRequest_Conversation(
+                    conversation_id=EntityIdWithoutAgent(
+                        type="CONVERSATION",
+                        app_id="chat-app",
+                        reference_id="conversation-0",
                     ),
-                    message=ConversationMessageRequest(
+                    content=DeliverContent_Message(
                         conversation_message_id=EntityIdBase(
-                            reference_id="x",
+                            reference_id="message-0",
                         ),
                         user_id=EntityIdBase(
-                            reference_id="x",
+                            reference_id="human-agent-0",
                         ),
-                        text="text",
-                        user_message_type="USER",
+                        text="Hi, I'm Priya. I can help with your refund.",
+                        user_message_type="HUMAN_AGENT",
                     ),
                 ),
             )

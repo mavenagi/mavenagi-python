@@ -449,8 +449,12 @@ class RawCapabilitiesClient:
         `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
         effects in real systems. Nothing here runs a capability live.
 
-        Only actions can be simulated today. Triggers and conversation kickoffs are rejected with a
-        400 until they can run as simulations. Intelligent fields cannot be simulated.
+        A simulated run is not recorded. It returns its result here and never appears in
+        capability execution search.
+
+        Actions, conversation kickoffs and event triggers can be simulated today. An event trigger
+        is given one event the caller describes in full; the event is never stored, and its user
+        does not have to exist. Intelligent fields cannot be simulated.
 
         <Note>**Required permission:** `create:simulations`</Note>
 
@@ -1317,8 +1321,12 @@ class AsyncRawCapabilitiesClient:
         `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
         effects in real systems. Nothing here runs a capability live.
 
-        Only actions can be simulated today. Triggers and conversation kickoffs are rejected with a
-        400 until they can run as simulations. Intelligent fields cannot be simulated.
+        A simulated run is not recorded. It returns its result here and never appears in
+        capability execution search.
+
+        Actions, conversation kickoffs and event triggers can be simulated today. An event trigger
+        is given one event the caller describes in full; the event is never stored, and its user
+        does not have to exist. Intelligent fields cannot be simulated.
 
         <Note>**Required permission:** `create:simulations`</Note>
 

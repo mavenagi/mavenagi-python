@@ -10,9 +10,22 @@ from .bot_logic_intelligent_field_detail import BotLogicIntelligentFieldDetail
 
 
 class BotLogicIntelligentFieldsItem(UniversalBaseModel):
+    """
+    The intelligent fields the agent's charters or segments refer to, with the values the
+    agent used for this step.
+
+    The agent evaluates these fields once per request that asks it to respond, before its
+    first step, and never between steps. Every step of that request reuses those values. So
+    when a response takes several steps, this item repeats in each step with the same values.
+    The repeat does not mean the fields were evaluated again.
+    """
+
     refreshed_fields: typing_extensions.Annotated[
         typing.List[BotLogicIntelligentFieldDetail], FieldMetadata(alias="refreshedFields")
-    ]
+    ] = pydantic.Field()
+    """
+    The fields and their values, as evaluated before the request's first step.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

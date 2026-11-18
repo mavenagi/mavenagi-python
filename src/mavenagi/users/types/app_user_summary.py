@@ -25,7 +25,7 @@ class AppUserSummary(UniversalBaseModel):
         pydantic.Field()
     )
     """
-    App provided data masked according to the data's visibility type. `HIDDEN` or `PARTIALLY_VISIBLE` data values will be not be fully returned.
+    App provided data, masked by each value's visibility. `HIDDEN` values are returned as `********`, and `PARTIALLY_VISIBLE` values have all but their last 3 characters masked. The masking applies to this response only; `GET /users/{userId}` returns the full values.
     """
 
     if IS_PYDANTIC_V2:

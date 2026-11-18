@@ -6,6 +6,7 @@ from .action_form_attachment import ActionFormAttachment
 from .action_form_request_param_value import ActionFormRequestParamValue
 from .ask_request import AskRequest
 from .ask_request_base import AskRequestBase
+from .ask_request_fields import AskRequestFields
 from .ask_stream_action_event import AskStreamActionEvent
 from .ask_stream_chart_event import AskStreamChartEvent
 from .ask_stream_end_event import AskStreamEndEvent
@@ -26,7 +27,10 @@ from .conversations_cursor_search_request import ConversationsCursorSearchReques
 from .conversations_cursor_search_response import ConversationsCursorSearchResponse
 from .conversations_response import ConversationsResponse
 from .conversations_search_request import ConversationsSearchRequest
+from .deliver_ask_request import DeliverAskRequest
+from .deliver_content import DeliverContent, DeliverContent_Ask, DeliverContent_Message
 from .deliver_conversation_message_request import DeliverConversationMessageRequest
+from .deliver_message_base import DeliverMessageBase
 from .deliver_message_request import (
     DeliverMessageRequest,
     DeliverMessageRequest_Conversation,
@@ -56,6 +60,7 @@ __all__ = [
     "ActionFormRequestParamValue",
     "AskRequest",
     "AskRequestBase",
+    "AskRequestFields",
     "AskStreamActionEvent",
     "AskStreamChartEvent",
     "AskStreamEndEvent",
@@ -76,7 +81,12 @@ __all__ = [
     "ConversationsCursorSearchResponse",
     "ConversationsResponse",
     "ConversationsSearchRequest",
+    "DeliverAskRequest",
+    "DeliverContent",
+    "DeliverContent_Ask",
+    "DeliverContent_Message",
     "DeliverConversationMessageRequest",
+    "DeliverMessageBase",
     "DeliverMessageRequest",
     "DeliverMessageRequest_Conversation",
     "DeliverMessageRequest_User",
