@@ -8,11 +8,13 @@ import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ...core.serialization import FieldMetadata
+from .action_effects import ActionEffects
 from .action_execution_status import ActionExecutionStatus
 
 
 class SimulationActionBehavior_FixedResponse(UniversalBaseModel):
     type: typing.Literal["fixedResponse"] = "fixedResponse"
+    effects: typing.Optional[ActionEffects] = None
     response: str
     data: typing.Optional[typing.Dict[str, typing.Optional[typing.Any]]] = None
     status: typing.Optional[ActionExecutionStatus] = None

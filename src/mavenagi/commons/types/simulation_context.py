@@ -4,16 +4,15 @@ import typing
 
 import pydantic
 import typing_extensions
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .entity_id import EntityId
 from .entity_id_without_agent import EntityIdWithoutAgent
 from .llm_persona import LlmPersona
-from .simulation_action_behavior import SimulationActionBehavior
-from .simulation_action_mock import SimulationActionMock
+from .simulation_setup_fields import SimulationSetupFields
 
 
-class SimulationContext(UniversalBaseModel):
+class SimulationContext(SimulationSetupFields):
     """
     Conversations with a simulation context are the runs on the Agent Designer "Simulator" page.
     """
@@ -54,38 +53,6 @@ class SimulationContext(UniversalBaseModel):
     `VARIANT_HAS_STAGED_EDITS` for one with staged edits (publish them first). Rejected too
     while agent variants aren't enabled for the agent. A conversation that already exists
     keeps the variant it was created with.
-    """
-
-    evaluate_with_charters: typing_extensions.Annotated[
-        typing.Optional[bool], FieldMetadata(alias="evaluateWithCharters")
-    ] = pydantic.Field(default=None)
-    """
-    When true, the simulation evaluates the agent's charters even if charter evaluation is
-    turned off for the agent. When absent or false, the simulation follows the agent's own
-    charter evaluation setting, like any other conversation. While charters are evaluated,
-    `additionalPromptText` has no effect. Not yet enabled for every agent: until it is, the
-    value is stored and returned, and the agent's own setting applies. A conversation that
-    already exists keeps the value it was created with.
-    """
-
-    action_mocks: typing_extensions.Annotated[
-        typing.Optional[typing.List[SimulationActionMock]], FieldMetadata(alias="actionMocks")
-    ] = pydantic.Field(default=None)
-    """
-    What the platform does when the agent executes each action during this simulation. At
-    most one entry per action; a request that names an action twice is rejected. An action
-    with no entry follows `defaultActionBehavior`. A conversation that already exists keeps
-    the mocks and default it was created with.
-    """
-
-    default_action_behavior: typing_extensions.Annotated[
-        typing.Optional[SimulationActionBehavior], FieldMetadata(alias="defaultActionBehavior")
-    ] = pydantic.Field(default=None)
-    """
-    What the platform does when the agent executes an action that has no `actionMocks`
-    entry. When absent, the action's app is called as usual. A `fixedResponse` here keeps the
-    simulation from calling any action's app that `actionMocks` doesn't name with `callApp`;
-    its templates are rendered over the parameters of whichever action was called.
     """
 
     if IS_PYDANTIC_V2:

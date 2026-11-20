@@ -6,6 +6,7 @@ import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from .attachment_response import AttachmentResponse
 from .base_conversation_response import BaseConversationResponse
+from .conversation_audience_response import ConversationAudienceResponse
 from .conversation_message_response import ConversationMessageResponse
 
 
@@ -18,6 +19,7 @@ class ConversationResponse(BaseConversationResponse):
         BotResponse_Text,
         BotResponseMetadata,
         ConversationAnalysis,
+        ConversationAudienceResponse_AllUsers,
         ConversationMessageResponse_Bot,
         ConversationMessageResponse_User,
         ConversationResponse,
@@ -34,6 +36,7 @@ class ConversationResponse(BaseConversationResponse):
             agent_id="support",
             type="CONVERSATION",
         ),
+        audience=ConversationAudienceResponse_AllUsers(),
         deleted=False,
         open=False,
         llm_enabled=True,
@@ -123,6 +126,12 @@ class ConversationResponse(BaseConversationResponse):
     The attachments associated with this conversation. Additional attachments may be associated to individual messages.
     
     Message attachments are included in LLM context, conversation attachments are not.
+    """
+
+    audience: ConversationAudienceResponse = pydantic.Field()
+    """
+    Who the conversation is for, as set when it was initialized. `allUsers` for a conversation
+    initialized without an audience or created by an ask.
     """
 
     if IS_PYDANTIC_V2:

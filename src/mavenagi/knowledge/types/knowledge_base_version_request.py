@@ -3,7 +3,10 @@
 import typing
 
 import pydantic
+import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.serialization import FieldMetadata
+from .knowledge_base_function_bindings import KnowledgeBaseFunctionBindings
 from .knowledge_base_version_type import KnowledgeBaseVersionType
 
 
@@ -21,6 +24,13 @@ class KnowledgeBaseVersionRequest(UniversalBaseModel):
     type: KnowledgeBaseVersionType = pydantic.Field()
     """
     Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
+    """
+
+    function_versions: typing_extensions.Annotated[
+        typing.Optional[KnowledgeBaseFunctionBindings], FieldMetadata(alias="functionVersions")
+    ] = pydantic.Field(default=None)
+    """
+    The Function versions that build this version. On a version, absent for historical versions and for versions created without them.
     """
 
     if IS_PYDANTIC_V2:

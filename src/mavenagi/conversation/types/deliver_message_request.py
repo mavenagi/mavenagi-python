@@ -16,6 +16,7 @@ from .deliver_content import DeliverContent
 class DeliverMessageRequest_User(UniversalBaseModel):
     type: typing.Literal["user"] = "user"
     user_id: typing_extensions.Annotated[EntityIdWithoutAgent, FieldMetadata(alias="userId")]
+    app_ids: typing_extensions.Annotated[typing.Optional[typing.List[str]], FieldMetadata(alias="appIds")] = None
     message: typing.Optional[ConversationMessageRequest] = None
     content: typing.Optional[DeliverContent] = None
 

@@ -5,6 +5,7 @@ import typing
 import pydantic
 import typing_extensions
 from ...commons.types.capability_base import CapabilityBase
+from ...commons.types.change_author import ChangeAuthor
 from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
@@ -60,6 +61,20 @@ class IntelligentFieldResponse(IntelligentFieldBase, CapabilityBase):
     field_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="fieldId")] = pydantic.Field()
     """
     ID that uniquely identifies this intelligent field
+    """
+
+    created_by: typing_extensions.Annotated[typing.Optional[ChangeAuthor], FieldMetadata(alias="createdBy")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Who wrote this version of the field. Absent when no one was recorded. Shown in Agent Designer as "Created by" on a field a variant adds.
+    """
+
+    updated_by: typing_extensions.Annotated[typing.Optional[ChangeAuthor], FieldMetadata(alias="updatedBy")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    Who last changed this version of the field. Absent when no one was recorded. Shown in Agent Designer as "Modified by" on a field a variant changes.
     """
 
     if IS_PYDANTIC_V2:

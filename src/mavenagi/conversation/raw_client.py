@@ -15,6 +15,7 @@ from ..commons.errors.server_error import ServerError
 from ..commons.errors.too_many_requests_error import TooManyRequestsError
 from ..commons.types.ask_type import AskType
 from ..commons.types.attachment_request import AttachmentRequest
+from ..commons.types.conversation_audience import ConversationAudience
 from ..commons.types.conversation_response import ConversationResponse
 from ..commons.types.entity_id import EntityId
 from ..commons.types.entity_id_base import EntityIdBase
@@ -58,14 +59,15 @@ class RawConversationClient:
         conversation_id: EntityIdBase,
         messages: typing.Sequence[ConversationMessageRequest],
         simulation_context: typing.Optional[SimulationContext] = OMIT,
-        response_config: typing.Optional[ResponseConfig] = OMIT,
         subject: typing.Optional[str] = OMIT,
         url: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
+        spawned_from_conversation_id: typing.Optional[EntityId] = OMIT,
+        audience: typing.Optional[ConversationAudience] = OMIT,
+        response_config: typing.Optional[ResponseConfig] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        spawned_from_conversation_id: typing.Optional[EntityId] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[InitializeConversationResponse]:
         """
@@ -93,9 +95,6 @@ class RawConversationClient:
             may only be created by apps with the appropriate permission. Simulation conversations are excluded from normal
             search results unless explicitly included via the `simulationFilter` field.
 
-        response_config : typing.Optional[ResponseConfig]
-            Optional configurations for responses to this conversation
-
         subject : typing.Optional[str]
             The subject of the conversation
 
@@ -107,6 +106,31 @@ class RawConversationClient:
 
         updated_at : typing.Optional[dt.datetime]
             The date and time the conversation was last updated
+
+        spawned_from_conversation_id : typing.Optional[EntityId]
+            The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
+            Setting this also gives the new conversation access to the context it branched from: when the bot
+            answers, the transcript of the spawned-from conversation (and of the conversations that one was
+            spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+            ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+            included.
+
+            The referenced conversation must belong to the same agent. Because the merged transcript is read
+            back to the end user, only set this to a conversation the current user is entitled to see.
+
+        audience : typing.Optional[ConversationAudience]
+            Who the conversation is for. Omit this field or send `allUsers` for a conversation that any of
+            the agent's users may take part in. Send `users` to restrict the conversation to the listed users.
+            A `USER` message from any other user, sent through `ask`, `askStream`, `appendNewMessages` or
+            this request's `messages` when this request creates the conversation, is rejected with a 400.
+            Initializing an existing conversation saves none of its `messages`.
+
+            The audience is set when the conversation is created and cannot be changed. Initializing an
+            existing conversation leaves its audience unchanged.
+
+        response_config : typing.Optional[ResponseConfig]
+            Optional configurations for responses to this conversation
 
         tags : typing.Optional[typing.Set[str]]
             The tags of the conversation. Used for filtering in Agent Designer.
@@ -120,18 +144,6 @@ class RawConversationClient:
             length of 512 characters.
 
             The metadata of the conversation supplied by the app which created the conversation.
-
-        spawned_from_conversation_id : typing.Optional[EntityId]
-            The unique identifier of the conversation this new conversation was spawned from, if applicable.
-
-            Setting this also gives the new conversation access to the context it branched from: when the bot
-            answers, the transcript of the spawned-from conversation (and of the conversations that one was
-            spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
-            ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
-            included.
-
-            The referenced conversation must belong to the same agent. Because the merged transcript is read
-            back to the end user, only set this to a conversation the current user is entitled to see.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -151,21 +163,24 @@ class RawConversationClient:
                 "simulationContext": convert_and_respect_annotation_metadata(
                     object_=simulation_context, annotation=SimulationContext, direction="write"
                 ),
-                "responseConfig": convert_and_respect_annotation_metadata(
-                    object_=response_config, annotation=ResponseConfig, direction="write"
-                ),
                 "subject": subject,
                 "url": url,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
-                "tags": tags,
-                "metadata": metadata,
                 "messages": convert_and_respect_annotation_metadata(
                     object_=messages, annotation=typing.Sequence[ConversationMessageRequest], direction="write"
                 ),
                 "spawnedFromConversationId": convert_and_respect_annotation_metadata(
                     object_=spawned_from_conversation_id, annotation=EntityId, direction="write"
                 ),
+                "audience": convert_and_respect_annotation_metadata(
+                    object_=audience, annotation=ConversationAudience, direction="write"
+                ),
+                "responseConfig": convert_and_respect_annotation_metadata(
+                    object_=response_config, annotation=ResponseConfig, direction="write"
+                ),
+                "tags": tags,
+                "metadata": metadata,
             },
             request_options=request_options,
             omit=OMIT,
@@ -743,7 +758,8 @@ class RawConversationClient:
             The ID of a new or existing conversation to use as context for the question
 
         user_id : EntityIdBase
-            Externally supplied ID to uniquely identify the user that created this message
+            Externally supplied ID to uniquely identify the user that created this message. On a conversation
+            with a `users` audience, a `USER_MESSAGE` ask from a user outside it is rejected with a 400.
 
         conversation_message_id : EntityIdBase
             Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
@@ -948,7 +964,8 @@ class RawConversationClient:
             The ID of a new or existing conversation to use as context for the question
 
         user_id : EntityIdBase
-            Externally supplied ID to uniquely identify the user that created this message
+            Externally supplied ID to uniquely identify the user that created this message. On a conversation
+            with a `users` audience, a `USER_MESSAGE` ask from a user outside it is rejected with a 400.
 
         conversation_message_id : EntityIdBase
             Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
@@ -2245,9 +2262,20 @@ class RawConversationClient:
 
         A closed conversation (`open` set to false) takes no new messages and returns a 400.
 
+        To reach a user rather than a known conversation, send `type: user`. The message goes to one of that
+        user's open conversations, chosen as described on `appIds`. The response's `conversationId` names the
+        conversation it went to.
+
         <Warning>
         Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability.
-        User message delivery is not yet supported and returns a 400.
+        Delivering to a user only reaches a conversation that already exists; it never starts a new one.
+        </Warning>
+
+        <Warning>
+        Retrying a delivery is not supported. Sending the same `conversationMessageId` again saves the message, or an
+        `ask`'s reply, only once in a conversation, but calls the app's `handleMessage` hook again each time. With
+        `type: user`, a repeat can also go to a different conversation if the user's conversations changed in between,
+        so the message is saved and delivered twice.
         </Warning>
 
         <Note>**Required permission:** `ask:agent`</Note>
@@ -2353,14 +2381,15 @@ class AsyncRawConversationClient:
         conversation_id: EntityIdBase,
         messages: typing.Sequence[ConversationMessageRequest],
         simulation_context: typing.Optional[SimulationContext] = OMIT,
-        response_config: typing.Optional[ResponseConfig] = OMIT,
         subject: typing.Optional[str] = OMIT,
         url: typing.Optional[str] = OMIT,
         created_at: typing.Optional[dt.datetime] = OMIT,
         updated_at: typing.Optional[dt.datetime] = OMIT,
+        spawned_from_conversation_id: typing.Optional[EntityId] = OMIT,
+        audience: typing.Optional[ConversationAudience] = OMIT,
+        response_config: typing.Optional[ResponseConfig] = OMIT,
         tags: typing.Optional[typing.Set[str]] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
-        spawned_from_conversation_id: typing.Optional[EntityId] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[InitializeConversationResponse]:
         """
@@ -2388,9 +2417,6 @@ class AsyncRawConversationClient:
             may only be created by apps with the appropriate permission. Simulation conversations are excluded from normal
             search results unless explicitly included via the `simulationFilter` field.
 
-        response_config : typing.Optional[ResponseConfig]
-            Optional configurations for responses to this conversation
-
         subject : typing.Optional[str]
             The subject of the conversation
 
@@ -2402,6 +2428,31 @@ class AsyncRawConversationClient:
 
         updated_at : typing.Optional[dt.datetime]
             The date and time the conversation was last updated
+
+        spawned_from_conversation_id : typing.Optional[EntityId]
+            The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
+            Setting this also gives the new conversation access to the context it branched from: when the bot
+            answers, the transcript of the spawned-from conversation (and of the conversations that one was
+            spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+            ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+            included.
+
+            The referenced conversation must belong to the same agent. Because the merged transcript is read
+            back to the end user, only set this to a conversation the current user is entitled to see.
+
+        audience : typing.Optional[ConversationAudience]
+            Who the conversation is for. Omit this field or send `allUsers` for a conversation that any of
+            the agent's users may take part in. Send `users` to restrict the conversation to the listed users.
+            A `USER` message from any other user, sent through `ask`, `askStream`, `appendNewMessages` or
+            this request's `messages` when this request creates the conversation, is rejected with a 400.
+            Initializing an existing conversation saves none of its `messages`.
+
+            The audience is set when the conversation is created and cannot be changed. Initializing an
+            existing conversation leaves its audience unchanged.
+
+        response_config : typing.Optional[ResponseConfig]
+            Optional configurations for responses to this conversation
 
         tags : typing.Optional[typing.Set[str]]
             The tags of the conversation. Used for filtering in Agent Designer.
@@ -2415,18 +2466,6 @@ class AsyncRawConversationClient:
             length of 512 characters.
 
             The metadata of the conversation supplied by the app which created the conversation.
-
-        spawned_from_conversation_id : typing.Optional[EntityId]
-            The unique identifier of the conversation this new conversation was spawned from, if applicable.
-
-            Setting this also gives the new conversation access to the context it branched from: when the bot
-            answers, the transcript of the spawned-from conversation (and of the conversations that one was
-            spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
-            ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
-            included.
-
-            The referenced conversation must belong to the same agent. Because the merged transcript is read
-            back to the end user, only set this to a conversation the current user is entitled to see.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -2446,21 +2485,24 @@ class AsyncRawConversationClient:
                 "simulationContext": convert_and_respect_annotation_metadata(
                     object_=simulation_context, annotation=SimulationContext, direction="write"
                 ),
-                "responseConfig": convert_and_respect_annotation_metadata(
-                    object_=response_config, annotation=ResponseConfig, direction="write"
-                ),
                 "subject": subject,
                 "url": url,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
-                "tags": tags,
-                "metadata": metadata,
                 "messages": convert_and_respect_annotation_metadata(
                     object_=messages, annotation=typing.Sequence[ConversationMessageRequest], direction="write"
                 ),
                 "spawnedFromConversationId": convert_and_respect_annotation_metadata(
                     object_=spawned_from_conversation_id, annotation=EntityId, direction="write"
                 ),
+                "audience": convert_and_respect_annotation_metadata(
+                    object_=audience, annotation=ConversationAudience, direction="write"
+                ),
+                "responseConfig": convert_and_respect_annotation_metadata(
+                    object_=response_config, annotation=ResponseConfig, direction="write"
+                ),
+                "tags": tags,
+                "metadata": metadata,
             },
             request_options=request_options,
             omit=OMIT,
@@ -3038,7 +3080,8 @@ class AsyncRawConversationClient:
             The ID of a new or existing conversation to use as context for the question
 
         user_id : EntityIdBase
-            Externally supplied ID to uniquely identify the user that created this message
+            Externally supplied ID to uniquely identify the user that created this message. On a conversation
+            with a `users` audience, a `USER_MESSAGE` ask from a user outside it is rejected with a 400.
 
         conversation_message_id : EntityIdBase
             Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
@@ -3243,7 +3286,8 @@ class AsyncRawConversationClient:
             The ID of a new or existing conversation to use as context for the question
 
         user_id : EntityIdBase
-            Externally supplied ID to uniquely identify the user that created this message
+            Externally supplied ID to uniquely identify the user that created this message. On a conversation
+            with a `users` audience, a `USER_MESSAGE` ask from a user outside it is rejected with a 400.
 
         conversation_message_id : EntityIdBase
             Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
@@ -4541,9 +4585,20 @@ class AsyncRawConversationClient:
 
         A closed conversation (`open` set to false) takes no new messages and returns a 400.
 
+        To reach a user rather than a known conversation, send `type: user`. The message goes to one of that
+        user's open conversations, chosen as described on `appIds`. The response's `conversationId` names the
+        conversation it went to.
+
         <Warning>
         Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability.
-        User message delivery is not yet supported and returns a 400.
+        Delivering to a user only reaches a conversation that already exists; it never starts a new one.
+        </Warning>
+
+        <Warning>
+        Retrying a delivery is not supported. Sending the same `conversationMessageId` again saves the message, or an
+        `ask`'s reply, only once in a conversation, but calls the app's `handleMessage` hook again each time. With
+        `type: user`, a repeat can also go to a different conversation if the user's conversations changed in between,
+        so the message is saved and delivered twice.
         </Warning>
 
         <Note>**Required permission:** `ask:agent`</Note>

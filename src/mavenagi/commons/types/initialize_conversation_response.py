@@ -20,6 +20,7 @@ class InitializeConversationResponse(ConversationResponse):
     --------
     from mavenagi.commons import (
         ConversationAnalysis,
+        ConversationAudienceResponse_AllUsers,
         ConversationSummary,
         EntityId,
         InitializeConversationResponse,
@@ -33,6 +34,7 @@ class InitializeConversationResponse(ConversationResponse):
             agent_id="support",
             type="CONVERSATION",
         ),
+        audience=ConversationAudienceResponse_AllUsers(),
         deleted=False,
         open=True,
         llm_enabled=True,

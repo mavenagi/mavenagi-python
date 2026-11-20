@@ -9,6 +9,7 @@ import pydantic
 import typing_extensions
 from ...commons.types.action_parameter import ActionParameter
 from ...commons.types.capability_status import CapabilityStatus
+from ...commons.types.change_author import ChangeAuthor
 from ...commons.types.entity_id import EntityId
 from ...commons.types.entity_id_without_agent import EntityIdWithoutAgent
 from ...commons.types.entity_type import EntityType
@@ -118,6 +119,8 @@ class CapabilityResponse_IntelligentField(UniversalBaseModel):
         typing.Literal["INTELLIGENT_FIELD"], FieldMetadata(alias="capabilityType")
     ] = "INTELLIGENT_FIELD"
     field_id: typing_extensions.Annotated[EntityId, FieldMetadata(alias="fieldId")]
+    created_by: typing_extensions.Annotated[typing.Optional[ChangeAuthor], FieldMetadata(alias="createdBy")] = None
+    updated_by: typing_extensions.Annotated[typing.Optional[ChangeAuthor], FieldMetadata(alias="updatedBy")] = None
     entity_type: typing_extensions.Annotated[EntityType, FieldMetadata(alias="entityType")]
     variant_id: typing_extensions.Annotated[typing.Optional[EntityIdWithoutAgent], FieldMetadata(alias="variantId")] = (
         None

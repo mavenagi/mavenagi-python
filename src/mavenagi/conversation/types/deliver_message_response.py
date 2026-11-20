@@ -3,12 +3,22 @@
 import typing
 
 import pydantic
+import typing_extensions
+from ...commons.types.entity_id import EntityId
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.serialization import FieldMetadata
 from .delivery_status import DeliveryStatus
 
 
 class DeliverMessageResponse(UniversalBaseModel):
     status: DeliveryStatus
+    conversation_id: typing_extensions.Annotated[typing.Optional[EntityId], FieldMetadata(alias="conversationId")] = (
+        pydantic.Field(default=None)
+    )
+    """
+    The conversation the message was delivered to, or attempted on when `status` is `FAILED`. Absent when
+    no conversation qualified for a delivery to a user.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

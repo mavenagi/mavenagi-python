@@ -5,16 +5,17 @@ import typing
 
 import pydantic
 import typing_extensions
+from ...commons.types.conversation_audience import ConversationAudience
+from ...commons.types.conversation_setup_fields import ConversationSetupFields
 from ...commons.types.entity_id import EntityId
 from ...commons.types.entity_id_base import EntityIdBase
-from ...commons.types.response_config import ResponseConfig
 from ...commons.types.simulation_context import SimulationContext
-from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.serialization import FieldMetadata
 from .conversation_message_request import ConversationMessageRequest
 
 
-class ConversationRequest(UniversalBaseModel):
+class ConversationRequest(ConversationSetupFields):
     """
     Examples
     --------
@@ -43,13 +44,6 @@ class ConversationRequest(UniversalBaseModel):
     search results unless explicitly included via the `simulationFilter` field.
     """
 
-    response_config: typing_extensions.Annotated[
-        typing.Optional[ResponseConfig], FieldMetadata(alias="responseConfig")
-    ] = pydantic.Field(default=None)
-    """
-    Optional configurations for responses to this conversation
-    """
-
     subject: typing.Optional[str] = pydantic.Field(default=None)
     """
     The subject of the conversation
@@ -74,23 +68,6 @@ class ConversationRequest(UniversalBaseModel):
     The date and time the conversation was last updated
     """
 
-    tags: typing.Optional[typing.Set[str]] = pydantic.Field(default=None)
-    """
-    The tags of the conversation. Used for filtering in Agent Designer.
-    """
-
-    metadata: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
-    """
-    Set of 16 key-value pairs that can be attached to an object. This can be useful for storing
-    additional information about the object in a structured format, and querying for objects
-    via API or the dashboard.
-    
-    Keys are strings with a maximum length of 500 characters. Values are strings with a maximum
-    length of 512 characters.
-    
-    The metadata of the conversation supplied by the app which created the conversation.
-    """
-
     messages: typing.List[ConversationMessageRequest] = pydantic.Field()
     """
     The messages in the conversation
@@ -110,6 +87,18 @@ class ConversationRequest(UniversalBaseModel):
     
     The referenced conversation must belong to the same agent. Because the merged transcript is read
     back to the end user, only set this to a conversation the current user is entitled to see.
+    """
+
+    audience: typing.Optional[ConversationAudience] = pydantic.Field(default=None)
+    """
+    Who the conversation is for. Omit this field or send `allUsers` for a conversation that any of
+    the agent's users may take part in. Send `users` to restrict the conversation to the listed users.
+    A `USER` message from any other user, sent through `ask`, `askStream`, `appendNewMessages` or
+    this request's `messages` when this request creates the conversation, is rejected with a 400.
+    Initializing an existing conversation saves none of its `messages`.
+    
+    The audience is set when the conversation is created and cannot be changed. Initializing an
+    existing conversation leaves its audience unchanged.
     """
 
     if IS_PYDANTIC_V2:

@@ -4,6 +4,7 @@
 
 from .absolute_time_window import AbsoluteTimeWindow
 from .action_base import ActionBase
+from .action_effects import ActionEffects
 from .action_enum_option import ActionEnumOption
 from .action_execution_param_value import (
     ActionExecutionParamValue,
@@ -19,6 +20,7 @@ from .action_properties import ActionProperties
 from .action_response import ActionResponse
 from .action_user import ActionUser
 from .additional_data_key import AdditionalDataKey
+from .all_users_conversation_audience import AllUsersConversationAudience
 from .app_precondition import AppPrecondition
 from .app_user import AppUser
 from .app_user_identifier import AppUserIdentifier
@@ -87,6 +89,7 @@ from .capability import Capability
 from .capability_base import CapabilityBase
 from .capability_status import CapabilityStatus
 from .capability_type import CapabilityType
+from .change_author import ChangeAuthor
 from .chart_spec_schema import ChartSpecSchema
 from .charter_type import CharterType
 from .checkbox_settings_schema_entry import CheckboxSettingsSchemaEntry
@@ -94,6 +97,12 @@ from .color_settings_schema_entry import ColorSettingsSchemaEntry
 from .complex_array_settings_schema_entry import ComplexArraySettingsSchemaEntry
 from .context_info import ContextInfo
 from .conversation_analysis import ConversationAnalysis
+from .conversation_audience import ConversationAudience, ConversationAudience_AllUsers, ConversationAudience_Users
+from .conversation_audience_response import (
+    ConversationAudienceResponse,
+    ConversationAudienceResponse_AllUsers,
+    ConversationAudienceResponse_Users,
+)
 from .conversation_executed_action_precondition import ConversationExecutedActionPrecondition
 from .conversation_information import ConversationInformation
 from .conversation_kickoff_execution_response import ConversationKickoffExecutionResponse
@@ -134,6 +143,7 @@ from .conversation_precondition_response import (
 from .conversation_preview import ConversationPreview
 from .conversation_response import ConversationResponse
 from .conversation_round import ConversationRound
+from .conversation_setup_fields import ConversationSetupFields
 from .conversation_state import ConversationState
 from .conversation_state_precondition import ConversationStatePrecondition
 from .conversation_summary import ConversationSummary
@@ -142,6 +152,7 @@ from .conversation_value_source import (
     ConversationValueSource_ConversationMetadata,
     ConversationValueSource_UserData,
 )
+from .cross_organization_level_entity_id import CrossOrganizationLevelEntityId
 from .csat_info import CsatInfo
 from .cursor_page import CursorPage
 from .day_of_month_day_selector import DayOfMonthDaySelector
@@ -234,6 +245,12 @@ from .knowledge_context_filter import (
     KnowledgeContextFilter_ByEntityTypes,
 )
 from .language_info import LanguageInfo
+from .leveled_entity_id import (
+    LeveledEntityId,
+    LeveledEntityId_Agent,
+    LeveledEntityId_CrossOrganization,
+    LeveledEntityId_Organization,
+)
 from .llm_inclusion_status import LlmInclusionStatus
 from .llm_persona import LlmPersona
 from .message_status import MessageStatus
@@ -273,6 +290,7 @@ from .o_auth_settings_schema_entry import OAuthSettingsSchemaEntry
 from .object_condition import ObjectCondition, ObjectCondition_Entry
 from .occurrence import Occurrence
 from .one_of_settings_schema_entry import OneOfSettingsSchemaEntry
+from .organization_level_entity_id import OrganizationLevelEntityId
 from .os_info import OsInfo
 from .os_type import OsType
 from .page import Page
@@ -342,6 +360,8 @@ from .simulation_action_call_app import SimulationActionCallApp
 from .simulation_action_mock import SimulationActionMock
 from .simulation_context import SimulationContext
 from .simulation_filter import SimulationFilter
+from .simulation_fixed_response import SimulationFixedResponse
+from .simulation_setup_fields import SimulationSetupFields
 from .source import Source
 from .source_info import SourceInfo
 from .source_type import SourceType
@@ -366,6 +386,8 @@ from .time_window import TimeWindow, TimeWindow_Absolute, TimeWindow_Recurring, 
 from .universal_condition import UniversalCondition, UniversalCondition_Presence
 from .user_conversation_message_type import UserConversationMessageType
 from .user_data import UserData
+from .user_data_effect import UserDataEffect
+from .user_data_patch import UserDataPatch
 from .user_data_value_source import UserDataValueSource
 from .user_data_with_reference import UserDataWithReference
 from .user_event import UserEvent
@@ -374,6 +396,8 @@ from .user_event_name_condition import UserEventNameCondition
 from .user_message import UserMessage
 from .user_message_base import UserMessageBase
 from .user_message_response_state import UserMessageResponseState
+from .users_conversation_audience import UsersConversationAudience
+from .users_conversation_audience_response import UsersConversationAudienceResponse
 from .validated_settings_schema_entry_base import ValidatedSettingsSchemaEntryBase
 from .visibility_type import VisibilityType
 from .week_time import WeekTime
@@ -384,6 +408,7 @@ from .yearly_dates_day_selector import YearlyDatesDaySelector
 __all__ = [
     "AbsoluteTimeWindow",
     "ActionBase",
+    "ActionEffects",
     "ActionEnumOption",
     "ActionExecutionParamValue",
     "ActionExecutionParamValue_Attachment",
@@ -397,6 +422,7 @@ __all__ = [
     "ActionResponse",
     "ActionUser",
     "AdditionalDataKey",
+    "AllUsersConversationAudience",
     "AppPrecondition",
     "AppUser",
     "AppUserIdentifier",
@@ -461,6 +487,7 @@ __all__ = [
     "CapabilityBase",
     "CapabilityStatus",
     "CapabilityType",
+    "ChangeAuthor",
     "ChartSpecSchema",
     "CharterType",
     "CheckboxSettingsSchemaEntry",
@@ -468,6 +495,12 @@ __all__ = [
     "ComplexArraySettingsSchemaEntry",
     "ContextInfo",
     "ConversationAnalysis",
+    "ConversationAudience",
+    "ConversationAudienceResponse",
+    "ConversationAudienceResponse_AllUsers",
+    "ConversationAudienceResponse_Users",
+    "ConversationAudience_AllUsers",
+    "ConversationAudience_Users",
     "ConversationExecutedActionPrecondition",
     "ConversationInformation",
     "ConversationKickoffExecutionResponse",
@@ -502,12 +535,14 @@ __all__ = [
     "ConversationPreview",
     "ConversationResponse",
     "ConversationRound",
+    "ConversationSetupFields",
     "ConversationState",
     "ConversationStatePrecondition",
     "ConversationSummary",
     "ConversationValueSource",
     "ConversationValueSource_ConversationMetadata",
     "ConversationValueSource_UserData",
+    "CrossOrganizationLevelEntityId",
     "CsatInfo",
     "CursorPage",
     "DayOfMonthDaySelector",
@@ -601,6 +636,10 @@ __all__ = [
     "KnowledgeContextFilter_ByEntities",
     "KnowledgeContextFilter_ByEntityTypes",
     "LanguageInfo",
+    "LeveledEntityId",
+    "LeveledEntityId_Agent",
+    "LeveledEntityId_CrossOrganization",
+    "LeveledEntityId_Organization",
     "LlmInclusionStatus",
     "LlmPersona",
     "MessageStatus",
@@ -639,6 +678,7 @@ __all__ = [
     "ObjectCondition_Entry",
     "Occurrence",
     "OneOfSettingsSchemaEntry",
+    "OrganizationLevelEntityId",
     "OsInfo",
     "OsType",
     "Page",
@@ -707,6 +747,8 @@ __all__ = [
     "SimulationActionMock",
     "SimulationContext",
     "SimulationFilter",
+    "SimulationFixedResponse",
+    "SimulationSetupFields",
     "Source",
     "SourceInfo",
     "SourceType",
@@ -739,6 +781,8 @@ __all__ = [
     "UniversalCondition_Presence",
     "UserConversationMessageType",
     "UserData",
+    "UserDataEffect",
+    "UserDataPatch",
     "UserDataValueSource",
     "UserDataWithReference",
     "UserEvent",
@@ -747,6 +791,8 @@ __all__ = [
     "UserMessage",
     "UserMessageBase",
     "UserMessageResponseState",
+    "UsersConversationAudience",
+    "UsersConversationAudienceResponse",
     "ValidatedSettingsSchemaEntryBase",
     "VisibilityType",
     "WeekTime",

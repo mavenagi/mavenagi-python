@@ -25,6 +25,7 @@ from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from .types.knowledge_base_field import KnowledgeBaseField
 from .types.knowledge_base_filter import KnowledgeBaseFilter
+from .types.knowledge_base_function_bindings import KnowledgeBaseFunctionBindings
 from .types.knowledge_base_refresh_frequency import KnowledgeBaseRefreshFrequency
 from .types.knowledge_base_response import KnowledgeBaseResponse
 from .types.knowledge_base_version import KnowledgeBaseVersion
@@ -879,6 +880,7 @@ class RawKnowledgeClient:
         knowledge_base_reference_id: str,
         *,
         type: KnowledgeBaseVersionType,
+        function_versions: typing.Optional[KnowledgeBaseFunctionBindings] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[KnowledgeBaseVersion]:
         """
@@ -899,6 +901,9 @@ class RawKnowledgeClient:
         type : KnowledgeBaseVersionType
             Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
 
+        function_versions : typing.Optional[KnowledgeBaseFunctionBindings]
+            The Function versions that build this version. On a version, absent for historical versions and for versions created without them.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -911,6 +916,9 @@ class RawKnowledgeClient:
             method="POST",
             json={
                 "type": type,
+                "functionVersions": convert_and_respect_annotation_metadata(
+                    object_=function_versions, annotation=KnowledgeBaseFunctionBindings, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,
@@ -2850,6 +2858,7 @@ class AsyncRawKnowledgeClient:
         knowledge_base_reference_id: str,
         *,
         type: KnowledgeBaseVersionType,
+        function_versions: typing.Optional[KnowledgeBaseFunctionBindings] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[KnowledgeBaseVersion]:
         """
@@ -2870,6 +2879,9 @@ class AsyncRawKnowledgeClient:
         type : KnowledgeBaseVersionType
             Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
 
+        function_versions : typing.Optional[KnowledgeBaseFunctionBindings]
+            The Function versions that build this version. On a version, absent for historical versions and for versions created without them.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -2882,6 +2894,9 @@ class AsyncRawKnowledgeClient:
             method="POST",
             json={
                 "type": type,
+                "functionVersions": convert_and_respect_annotation_metadata(
+                    object_=function_versions, annotation=KnowledgeBaseFunctionBindings, direction="write"
+                ),
             },
             request_options=request_options,
             omit=OMIT,

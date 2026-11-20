@@ -38,7 +38,8 @@ class AskRequest(AskRequestBase):
 
     user_id: typing_extensions.Annotated[EntityIdBase, FieldMetadata(alias="userId")] = pydantic.Field()
     """
-    Externally supplied ID to uniquely identify the user that created this message
+    Externally supplied ID to uniquely identify the user that created this message. On a conversation
+    with a `users` audience, a `USER_MESSAGE` ask from a user outside it is rejected with a 400.
     """
 
     if IS_PYDANTIC_V2:

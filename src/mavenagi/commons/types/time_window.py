@@ -17,6 +17,7 @@ from .week_time import WeekTime
 
 class TimeWindow_Absolute(UniversalBaseModel):
     window_type: typing_extensions.Annotated[typing.Literal["absolute"], FieldMetadata(alias="windowType")] = "absolute"
+    timezone: typing.Optional[str] = None
     start: typing.Optional[dt.datetime] = None
     end: typing.Optional[dt.datetime] = None
 

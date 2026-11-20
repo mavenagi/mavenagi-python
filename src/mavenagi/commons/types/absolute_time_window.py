@@ -14,8 +14,14 @@ class AbsoluteTimeWindow(UniversalBaseModel):
     before `end` when both are set.
 
     Both ends are instants with an offset, so a client converts a local date to an instant
-    before sending it; the server applies no timezone. The server keeps only the instant, so
-    a window reads back in UTC.
+    before sending it; matching compares instants and applies no timezone. The server keeps
+    each end's instant but not the offset it was sent with, so each end reads back at
+    `timezone`'s offset on that date, or in UTC without one.
+    """
+
+    timezone: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    The IANA timezone the window was written in (e.g. "America/New_York"), kept so an editor can show the ends in it again. It does not change which instants match. Fixed offsets (e.g. "-08:00") and legacy IDs (e.g. "EST") are accepted, but the ends then read back at a fixed offset that ignores daylight saving. Clients can prefill it from the agent's `defaultTimezone`.
     """
 
     start: typing.Optional[dt.datetime] = pydantic.Field(default=None)

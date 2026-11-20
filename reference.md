@@ -5131,14 +5131,6 @@ search results unless explicitly included via the `simulationFilter` field.
 <dl>
 <dd>
 
-**response_config:** `typing.Optional[ResponseConfig]` — Optional configurations for responses to this conversation
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **subject:** `typing.Optional[str]` — The subject of the conversation
     
 </dd>
@@ -5171,6 +5163,50 @@ search results unless explicitly included via the `simulationFilter` field.
 <dl>
 <dd>
 
+**spawned_from_conversation_id:** `typing.Optional[EntityId]` 
+
+The unique identifier of the conversation this new conversation was spawned from, if applicable.
+
+Setting this also gives the new conversation access to the context it branched from: when the bot
+answers, the transcript of the spawned-from conversation (and of the conversations that one was
+spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
+ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
+included.
+
+The referenced conversation must belong to the same agent. Because the merged transcript is read
+back to the end user, only set this to a conversation the current user is entitled to see.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**audience:** `typing.Optional[ConversationAudience]` 
+
+Who the conversation is for. Omit this field or send `allUsers` for a conversation that any of
+the agent's users may take part in. Send `users` to restrict the conversation to the listed users.
+A `USER` message from any other user, sent through `ask`, `askStream`, `appendNewMessages` or
+this request's `messages` when this request creates the conversation, is rejected with a 400.
+Initializing an existing conversation saves none of its `messages`.
+
+The audience is set when the conversation is created and cannot be changed. Initializing an
+existing conversation leaves its audience unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**response_config:** `typing.Optional[ResponseConfig]` — Optional configurations for responses to this conversation
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **tags:** `typing.Optional[typing.Set[str]]` — The tags of the conversation. Used for filtering in Agent Designer.
     
 </dd>
@@ -5189,25 +5225,6 @@ Keys are strings with a maximum length of 500 characters. Values are strings wit
 length of 512 characters.
 
 The metadata of the conversation supplied by the app which created the conversation.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**spawned_from_conversation_id:** `typing.Optional[EntityId]` 
-
-The unique identifier of the conversation this new conversation was spawned from, if applicable.
-
-Setting this also gives the new conversation access to the context it branched from: when the bot
-answers, the transcript of the spawned-from conversation (and of the conversations that one was
-spawned from, in turn) is merged into the prompt ahead of this conversation's own messages. Each
-ancestor is truncated at the point the spawn happened, so messages it receives afterwards are not
-included.
-
-The referenced conversation must belong to the same agent. Because the merged transcript is read
-back to the end user, only set this to a conversation the current user is entitled to see.
     
 </dd>
 </dl>
@@ -5747,7 +5764,10 @@ client.conversation.ask(
 <dl>
 <dd>
 
-**user_id:** `EntityIdBase` — Externally supplied ID to uniquely identify the user that created this message
+**user_id:** `EntityIdBase` 
+
+Externally supplied ID to uniquely identify the user that created this message. On a conversation
+with a `users` audience, a `USER_MESSAGE` ask from a user outside it is rejected with a 400.
     
 </dd>
 </dl>
@@ -5972,7 +5992,10 @@ for chunk in response.data:
 <dl>
 <dd>
 
-**user_id:** `EntityIdBase` — Externally supplied ID to uniquely identify the user that created this message
+**user_id:** `EntityIdBase` 
+
+Externally supplied ID to uniquely identify the user that created this message. On a conversation
+with a `users` audience, a `USER_MESSAGE` ask from a user outside it is rejected with a 400.
     
 </dd>
 </dl>
@@ -6986,9 +7009,20 @@ that owns the conversation receives the message through its `handleMessage` hook
 
 A closed conversation (`open` set to false) takes no new messages and returns a 400.
 
+To reach a user rather than a known conversation, send `type: user`. The message goes to one of that
+user's open conversations, chosen as described on `appIds`. The response's `conversationId` names the
+conversation it went to.
+
 <Warning>
 Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability.
-User message delivery is not yet supported and returns a 400.
+Delivering to a user only reaches a conversation that already exists; it never starts a new one.
+</Warning>
+
+<Warning>
+Retrying a delivery is not supported. Sending the same `conversationMessageId` again saves the message, or an
+`ask`'s reply, only once in a conversation, but calls the app's `handleMessage` hook again each time. With
+`type: user`, a repeat can also go to a different conversation if the user's conversations changed in between,
+so the message is saved and delivered twice.
 </Warning>
 
 <Note>**Required permission:** `ask:agent`</Note>
@@ -7008,10 +7042,7 @@ User message delivery is not yet supported and returns a 400.
 ```python
 from mavenagi import MavenAGI
 from mavenagi.commons import EntityIdBase, EntityIdWithoutAgent
-from mavenagi.conversation import (
-    DeliverContent_Ask,
-    DeliverMessageRequest_Conversation,
-)
+from mavenagi.conversation import DeliverContent_Ask, DeliverMessageRequest_User
 
 client = MavenAGI(
     organization_id="YOUR_ORGANIZATION_ID",
@@ -7021,21 +7052,22 @@ client = MavenAGI(
     app_secret="YOUR_APP_SECRET",
 )
 client.conversation.deliver_message(
-    request=DeliverMessageRequest_Conversation(
-        conversation_id=EntityIdWithoutAgent(
-            type="CONVERSATION",
-            app_id="chat-app",
-            reference_id="conversation-0",
+    request=DeliverMessageRequest_User(
+        user_id=EntityIdWithoutAgent(
+            type="USER",
+            app_id="shop-app",
+            reference_id="customer-42",
         ),
+        app_ids=["chat-app", "email-app"],
         content=DeliverContent_Ask(
             conversation_message_id=EntityIdBase(
-                reference_id="message-1",
+                reference_id="message-2",
             ),
             user_id=EntityIdBase(
-                reference_id="system-live-support",
+                reference_id="system-orders",
             ),
             type="PROACTIVE",
-            text="Tell the user their refund was approved.",
+            text="Tell the user their order has shipped.",
         ),
     ),
 )
@@ -10534,6 +10566,14 @@ client.knowledge.create_knowledge_base_version(
 <dd>
 
 **type:** `KnowledgeBaseVersionType` — Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**function_versions:** `typing.Optional[KnowledgeBaseFunctionBindings]` — The Function versions that build this version. On a version, absent for historical versions and for versions created without them.
     
 </dd>
 </dl>
