@@ -8,9 +8,21 @@ from .precondition_base import PreconditionBase
 
 
 class TagsPrecondition(PreconditionBase):
+    """
+    Checks the conversation's tags against `tags`. The `operator` decides how:
+
+    - None: every listed tag must be present.
+    - `CONTAINS` or `CONTAINS_ANY`: at least one listed tag must be present.
+    - `NOT_CONTAINS` or `NOT_CONTAINS_ANY`: none of the listed tags may be present.
+    - `CONTAINS_ALL`: every listed tag must be present.
+    - `NOT_CONTAINS_ALL`: at least one listed tag must be missing.
+    - `NOT`: met unless every listed tag is present. To require that none are present, use
+      `NOT_CONTAINS_ANY`.
+    """
+
     tags: typing.Set[str] = pydantic.Field()
     """
-    The tags that must be present in the conversation context for the precondition to be met
+    The tags the `operator` checks the conversation's tags against.
     """
 
     if IS_PYDANTIC_V2:

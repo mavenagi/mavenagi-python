@@ -9,6 +9,7 @@ import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
 from ...core.serialization import FieldMetadata
 from .conversation_precondition import ConversationPrecondition
+from .field_condition import FieldCondition
 from .precondition_group_operator import PreconditionGroupOperator
 from .precondition_operator import PreconditionOperator
 
@@ -38,6 +39,9 @@ class Precondition_User(UniversalBaseModel):
     key: str
     value: typing.Optional[str] = None
     values: typing.Optional[typing.List[str]] = None
+    field_condition: typing_extensions.Annotated[
+        typing.Optional[FieldCondition], FieldMetadata(alias="fieldCondition")
+    ] = None
     operator: typing.Optional[PreconditionOperator] = None
 
     if IS_PYDANTIC_V2:

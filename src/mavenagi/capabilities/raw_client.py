@@ -445,9 +445,9 @@ class RawCapabilitiesClient:
         Run one of an agent's capabilities once, as a simulation, and return what it produced.
 
         The caller supplies everything the capability reads, so it runs in isolation: no
-        conversation or agent user has to exist first. The capability is told its mode is
-        `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
-        effects in real systems. Nothing here runs a capability live.
+        conversation or agent user has to exist first. The capability's app is called with mode
+        `SIMULATION`. What the app does in that mode is up to the app, and the platform does not
+        stop it from acting on real systems.
 
         A simulated run is not recorded. It returns its result here and never appears in
         capability execution search.
@@ -1317,9 +1317,9 @@ class AsyncRawCapabilitiesClient:
         Run one of an agent's capabilities once, as a simulation, and return what it produced.
 
         The caller supplies everything the capability reads, so it runs in isolation: no
-        conversation or agent user has to exist first. The capability is told its mode is
-        `SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
-        effects in real systems. Nothing here runs a capability live.
+        conversation or agent user has to exist first. The capability's app is called with mode
+        `SIMULATION`. What the app does in that mode is up to the app, and the platform does not
+        stop it from acting on real systems.
 
         A simulated run is not recorded. It returns its result here and never appears in
         capability execution search.

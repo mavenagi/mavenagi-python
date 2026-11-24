@@ -2151,6 +2151,7 @@ class RawConversationClient:
 
         This CSV format is very simple and only allows for one column: `question`. A header containing this column is required.
         Each row will generate one simulation conversation, using the provided response config, if present.
+        The file can have at most 1,000 non-blank rows; a larger file is rejected with a 400.
 
         This API is offered for backwards compatibility.
         Most API callers should create simulations programmatically to allow for more flexibility.
@@ -4474,6 +4475,7 @@ class AsyncRawConversationClient:
 
         This CSV format is very simple and only allows for one column: `question`. A header containing this column is required.
         Each row will generate one simulation conversation, using the provided response config, if present.
+        The file can have at most 1,000 non-blank rows; a larger file is rejected with a 400.
 
         This API is offered for backwards compatibility.
         Most API callers should create simulations programmatically to allow for more flexibility.

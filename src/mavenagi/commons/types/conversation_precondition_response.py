@@ -43,6 +43,9 @@ class ConversationPreconditionResponse_Metadata(UniversalBaseModel):
     key: str
     value: typing.Optional[str] = None
     values: typing.Optional[typing.List[str]] = None
+    field_condition: typing_extensions.Annotated[
+        typing.Optional[FieldCondition], FieldMetadata(alias="fieldCondition")
+    ] = None
     operator: typing.Optional[PreconditionOperator] = None
 
     if IS_PYDANTIC_V2:

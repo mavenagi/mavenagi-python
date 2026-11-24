@@ -3372,9 +3372,9 @@ though a named variant must still exist.
 Run one of an agent's capabilities once, as a simulation, and return what it produced.
 
 The caller supplies everything the capability reads, so it runs in isolation: no
-conversation or agent user has to exist first. The capability is told its mode is
-`SIMULATION`, the same as in a test suite run, so an app that honours it can avoid side
-effects in real systems. Nothing here runs a capability live.
+conversation or agent user has to exist first. The capability's app is called with mode
+`SIMULATION`. What the app does in that mode is up to the app, and the platform does not
+stop it from acting on real systems.
 
 A simulated run is not recorded. It returns its result here and never appears in
 capability execution search.
@@ -10607,6 +10607,12 @@ client.knowledge.create_knowledge_base_version(
 
 Finalize the latest knowledge base version. Required to indicate the version is complete. Will throw an exception if the latest version is not in progress.
 
+A `FULL` version starts empty and replaces the live documents. Finalizing a `FULL` version
+with status `SUCCEEDED` (the default when `status` is omitted) succeeds even if no
+documents were added to it, and once it is processed the knowledge base has no documents.
+A `PARTIAL` version starts from the live version's documents, so finalizing it keeps the
+documents it didn't change.
+
 <Note>**Required permission:** `edit:agents`</Note>
 </dd>
 </dl>
@@ -11365,6 +11371,10 @@ client.knowledge.delete_knowledge_document(
 
 Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
 
+The path takes the reference ID of a knowledge base version, not of the knowledge base.
+`searchKnowledgeDocuments` returns it as `knowledgeBaseVersionId.referenceId` when the
+document has one.
+
 <Note>**Required permission:** `read:documents`</Note>
 </dd>
 </dl>
@@ -11458,6 +11468,10 @@ client.knowledge.get_knowledge_document(
 <dd>
 
 Update mutable knowledge document fields that can be set independently of a knowledge base version.
+
+Unlike `getKnowledgeDocument`, the path takes the knowledge base's reference ID, not a
+version's. The document is looked up in the knowledge base's live version, so a document
+that is only in a version still in progress is not found.
 
 For any changes in document content see the `createKnowledgeBaseVersion` and `createKnowledgeDocument` endpoints.
 
